@@ -1,0 +1,35 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}"
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: '#683AB7',
+        success: '#30BE6E',
+        secondary: '#F6F6F6',
+        lightText: '#B5B6B6',
+        inputBg: '#F9F9F9',
+        borderColor: '#BDBFC355'
+      },
+      boxShadow: {
+        box: '5px 15px 35px rgba(0, 0, 0, 0.15)'
+      },
+      width: {
+        sideMenu: '400px'
+      },
+      screens: {
+        'md-2': '900px',
+        'xs': '500px'
+      },
+      backgroundImage: {
+        'auth-bg': "url('../assets/svgs/background.svg')"
+      }
+    }
+  },
+  plugins: [
+    require('@tailwindcss/line-clamp')
+  ]
+};

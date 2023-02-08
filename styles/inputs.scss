@@ -1,0 +1,22 @@
+.select {
+  .react-select__control,
+  .react-select__control--is-focused {
+    line-height: 1.25;
+    color: #455261;
+    border: 1px solid #bdbfc355;
+    box-shadow: none;
+    border-radius: 0.25rem;
+    -webkit-appearance: none;
+    background-color: #FFFFFF;
+    appearance: none;
+    outline: none;
+    height: 48px;
+
+    &:hover {
+      border: 1px solid #bdbfc355;
+    }
+  }
+  .react-select__placeholder {
+    color: #979797;
+  }
+}

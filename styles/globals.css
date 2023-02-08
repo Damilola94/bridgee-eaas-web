@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'Inter', 'Helvetica Neue', sans-serif;
+  font-size: 0.9rem;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.no-scroll {
+  overflow: hidden !important;
+}
+
+.hide-scroll::-webkit-scrollbar {
+  display: none;
+}
+.hide-scroll {
+  scrollbar-width: none;
+}
+
+.show {
+  transform: translate3d(0, 0, 0) !important;
+}
+
+.right-menu {
+  transition: transform .5s cubic-bezier(0, .52, 0, 1);
+  transform: translate3d(-100%, 0, 0);
+}
+
+.left-menu {
+  transition: transform .5s cubic-bezier(0, .52, 0, 1);
+  transform: translate3d(100%, 0, 0);
+}
+
+.predefined-date-btn {
+  @apply text-xs rounded-md bg-gray-100 px-3 py-1.5 mb-2 min-w-max transition-all hover:bg-gray-200
+}
+
+.transaction-indicator {
+  @apply rounded-full relative before:absolute before:bg-white before:w-2.5 before:h-2.5 before:rounded-full before:top-[6.5px] before:left-[6.5px];
+}
+
+.content {
+  @apply max-w-screen-xl px-6;
+}
+
+.index-content {
+  @apply max-w-[1100px] px-6;
+}
+
+@media (prefers-color-scheme: dark) {
+  /* html {
+    color-scheme: dark;
+  }
+  body {
+    color: white;
+    background: black;
+  } */
+}
