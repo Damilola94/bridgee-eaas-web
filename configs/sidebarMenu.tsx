@@ -1,15 +1,20 @@
-import React from 'react';
-
-import { AiOutlineFundView } from 'react-icons/ai';
-import { HiSwitchVertical } from 'react-icons/hi';
-import { IoMdAnalytics } from 'react-icons/io';
+import DashboardIcon from '../assets/svgs/dashboard.svg';
+import TransactionsIcon from '../assets/svgs/transactions.svg';
 
 const menu = [
-  { title: 'Analytics', link: '/pfm', icon: <IoMdAnalytics className="icon" /> },
+  { title: 'Dashboard', link: '/dashboard', icon: DashboardIcon },
+  { title: 'Transactions', link: '/transactions', icon: TransactionsIcon }
+];
+
+export default menu;
+
+/**
+ * Sample properties for a menu item
+
   {
     title: 'Budget',
     link: '/pfm/budget',
-    icon: <AiOutlineFundView className="icon" />,
+    icon: Image-link,
     children: [
       { title: 'Dashboard', link: '/pfm/budget' },
       { title: 'Budgeted Expenses', link: '/pfm/budget/budgeted' },
@@ -17,7 +22,4 @@ const menu = [
       { title: 'Expenses', link: '/pfm/budget/expenses' }
     ]
   },
-  { title: 'Transactions', link: '/pfm/transactions', icon: <HiSwitchVertical className="icon" /> }
-];
-
-export default menu;
+ */

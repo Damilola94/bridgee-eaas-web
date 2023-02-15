@@ -12,13 +12,17 @@ import handleFetch from '../../../services/api/handleFetch';
 import { ResetPasswordProps } from '../../../types/auth';
 
 function SetNewPassword({ gotoNextForm = () => {} }: ResetPasswordProps) {
-  const [, setCookie] = useCookies(['data']);
+  const [cookie] = useCookies(['form']);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const loginMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
-      setCookie('data', res?.data);
+      notification({
+        message: res?.data?.message || 'New password set successfully.',
+        type: 'success'
+      });
+      gotoNextForm();
     },
     onError: (err: any) => {
       notification({
@@ -31,6 +35,9 @@ function SetNewPassword({ gotoNextForm = () => {} }: ResetPasswordProps) {
 
   const validateForm = () => {
     if (!password) return 'Please, enter your new password';
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password || '')) {
+      return 'Your password must be minimum of eight characters, with at least one uppercase letter, one lowercase letter, one number and one special character';
+    }
     if (!confirmPassword) return 'Please, enter your new password confirmation';
     if (password !== confirmPassword) return 'Password mismatch';
     return null;
@@ -49,10 +56,15 @@ function SetNewPassword({ gotoNextForm = () => {} }: ResetPasswordProps) {
       return;
     }
 
-    gotoNextForm();
-    return;
+    const body = {
+      email: cookie?.form?.user,
+      otp: cookie?.form?.token,
+      password,
+      confirmPassword
+    };
+
     loginMutation.mutate({
-      endpoint: 'auth', extra: 'signin', method: 'POST', body: { password }
+      endpoint: 'auth', extra: 'complete-password-reset', method: 'POST', body
     });
   };
 
@@ -66,7 +78,7 @@ function SetNewPassword({ gotoNextForm = () => {} }: ResetPasswordProps) {
         <ClickableLogo className="mb-10" />
 
         <div className="mb-7">
-          <h1 className="w-full text-textColor font-bold text-xl mb-2">Set new Password</h1>
+          <h1 className="w-full text-textColor ff-bold text-xl mb-2">Set new Password</h1>
           <p className="text-sm text-lightText">Enter your new password</p>
         </div>
 
@@ -90,7 +102,7 @@ function SetNewPassword({ gotoNextForm = () => {} }: ResetPasswordProps) {
           />
 
           <Button
-            className="w-full text-lg font-bold !rounded-md md-2:!rounded-xl"
+            className="w-full text-lg ff-bold !rounded-md md-2:!rounded-xl"
             paddingY="p-3.5"
             type="submit"
           >

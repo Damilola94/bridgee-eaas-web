@@ -3,10 +3,10 @@ export type SignupFormProps = {
   businessName?: string
   firstName?: string
   lastName?: string
-  phone?: string
+  phoneNumber?: string
   email?: string
   password?: string
-  confirmPassword?: string
+  termsAccepted?: string
 };
 
 export type ResetPasswordProps = {

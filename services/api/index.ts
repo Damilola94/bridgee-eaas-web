@@ -1,8 +1,7 @@
 import axios from "axios";
-import Cookies from 'js-cookie';
 
 import { memoizedRefreshToken } from "./refreshToken";
-import { logout } from "../auth";
+import errorHandler from "../../utilities/errorHandler";
 
 export const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL
@@ -13,7 +12,7 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const config = error?.config;
 
-    if (error?.response?.status === 401 || error?.response?.status === 403) {
+    if (!!config?.headers?.authorization && (error?.response?.status === 401 || error?.response?.status === 403)) {
       if (!config?.sent) {
         config.sent = true;
 
@@ -28,9 +27,7 @@ axiosInstance.interceptors.response.use(
 
         return axiosInstance(config);
       } else {
-        const message = 'You are either not autorized to access this platform or your session has expired. Please login again.';
-        Cookies.set('err', message);
-        logout();
+        throw new Error(errorHandler(error, true));
       }
     }
     return Promise.reject(error);

@@ -1,0 +1,29 @@
+@font-face {
+  font-family: 'nexa-thin';
+  font-style: normal;
+  src: url('../assets/fonts/visbycf-thin.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'visbycf-light';
+  font-style: normal;
+  src: url('../assets/fonts/visbycf-light.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'visbycf-regular';
+  font-style: normal;
+  src: url('../assets/fonts/visbycf-regular.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'visbycf-bold';
+  font-style: normal;
+  src: url('../assets/fonts/visbycf-bold.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'visbycf-heavy';
+  font-style: normal;
+  src: url('../assets/fonts/visbycf-heavy.otf') format('opentype');
+}

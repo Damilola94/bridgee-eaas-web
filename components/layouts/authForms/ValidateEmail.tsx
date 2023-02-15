@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useCookies } from 'react-cookie';
 import { HiArrowLeft } from 'react-icons/hi';
@@ -15,12 +15,21 @@ import { ResetPasswordProps } from '../../../types/auth';
 
 function ValidateEmail({ gotoNextForm = () => {} }: ResetPasswordProps) {
   const router = useRouter();
-  const [, setCookie] = useCookies(['data']);
+  const [cookie, setCookie] = useCookies(['form']);
   const [email, setEmail] = useState('');
 
-  const loginMutation = useMutation(handleFetch, {
+  useEffect(() => {
+    setEmail(cookie?.form?.email);
+  }, [cookie]);
+
+  const resetMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
-      setCookie('data', res?.data);
+      notification({
+        message: res?.message || 'A password reset OTP has been sent to your registered email address.',
+        type: 'success'
+      });
+      setCookie('form', { email });
+      gotoNextForm();
     },
     onError: (err: any) => {
       notification({
@@ -42,19 +51,17 @@ function ValidateEmail({ gotoNextForm = () => {} }: ResetPasswordProps) {
       return;
     }
 
-    gotoNextForm();
-    return;
-    loginMutation.mutate({
-      endpoint: 'auth', extra: 'signin', method: 'POST', body: { email }
+    resetMutation.mutate({
+      endpoint: 'auth', extra: 'initiate-reset-password', method: 'POST', body: { email }
     });
   };
 
-  const { isLoading } = loginMutation;
+  const { isLoading, isSuccess } = resetMutation;
 
   return (
     <div className="flex w-full h-full items-center">
       <form className="w-[30rem] px-8 pt-10 pb-12 mx-auto bg-white" onSubmit={handleLogin}>
-        {isLoading && <Loading />}
+        {(isLoading || isSuccess) && <Loading />}
 
         <ClickableLogo className="mb-10" />
 
@@ -62,13 +69,13 @@ function ValidateEmail({ gotoNextForm = () => {} }: ResetPasswordProps) {
           <button
             type="button"
             onClick={() => router.push('/login')}
-            className="text-primary text-sm border border-primary flex items-center mb-3 rounded py-1 px-2"
+            className="text-primary text-sm border border-primary flex items-center mb-3 rounded pt-2 pb-1 px-3"
           >
-            <HiArrowLeft className="mr-2" />
-            Back
+            <HiArrowLeft className="mr-2 mb-1" />
+            <span>Back</span>
           </button>
 
-          <h1 className="w-full text-textColor font-bold text-xl mb-2">Forgot Password</h1>
+          <h1 className="w-full text-textColor ff-bold text-xl mb-2">Forgot Password</h1>
           <p className="text-sm text-lightText">To reset your password, enter your email address.</p>
         </div>
 
@@ -83,7 +90,7 @@ function ValidateEmail({ gotoNextForm = () => {} }: ResetPasswordProps) {
           />
 
           <Button
-            className="w-full text-lg font-bold !rounded-md md-2:!rounded-xl"
+            className="w-full text-lg ff-bold !rounded-md md-2:!rounded-xl"
             paddingY="p-3.5"
             type="submit"
           >

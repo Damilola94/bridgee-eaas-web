@@ -2,13 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('./font.css');
+
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: 'Inter', 'Helvetica Neue', sans-serif;
+  font-family: 'visbycf-regular', 'Helvetica Neue', sans-serif;
   font-size: 0.9rem;
 }
+
+.ff-thin { font-family: 'visbycf-thin'; }
+.ff-light { font-family: 'visbycf-light'; }
+.ff-bold { font-family: 'visbycf-bold'; }
+.ff-heavy { font-family: 'visbycf-heavy'; }
 
 a {
   color: inherit;
@@ -46,10 +53,6 @@ a {
 
 .predefined-date-btn {
   @apply text-xs rounded-md bg-gray-100 px-3 py-1.5 mb-2 min-w-max transition-all hover:bg-gray-200
-}
-
-.transaction-indicator {
-  @apply rounded-full relative before:absolute before:bg-white before:w-2.5 before:h-2.5 before:rounded-full before:top-[6.5px] before:left-[6.5px];
 }
 
 .content {

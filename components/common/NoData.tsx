@@ -8,7 +8,7 @@ function NoData({ message, py }: { message: string, py: string }) {
     <div className={`w-full h-full ${py} flex justify-center items-center`}>
       <div className="text-center">
         <Image src={EmptyList} alt="Icon" />
-        <p className="text-xl font-bold">{message}</p>
+        <p className="text-xl ff-bold">{message}</p>
       </div>
     </div>
   );

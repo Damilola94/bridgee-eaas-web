@@ -57,7 +57,7 @@ const handleFetch = async ({
       ? response
       : ({ ...response.data, method, status: response.status })))
     .catch((error) => {
-      throw new Error(errorHandler(error));
+      throw new Error(errorHandler(error, auth));
     });
 };
 

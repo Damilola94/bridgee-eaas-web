@@ -17,7 +17,7 @@ function Layout({ children }: Props) {
   const router = useRouter();
 
   useEffect(() => {
-    if (!cookie?.data?.accessToken) router.push('/auth');
+    if (!cookie?.data?.accessToken) router.push('/login');
   }, [cookie, router]);
 
   if (!cookie?.data?.accessToken) {
@@ -26,12 +26,12 @@ function Layout({ children }: Props) {
 
   return (
     <div className="bg-secondary w-full h-full min-h-screen relative">
-      <SessionControl path="/" />
+      <SessionControl path="/login" />
       <Sidebar />
       <ListFilterContextProvider>
         <Header />
         <div className="w-full text-textColor lg:pl-72">
-          <main className="w-full relative max-w-screen-xl px-4 pt-[135px] pb-16">
+          <main className="w-full relative max-w-screen-xl px-5 pt-[92px] pb-16">
             {children}
           </main>
         </div>

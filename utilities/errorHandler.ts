@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import { logger } from './general';
 import { logout } from '../services/auth';
 
-const errorHandler = (error: any) => {
+const errorHandler = (error: any, auth: boolean) => {
   let message = '';
 
   logger(error);
@@ -13,19 +13,23 @@ const errorHandler = (error: any) => {
   } else if (error?.response) {
     const { response } = error;
     if (response?.status === 401 || response?.status === 403) {
-      message = 'You are either not autorized to access this resource or your session has expired. Please login again.';
-      Cookies.set('err', message);
-      logout();
+      message = response?.data?.detail
+        || response?.data?.title
+        || 'You are either not autorized to access this resource or your session has expired. Please login again.';
+      if (auth) {
+        Cookies.set('err', message);
+        logout();
+      }
     } else if (Array.isArray(response?.data?.errors)) {
       message = response?.data?.errors?.join(', ');
     } else if (Array.isArray(response?.data?.Errors)) {
       message = response?.data?.Errors?.join(', ');
     } else {
-      message = response.data?.details
-      || response?.data?.error?.message
-      || response?.data?.message
-      || response?.statusText
-      || 'Something went wrong. Please, try again';
+      message = response.data?.detail
+        || response?.data?.error?.message
+        || response?.data?.message
+        || response?.statusText
+        || 'Something went wrong. Please, try again';
     }
   } else {
     message = 'Something went wrong. Please, try again.';

@@ -8,9 +8,9 @@
         border-radius: 10px;
         position: relative;
         align-items: center;
-        padding: 0.8rem 0.3rem 0.8rem 1.5rem;
+        padding: 0.5rem 0.3rem 0.5rem 1.5rem;
         transition: 0.3s all ease-in;
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.4rem;
         cursor: pointer;
 
         svg.icon {
@@ -22,8 +22,7 @@
 
       li.active,
       li:hover {
-        background-color: #A90836;
-        color: #FFFFFF;
+        background-color: #FFFFFF22;
       }
     }
   }

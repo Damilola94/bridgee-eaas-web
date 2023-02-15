@@ -12,7 +12,7 @@ function ClickableLogo({ className = '' }: { className?: string }) {
           <div>
             <Image src={Logo} alt="ALAT Logo" layout="fixed" width={70} height={78} />
           </div>
-          <h1 className="font-bold text-2xl">Bridge by ALAT</h1>
+          <h1 className="ff-bold text-2xl">Bridge by ALAT</h1>
         </div>
       </Link>
     </div>

@@ -17,7 +17,7 @@ const Login: NextPage = () => {
   }, [cookie, removeCookie]);
 
   return (
-    <AuthWrapper title='Personal Finance Management - Login'>
+    <AuthWrapper title='Bridge by ALAT - Login'>
       <LoginForm />
     </AuthWrapper>
   );

@@ -61,7 +61,7 @@ function TransactionFilter({ filter, setFilter }: valueProps) {
         <div className="absolute bg-white right-0 shadow-box rounded-lg p-5">
           <div className="relative w-80">
             <GoX className="absolute -right-2 -top-2 w-7 h-auto cursor-pointer" onClick={() => setOpen(false)} />
-            <h3 className="text-lg font-bold mb-5">Filter List</h3>
+            <h3 className="text-lg ff-bold mb-5">Filter List</h3>
             <div className="w-full">
               <DateRangePicker
                 className="mb-5"

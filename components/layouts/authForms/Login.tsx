@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import { useCookies } from 'react-cookie';
+import { useRouter } from 'next/router';
 
 import ClickableLogo from './ClickableLogo';
 import TextInput from '../../inputs/Text';
@@ -12,13 +13,26 @@ import handleFetch from '../../../services/api/handleFetch';
 import Link from 'next/link';
 
 function Login() {
-  const [, setCookie] = useCookies(['data']);
+  const router = useRouter();
+  const [, setCookie] = useCookies(['data', 'form']);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const loginMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
-      setCookie('data', res?.data);
+      if (res?.data === 'verify') {
+        notification({
+          title: 'Email Not Verified',
+          message: 'You are yet to verify your email address. Kindly input the OTP that has been sent to your email in the form below',
+          type: 'warning'
+        });
+        setCookie('form', { email });
+        router?.push('/signup?stage=validateOtp');
+      } else {
+        setCookie('data', res?.data, { secure: true, sameSite: true });
+        router?.push('/dashboard');
+      }
     },
     onError: (err: any) => {
       notification({
@@ -41,20 +55,20 @@ function Login() {
     }
 
     loginMutation.mutate({
-      endpoint: 'auth', extra: 'signin', method: 'POST', body: { email, password }
+      endpoint: 'auth', extra: 'login', method: 'POST', body: { email, password }
     });
   };
 
-  const { isLoading } = loginMutation;
+  const { isLoading, isSuccess } = loginMutation;
 
   return (
     <div className="flex w-full h-full items-center">
       <form className="w-[30rem] px-8 pt-10 pb-12 mx-auto bg-white" onSubmit={handleLogin}>
-        {isLoading && <Loading />}
+        {(isLoading || isSuccess) && <Loading />}
 
         <ClickableLogo className="mb-10" />
 
-        <h1 className="w-full text-textColor font-bold text-xl mb-5">
+        <h1 className="w-full text-textColor ff-bold text-xl mb-5">
           Log in
         </h1>
 
@@ -63,6 +77,7 @@ function Login() {
             className="w-full mb-7"
             onChange={(e) => setEmail(e.target.value)}
             value={email}
+            name="email"
             type="email"
             label="Email Address"
             placeholder="Email Address"
@@ -72,6 +87,7 @@ function Login() {
             className="w-full mb-3"
             onChange={(e) => setPassword(e.target.value)}
             value={password}
+            name="password"
             type="password"
             label="Password"
             placeholder="Password"
@@ -83,7 +99,7 @@ function Login() {
           </p>
 
           <Button
-            className="w-full text-lg font-bold !rounded-md md-2:!rounded-xl"
+            className="w-full text-lg ff-bold !rounded-md md-2:!rounded-xl"
             paddingY="p-3.5"
             type="submit"
           >

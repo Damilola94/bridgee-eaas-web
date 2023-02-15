@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
 
-type TextProps = {
+type Props = {
   className: string,
   type: string,
   value: string | number,
@@ -23,7 +23,7 @@ type TextProps = {
 function TextInput({
   className, value, name, readOnly, onBlur, disabled, onKeyPress, onKeyDown,
   minValue, maxValue, type, onChange, label, placeholder, error, height
-}: TextProps) {
+}: Props) {
   const [inputType, setInputType] = useState(type);
 
   return (
@@ -32,7 +32,8 @@ function TextInput({
 
       <input
         className={`${error ? 'error-field' : ''} ${height
-        } bg-inputBg text-textColor rounded-[10px] px-5 outline-none w-full border border-borderColor disabled:bg-gray-200`}
+        } bg-inputBg text-textColor px-5 ${(inputType === 'password' && value) ? 'text-4xl' : ''
+        } outline-none w-full rounded-[10px] border border-borderColor disabled:bg-gray-200`}
         type={inputType}
         name={name}
         id={name}

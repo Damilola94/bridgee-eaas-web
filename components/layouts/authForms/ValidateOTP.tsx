@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 import AuthCode from 'react-auth-code-input';
-import { useRouter } from 'next/router';
 import { useMutation } from 'react-query';
 import { useCookies } from 'react-cookie';
 
@@ -15,18 +14,39 @@ import handleFetch from '../../../services/api/handleFetch';
 type Props = {
   gotoNextForm?: () => void
   gotoPrevForm?: () => void
+  endpointExtra: string
 };
 
-function ValidateOTP({ gotoPrevForm = () => {}, gotoNextForm = () => {} }: Props) {
-  const router = useRouter();
-  const [cookie, setCookie] = useCookies(['data']);
+function ValidateOTP({ endpointExtra = '', gotoPrevForm = () => {}, gotoNextForm = () => {} }: Props) {
+  const [cookie, setcookie] = useCookies(['form', 'data']);
   const [otp, setOtp] = useState('');
 
   const activationMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
-      const path = '/dashboard';
-      setCookie('data', res?.data, { secure: true, sameSite: true });
-      router.push(path);
+      notification({
+        message: res?.data?.message || 'Successful account verification.',
+        type: 'success'
+      });
+      if (endpointExtra === 'validate-reset-password-otp') {
+        setcookie('form', res?.data);
+      }
+      gotoNextForm();
+    },
+    onError: (err: any) => {
+      notification({
+        title: 'Error',
+        message: err?.toString() || 'Something went wrong.',
+        type: 'danger'
+      });
+    }
+  });
+
+  const resendMutation = useMutation(handleFetch, {
+    onSuccess: (res: any) => {
+      notification({
+        message: res?.data?.message || 'Token resent successfully',
+        type: 'success'
+      });
     },
     onError: (err: any) => {
       notification({
@@ -48,26 +68,37 @@ function ValidateOTP({ gotoPrevForm = () => {}, gotoNextForm = () => {} }: Props
       return;
     }
 
-    gotoNextForm();
-    return;
-
-    const body = { accessToken: cookie.data?.token, pin: otp };
+    const body = { email: cookie.form?.email, otp };
 
     activationMutation.mutate({
-      endpoint: 'auth', extra: 'validate-pin', method: 'POST', body
+      endpoint: 'auth', extra: endpointExtra, method: 'POST', body
+    });
+  };
+
+  const resendOtp = () => {
+    let purpose = '';
+    if (endpointExtra === 'validate-reset-password-otp') purpose = 'PasswordReset';
+    else if (endpointExtra === 'validate-otp') purpose = 'Onboarding';
+
+    const body = { email: cookie.form?.email, purpose };
+
+    resendMutation.mutate({
+      endpoint: 'auth', extra: 'resend-otp', method: 'POST', body
     });
   };
 
   const { isLoading, isSuccess } = activationMutation;
+  const { isLoading: resendingOtp } = resendMutation;
 
   return (
     <div className="flex w-full h-full items-center">
       <form className="w-[30rem] px-8 pt-10 pb-12 mx-auto" onSubmit={handleValidateToken}>
         {(isLoading || isSuccess) && <Loading />}
+        {resendingOtp && <Loading message='Resending OTP...' />}
 
         <ClickableLogo className="mb-10" />
 
-        <h1 className="w-full text-textColor font-bold text-xl mb-2">Enter Code</h1>
+        <h1 className="w-full text-textColor ff-bold text-xl mb-2">Enter Code</h1>
         <p className="text-sm text-lightText mb-10">Proceed to your email(main.joe@gmail.com) to get code</p>
 
         <div className="w-full">
@@ -80,10 +111,16 @@ function ValidateOTP({ gotoPrevForm = () => {}, gotoNextForm = () => {} }: Props
 
           <p className="mb-10 text-sm">
             Didn&apos;t recieve OTP?&nbsp;
-            <span className='text-primary cursor-pointer'>Resend</span>
+            <button
+              type="button"
+              onClick={resendOtp}
+              className="text-primary cursor-pointer outline-none border-none"
+            >
+              Resend
+            </button>
           </p>
           <Button
-            className="w-full text-lg font-bold !rounded-md md-2:!rounded-xl"
+            className="w-full text-lg ff-bold !rounded-md md-2:!rounded-xl"
             paddingY="p-3.5"
             type="submit"
           >

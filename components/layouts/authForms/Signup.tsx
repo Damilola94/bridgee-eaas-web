@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useCookies } from 'react-cookie';
 
@@ -15,8 +15,14 @@ import RadioInput from '../../inputs/Radio';
 import { SignupFormProps } from '../../../types/auth';
 
 function Signup({ gotoNextForm }: any) {
-  const [, setCookie] = useCookies(['data']);
+  const [cookie, setCookie] = useCookies(['data', 'form']);
   const [form, setForm] = useState<SignupFormProps>({ isBusiness: 'false' });
+
+  useEffect(() => {
+    if (cookie?.form?.email) {
+      setForm(cookie?.form);
+    }
+  }, [cookie]);
 
   const handleChange = (val: any, type = 'input', inputName = '') => {
     if (type === 'input') {
@@ -29,7 +35,11 @@ function Signup({ gotoNextForm }: any) {
 
   const signupMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
-      setCookie('data', res?.data);
+      notification({
+        message: res?.message || 'Verify your email address',
+        type: 'success'
+      });
+      setCookie('form', form);
       gotoNextForm();
     },
     onError: (err: any) => {
@@ -42,26 +52,40 @@ function Signup({ gotoNextForm }: any) {
   });
 
   const validateForm = () => {
-    return null;
+    const errors = [];
+    if (form?.isBusiness === 'true' && !form?.businessName) errors.unshift('Business name is required');
+    if (!form?.firstName) errors.unshift('First name is required');
+    if (!form?.lastName) errors.unshift('Last name is required');
+    if (!form?.phoneNumber) errors.unshift('Phone number is required');
+    if (!form?.email) errors.unshift('Email address is required');
+    if (!/^([a-zA-Z0-9_\-.&]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/.test(form?.email || '')) {
+      errors.unshift('Please enter a valid email');
+    }
+    if (!form?.password) errors.unshift('Password is required');
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(form?.password || '')) {
+      errors.unshift('Your password must be minimum of eight characters, with at least one uppercase letter, one lowercase letter, one number and one special character');
+    }
+    if (form?.termsAccepted !== 'true') errors.unshift('Please, accept terms and condition to proceed');
+    return errors;
   };
 
   const handleSignup = (e: any) => {
     e.preventDefault();
-    const error = validateForm();
+    const errors = validateForm();
 
-    if (error) {
-      notification({
-        title: 'Form Error',
-        message: error,
-        type: 'danger'
-      });
+    if (errors.length) {
+      errors.forEach((item) => notification({ title: 'Form Error', message: item, type: 'danger' }));
       return;
     }
-    gotoNextForm();
-    return;
+
+    const body = {
+      ...form,
+      isBusiness: form?.isBusiness === 'true',
+      termsAccepted: form?.termsAccepted === 'true'
+    };
 
     signupMutation.mutate({
-      endpoint: 'auth', extra: 'signup', method: 'POST', body: form
+      endpoint: 'auth', extra: 'register', method: 'POST', body
     });
   };
 
@@ -74,7 +98,7 @@ function Signup({ gotoNextForm }: any) {
 
         <ClickableLogo className="mb-10" />
 
-        <h1 className="w-full text-textColor font-bold text-xl mb-5">
+        <h1 className="w-full text-textColor ff-bold text-xl mb-5">
           Create an account
         </h1>
 
@@ -139,10 +163,10 @@ function Signup({ gotoNextForm }: any) {
           <TextInput
             className="w-full mb-7"
             onChange={(e) => /^\d{0,12}$/g.test(e.target.value) && handleChange(e)}
-            value={form?.phone || ''}
+            value={form?.phoneNumber || ''}
             type="tel"
             label="Phone Number"
-            name="phone"
+            name="phoneNumber"
             placeholder="08010000000"
           />
 
@@ -166,13 +190,20 @@ function Signup({ gotoNextForm }: any) {
             placeholder="Password"
           />
 
-          <label className="my-5 inline-block">
-            <input type="checkbox" />
-            &nbsp;I accept the Terms and Conditions
+          <label className="my-5 inline-flex items-center space-x-3">
+            <input
+              type="checkbox"
+              value={form?.termsAccepted}
+              checked={form?.termsAccepted === 'true'}
+              onChange={() => handleChange(form?.termsAccepted === 'true' ? 'false' : 'true', 'check', 'termsAccepted')}
+              style={{ accentColor: '#683AB7' }}
+              className="w-5 h-5"
+            />
+            <span>I accept the Terms and Conditions</span>
           </label>
 
           <Button
-            className="w-full text-lg font-bold !rounded-md md-2:!rounded-xl"
+            className="w-full text-lg ff-bold !rounded-md md-2:!rounded-xl"
             paddingY="p-3.5"
             type="submit"
           >
