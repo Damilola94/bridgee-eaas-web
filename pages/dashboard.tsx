@@ -4,8 +4,14 @@ import Head from 'next/head';
 import type { NextPageWithLayout } from './_app';
 
 import Layout from '../components/wrappers/Layout';
+import { useAccounts } from '../context/Accounts';
+import { logger } from '../utilities/general';
 
 const Home: NextPageWithLayout = () => {
+  const { accounts } = useAccounts();
+
+  logger(accounts?.defaultWallets?.[0]);
+
   return (
     <>
       <Head>

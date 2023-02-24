@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import type { NextPage } from 'next';
 
 import AuthWrapper from '../components/wrappers/Auth';
-import ValidateOTP from '../components/layouts/authForms/ValidateOTP';
-import ValidateEmail from '../components/layouts/authForms/ValidateEmail';
-import SetNewPassword from '../components/layouts/authForms/SetNewPassword';
-import SuccessMessage from '../components/layouts/authForms/SuccessMessage';
+import ValidateOTP from '../components/pages/auth/ValidateOTP';
+import ValidateEmail from '../components/pages/auth/ValidateEmail';
+import SetNewPassword from '../components/pages/auth/SetNewPassword';
+import SuccessMessage from '../components/pages/auth/SuccessMessage';
 
 const ResetPassword: NextPage = () => {
   const [formIndex, setFormIndex] = useState(0);

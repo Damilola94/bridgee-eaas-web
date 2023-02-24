@@ -13,6 +13,7 @@ import Link from 'next/link';
 import RadioInput from '../../inputs/Radio';
 
 import { SignupFormProps } from '../../../types/auth';
+import SelectInput from '../../inputs/Select';
 
 function Signup({ gotoNextForm }: any) {
   const [cookie, setCookie] = useCookies(['data', 'form']);
@@ -53,7 +54,10 @@ function Signup({ gotoNextForm }: any) {
 
   const validateForm = () => {
     const errors = [];
-    if (form?.isBusiness === 'true' && !form?.businessName) errors.unshift('Business name is required');
+    if (form?.isBusiness === 'true') {
+      if (!form?.businessName) errors.unshift('Business name is required');
+      if (!form?.businessType?.value) errors.unshift('Business type is required');
+    }
     if (!form?.firstName) errors.unshift('First name is required');
     if (!form?.lastName) errors.unshift('Last name is required');
     if (!form?.phoneNumber) errors.unshift('Phone number is required');
@@ -81,6 +85,7 @@ function Signup({ gotoNextForm }: any) {
     const body = {
       ...form,
       isBusiness: form?.isBusiness === 'true',
+      businessType: form?.businessType?.value,
       termsAccepted: form?.termsAccepted === 'true'
     };
 
@@ -126,14 +131,27 @@ function Signup({ gotoNextForm }: any) {
         </div>
 
         {form?.isBusiness === 'true' && (
-          <TextInput
-            className="w-full mb-7"
-            onChange={handleChange}
-            value={form?.businessName || ''}
-            label="Business Name"
-            name="businessName"
-            placeholder="Business Name"
-          />
+          <>
+            <TextInput
+              className="w-full mb-7"
+              onChange={handleChange}
+              value={form?.businessName || ''}
+              label="Business Name"
+              name="businessName"
+              placeholder="Business Name"
+            />
+            <SelectInput
+              className="w-full mb-7"
+              onChange={(val) => handleChange(val, 'select', 'businessType')}
+              value={form?.businessType}
+              label="Business Type"
+              options={[
+                { label: 'Registered Business', value: 'Registered' },
+                { label: 'Unregistered Business', value: 'UnRegistered' }
+              ]}
+              placeholder="Business Type"
+            />
+          </>
         )}
 
         <div className="w-full">

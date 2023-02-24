@@ -6,7 +6,7 @@ import SessionControl from '../common/SessionControl';
 import Loading from '../common/Loading';
 import Sidebar from '../common/Sidebar';
 import Header from '../common/Header';
-import ListFilterContextProvider from '../../context/ListFilter';
+import AccountsContextProvider from '../../context/Accounts';
 
 type Props = {
   children: React.ReactNode
@@ -28,14 +28,14 @@ function Layout({ children }: Props) {
     <div className="bg-secondary w-full h-full min-h-screen relative">
       <SessionControl path="/login" />
       <Sidebar />
-      <ListFilterContextProvider>
+      <AccountsContextProvider>
         <Header />
         <div className="w-full text-textColor lg:pl-72">
           <main className="w-full relative max-w-screen-xl px-5 pt-[92px] pb-16">
             {children}
           </main>
         </div>
-      </ListFilterContextProvider>
+      </AccountsContextProvider>
     </div>
   );
 }

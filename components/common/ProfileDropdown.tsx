@@ -4,10 +4,11 @@ import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useMutation, useQueryClient } from 'react-query';
 
-import { Menu, Transition } from '@headlessui/react';
-import { BsPerson } from 'react-icons/bs';
-import { FiSettings } from 'react-icons/fi';
+import { Menu, Transition, Popover } from '@headlessui/react';
+import { BsPerson, BsChevronRight, BsPlus } from 'react-icons/bs';
+import { FiSettings, FiRefreshCcw } from 'react-icons/fi';
 import { HiOutlineLogout } from 'react-icons/hi';
 import { MdOutlineSecurity } from 'react-icons/md';
 import { IoIosArrowDown } from 'react-icons/io';
@@ -16,18 +17,28 @@ import ProfilePix from '../../assets/svgs/personal-avatar.svg';
 
 import { logout } from '../../services/auth';
 import { formatFileUrl } from '../../utilities/general';
+import AddBusiness from './AddBusiness';
+import { useAccounts } from '../../context/Accounts';
+import handleFetch from '../../services/api/handleFetch';
+import notification from '../../utilities/notification';
+import Loading from './Loading';
 
-const options = [
-  { title: 'Profile', icon: <BsPerson className="mr-2" />, link: '/profile' },
-  { title: 'Settings', icon: <FiSettings className="mr-2" />, link: '/profile/settings' },
-  { title: 'Security', icon: <MdOutlineSecurity className="mr-2" />, link: '/profile/security' }
+const options = (bagde = 'Personal') => [
+  {
+    title: 'Profile', icon: <BsPerson className="w-5 h-auto mr-2" />, link: '/profile', bagde
+  },
+  { title: 'Settings', icon: <FiSettings className="w-5 h-auto mr-2" />, link: '/profile/settings' },
+  { title: 'Support', icon: <MdOutlineSecurity className="w-5 h-auto mr-2" />, link: '/profile/support' }
 ];
 
 export default function ProfileDropdown({ className }: { className: string }) {
-  const [cookie] = useCookies(['data']);
   const { pathname } = useRouter();
+  const [cookie] = useCookies(['data']);
+  const { accounts } = useAccounts();
+
   const [userPix, setUserPix] = useState<string | null>(null);
   const [imgHasError, setImgHasError] = useState(false);
+  const [showBusinessForm, setShowBusinessForm] = useState(false);
 
   useEffect(() => {
     if (!imgHasError) setUserPix(formatFileUrl(cookie?.data?.user?.imagePath));
@@ -38,69 +49,183 @@ export default function ProfileDropdown({ className }: { className: string }) {
     setImgHasError(true);
   };
 
+  const queryClient = useQueryClient();
+  const businessMutation = useMutation(handleFetch, {
+    onSuccess: (res: any) => {
+      queryClient.invalidateQueries(['accounts-context']);
+      notification({
+        message: res?.message || 'You have successfully added a new business account',
+        type: 'success'
+      });
+    },
+    onError: (err: any) => {
+      notification({
+        title: 'Error',
+        message: err?.toString() || 'Something went wrong.',
+        type: 'danger'
+      });
+    }
+  });
+
+  const handleSwitch = (switchType = 'personal', merchantId = null) => {
+    businessMutation.mutate({
+      endpoint: 'user',
+      extra: 'switch-account',
+      method: 'POST',
+      body: { merchantId },
+      auth: true,
+      pQuery: { switchType }
+    });
+  };
+
+  const { isLoading } = businessMutation;
+
   return (
-    <div className={`${className} text-right`}>
-      <Menu as="div" className="relative inline-block text-left">
-        <div>
-          <Menu.Button className="text-sm font-medium text-black">
-            <div className="flex space-x-3 items-center">
-              <Image
-                onError={handleImgError}
-                src={userPix || ProfilePix}
-                alt="user avater"
-                width={40}
-                height={40}
-                className="rounded-full mr-1"
-              />
-              <span className="text-primary font-bold px-2 py-0.5 rounded bg-primary/10">{cookie.data?.firstName}</span>
-              <IoIosArrowDown
-                className="ml-1.5 h-5 w-5"
-                aria-hidden="true"
-              />
-            </div>
-          </Menu.Button>
-        </div>
-        <Transition
-          as={Fragment}
-          enter="transition ease-out duration-100"
-          enterFrom="transform opacity-0 scale-95"
-          enterTo="transform opacity-100 scale-100"
-          leave="transition ease-in duration-75"
-          leaveFrom="transform opacity-100 scale-100"
-          leaveTo="transform opacity-0 scale-95"
-        >
-          <Menu.Items className="flex flex-col absolute right-0 mt-1 w-40 origin-top-right rounded-sm bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-            {options?.map((item) => (
-              <Menu.Item key={item.title}>
-                {({ active }) => (
-                  <span>
-                    <Link href={item?.link}>
-                      <div className={`${active || pathname === item.link ? 'bg-primary text-white'
-                        : 'bg-white text-black'} ${active ? 'bg-opacity-20' : ''} flex items-center px-4 py-2`}>
-                        {item.icon}
-                        {item.title}
-                      </div>
-                    </Link>
-                  </span>
-                )}
-              </Menu.Item>
-            ))}
-            <Menu.Item>
-              {({ active }) => (
-                <button
-                  type="button"
-                  onClick={() => logout()}
-                  className={`${active ? 'bg-primary opacity-20 text-white' : 'bg-white text-black'} flex items-center px-4 py-2`}
-                >
-                  <HiOutlineLogout className="mr-2" />
-                  Sign Out
-                </button>
-              )}
-            </Menu.Item>
-          </Menu.Items>
-        </Transition>
-      </Menu>
-    </div>
+    <>
+      {isLoading && <Loading message='Switching account...' />}
+
+      <div className={`${className} text-right`}>
+        <Menu as="div" className="relative inline-block text-left">
+          <div>
+            <Menu.Button className="text-sm font-medium text-black">
+              <div className="flex space-x-3 items-center">
+                <Image
+                  onError={handleImgError}
+                  src={userPix || ProfilePix}
+                  alt="user avater"
+                  width={40}
+                  height={40}
+                  className="rounded-full mr-1"
+                />
+                <span className="text-primary font-bold px-2 py-0.5 rounded bg-primary/10">
+                  {accounts?.defaultMerchant?.name || accounts?.user?.firstName || '---'}
+                </span>
+                <IoIosArrowDown
+                  className="ml-1.5 h-5 w-5"
+                  aria-hidden="true"
+                />
+              </div>
+            </Menu.Button>
+          </div>
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-100"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95"
+          >
+            <Menu.Items className="flex flex-col absolute right-0 -mt-1.5 w-[170px] origin-top-right rounded-b-lg overflow-visible bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className='border-b'>
+                {options(accounts?.defaultMerchant?.id ? 'Business' : 'Personal')?.map((item) => (
+                  <Menu.Item key={item.title}>
+                    {({ active }) => (
+                      <span>
+                        <Link href={item?.link}>
+                          <div className={`${active || pathname === item.link ? 'bg-primary'
+                            : 'bg-white'} ${active ? 'bg-opacity-5' : ''} flex justify-between items-center px-4 py-2`}>
+                            <div className="flex text-black items-center">
+                              {item.icon}
+                              <span className="mt-1.5 font-bold">{item.title}</span>
+                            </div>
+                            {item?.bagde && (
+                              <span className="text-primary text-xs font-bold px-2 py-0.5 rounded bg-primary/10">
+                                {item?.bagde}
+                              </span>
+                            )}
+                          </div>
+                        </Link>
+                      </span>
+                    )}
+                  </Menu.Item>
+                ))}
+              </div>
+              <div>
+                <Menu.Item>
+                  {({ active }) => (
+                    <Popover className="relative">
+                      <Popover.Button className={`${active ? 'bg-primary/5' : 'bg-white'} w-full text-black flex justify-between items-center px-4 py-2`}>
+                        <div className="flex items-center">
+                          <FiRefreshCcw className="w-5 h-auto mr-2" />
+                          <span className="mt-1.5 font-bold">Switch Account</span>
+                        </div>
+                        <BsChevronRight className="w-4 h-auto ml-1" />
+                      </Popover.Button>
+                      <Popover.Panel className="absolute top-0 right-[101%] rounded-lg overflow-hidden bg-white shadow-lg">
+                        <div className="w-56 border-b">
+                          {accounts?.defaultMerchant?.id ?
+                            (accounts?.user?.isActive &&
+                              <button
+                                type="button"
+                                onClick={() => handleSwitch()}
+                                className="w-full flex justify-between px-4 py-3 hover:bg-gray-50 disabled:bg-gray-50"
+                                disabled={!accounts?.defaultMerchant?.id}
+                              >
+                                {accounts?.user?.isActive
+                                  ? (
+                                    <>
+                                      <span>{accounts?.user?.firstName}</span>
+                                      <span className="text-primary text-xs font-bold px-2 py-0.5 rounded bg-primary/10">
+                                        Personal
+                                      </span>
+                                    </>
+                                  )
+                                  : (
+                                    <>
+                                      <BsPlus className="w-5 h-auto" />
+                                      <span className="mt-0.5">Add Business Account</span>
+                                    </>
+                                  )}
+                              </button>
+                            )
+                            : null}
+                          {accounts?.merchants?.map((item: any) => (
+                            item?.id !== accounts?.defaultMerchant?.id ?
+                              <button
+                                key={item?.id}
+                                type="button"
+                                onClick={() => handleSwitch('merchant', item?.id)}
+                                disabled={item?.id === accounts?.defaultMerchant?.id}
+                                className="w-full flex px-4 py-3 hover:bg-gray-50 disabled:bg-gray-50"
+                              >
+                                {item?.name}
+                              </button>
+                              : null
+                          ))}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setShowBusinessForm(true)}
+                          className="w-full flex items-center space-x-2 px-4 py-3 hover:bg-success/5"
+                        >
+                          <BsPlus className="w-5 h-auto" />
+                          <span className="mt-0.5">Add Business Account</span>
+                        </button>
+                      </Popover.Panel>
+                    </Popover>
+                  )}
+                </Menu.Item>
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      type="button"
+                      onClick={() => logout()}
+                      className={`${active ? 'bg-error/5' : 'bg-white'} rounded-b-lg w-full text-error flex items-center px-4 py-2`}
+                    >
+                      <HiOutlineLogout className="w-5 h-auto mr-2" />
+                      <span className="mt-1.5 font-bold">Sign Out</span>
+                    </button>
+                  )}
+                </Menu.Item>
+              </div>
+            </Menu.Items>
+          </Transition>
+        </Menu>
+      </div>
+
+      <AddBusiness isOpen={showBusinessForm} onClose={() => setShowBusinessForm(false)} />
+    </>
   );
 }
 

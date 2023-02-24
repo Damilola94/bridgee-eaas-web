@@ -3,9 +3,9 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 
 import AuthWrapper from '../components/wrappers/Auth';
-import SignupForm from '../components/layouts/authForms/Signup';
-import ValidateOTP from '../components/layouts/authForms/ValidateOTP';
-import SuccessMessage from '../components/layouts/authForms/SuccessMessage';
+import SignupForm from '../components/pages/auth/Signup';
+import ValidateOTP from '../components/pages/auth/ValidateOTP';
+import SuccessMessage from '../components/pages/auth/SuccessMessage';
 
 const Signup: NextPage = () => {
   const router = useRouter();

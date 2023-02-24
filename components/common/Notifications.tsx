@@ -42,7 +42,7 @@ function Notifications({ isResponsive }: { isResponsive?: boolean }) {
   });
 
   const { data: count } = useGetQuery({
-    endpoint: 'notification', extra: 'unreadCount', auth: true, queryKey: ['notifications-count']
+    endpoint: 'notification', extra: 'unreadCount', auth: true, queryKey: ['notifications-count'], enabled: false
   });
 
   return (

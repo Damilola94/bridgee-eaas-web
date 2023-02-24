@@ -2,11 +2,8 @@ const prefix = '';
 
 const endpoints: any = {
   auth: `${prefix}/auth`,
-  transactions: `${prefix}/transaction`,
-  expenses: `${prefix}/expenses`,
-  dashboard: `${prefix}/dashboard`,
-  budget: `${prefix}/budget`,
-  category: `${prefix}/category`
+  merchant: `${prefix}/merchant`,
+  user: `${prefix}/user`
 };
 
 export default endpoints;

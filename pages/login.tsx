@@ -4,7 +4,7 @@ import { useCookies } from 'react-cookie';
 
 import notification from '../utilities/notification';
 import AuthWrapper from '../components/wrappers/Auth';
-import LoginForm from '../components/layouts/authForms/Login';
+import LoginForm from '../components/pages/auth/Login';
 
 const Login: NextPage = () => {
   const [cookie,, removeCookie] = useCookies(['err']);

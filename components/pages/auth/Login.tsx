@@ -21,7 +21,7 @@ function Login() {
 
   const loginMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
-      if (res?.data === 'verify') {
+      if (res?.message === 'Pending Verification') {
         notification({
           title: 'Email Not Verified',
           message: 'You are yet to verify your email address. Kindly input the OTP that has been sent to your email in the form below',

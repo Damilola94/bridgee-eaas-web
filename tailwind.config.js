@@ -12,7 +12,8 @@ module.exports = {
         secondary: '#F6F6F6',
         lightText: '#B5B6B6',
         inputBg: '#F9F9F9',
-        borderColor: '#BDBFC355'
+        borderColor: '#BDBFC355',
+        error: '#EB4336'
       },
       boxShadow: {
         box: '5px 15px 35px rgba(0, 0, 0, 0.15)'

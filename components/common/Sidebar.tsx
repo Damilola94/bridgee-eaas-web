@@ -147,7 +147,7 @@ MenuItem.propTypes = {
     title: PropTypes.string,
     href: PropTypes.string,
     link: PropTypes.string,
-    icon: PropTypes.node,
+    icon: PropTypes.any,
     children: PropTypes.arrayOf(
       PropTypes.shape({ title: PropTypes.string, link: PropTypes.string })
     )

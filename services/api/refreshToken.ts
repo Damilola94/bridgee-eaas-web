@@ -12,10 +12,15 @@ async function refreshTokenFn() {
   const data = storedData && JSON.parse(storedData);
 
   try {
-    const url = `${endpoints.auth}/refreshtoken/${encodeURIComponent(data?.refreshToken)}`;
-    const headers = { authorization: `bearer ${data.accessToken}` };
+    const url = `${endpoints.auth}/refresh-token`;
+    const headers = { authorization: data?.refreshToken };
+    const body = { email: data?.email, refreshToken: data?.refreshToken };
 
-    const response: any = await axios({ url, headers, method: 'POST' });
+    const response: any = await axios({
+      url, headers, method: 'POST', data: body
+    });
+
+    console.log(response);
 
     const { data: session } = response.data;
     if (!session?.accessToken) {

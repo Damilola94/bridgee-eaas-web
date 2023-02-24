@@ -21,12 +21,13 @@ function SelectInput({
   multiple, placeholder, isClearable
 }: SelectProps) {
   return (
-    <div className={`${className || ''}`}>
+    <div className={`${className || ''} relative`}>
       {label && <label htmlFor={name} className="flex mb-1">{label}</label>}
 
       <Select
-        className="select"
-        classNamePrefix="react-select"
+        classNames={{
+          control: () => '!bg-inputBg !text-textColor px-2 !outline-none w-full h-[43.2px] !rounded-[10px] border !border-borderColor disabled:!bg-gray-200`'
+        }}
         name={name}
         id={name}
         instanceId={name}

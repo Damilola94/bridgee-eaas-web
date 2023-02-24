@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 import Banner from '../../assets/svgs/auth-banner.svg';
 
-import IntroSlides from '../layouts/IntroSlides';
+import IntroSlides from '../pages/auth/IntroSlides';
 
 type Props = {
   title: string,
