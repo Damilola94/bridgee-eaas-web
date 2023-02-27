@@ -44,7 +44,7 @@ function AccountsContextProvider({ children }: Props) {
   );
 }
 
-export function useAccounts() {
+export function useAccountsContext() {
   return useContext(AccountsContext);
 }
 

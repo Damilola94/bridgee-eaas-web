@@ -31,7 +31,7 @@ function Layout({ children }: Props) {
       <AccountsContextProvider>
         <Header />
         <div className="w-full text-textColor lg:pl-72">
-          <main className="w-full relative max-w-screen-xl px-5 pt-[92px] pb-16">
+          <main className="w-full relative max-w-screen-2xl px-5 pt-[92px] pb-16">
             {children}
           </main>
         </div>

@@ -18,7 +18,7 @@ import ProfilePix from '../../assets/svgs/personal-avatar.svg';
 import { logout } from '../../services/auth';
 import { formatFileUrl } from '../../utilities/general';
 import AddBusiness from './AddBusiness';
-import { useAccounts } from '../../context/Accounts';
+import { useAccountsContext } from '../../context/Accounts';
 import handleFetch from '../../services/api/handleFetch';
 import notification from '../../utilities/notification';
 import Loading from './Loading';
@@ -34,7 +34,7 @@ const options = (bagde = 'Personal') => [
 export default function ProfileDropdown({ className }: { className: string }) {
   const { pathname } = useRouter();
   const [cookie] = useCookies(['data']);
-  const { accounts } = useAccounts();
+  const { accounts } = useAccountsContext();
 
   const [userPix, setUserPix] = useState<string | null>(null);
   const [imgHasError, setImgHasError] = useState(false);
@@ -82,7 +82,7 @@ export default function ProfileDropdown({ className }: { className: string }) {
 
   return (
     <>
-      {isLoading && <Loading message='Switching account...' />}
+      {isLoading && <Loading message={accounts?.user?.isActive ? 'Switching account...' : 'Activating account...'} />}
 
       <div className={`${className} text-right`}>
         <Menu as="div" className="relative inline-block text-left">
@@ -154,32 +154,30 @@ export default function ProfileDropdown({ className }: { className: string }) {
                       </Popover.Button>
                       <Popover.Panel className="absolute top-0 right-[101%] rounded-lg overflow-hidden bg-white shadow-lg">
                         <div className="w-56 border-b">
-                          {accounts?.defaultMerchant?.id ?
-                            (accounts?.user?.isActive &&
-                              <button
-                                type="button"
-                                onClick={() => handleSwitch()}
-                                className="w-full flex justify-between px-4 py-3 hover:bg-gray-50 disabled:bg-gray-50"
-                                disabled={!accounts?.defaultMerchant?.id}
-                              >
-                                {accounts?.user?.isActive
-                                  ? (
-                                    <>
-                                      <span>{accounts?.user?.firstName}</span>
-                                      <span className="text-primary text-xs font-bold px-2 py-0.5 rounded bg-primary/10">
-                                        Personal
-                                      </span>
-                                    </>
-                                  )
-                                  : (
-                                    <>
-                                      <BsPlus className="w-5 h-auto" />
-                                      <span className="mt-0.5">Add Business Account</span>
-                                    </>
-                                  )}
-                              </button>
-                            )
-                            : null}
+                          {accounts?.defaultMerchant?.id ? (
+                            <button
+                              type="button"
+                              onClick={() => handleSwitch()}
+                              className="w-full flex justify-between px-4 py-3 hover:bg-gray-50 disabled:bg-gray-50"
+                              disabled={!accounts?.defaultMerchant?.id}
+                            >
+                              {accounts?.user?.isActive
+                                ? (
+                                  <>
+                                    <span>{accounts?.user?.firstName}</span>
+                                    <span className="text-primary text-xs font-bold px-2 py-0.5 rounded bg-primary/10">
+                                      Personal
+                                    </span>
+                                  </>
+                                )
+                                : (
+                                  <>
+                                    <BsPlus className="w-5 h-auto" />
+                                    <span className="mt-0.5">Activate Personal Account</span>
+                                  </>
+                                )}
+                            </button>
+                          ) : null}
                           {accounts?.merchants?.map((item: any) => (
                             item?.id !== accounts?.defaultMerchant?.id ?
                               <button

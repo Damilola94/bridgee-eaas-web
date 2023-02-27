@@ -1,0 +1,47 @@
+import React from 'react';
+import Image from 'next/image';
+import { AiOutlineEyeInvisible } from 'react-icons/ai';
+
+import WalletIcon from '../../../assets/svgs/wallet.svg';
+
+import { useAccountsContext } from '../../../context/Accounts';
+import Button from '../../inputs/Button';
+import { formatCurrency } from '../../../utilities/general';
+
+function WalletCard() {
+  const { accounts } = useAccountsContext();
+  const { defaultWallets: wallets } = accounts || {};
+
+  return (
+    <div className="bg-white w-full px-7 py-7 rounded-lg shadow">
+      <h3 className="text-lg mb-5">
+              Hello&nbsp;
+        <span className="font-bold">{accounts?.defaultMerchant?.name || accounts?.user?.firstName || ''}</span>
+      </h3>
+      <div className="flex flex-wrap justify-between items-center">
+        <div className="flex items-center space-x-3">
+          <span className="bg-primary w-12 h-12 p-3 rounded-full">
+            <Image src={WalletIcon} alt="" width={50} height={50} className="" />
+          </span>
+          <div className="">
+            <p className="flex items-center text-base mb-1">
+                    Wallet Balance&nbsp;
+              <AiOutlineEyeInvisible className="" />
+            </p>
+            <h1 className="text-3xl">
+              <span className="text-success">{wallets?.[0]?.currency?.code || 'N/A'}</span>
+              {' '}
+              <span className="font-bold ff-heavy">{formatCurrency(wallets?.[0]?.balance, false) || 'N/A'}</span>
+            </h1>
+          </div>
+        </div>
+        <div className="flex min-w-max items-center space-x-2 my-3">
+          <Button paddingX="px-10" border bgColor="bg-white" textColor="text-success" paddingY="pt-2.5 pb-2">Add Fund</Button>
+          <Button paddingX="px-10" paddingY="pt-2.5 pb-2">Withdraw</Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default WalletCard;

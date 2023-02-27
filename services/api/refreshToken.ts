@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 
 import { logout } from '../auth';
 import endpoints from './endpoints';
+import { logger } from '../../utilities/general';
 
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -20,7 +21,7 @@ async function refreshTokenFn() {
       url, headers, method: 'POST', data: body
     });
 
-    console.log(response);
+    logger(response);
 
     const { data: session } = response.data;
     if (!session?.accessToken) {

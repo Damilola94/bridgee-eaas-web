@@ -1,12 +1,14 @@
 import moment from 'moment-timezone';
 
-export const formatCurrency = (value: any) => {
+export const formatCurrency = (value: any, showCurrency: boolean) => {
   if (value) {
     let val = value;
     val = val ? parseFloat(val).toFixed(2) : 0.00;
-    return val === 0 ? '₦0.00' : `₦${Number(val).toLocaleString('en-US')}`;
+    return val === 0
+      ? `${showCurrency ? '₦' : ''}0.00`
+      : `${showCurrency ? '₦' : ''}${Number(val).toLocaleString('en-US')}`;
   }
-  return '₦0.00';
+  return `${showCurrency ? '₦' : ''}0.00`;
 };
 
 export const formatPercent = (value: number) => {
