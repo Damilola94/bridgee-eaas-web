@@ -95,7 +95,7 @@ export default function ProfileDropdown({ className }: { className: string }) {
                   alt="user avater"
                   width={40}
                   height={40}
-                  className="rounded-full mr-1"
+                  className="rounded-full mr-1 w-auto h-auto"
                 />
                 <span className="text-primary font-bold px-2 py-0.5 rounded bg-primary/10">
                   {accounts?.defaultMerchant?.name || accounts?.user?.firstName || '---'}

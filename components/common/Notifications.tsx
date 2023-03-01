@@ -52,7 +52,7 @@ function Notifications({ isResponsive }: { isResponsive?: boolean }) {
         alt="Notifications"
         width={40}
         height={40}
-        className="cursor-pointer rounded-full"
+        className="cursor-pointer rounded-full w-auto h-auto"
         onClick={() => setOpen(!open)}
       />
       {count?.data?.count > 0 && <span className="absolute w-3 h-3 rounded-full bg-red-500 top-2 right-2" />}

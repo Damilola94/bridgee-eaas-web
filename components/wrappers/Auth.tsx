@@ -22,18 +22,18 @@ function AuthWrapper({ title, children }: Props) {
         {children}
       </div>
 
-      <div className="w-full h-full p-5 pl-[45%] flex justify-center items-center">
-        <div className="text-center w-full">
-          <div className="-mt-20 max-w-4xl mx-auto">
+      <div className="w-full h-full pr-5 pl-[45%] py-14 flex justify-center items-center">
+        <div className="w-full h-full flex justify-between flex-col">
+          <div className="w-full max-w-4xl flex justify-center">
             <Image
               src={Banner}
               alt="Banner"
-              layout="responsive"
+              priority
               className="!w-[70%] !h-auto !min-w-0 !min-h-0"
             />
           </div>
 
-          <div className="w-[350px] mx-auto lg:w-[400px] max-w-sm">
+          <div className="w-[350px] mx-auto lg:w-[400px] max-w-sm text-center">
             <IntroSlides />
           </div>
         </div>

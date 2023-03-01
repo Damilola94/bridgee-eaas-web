@@ -19,7 +19,14 @@ function Loading({ message }: LoadingProps) {
     >
       <div className="px-3 pb-5 rounded bg-white text-center">
         <div className="mb-1">
-          <Image src={Logo} alt="ALAT Logo" layout="fixed" width={128} height={138} />
+          <Image
+            src={Logo}
+            priority
+            alt="ALAT Logo"
+            className="w-auto h-auto"
+            height={138}
+            width={128}
+          />
         </div>
         <p className="text-base">{message}</p>
       </div>

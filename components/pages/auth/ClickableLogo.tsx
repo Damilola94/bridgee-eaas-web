@@ -10,7 +10,7 @@ function ClickableLogo({ className = '' }: { className?: string }) {
       <Link href='/'>
         <div className="flex items-center space-x-5">
           <div>
-            <Image src={Logo} alt="ALAT Logo" layout="fixed" width={70} height={78} />
+            <Image src={Logo} alt="ALAT Logo" width={70} height={78} className="w-auto h-auto" />
           </div>
           <h1 className="ff-bold text-2xl">Bridge by ALAT</h1>
         </div>

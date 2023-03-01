@@ -19,7 +19,7 @@ const Home: NextPage = () => {
           <div className="index-content mx-auto flex items-center w-full h-full text-textColor">
             <div className="w-full flex items-center justify-between">
               <div className="">
-                <Image src={Logo} alt="ALAT Logo" layout="fixed" priority width={50} height={53} />
+                <Image src={Logo} alt="ALAT Logo" priority width={50} height={53} className="w-auto h-auto" />
               </div>
               <div className="">
                 <Button

@@ -28,10 +28,10 @@ function SuccessMessage({ message = '' }: ResetPasswordProps) {
         </div>
 
         <div className="w-full text-center">
-          <Image src={Kite} alt="ALAT Logo" layout="fixed" width={250} height={250} />
+          <Image src={Kite} alt="ALAT Logo" width={250} height={250} className="w-auto h-auto" />
 
           <Button
-            className="w-full text-lg ff-bold !rounded-md md-2:!rounded-xl mt-5"
+            className="w-full text-lg ff-bold !rounded-md mdx2:!rounded-xl mt-5"
             onClick={() => router.push('/login')}
             paddingY="p-3.5"
           >

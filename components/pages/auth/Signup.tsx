@@ -221,7 +221,7 @@ function Signup({ gotoNextForm }: any) {
           </label>
 
           <Button
-            className="w-full text-lg ff-bold !rounded-md md-2:!rounded-xl"
+            className="w-full text-lg ff-bold !rounded-md mdx2:!rounded-xl"
             paddingY="p-3.5"
             type="submit"
           >

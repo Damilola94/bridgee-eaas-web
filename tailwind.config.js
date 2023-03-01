@@ -8,11 +8,11 @@ module.exports = {
     extend: {
       colors: {
         primary: '#683AB7',
-        success: '#30BE6E',
         secondary: '#F6F6F6',
         lightText: '#B5B6B6',
         inputBg: '#F9F9F9',
         borderColor: '#BDBFC355',
+        success: '#30BE6E',
         error: '#EB4336'
       },
       boxShadow: {
@@ -22,7 +22,7 @@ module.exports = {
         sideMenu: '400px'
       },
       screens: {
-        'md-2': '900px',
+        'mdx2': '900px',
         'xs': '500px'
       },
       backgroundImage: {

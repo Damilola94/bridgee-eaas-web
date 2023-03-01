@@ -50,7 +50,7 @@ function Sidebar() {
         </div>
         <div className="sidebar-menu text-white text-sm flex flex-col justify-between h-side-menu px-5 pb-10">
           <div className="px-6 h-20 flex space-x-3 items-center">
-            <Image src={Logo} alt="ALAT Logo" layout="fixed" priority width={40} height={40} />
+            <Image src={Logo} alt="ALAT Logo" priority width={40} height={40} className="w-auto h-auto" />
             <h2 className="font-bold text-lg">Bridge by ALAT</h2>
           </div>
 
@@ -60,7 +60,7 @@ function Sidebar() {
             ))}
 
             <li className="cursor-pointer" onClick={handleLogout} role="presentation">
-              <Image src={LogoutIcon} alt="logout" width={18} className="" />
+              <Image src={LogoutIcon} alt="logout" width={18} className="w-auto h-auto" />
               <span className="title ml-2.5 mt-[5px]">Logout</span>
             </li>
           </ul>
@@ -94,7 +94,7 @@ function MenuItem({
           role="presentation"
         >
           <span className="flex">
-            <Image src={icon} alt={title} width={18} className="" />
+            <Image src={icon} alt={title} width={18} className="w-auto h-auto" />
             <span
               className={children ? 'has-sub-menu pointer' : ''}
             >
@@ -110,7 +110,7 @@ function MenuItem({
           {href && (
             <a href={href} target="_blank" rel="noreferrer">
               <li>
-                <Image src={icon} alt={title} width={18} className="" />
+                <Image src={icon} alt={title} width={18} className="w-auto h-auto" />
                 <span className="title ml-2.5 mt-[5px]">{title}</span>
               </li>
             </a>
@@ -118,7 +118,7 @@ function MenuItem({
           {link && (
             <Link href={link}>
               <li className={`${pathname === link ? 'active' : ''}`} onClick={toggleMenu}>
-                <Image src={icon} alt={title} width={18} className="" />
+                <Image src={icon} alt={title} width={18} className="w-auto h-auto" />
                 <span className="title ml-2.5 mt-[5px]">{title}</span>
               </li>
             </Link>

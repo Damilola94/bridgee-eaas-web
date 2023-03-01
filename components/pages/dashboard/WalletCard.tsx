@@ -15,17 +15,17 @@ function WalletCard() {
   return (
     <div className="bg-white w-full px-7 py-7 rounded-lg shadow">
       <h3 className="text-lg mb-5">
-              Hello&nbsp;
+        Hello&nbsp;
         <span className="font-bold">{accounts?.defaultMerchant?.name || accounts?.user?.firstName || ''}</span>
       </h3>
-      <div className="flex flex-wrap justify-between items-center">
+      <div className="flex flex-wrap justify-between items-center space-x-3">
         <div className="flex items-center space-x-3">
           <span className="bg-primary w-12 h-12 p-3 rounded-full">
-            <Image src={WalletIcon} alt="" width={50} height={50} className="" />
+            <Image src={WalletIcon} alt="" width={50} height={50} className="w-auto h-auto" />
           </span>
           <div className="">
             <p className="flex items-center text-base mb-1">
-                    Wallet Balance&nbsp;
+              Wallet Balance&nbsp;
               <AiOutlineEyeInvisible className="" />
             </p>
             <h1 className="text-3xl">

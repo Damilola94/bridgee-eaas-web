@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 
-import EmptyList from '../../assets/svgs/empty-list.svg';
+import EmptyList from '../../assets/svgs/no-data.svg';
 
 function NoData({ message, py }: { message: string, py: string }) {
   return (
