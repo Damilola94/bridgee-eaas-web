@@ -23,7 +23,7 @@ const Home: NextPageWithLayout = () => {
       </Head>
 
       <div className="flex w-[calc(100%+36px)] -m-5">
-        <div className="w-full xl:w-[calc(100%-300px)] px-3 pt-3 pb-5">
+        <div className="w-full xl:w-[calc(100%-350px)] px-3 pt-3 pb-5">
           <div className="w-full mb-3">
             <WalletCard />
           </div>
@@ -38,7 +38,7 @@ const Home: NextPageWithLayout = () => {
           </div>
         </div>
 
-        <div className="hidden xl:block fixed right-0 top-0 bg-white h-screen w-[300px] border-l pt-20">
+        <div className="hidden xl:block fixed right-0 top-0 bg-white h-screen w-[350px] border-l pt-20">
           Disputes
         </div>
       </div>

@@ -14,6 +14,7 @@ import { MdOutlineSecurity } from 'react-icons/md';
 import { IoIosArrowDown } from 'react-icons/io';
 
 import ProfilePix from '../../assets/svgs/personal-avatar.svg';
+import BusinessPix from '../../assets/svgs/business-avatar.svg';
 
 import { logout } from '../../services/auth';
 import { formatFileUrl } from '../../utilities/general';
@@ -91,7 +92,7 @@ export default function ProfileDropdown({ className }: { className: string }) {
               <div className="flex space-x-3 items-center">
                 <Image
                   onError={handleImgError}
-                  src={userPix || ProfilePix}
+                  src={userPix || (accounts?.defaultMerchant ? BusinessPix : ProfilePix)}
                   alt="user avater"
                   width={40}
                   height={40}

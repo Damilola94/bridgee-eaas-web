@@ -15,7 +15,7 @@ function TransactionStats() {
               <Image src={OngoingIcon} alt="" width={50} height={50} className="w-auto h-auto" />
             </span>
             <div className="w-[calc(100%-60px)]">
-              <p className="flex items-center text-base mb-1">Ongoing Transaction</p>
+              <p className="flex items-center text-base mb-1">Ongoing Transactions</p>
               <h1 className="text-2xl font-bold ff-heavy">0</h1>
             </div>
           </div>
@@ -28,7 +28,7 @@ function TransactionStats() {
               <Image src={CompletedIcon} alt="" width={50} height={50} className="w-auto h-auto" />
             </span>
             <div className="w-[calc(100%-60px)]">
-              <p className="flex items-center text-base mb-1">Completed transaction</p>
+              <p className="flex items-center text-base mb-1">Completed Transactions</p>
               <h1 className="text-2xl font-bold ff-heavy">0</h1>
             </div>
           </div>
@@ -41,7 +41,7 @@ function TransactionStats() {
               <Image src={TransactionsIcon} alt="" width={50} height={50} className="w-auto h-auto" />
             </span>
             <div className="w-[calc(100%-60px)]">
-              <p className="flex items-center text-base mb-1">Total Number of transaction</p>
+              <p className="flex items-center text-base mb-1">Total Transactions</p>
               <h1 className="text-2xl font-bold ff-heavy">0</h1>
             </div>
           </div>

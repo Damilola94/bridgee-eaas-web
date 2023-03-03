@@ -20,7 +20,7 @@ function TransactionsTabs() {
           >
             <div className="flex items-center space-x-5">
               <span className="rounded-full bg-primary/10 flex p-3">
-                <Image src={InvoiceIcon} alt="" width={40} height={40} className="w-auto h-auto" />
+                <Image src={InvoiceIcon} alt="" width={40} height={40} className="w-[40px] h-[40px]" />
               </span>
               <p className="font-bold text-lg">Invoice</p>
             </div>
@@ -35,7 +35,7 @@ function TransactionsTabs() {
           >
             <div className="flex items-center space-x-5">
               <span className="rounded-full bg-primary/10 flex p-3">
-                <Image src={WalletIcon} alt="" width={40} height={40} className="w-auto h-auto" />
+                <Image src={WalletIcon} alt="" width={40} height={40} className="w-[40px] h-[40px]" />
               </span>
               <p className="font-bold text-lg">Wallet</p>
             </div>
