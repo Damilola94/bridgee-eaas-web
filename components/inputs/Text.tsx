@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
 
 type Props = {
-  className: string,
-  type: string,
-  value: string | number,
-  name: string,
-  label: string,
-  placeholder: string,
-  height: string
+  className?: string,
+  type?: string,
+  value?: string | number,
+  name?: string,
+  label?: string,
+  placeholder?: string,
+  height?: string
   readOnly?: boolean,
   disabled?: boolean,
   minValue?: number,

@@ -28,7 +28,7 @@ function SuccessMessage({ message = '' }: ResetPasswordProps) {
         </div>
 
         <div className="w-full text-center">
-          <Image src={Kite} alt="ALAT Logo" width={250} height={250} className="w-auto h-auto" />
+          <Image src={Kite} alt="ALAT Logo" width={250} height={250} className="inline-block w-[250px] h-[250px]" />
 
           <Button
             className="w-full text-lg ff-bold !rounded-md mdx2:!rounded-xl mt-5"

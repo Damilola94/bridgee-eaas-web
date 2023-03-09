@@ -68,7 +68,7 @@ function InvoiceList({ showFilter = true }) {
             {invoices?.length < 1 && (
               <tr>
                 <td colSpan={8}>
-                  <NoData />
+                  <NoData py="pt-14" />
                 </td>
               </tr>
             )}

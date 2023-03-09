@@ -1,14 +1,15 @@
 import moment from 'moment-timezone';
 
-export const formatCurrency = (value: any, showCurrency: boolean) => {
+export const formatCurrency = (value: any, showCurrency: boolean = true, currency: string = 'NGN') => {
   if (value) {
     let val = value;
     val = val ? parseFloat(val).toFixed(2) : 0.00;
     return val === 0
-      ? `${showCurrency ? '₦' : ''}0.00`
-      : `${showCurrency ? '₦' : ''}${Number(val).toLocaleString('en-US')}`;
+      ? `${showCurrency ? `${currency} ` : ''}0.00`
+      : `${showCurrency ? `${currency} ` : ''}${Number(val).toLocaleString('en-US')}`;
   }
-  return `${showCurrency ? '₦' : ''}0.00`;
+  if (value === 0) return `${showCurrency ? `${currency} ` : ''}0.00`;
+  return undefined;
 };
 
 export const formatPercent = (value: number) => {
@@ -71,4 +72,13 @@ export const convertImgToBase64 = (inputFile: File) => {
     };
     file.readAsDataURL(inputFile);
   });
+};
+
+export const formatChannel = (channel: string) => {
+  switch (channel) {
+  case 'transfer': return 'Transfer';
+  case 'virtualaccount': return 'Virtual Account';
+  case 'escrow': return 'Escrow';
+  default: return channel;
+  }
 };

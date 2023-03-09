@@ -20,3 +20,24 @@
     color: #979797;
   }
 }
+
+.ql-container {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border: 1px solid #BDBFC355 !important;
+  background: #ffffff;
+}
+
+/* Snow Theme */
+.ql-snow.ql-toolbar {
+  display: block;
+  border: 1px solid #BDBFC355 !important;
+  border-bottom: 0 !important;
+  background: #F9F9F9;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.ql-editor {
+  min-height: 120px;
+}

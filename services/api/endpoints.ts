@@ -2,8 +2,9 @@ const prefix = '';
 
 const endpoints: any = {
   auth: `${prefix}/auth`,
+  user: `${prefix}/user`,
   merchant: `${prefix}/merchant`,
-  user: `${prefix}/user`
+  transaction: `${prefix}/transaction`
 };
 
 export default endpoints;

@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 import { FiArrowRight } from 'react-icons/fi';
 
@@ -7,6 +8,8 @@ import ReceiptIcon from '../../../assets/svgs/receipt.svg';
 import Button from '../../inputs/Button';
 
 function TransactionBanner() {
+  const router = useRouter();
+
   return (
     <div className="w-full bg-[url('../assets/svgs/transaction-banner.svg')] bg-center bg-cover bg-no-repeat py-10 px-12 rounded-xl">
       <div className="w-full flex justify-between items-center">
@@ -15,7 +18,7 @@ function TransactionBanner() {
           <p className="text-base leading-relaxed mb-10">
             Start a transaction by creating an invoice and inviting to other parties to fulfil it. Anyone can start a transaction.
           </p>
-          <Button paddingY="py-3" className="rounded-none">
+          <Button paddingY="py-3" onClick={() => router.push('/create-invoice')}>
             Start a transaction
             <FiArrowRight className="ml-2" />
           </Button>

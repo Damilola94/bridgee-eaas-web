@@ -9,7 +9,7 @@ import TransactionsTabs from '../components/pages/transactions/TransactionsTabs'
 import InvoiceContainer from '../components/pages/transactions/invoice/Container';
 import WalletContainer from '../components/pages/transactions/wallet/Container';
 
-const Home: NextPageWithLayout = () => {
+const Transactions: NextPageWithLayout = () => {
   const router = useRouter();
   const { tab } = router.query || {};
 
@@ -38,8 +38,8 @@ const Home: NextPageWithLayout = () => {
   );
 };
 
-Home.getLayout = function getLayout(page: ReactElement) {
+Transactions.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
-export default Home;
+export default Transactions;

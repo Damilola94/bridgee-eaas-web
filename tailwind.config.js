@@ -22,8 +22,9 @@ module.exports = {
         sideMenu: '400px'
       },
       screens: {
-        'mdx2': '900px',
-        'xs': '500px'
+        mdx2: '900px',
+        sm: '620px',
+        xs: '480px'
       },
       backgroundImage: {
         'auth-bg': "url('../assets/svgs/background.svg')"

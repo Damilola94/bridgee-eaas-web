@@ -63,6 +63,10 @@ a {
   @apply max-w-[1100px] px-6;
 }
 
+.file-input input::file-selector-button {
+  @apply bg-primary text-white outline-none border-none text-sm px-5 py-3.5 my-0 -ml-5 cursor-pointer hover:bg-opacity-70
+}
+
 @media (prefers-color-scheme: dark) {
   /* html {
     color-scheme: dark;

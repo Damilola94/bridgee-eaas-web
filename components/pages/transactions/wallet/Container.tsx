@@ -5,8 +5,11 @@ import TransactionList from './List';
 
 const options = [
   { title: 'All', status: 'all' },
-  { title: 'Successful', status: 'successful' },
+  { title: 'Initiated', status: 'initiated' },
   { title: 'Pending', status: 'pending' },
+  { title: 'Processing', status: 'processing' },
+  { title: 'Successful', status: 'successful' },
+  { title: 'Reversed', status: 'reversed' },
   { title: 'Failed', status: 'failed' }
 ];
 

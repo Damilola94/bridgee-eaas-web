@@ -24,7 +24,7 @@ function AuthWrapper({ title, children }: Props) {
 
       <div className="w-full h-full pr-5 pl-[45%] py-14 flex justify-center items-center">
         <div className="w-full h-full flex justify-between flex-col">
-          <div className="w-full max-w-4xl flex justify-center">
+          <div className="w-full max-w-4xl mx-auto flex justify-center">
             <Image
               src={Banner}
               alt="Banner"
