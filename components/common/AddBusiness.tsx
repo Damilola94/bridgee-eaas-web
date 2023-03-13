@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import { useMutation, useQueryClient } from 'react-query';
+
 import handleFetch from '../../services/api/handleFetch';
 import { BusinessFormProps } from '../../types/auth';
 import notification from '../../utilities/notification';
@@ -16,6 +18,7 @@ type Props = {
 };
 
 function AddBusiness({ isOpen, onClose }: Props) {
+  const router = useRouter();
   const [form, setForm] = useState<BusinessFormProps>({});
 
   const handleChange = (val: any, type = 'input', inputName = '') => {
@@ -30,6 +33,7 @@ function AddBusiness({ isOpen, onClose }: Props) {
   const queryClient = useQueryClient();
   const businessMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
+      router.push('/dashboard');
       queryClient.invalidateQueries(['accounts-context']);
       notification({
         message: res?.message || 'You have successfully added a new business account',

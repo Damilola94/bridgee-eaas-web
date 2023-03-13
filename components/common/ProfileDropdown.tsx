@@ -33,7 +33,7 @@ const options = (bagde = 'Personal') => [
 ];
 
 export default function ProfileDropdown({ className }: { className: string }) {
-  const { pathname } = useRouter();
+  const { pathname, push } = useRouter();
   const [cookie] = useCookies(['data']);
   const { accounts } = useAccountsContext();
 
@@ -53,6 +53,7 @@ export default function ProfileDropdown({ className }: { className: string }) {
   const queryClient = useQueryClient();
   const businessMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
+      push('/dashboard');
       queryClient.invalidateQueries(['accounts-context']);
       notification({
         message: res?.message || 'You have successfully added a new business account',

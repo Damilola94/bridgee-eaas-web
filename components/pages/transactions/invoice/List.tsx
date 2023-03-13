@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import React from 'react';
 
 import { statusColors, statusTitle } from '../../../../data/status';
@@ -8,6 +9,8 @@ import NoData from '../../../common/NoData';
 import SelectInput from '../../../inputs/Select';
 
 function InvoiceList({ showFilter = true }) {
+  const router = useRouter();
+
   return (
     <div className="w-full bg-white shadow-md rounded-lg overflow-hidden">
       <div className="flex items-center justify-between px-10 py-5">
@@ -56,7 +59,7 @@ function InvoiceList({ showFilter = true }) {
                 <td className="pr-10 pl-3 py-5">
                   <MenuOptions
                     options={[
-                      { title: 'View', action: () => {} },
+                      { title: 'View', action: () => router.push({ pathname: `transactions/invoice-details/${item?.id}` }) },
                       { title: 'Open Dispute', action: () => {} },
                       { title: 'Delete', action: () => {} }
                     ]}

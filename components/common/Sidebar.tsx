@@ -117,7 +117,7 @@ function MenuItem({
           )}
           {link && (
             <Link href={link}>
-              <li className={`${pathname === link ? 'active' : ''}`} onClick={toggleMenu}>
+              <li className={`${pathname?.includes(link) ? 'active' : ''}`} onClick={toggleMenu}>
                 <Image src={icon} alt={title} width={18} className="w-auto h-auto" />
                 <span className="title ml-2.5 mt-[5px]">{title}</span>
               </li>

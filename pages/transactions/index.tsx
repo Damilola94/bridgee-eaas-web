@@ -2,12 +2,12 @@ import { ReactElement, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 
-import type { NextPageWithLayout } from './_app';
+import type { NextPageWithLayout } from '../_app';
 
-import Layout from '../components/wrappers/Layout';
-import TransactionsTabs from '../components/pages/transactions/TransactionsTabs';
-import InvoiceContainer from '../components/pages/transactions/invoice/Container';
-import WalletContainer from '../components/pages/transactions/wallet/Container';
+import Layout from '../../components/wrappers/Layout';
+import TransactionsTabs from '../../components/pages/transactions/TransactionsTabs';
+import InvoiceContainer from '../../components/pages/transactions/invoice/Container';
+import WalletContainer from '../../components/pages/transactions/wallet/Container';
 
 const Transactions: NextPageWithLayout = () => {
   const router = useRouter();
