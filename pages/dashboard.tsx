@@ -10,6 +10,8 @@ import WalletCard from '../components/pages/dashboard/WalletCard';
 import TransactionStats from '../components/pages/dashboard/TransactionStats';
 import TransactionBanner from '../components/pages/dashboard/TransactionBanner';
 import InvoiceList from '../components/pages/transactions/invoice/List';
+import TransactionHistory from '../components/pages/dashboard/TransactionHistory';
+import DisputeHistory from '../components/pages/dashboard/DisputeHistory';
 
 const Home: NextPageWithLayout = () => {
   const { accounts } = useAccountsContext();
@@ -38,8 +40,15 @@ const Home: NextPageWithLayout = () => {
           </div>
         </div>
 
-        <div className="hidden xl:block fixed right-0 top-0 bg-white h-screen w-[350px] border-l pt-20">
-          Disputes
+        <div className="hidden xl:block fixed right-0 2xl:right-[calc(100%-1536px)] top-0 h-screen w-[350px] border-x pt-20">
+          <div className="h-full flex flex-col">
+            <div className="h-1/2">
+              <TransactionHistory />
+            </div>
+            <div className="h-1/2">
+              <DisputeHistory />
+            </div>
+          </div>
         </div>
       </div>
     </>

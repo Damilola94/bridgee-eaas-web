@@ -2,8 +2,6 @@ import React from 'react';
 
 import { useRouter } from 'next/router';
 
-import { statusColors, statusTitle } from '../../../../data/status';
-
 import SelectInput from '../../../inputs/Select';
 import InflowArrow from '../../../../assets/svg-tsx/InflowArrow';
 import OutflowArrow from '../../../../assets/svg-tsx/OutflowArrow';
@@ -13,6 +11,7 @@ import { useAccountsContext } from '../../../../context/Accounts';
 import Loading from '../../../common/Loading';
 import { formatDateTime } from '../../../../utilities/dateTime';
 import { formatChannel, formatCurrency } from '../../../../utilities/general';
+import TransactionStatus from '../../../common/TransactionStatus';
 
 function TransactionList() {
   const router = useRouter();
@@ -76,15 +75,7 @@ function TransactionList() {
                       <td className="px-3 py-5">{formatCurrency(item?.amount, true, accounts?.defaultWallets?.[0]?.currency?.code)}</td>
                       <td className="px-3 py-5">{formatChannel(item?.channel)}</td>
                       <td className="px-3 py-5">
-                        <span
-                          style={{
-                            color: statusColors?.[item?.status as keyof typeof statusTitle],
-                            backgroundColor: `${statusColors?.[item?.status as keyof typeof statusTitle]}19`
-                          }}
-                          className="rounded-lg px-3 py-1.5 font-bold"
-                        >
-                          {statusTitle?.[item?.status as keyof typeof statusTitle] || item?.status}
-                        </span>
+                        <TransactionStatus status={item?.status} />
                       </td>
                       <td className="px-3 py-5">{formatDateTime(item?.date)}</td>
                       <td className="pr-10 pl-3 py-5">

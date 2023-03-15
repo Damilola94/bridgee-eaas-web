@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 
-import { statusColors, statusTitle } from '../../../../data/status';
 import invoices from '../../../../sample-data/invoiceList';
 
 import MenuOptions from '../../../common/MenuOptions';
 import NoData from '../../../common/NoData';
+import TransactionStatus from '../../../common/TransactionStatus';
 import SelectInput from '../../../inputs/Select';
 
 function InvoiceList({ showFilter = true }) {
@@ -46,15 +46,7 @@ function InvoiceList({ showFilter = true }) {
                 <td className="px-3 py-5">{item?.dueDate}</td>
                 <td className="px-3 py-5">{item?.disbursementType}</td>
                 <td className="px-3 py-5">
-                  <span
-                    style={{
-                      color: statusColors?.[item?.status as keyof typeof statusTitle],
-                      backgroundColor: `${statusColors?.[item?.status as keyof typeof statusTitle]}19`
-                    }}
-                    className="rounded-lg px-3 py-1.5 font-bold"
-                  >
-                    {statusTitle?.[item?.status as keyof typeof statusTitle] || item?.status}
-                  </span>
+                  <TransactionStatus status={item?.status} />
                 </td>
                 <td className="pr-10 pl-3 py-5">
                   <MenuOptions

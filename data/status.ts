@@ -9,7 +9,9 @@ export const statusColors = {
 
   pending: '#5521B5',
   successful: '#03543F',
-  failed: '#9B1C1C'
+  failed: '#9B1C1C',
+
+  rejected: '#9B1C1C'
 };
 
 export const statusTitle = {
@@ -23,5 +25,7 @@ export const statusTitle = {
 
   pending: 'Pending',
   successful: 'Successful',
-  failed: 'Failed'
+  failed: 'Failed',
+
+  rejected: 'Rejected'
 };
