@@ -64,7 +64,11 @@ a {
 }
 
 .file-input input::file-selector-button {
-  @apply bg-primary text-white outline-none border-none text-sm px-5 py-3.5 my-0 -ml-5 cursor-pointer hover:bg-opacity-70
+  @apply bg-primary text-white outline-none border-none text-sm px-5 py-3.5 my-0 -ml-5 cursor-pointer hover:bg-opacity-70;
+}
+
+.text-input {
+  @apply bg-inputBg px-5 h-12 outline-none w-full rounded-[10px] border border-borderColor disabled:bg-gray-200;
 }
 
 @media (prefers-color-scheme: dark) {

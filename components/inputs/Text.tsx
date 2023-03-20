@@ -32,7 +32,7 @@ function TextInput({
 
       <input
         className={`${error ? 'error-field' : ''} ${height
-        } bg-inputBg text-textColor px-5 ${(inputType === 'password' && value) ? 'text-4xl' : ''
+        } bg-inputBg px-5 ${(inputType === 'password' && value) ? 'text-4xl' : ''
         } outline-none w-full rounded-[10px] border border-borderColor disabled:bg-gray-200`}
         type={inputType}
         name={name}

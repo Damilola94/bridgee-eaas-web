@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
 const forms = [
   'Order Details',
@@ -11,8 +11,8 @@ function FormIndicator({ formIndex }: { formIndex: number }) {
     <div className="w-full bg-white px-10 pt-3 pb-7 rounded-lg shadow-md mb-5">
       <div className="w-full flex justify-between items-center">
         {forms?.map((item, index) => (
-          <>
-            <div className="text-center relative" key={item}>
+          <Fragment key={item}>
+            <div className="text-center relative">
               <span
                 className={`inline-block rounded-full ${formIndex >= index ? 'bg-primary' : 'bg-lightText'
                 } text-white text-xs font-bold py-1.5 w-7 h-7`}
@@ -27,7 +27,7 @@ function FormIndicator({ formIndex }: { formIndex: number }) {
             {index < forms.length - 1 && (
               <div className={`w-full h-0.5 ${formIndex - 1 >= index ? 'bg-primary' : 'bg-lightText'}`} />
             )}
-          </>
+          </Fragment>
         ))}
       </div>
     </div>

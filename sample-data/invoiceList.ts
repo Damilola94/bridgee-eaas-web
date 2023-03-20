@@ -6,6 +6,7 @@ const invoices = [
     amount: 'NGN 3,500.00',
     dueDate: 'Jan 24,2023, 04:58 PM',
     disbursementType: 'One-time',
+    disputeReason: 'Customer not confirming delivery',
     status: 'awaiting-confirmation'
   },
   {
@@ -15,6 +16,7 @@ const invoices = [
     amount: 'NGN 3,500.00',
     dueDate: 'Jan 24,2023, 04:58 PM',
     disbursementType: 'One-time',
+    disputeReason: 'Customer not confirming delivery',
     status: 'completed'
   },
   {
@@ -24,6 +26,7 @@ const invoices = [
     amount: 'NGN 3,500.00',
     dueDate: 'Jan 24,2023, 04:58 PM',
     disbursementType: 'One-time',
+    disputeReason: 'Customer not confirming delivery',
     status: 'awaiting-payment'
   },
   {
@@ -33,6 +36,7 @@ const invoices = [
     amount: 'NGN 3,500.00',
     dueDate: 'Jan 24,2023, 04:58 PM',
     disbursementType: 'One-time',
+    disputeReason: 'Customer not confirming delivery',
     status: 'in-progress'
   },
   {
@@ -42,6 +46,7 @@ const invoices = [
     amount: 'NGN 3,500.00',
     dueDate: 'Jan 24,2023, 04:58 PM',
     disbursementType: 'One-time',
+    disputeReason: 'Customer not confirming delivery',
     status: 'dispute'
   }
 ];

@@ -3,7 +3,7 @@ import React from 'react';
 
 type TabProps = { title: string, status: string };
 
-function ListStatusTabs({ options = [] }: { options: TabProps[] }) {
+function ListStatusTabs({ options = [], pathname = '' }: { options: TabProps[], pathname: string }) {
   const router = useRouter();
   const { tab, status } = router.query || {};
 
@@ -14,7 +14,7 @@ function ListStatusTabs({ options = [] }: { options: TabProps[] }) {
           <li className="" key={item?.title}>
             <button
               type="button"
-              onClick={() => router.push({ pathname: '/transactions', query: { tab, status: item?.status } })}
+              onClick={() => router.push({ pathname, query: { tab, status: item?.status } })}
               className={`py-3 px-5 rounded-md font-semibold ${
                 status === item?.status ? 'bg-primary text-white' : 'text-[#6B7280]'}`}
             >

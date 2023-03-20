@@ -3,7 +3,6 @@ import React from 'react';
 import { FaCheck } from 'react-icons/fa';
 
 import TextInput from '../../inputs/Text';
-import SelectInput from '../../inputs/Select';
 import { OrderListItemProps } from '../../../types/invoice';
 import AddInvoiceItem from './AddInvoiceItem';
 import MenuOptions from '../../common/MenuOptions';
@@ -53,7 +52,6 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
 
   const validateForm = () => {
     if (!form?.title) return 'Invoice title is required.';
-    if (!form?.role?.value) return 'Your role is required.';
     if (!form?.orderList?.length) return 'Your order list must not be empty';
     return null;
   };
@@ -77,29 +75,14 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         </p>
       </div>
 
-      <div className="w-full">
-        <div className="flex flex-wrap -mx-2">
-          <div className="w-full sm:w-1/2 px-2">
-            <TextInput
-              name="title"
-              value={form?.title || ''}
-              onChange={handleChange}
-              label="Invoice Title"
-              className="w-full mb-7"
-              placeholder="Invoice Title"
-            />
-          </div>
-          <div className="w-full sm:w-1/2 px-2">
-            <SelectInput
-              value={form?.role}
-              onChange={(val) => handleChange(val, 'select', 'role')}
-              options={[{ label: 'Seller', value: 'seller' }, { label: 'Buyer', value: 'buyer' }]}
-              className="w-full mb-7"
-              label="Select your role"
-              placeholder="Select Role"
-            />
-          </div>
-        </div>
+      <div className="w-full mb-5">
+        <TextInput
+          name="title"
+          value={form?.title || ''}
+          onChange={handleChange}
+          label="Invoice Title"
+          placeholder="Invoice Title"
+        />
       </div>
 
       <div className="w-full rounded-lg shadow-md mb-10 overflow-x-auto hide-scroll overflow-y-visible">

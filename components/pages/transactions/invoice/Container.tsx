@@ -17,7 +17,7 @@ const options = [
 function InvoiceContainer() {
   return (
     <div className="w-full">
-      <ListStatusTabs options={options} />
+      <ListStatusTabs options={options} pathname="/transactions" />
 
       <InvoiceList />
     </div>

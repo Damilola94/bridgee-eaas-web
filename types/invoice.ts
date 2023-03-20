@@ -2,6 +2,9 @@ export type InvoiceFormProps = {
   title?: string;
   role?: { label: string, value: string };
   orderList?: OrderListItemProps[];
+  weight?: string;
+  pickupAddress?: string;
+  deliveryAddress?: string;
   paymentPlan?: string;
   agreement?: string;
   agreementFile?: string;
