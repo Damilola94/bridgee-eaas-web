@@ -49,8 +49,7 @@ function InvoiceList({ showFilter = true }) {
                 <td className="pr-10 pl-3 py-5">
                   <MenuOptions
                     options={[
-                      { title: 'View', action: () => router.push({ pathname: `transactions/invoice-details/${item?.id}` }) },
-                      { title: 'Open Dispute', action: () => {} },
+                      { title: 'View', action: () => router.push({ pathname: `disputes/manage-dispute/${item?.id}` }) },
                       { title: 'Delete', action: () => {} }
                     ]}
                   />

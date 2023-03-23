@@ -12,7 +12,7 @@ import Button from '../../../components/inputs/Button';
 import InvoiceDetails from '../../../components/pages/invoice-details/InvoiceDetails';
 import ActivityLog from '../../../components/pages/invoice-details/ActivityLog';
 
-const Transactions: NextPageWithLayout = () => {
+const Index: NextPageWithLayout = () => {
   const router = useRouter();
 
   // console.log(router.query);
@@ -54,8 +54,8 @@ const Transactions: NextPageWithLayout = () => {
   );
 };
 
-Transactions.getLayout = function getLayout(page: ReactElement) {
+Index.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
-export default Transactions;
+export default Index;

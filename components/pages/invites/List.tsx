@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 
-import invoices from '../../../../sample-data/invoiceList';
+import invoices from '../../../sample-data/invoiceList';
 
-import MenuOptions from '../../../common/MenuOptions';
-import NoData from '../../../common/NoData';
-import TransactionStatus from '../../../common/TransactionStatus';
-import SelectInput from '../../../inputs/Select';
+import MenuOptions from '../../common/MenuOptions';
+import NoData from '../../common/NoData';
+import TransactionStatus from '../../common/TransactionStatus';
+import SelectInput from '../../inputs/Select';
 
 function InvoiceList({ showFilter = true }) {
   const router = useRouter();
@@ -14,7 +14,7 @@ function InvoiceList({ showFilter = true }) {
   return (
     <div className="w-full bg-white shadow-md rounded-lg overflow-hidden">
       <div className="flex items-center justify-between px-10 py-5">
-        <h3 className="font-bold text-lg mr-5">Invoice Transactions</h3>
+        <h3 className="font-bold text-lg mr-5">Invites</h3>
         {showFilter && (
           <div className="max-w-xs w-full">
             <SelectInput placeholder="Filter" className="w-full" />
@@ -52,7 +52,6 @@ function InvoiceList({ showFilter = true }) {
                   <MenuOptions
                     options={[
                       { title: 'View', action: () => router.push({ pathname: `transactions/invoice-details/${item?.id}` }) },
-                      { title: 'Open Dispute', action: () => router.push({ pathname: `disputes/manage-dispute/${item?.id}` }) },
                       { title: 'Delete', action: () => {} }
                     ]}
                   />

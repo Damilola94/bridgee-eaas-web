@@ -1,10 +1,10 @@
 import { ReactElement } from 'react';
 import Head from 'next/head';
 
-import type { NextPageWithLayout } from './_app';
+import type { NextPageWithLayout } from '../_app';
 
-import Layout from '../components/wrappers/Layout';
-import DisputesContainer from '../components/pages/disputes/Container';
+import Layout from '../../components/wrappers/Layout';
+import DisputesContainer from '../../components/pages/disputes/Container';
 
 const Disputes: NextPageWithLayout = () => {
   return (

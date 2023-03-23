@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { RxChevronRight } from 'react-icons/rx';
 
-import disputes from '../../../sample-data/disputes';
+import { disputes } from '../../../sample-data/disputes';
 import { formatDate } from '../../../utilities/dateTime';
 import TransactionStatus from '../../common/TransactionStatus';
 
