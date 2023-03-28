@@ -1,22 +1,53 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 
 import TextInput from '../../inputs/Text';
 import ToggleInput from '../../inputs/Toggle';
 // import LocationInput from '../../inputs/LocationInput';
 import Button from '../../inputs/Button';
 import { useCreateInvoiceContext } from '../../../context/CreateInvoice';
+import notification from '../../../utilities/notification';
 
 function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const { form, setForm } = useCreateInvoiceContext();
-  const [useDelivery, setUsepDelivery] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleChange = (val: any, type = 'input', inputName = '') => {
     if (type === 'input') {
       const { value, name } = val.target;
       setForm((state) => ({ ...state, [name]: value }));
+    } else if (type === 'recipient') {
+      const { value, name } = val.target;
+      setForm((state) => ({
+        ...state,
+        recipientDetails: { ...state.recipientDetails, [name]: value }
+      }));
     } else {
       setForm((state) => ({ ...state, [inputName]: val }));
     }
+  };
+
+  const validateForm = () => {
+    if (!form?.recipientDetails?.recipientName) return 'Recipient name is required';
+    if (!form?.recipientDetails?.phoneNumber) return 'Recipient phone number is required';
+    if (!form?.recipientDetails?.email) return 'Recipient email is required';
+    if (!form?.recipientDetails?.address) return 'Recipient address is required';
+
+    if (form?.isDeliveryOnUs && !form?.pickUpAddress) {
+      return 'Pickup address is required';
+    }
+    return null;
+  };
+
+  const handleNext = () => {
+    const error = validateForm();
+    if (error) {
+      notification({ title: 'Form Error', message: error, type: 'danger' });
+      return;
+    }
+    onNext();
   };
 
   return (
@@ -30,35 +61,24 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
 
       <div className="w-full mb-5">
         <div className="w-full">
-          <TextInput
-            name="recipientName"
-            value={form?.recipientName || ''}
-            onChange={handleChange}
-            label="Recipient’s Full Name"
-            className="w-full mb-4"
-            placeholder="Recipient’s Name"
-          />
-        </div>
-        <div className="w-full">
           <div className="flex -mx-2">
             <div className="w-1/2 px-2">
               <TextInput
-                name="recipientPhone"
-                value={form?.recipientPhone || ''}
-                onChange={handleChange}
-                type="tel"
-                label="Recipient's Phone Number *"
+                name="recipientName"
+                value={form?.recipientDetails?.recipientName || ''}
+                onChange={(e) => handleChange(e, 'recipient')}
+                label="Full Name"
                 className="w-full mb-4"
-                placeholder="Recipient's Phone Number"
+                placeholder="Recipient’s Name"
               />
             </div>
             <div className="w-1/2 px-2">
               <TextInput
-                name="recipientEmail"
-                value={form?.recipientEmail || ''}
-                onChange={handleChange}
+                name="email"
+                value={form?.recipientDetails?.email || ''}
+                onChange={(e) => handleChange(e, 'recipient')}
                 className="w-full mb-4"
-                label="Recipient’s Email"
+                label="Email"
                 type="email"
                 placeholder="Recipient’s Email"
               />
@@ -66,12 +86,38 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
           </div>
         </div>
         <div className="w-full">
+          <div className="flex -mx-2">
+            <div className="w-1/2 px-2">
+              <TextInput
+                name="phoneNumber"
+                value={form?.recipientDetails?.phoneNumber || ''}
+                onChange={(e) => handleChange(e, 'recipient')}
+                type="tel"
+                label="Phone Number"
+                className="w-full mb-4"
+                placeholder="Recipient's Phone Number"
+              />
+            </div>
+            <div className="w-1/2 px-2">
+              <TextInput
+                name="inspectionDuration"
+                value={form?.inspectionDuration || ''}
+                onChange={handleChange}
+                className="w-full mb-4"
+                label="Inspection Duration (Hours)"
+                type="number"
+                placeholder="Inspection Duration"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="w-full">
           <TextInput
-            name="recipientAddress"
-            value={form?.recipientAddress || ''}
-            onChange={handleChange}
+            name="address"
+            value={form?.recipientDetails?.address || ''}
+            onChange={(e) => handleChange(e, 'recipient')}
             type="tel"
-            label="Recipient's Address *"
+            label="Address"
             className="w-full mb-4"
             placeholder="Recipient's Address"
           />
@@ -80,40 +126,31 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
 
       <div className="w-full mb-5">
         <div className="flex items-center space-x-2 pb-5">
-          <ToggleInput label='Delivery' value={useDelivery} onChange={setUsepDelivery} />
+          <ToggleInput
+            label='Delivery'
+            value={form?.isDeliveryOnUs}
+            onChange={(val) => handleChange(val, 'toggle', 'isDeliveryOnUs')}
+          />
           <span className="text-[#E08700] font-bold">Powered by Terminal</span>
         </div>
 
-        {useDelivery && (
+        {form?.isDeliveryOnUs && (
           <div className="w-full">
             <div className="w-full">
               <div className="mb-5">
                 {/* <LocationInput
                   label="Pickup Address".
-                  value={form?.pickupAddress || "}
-                  onChange={(val) => handleChange(val, "location", "pickupAddress")}
+                  value={form?.pickUpAddress || "}
+                  onChange={(val) => handleChange(val, "location", "pickUpAddress")}
                 /> */}
                 <TextInput
-                  name="pickupAddress"
-                  value={form?.pickupAddress || ''}
+                  name="pickUpAddress"
+                  value={form?.pickUpAddress || ''}
                   onChange={handleChange}
                   label="Pickup Address"
                   className="w-full"
                   placeholder="Enter location"
                 />
-              </div>
-              <div className="flex flex-wrap -mx-2">
-                <div className="w-full sm:w-1/2 px-2 mb-5">
-                  <TextInput
-                    name="weight"
-                    value={form?.weight || ''}
-                    onChange={handleChange}
-                    type="number"
-                    label="Weight of goods (KG)"
-                    className="w-full"
-                    placeholder="Weight of goods"
-                  />
-                </div>
               </div>
             </div>
           </div>
@@ -121,7 +158,7 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
       </div>
 
       <div className="w-full mb-3">
-        <Button paddingY="py-3" className="w-full" onClick={onNext}>Continue</Button>
+        <Button paddingY="py-3" className="w-full" onClick={handleNext}>Continue</Button>
       </div>
     </div>
   );

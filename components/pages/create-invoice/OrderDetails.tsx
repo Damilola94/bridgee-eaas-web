@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { FaCheck } from 'react-icons/fa';
 
@@ -12,11 +12,12 @@ import Button from '../../inputs/Button';
 import { useCreateInvoiceContext } from '../../../context/CreateInvoice';
 import { formatCurrency } from '../../../utilities/general';
 import notification from '../../../utilities/notification';
+import FileInput from '../../inputs/File';
 
-const paymentPlans = [
+const disbursementTypes = [
   {
-    value: 'oneoff',
-    header: 'One time disbursement',
+    value: 'onetime',
+    header: 'One Time Disbursement',
     desc: 'An escrow transaction involving just two parties/entities (buyer and seller).'
   },
   {
@@ -29,10 +30,20 @@ const paymentPlans = [
 function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const { form, setForm } = useCreateInvoiceContext();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const handleChange = (val: any, type = 'input', inputName = '') => {
     if (type === 'input') {
-      const { value, name } = val.target;
-      setForm((state) => ({ ...state, [name]: value }));
+      const {
+        value, name, type, files
+      } = val.target;
+      if (type === 'file') {
+        setForm((state) => ({ ...state, [name]: files?.[0] }));
+      } else {
+        setForm((state) => ({ ...state, [name]: value }));
+      }
     } else {
       setForm((state) => ({ ...state, [inputName]: val }));
     }
@@ -41,18 +52,18 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const handleAddItem = (itemPayload: OrderListItemProps) => {
     setForm((state) => ({
       ...state,
-      orderList: [...state?.orderList || [], itemPayload]
+      escrowItems: [...state?.escrowItems || [], itemPayload]
     }));
   };
 
   const handleDeleteItem = (id: string) => {
-    const orderList = form?.orderList?.filter((item) => item?.id !== id) || [];
-    setForm((state) => ({ ...state, orderList }));
+    const escrowItems = form?.escrowItems?.filter((item) => item?.id !== id) || [];
+    setForm((state) => ({ ...state, escrowItems }));
   };
 
   const validateForm = () => {
     if (!form?.title) return 'Invoice title is required.';
-    if (!form?.orderList?.length) return 'Your order list must not be empty';
+    if (!form?.escrowItems?.length) return 'Your order list must not be empty';
     return null;
   };
 
@@ -91,17 +102,19 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
             <tr>
               <th className="px-3 py-3 rounded-tl-lg">Item Name</th>
               <th className="px-3 py-3">Quantity</th>
+              <th className="px-3 py-3">Unit Weight</th>
               <th className="px-3 py-3">Unit Price</th>
               <th className="px-3 py-3">Total</th>
               <th className="px-3 py-3 rounded-tr-lg">{null}</th>
             </tr>
           </thead>
           <tbody className="">
-            {form?.orderList?.map((item) => (
+            {form?.escrowItems?.map((item) => (
               <tr className="border-t" key={item?.id}>
                 <td className="px-3 py-1">{item?.name}</td>
                 <td className="px-3 py-1">{item?.quantity}</td>
-                <td className="px-3 py-1">{formatCurrency(item?.price)}</td>
+                <td className="px-3 py-1">{`${item?.size || 0}kg`}</td>
+                <td className="px-3 py-1">{formatCurrency(item?.amount)}</td>
                 <td className="px-3 py-1">{formatCurrency(item?.total)}</td>
                 <td className="px-3 py-1">
                   <MenuOptions position='bottom' options={[
@@ -112,9 +125,9 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
               </tr>
             ))}
 
-            {(form?.orderList?.length || 0) < 1 && (
+            {(form?.escrowItems?.length || 0) < 1 && (
               <tr>
-                <td colSpan={5}>
+                <td colSpan={6}>
                   <NoData sm message="Add item to your invoice" py="py-5" />
                 </td>
               </tr>
@@ -132,17 +145,17 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
 
         <div className="w-full">
           <div className="flex flex-wrap -mx-2">
-            {paymentPlans.map((item) => (
+            {disbursementTypes.map((item) => (
               <div className="w-full sm:w-1/2 p-2" key={item?.value}>
                 <div
                   role="presentation"
-                  onClick={() => handleChange(item?.value, 'options', 'paymentPlan')}
-                  className={`w-full h-full rounded-lg ${form?.paymentPlan === item?.value
+                  onClick={() => handleChange(item?.value, 'options', 'disbursementType')}
+                  className={`w-full h-full rounded-lg ${form?.disbursementType === item?.value
                     ? 'border-success border-2' : 'border'} bg-secondary p-5 cursor-pointer`}
                 >
                   <div className="w-full relative">
                     <span
-                      className={`rounded-full inline-block ${form?.paymentPlan === item?.value
+                      className={`rounded-full inline-block ${form?.disbursementType === item?.value
                         ? 'bg-primary' : 'bg-gray-400'} p-1 w-5 h-5 absolute right-0`}
                     >
                       <FaCheck className="text-white w-3 h-3" />
@@ -162,9 +175,9 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
 
         <div className="w-full">
           <Editor
-            name="aggrement"
-            value={form?.agreement}
-            onChange={(val) => handleChange(val, 'editor', 'agreement')}
+            name="writtenTerms"
+            value={form?.writtenTerms}
+            onChange={(val) => handleChange(val, 'editor', 'writtenTerms')}
             placeholder="Write text here..."
           />
         </div>
@@ -173,10 +186,9 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
           <p className="font-bold bg-white inline-block px-5 relative -top-2.5">or</p>
         </div>
         <div className="w-full">
-          <TextInput
-            type="file"
-            name="agreementFile"
-            value={form?.agreementFile || ''}
+          <FileInput
+            name="contract"
+            value={form?.contract}
             onChange={handleChange}
             label="Upload file"
             className="file-input"

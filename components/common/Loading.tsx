@@ -23,9 +23,9 @@ function Loading({ message }: LoadingProps) {
             src={Logo}
             priority
             alt="ALAT Logo"
-            className="w-auto h-auto"
-            height={138}
-            width={128}
+            className="w-[100px] h-[100px] mx-auto"
+            height={100}
+            width={100}
           />
         </div>
         <p className="text-base">{message}</p>

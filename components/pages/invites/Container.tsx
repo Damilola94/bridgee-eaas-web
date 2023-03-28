@@ -14,9 +14,10 @@ function DisputesContainer() {
   const router = useRouter();
 
   useEffect(() => {
-    router.push({ pathname: '/invites', query: { status: 'all' } });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (!router?.query?.status) {
+      router.push({ pathname: '/invites', query: { status: 'all' } });
+    }
+  }, [router, router?.query?.status]);
 
   return (
     <div className="w-full">

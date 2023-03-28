@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { OrderListItemProps } from '../../../types/invoice';
-import { formatCurrency } from '../../../utilities/general';
 import notification from '../../../utilities/notification';
 import Button from '../../inputs/Button';
 
@@ -23,7 +22,7 @@ function AddInvoiceItem({ onAdd = () => {} }: { onAdd?: (payload: OrderListItemP
   const validateForm = () => {
     if (!form?.name) return 'Item name is required';
     if (!form?.quantity) return 'Item quantity is required';
-    if (!form?.price) return 'Item unit price is required';
+    if (!form?.amount) return 'Item unit price is required';
     return null;
   };
 
@@ -33,7 +32,14 @@ function AddInvoiceItem({ onAdd = () => {} }: { onAdd?: (payload: OrderListItemP
       notification({ title: 'Form Error', message: error, type: 'danger' });
       return;
     }
-    onAdd({ ...form, total: Number(form?.price) * Number(form?.quantity), id: uuidv4() });
+    onAdd({
+      ...form,
+      id: uuidv4(),
+      amount: Number(form?.amount),
+      quantity: Number(form?.quantity),
+      total: Number(form?.amount) * Number(form?.quantity),
+      size: Number(form?.size)
+    });
     setForm({});
   };
 
@@ -69,8 +75,8 @@ function AddInvoiceItem({ onAdd = () => {} }: { onAdd?: (payload: OrderListItemP
         <div className="flex flex-wrap -mx-2">
           <div className="w-full sm:w-1/2 px-2">
             <TextInput
-              name="price"
-              value={form?.price || ''}
+              name="amount"
+              value={form?.amount || ''}
               onChange={handleChange}
               type="number"
               minValue={0}
@@ -81,11 +87,14 @@ function AddInvoiceItem({ onAdd = () => {} }: { onAdd?: (payload: OrderListItemP
           </div>
           <div className="w-full sm:w-1/2 px-2">
             <TextInput
-              value={formatCurrency(Number(form?.price) * Number(form?.quantity))}
-              readOnly
+              name="size"
+              value={form?.size || ''}
+              onChange={handleChange}
               className="w-full mb-4"
-              label="Total Amount"
-              placeholder="Total Amount"
+              label="Wieght per unit (KG)"
+              type="number"
+              minValue={0}
+              placeholder="Weight per unit"
             />
           </div>
         </div>

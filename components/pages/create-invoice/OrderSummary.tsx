@@ -5,7 +5,7 @@ import { formatCurrency } from '../../../utilities/general';
 function OrderSummary() {
   const { form } = useCreateInvoiceContext();
 
-  const total = form?.orderList?.reduce((sum, item) => sum + (item?.total || 0), 0) || 0;
+  const total = form?.escrowItems?.reduce((sum, item) => sum + (item?.total || 0), 0) || 0;
   const escrowFee = (total || 0) * 0.05;
 
   return (
@@ -17,7 +17,7 @@ function OrderSummary() {
         </p>
 
         <div className="w-full py-7">
-          {form?.orderList?.map((item) => (
+          {form?.escrowItems?.map((item) => (
             <div className="w-full flex justify-between py-3 border-b" key={item?.id}>
               <p className="">{`${item?.quantity}x ${item?.name}`}</p>
               <p className="font-bold">{formatCurrency(item?.total)}</p>

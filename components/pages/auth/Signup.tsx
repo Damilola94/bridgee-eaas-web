@@ -155,8 +155,8 @@ function Signup({ gotoNextForm }: any) {
         )}
 
         <div className="w-full">
-          <div className="flex -mx-2">
-            <div className="w-1/2 px-2">
+          <div className="flex flex-wrap -mx-2">
+            <div className="w-full sm:w-1/2 px-2">
               <TextInput
                 className="w-full mb-7"
                 onChange={handleChange}
@@ -166,7 +166,7 @@ function Signup({ gotoNextForm }: any) {
                 placeholder="First Name"
               />
             </div>
-            <div className="w-1/2 px-2">
+            <div className="w-full sm:w-1/2 px-2">
               <TextInput
                 className="w-full mb-7"
                 onChange={handleChange}

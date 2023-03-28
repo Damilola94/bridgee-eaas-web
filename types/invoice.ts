@@ -1,23 +1,29 @@
 export type InvoiceFormProps = {
   title?: string;
   role?: { label: string, value: string };
-  orderList?: OrderListItemProps[];
-  weight?: string;
-  pickupAddress?: string;
-  deliveryAddress?: string;
-  paymentPlan?: string;
-  agreement?: string;
-  agreementFile?: string;
-  recipientName?: string;
-  recipientEmail?: string;
-  recipientPhone?: string;
-  recipientAddress?: string;
+  escrowItems?: OrderListItemProps[];
+  weight?: string | number;
+  isDeliveryOnUs?: boolean;
+  pickUpAddress?: string;
+  disbursementType?: string;
+  inspectionDuration?: string;
+  writtenTerms?: string;
+  contract?: File;
+  recipientDetails?: RecipientDetailsProps;
 };
 
 export type OrderListItemProps = {
   id?: string;
   name?: string;
-  price?: string;
-  quantity?: string;
+  amount?: string | number;
+  quantity?: string | number;
+  size?: number;
   total?: number;
+};
+
+export type RecipientDetailsProps = {
+  address?: string;
+  recipientName?: string;
+  phoneNumber?: string;
+  email?: string;
 };

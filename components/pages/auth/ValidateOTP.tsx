@@ -99,7 +99,9 @@ function ValidateOTP({ endpointExtra = '', gotoPrevForm = () => {}, gotoNextForm
         <ClickableLogo className="mb-10" />
 
         <h1 className="w-full text-textColor ff-bold text-xl mb-2">Enter Code</h1>
-        <p className="text-sm text-lightText mb-10">Proceed to your email(main.joe@gmail.com) to get code</p>
+        <p className="text-sm text-lightText mb-10">
+          {`Proceed to your email(${cookie.form?.email}) to get code`}
+        </p>
 
         <div className="w-full">
           <AuthCode

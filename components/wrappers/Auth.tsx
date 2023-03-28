@@ -18,11 +18,11 @@ function AuthWrapper({ title, children }: Props) {
         <title>{title}</title>
       </Head>
 
-      <div className="fixed top-0 left-0 w-[45%] h-full min-h-screen overflow-auto bg-white">
+      <div className="fixed top-0 left-0 w-full mdx2:w-[45%] h-full min-h-screen overflow-auto bg-white">
         {children}
       </div>
 
-      <div className="w-full h-full pr-5 pl-[45%] py-14 flex justify-center items-center">
+      <div className="hidden mdx2:flex w-full h-full pr-5 pl-[45%] py-14 justify-center items-center">
         <div className="w-full h-full flex justify-between flex-col">
           <div className="w-full max-w-4xl mx-auto flex justify-center">
             <Image

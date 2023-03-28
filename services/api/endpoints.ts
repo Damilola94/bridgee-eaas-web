@@ -4,7 +4,9 @@ const endpoints: any = {
   auth: `${prefix}/auth`,
   user: `${prefix}/user`,
   merchant: `${prefix}/merchant`,
-  transaction: `${prefix}/transaction`
+  transaction: `${prefix}/transaction`,
+  escrow: `${prefix}/escrow`,
+  invitation: `${prefix}/invitation`
 };
 
 export default endpoints;

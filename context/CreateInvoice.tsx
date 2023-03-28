@@ -18,7 +18,7 @@ export type valueProps = {
 export const CreateInvoiceContext = createContext<valueProps>({ form: {}, setForm: () => {} });
 
 function CreateInvoiceContextProvider({ children }: Props) {
-  const [form, setForm] = useState<InvoiceFormProps>({ paymentPlan: 'oneoff' });
+  const [form, setForm] = useState<InvoiceFormProps>({ disbursementType: 'onetime' });
   const formMemo = useMemo(() => ({ form, setForm }), [form]);
 
   return (
