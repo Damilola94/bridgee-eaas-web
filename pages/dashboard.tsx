@@ -36,7 +36,7 @@ const Home: NextPageWithLayout = () => {
             <TransactionBanner />
           </div>
           <div className="w-full">
-            <InvoiceList showFilter={false} />
+            <InvoiceList showFilter={false} isDashboard />
           </div>
         </div>
 

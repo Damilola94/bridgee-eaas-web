@@ -82,3 +82,11 @@ export const formatChannel = (channel: string) => {
   default: return channel;
   }
 };
+
+export const formatDisbursementType = (type: string) => {
+  switch (type) {
+  case 'onetime': return 'One Time';
+  case 'installment': return 'Installment';
+  default: return type;
+  }
+};

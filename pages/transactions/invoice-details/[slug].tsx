@@ -11,17 +11,26 @@ import Layout from '../../../components/wrappers/Layout';
 import Button from '../../../components/inputs/Button';
 import InvoiceDetails from '../../../components/pages/invoice-details/InvoiceDetails';
 import ActivityLog from '../../../components/pages/invoice-details/ActivityLog';
+import useGetQuery from '../../../hooks/useGetQuery';
+import Loading from '../../../components/common/Loading';
 
 const Index: NextPageWithLayout = () => {
   const router = useRouter();
 
-  // console.log(router.query);
+  const { data, status, error } = useGetQuery({
+    endpoint: 'escrow',
+    queryKey: ['escrow', router?.query?.slug],
+    param: router?.query?.slug,
+    enabled: !!router?.query?.slug
+  });
 
   return (
     <>
       <Head>
         <title>Bridge by ALAT - Create Invoice</title>
       </Head>
+
+      {status === 'loading' && <Loading />}
 
       <div className="w-full mb-3">
         <Button
@@ -37,11 +46,11 @@ const Index: NextPageWithLayout = () => {
         </Button>
       </div>
 
-      <div className="w-full">
+      {status === 'success' && (<div className="w-full">
         <div className="flex flex-wrap -m-4">
           <div className="w-full xl:w-7/12 p-4">
             <div className="w-full">
-              <InvoiceDetails />
+              <InvoiceDetails data={data?.data} />
             </div>
           </div>
 
@@ -49,7 +58,13 @@ const Index: NextPageWithLayout = () => {
             <ActivityLog />
           </div>
         </div>
-      </div>
+      </div>)}
+
+      {status === 'error' && (
+        <div className="w-full py-10">
+          {String(error)}
+        </div>
+      )}
     </>
   );
 };

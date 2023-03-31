@@ -103,7 +103,7 @@ function InvoiceSummary() {
           </div>
         </div>
 
-        <div className="w-full mb-5">
+        <div className="w-full mb-5 overflow-auto">
           <table className="w-full min-w-max table-auto text-left border-b">
             <thead className="bg-secondary uppercase">
               <tr>

@@ -61,8 +61,8 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
 
       <div className="w-full mb-5">
         <div className="w-full">
-          <div className="flex -mx-2">
-            <div className="w-1/2 px-2">
+          <div className="flex flex-wrap -mx-2">
+            <div className="w-full sm:w-1/2 px-2">
               <TextInput
                 name="recipientName"
                 value={form?.recipientDetails?.recipientName || ''}
@@ -72,7 +72,7 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
                 placeholder="Recipient’s Name"
               />
             </div>
-            <div className="w-1/2 px-2">
+            <div className="w-full sm:w-1/2 px-2">
               <TextInput
                 name="email"
                 value={form?.recipientDetails?.email || ''}
@@ -86,8 +86,8 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
           </div>
         </div>
         <div className="w-full">
-          <div className="flex -mx-2">
-            <div className="w-1/2 px-2">
+          <div className="flex flex-wrap -mx-2">
+            <div className="w-full sm:w-1/2 px-2">
               <TextInput
                 name="phoneNumber"
                 value={form?.recipientDetails?.phoneNumber || ''}
@@ -98,7 +98,7 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
                 placeholder="Recipient's Phone Number"
               />
             </div>
-            <div className="w-1/2 px-2">
+            <div className="w-full sm:w-1/2 px-2">
               <TextInput
                 name="inspectionDuration"
                 value={form?.inspectionDuration || ''}

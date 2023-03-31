@@ -7,7 +7,10 @@ import InviteList from './List';
 const options = [
   { title: 'All', status: 'all' },
   { title: 'Pending', status: 'pending' },
-  { title: 'Rejected', status: 'rejected' }
+  { title: 'Awaiting', status: 'awaiting' },
+  { title: 'Accepted', status: 'accepted' },
+  { title: 'Rejected', status: 'rejected' },
+  { title: 'Expired', status: 'expired' }
 ];
 
 function DisputesContainer() {

@@ -6,10 +6,10 @@ import InvoiceList from './List';
 const options = [
   { title: 'All', status: 'all' },
   { title: 'Completed', status: 'completed' },
-  { title: 'In Progress', status: 'in-progress' },
-  { title: 'Awaiting Confirmation', status: 'awaiting-confirmation' },
-  { title: 'Awaiting Payment', status: 'awaiting-payment' },
-  { title: 'Declined', status: 'declined' },
+  { title: 'Pending', status: 'pending' },
+  { title: 'Awaiting Payment', status: 'awaitingpayment' },
+  { title: 'Awaiting Confirmation', status: 'awaitingconfirmation' },
+  { title: 'Rejected', status: 'rejected' },
   { title: 'Dispute', status: 'dispute' },
   { title: 'Draft', status: 'draft' }
 ];

@@ -43,7 +43,7 @@ function InvoiceList({ showFilter = true }) {
                 <th className="pl-10 pr-3 py-5">#</th>
                 <th className="px-3 py-5">Invoice Title</th>
                 <th className="px-3 py-5">Sender Name</th>
-                <th className="px-3 py-5">Reciever Name</th>
+                <th className="px-3 py-5">Reciever Email</th>
                 <th className="px-3 py-5">Amount</th>
                 <th className="px-3 py-5">Expiry Date</th>
                 <th className="px-3 py-5">Status</th>
@@ -54,11 +54,11 @@ function InvoiceList({ showFilter = true }) {
               {status === 'success' && (
                 <>
                   {data?.data?.paginatedData?.map((item: any, index: number) => (
-                    <tr className="border-t" key={item?.invoiceId}>
+                    <tr className={`border-t ${item?.invitationDirection === 'incoming' ? 'bg-primary bg-opacity-[0.03]' : ''}`} key={item?.inviteNumber}>
                       <td className="pl-10 pr-3 py-5">{index + 1}</td>
                       <td className="px-3 py-5">{item?.title}</td>
-                      <td className="px-3 py-5">{item?.senderName}</td>
-                      <td className="px-3 py-5">{item?.disbursementType}</td>
+                      <td className="px-3 py-5">{`${item?.sender}${item?.invitationDirection === 'incoming' ? '' : ' (Me)'}`}</td>
+                      <td className="px-3 py-5">{`${item?.receiver}${item?.invitationDirection === 'incoming' ? ' (Me)' : ''}`}</td>
                       <td className="px-3 py-5">{formatCurrency(item?.amount)}</td>
                       <td className="px-3 py-5">{formatDate(item?.expires)}</td>
                       <td className="px-3 py-5">
@@ -67,7 +67,13 @@ function InvoiceList({ showFilter = true }) {
                       <td className="pr-10 pl-3 py-5">
                         <MenuOptions
                           options={[
-                            { title: 'View Invoice', action: () => router.push({ pathname: `transactions/invoice-details/${item?.escrowId}` }) },
+                            {
+                              title: 'View Invoice',
+                              action: () => router.push({
+                                pathname: `transactions/invoice-details/${item?.escrowId}`,
+                                query: { reference: item?.inviteNumber }
+                              })
+                            },
                             { title: 'Delete', action: () => {} }
                           ]}
                         />

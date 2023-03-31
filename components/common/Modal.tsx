@@ -9,12 +9,12 @@ type ModalProps = {
   isShowCloseIcon?: boolean,
   isCenter?: boolean,
   children: React.ReactNode,
-	onClose: () => void,
+	onClose?: () => void,
   maxWidth?: string
 }
 
 function Modal({
-  children, isOpen, onClose, maxWidth, isShowCloseIcon, isCenter
+  children, isOpen, onClose = () => {}, maxWidth, isShowCloseIcon, isCenter
 }: ModalProps) {
   return (
     <Dialog
