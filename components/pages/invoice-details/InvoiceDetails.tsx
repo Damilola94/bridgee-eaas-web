@@ -91,6 +91,7 @@ function InvoiceDetails({ data = {} }: { data: any }) {
                 <p className="mb-1">{data?.recipientDetails?.address}</p>
               </div>
             </div>
+
             <div className="text-right">
               <h3 className="font-bold ff-bold text-lg mb-2">Order Details</h3>
               <div className="w-full">

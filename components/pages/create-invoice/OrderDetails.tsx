@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { FaCheck } from 'react-icons/fa';
+import { BiPlus } from 'react-icons/bi';
 
 import TextInput from '../../inputs/Text';
 import { OrderListItemProps } from '../../../types/invoice';
@@ -29,6 +30,7 @@ const disbursementTypes = [
 
 function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const { form, setForm } = useCreateInvoiceContext();
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -96,7 +98,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         />
       </div>
 
-      <div className="w-full rounded-lg shadow-md mb-10 overflow-x-auto hide-scroll overflow-y-visible">
+      <div className="w-full rounded-lg shadow-md mb-5 overflow-x-auto hide-scroll overflow-y-visible">
         <table className="w-full min-w-max table-auto text-left">
           <thead className="bg-primary text-white">
             <tr>
@@ -136,8 +138,11 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         </table>
       </div>
 
-      <div className="w-full mb-5">
-        <AddInvoiceItem onAdd={handleAddItem} />
+      <div className="w-full mb-10 flex justify-end">
+        <Button onClick={() => setShow(true)}>
+          <BiPlus className="mr-1 mb-1" />
+          Add Item
+        </Button>
       </div>
 
       <div className="w-full mb-10">
@@ -199,6 +204,8 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       <div className="w-full mb-3">
         <Button paddingY="py-3" className="w-full" onClick={handleSubmit}>Next: Recipient Details</Button>
       </div>
+
+      {show && <AddInvoiceItem onAdd={handleAddItem} onClose={() => setShow(false)} />}
     </div>
   );
 }

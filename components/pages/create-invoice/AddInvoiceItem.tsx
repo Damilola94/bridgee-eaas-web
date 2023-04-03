@@ -3,11 +3,17 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { OrderListItemProps } from '../../../types/invoice';
 import notification from '../../../utilities/notification';
+import Modal from '../../common/Modal';
 import Button from '../../inputs/Button';
 
 import TextInput from '../../inputs/Text';
 
-function AddInvoiceItem({ onAdd = () => {} }: { onAdd?: (payload: OrderListItemProps) => void }) {
+type Props = {
+  onAdd?: (payload: OrderListItemProps) => void,
+  onClose: () => void
+};
+
+function AddInvoiceItem({ onAdd = () => {}, onClose = () => {} }: Props) {
   const [form, setForm] = useState<OrderListItemProps>({});
 
   const handleChange = (val: any, type = 'input', inputName = '') => {
@@ -41,68 +47,72 @@ function AddInvoiceItem({ onAdd = () => {} }: { onAdd?: (payload: OrderListItemP
       size: Number(form?.size)
     });
     setForm({});
+    onClose();
   };
 
   return (
-    <div className="w-full">
+    <Modal isOpen onClose={onClose}>
       <div className="w-full">
-        <div className="flex flex-wrap -mx-2">
-          <div className="w-full sm:w-1/2 px-2">
-            <TextInput
-              name="name"
-              value={form?.name || ''}
-              onChange={handleChange}
-              label="Item Name"
-              className="w-full mb-4"
-              placeholder="Item Name"
-            />
-          </div>
-          <div className="w-full sm:w-1/2 px-2">
-            <TextInput
-              name="quantity"
-              value={form?.quantity || ''}
-              onChange={handleChange}
-              className="w-full mb-4"
-              label="Quantity"
-              type="number"
-              minValue={0}
-              placeholder="Quantity"
-            />
+        <h2 className="font-bold text-lg mb-5">Add New Item</h2>
+        <div className="w-full">
+          <div className="flex flex-wrap -mx-2">
+            <div className="w-full sm:w-1/2 px-2">
+              <TextInput
+                name="name"
+                value={form?.name || ''}
+                onChange={handleChange}
+                label="Item Name"
+                className="w-full mb-4"
+                placeholder="Item Name"
+              />
+            </div>
+            <div className="w-full sm:w-1/2 px-2">
+              <TextInput
+                name="quantity"
+                value={form?.quantity || ''}
+                onChange={handleChange}
+                className="w-full mb-4"
+                label="Quantity"
+                type="number"
+                minValue={0}
+                placeholder="Quantity"
+              />
+            </div>
           </div>
         </div>
-      </div>
-      <div className="w-full">
-        <div className="flex flex-wrap -mx-2">
-          <div className="w-full sm:w-1/2 px-2">
-            <TextInput
-              name="amount"
-              value={form?.amount || ''}
-              onChange={handleChange}
-              type="number"
-              minValue={0}
-              label="Price per unit (NGN)"
-              className="w-full mb-4"
-              placeholder="Price per unit"
-            />
-          </div>
-          <div className="w-full sm:w-1/2 px-2">
-            <TextInput
-              name="size"
-              value={form?.size || ''}
-              onChange={handleChange}
-              className="w-full mb-4"
-              label="Wieght per unit (KG)"
-              type="number"
-              minValue={0}
-              placeholder="Weight per unit"
-            />
+        <div className="w-full">
+          <div className="flex flex-wrap -mx-2">
+            <div className="w-full sm:w-1/2 px-2">
+              <TextInput
+                name="amount"
+                value={form?.amount || ''}
+                onChange={handleChange}
+                type="number"
+                minValue={0}
+                label="Price per unit (NGN)"
+                className="w-full mb-4"
+                placeholder="Price per unit"
+              />
+            </div>
+            <div className="w-full sm:w-1/2 px-2">
+              <TextInput
+                name="size"
+                value={form?.size || ''}
+                onChange={handleChange}
+                className="w-full mb-4"
+                label="Wieght per unit (KG)"
+                type="number"
+                minValue={0}
+                placeholder="Weight per unit"
+              />
+            </div>
           </div>
         </div>
+        <div className="w-full flex justify-end" onClick={handleAddItem}>
+          <Button paddingX="px-10">Add Item</Button>
+        </div>
       </div>
-      <div className="w-full flex justify-end" onClick={handleAddItem}>
-        <Button paddingX="px-10">Add Item</Button>
-      </div>
-    </div>
+    </Modal>
   );
 }
 

@@ -116,7 +116,6 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
             name="address"
             value={form?.recipientDetails?.address || ''}
             onChange={(e) => handleChange(e, 'recipient')}
-            type="tel"
             label="Address"
             className="w-full mb-4"
             placeholder="Recipient's Address"
