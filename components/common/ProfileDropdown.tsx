@@ -26,14 +26,14 @@ import Loading from './Loading';
 
 const options = (bagde = 'Personal') => [
   {
-    title: 'Profile', icon: <BsPerson className="w-5 h-auto mr-2" />, link: '/settings?tab=profile', bagde
+    title: 'Profile', icon: <BsPerson className="w-5 h-auto mr-2" />, link: '/settings?tab=personal-details', bagde
   },
-  { title: 'Settings', icon: <FiSettings className="w-5 h-auto mr-2" />, link: 'settings?tab=profile' },
+  { title: 'Settings', icon: <FiSettings className="w-5 h-auto mr-2" />, link: 'settings?tab=personal-details' },
   { title: 'Support', icon: <MdOutlineSecurity className="w-5 h-auto mr-2" />, link: '/support' }
 ];
 
 export default function ProfileDropdown({ className }: { className: string }) {
-  const { pathname, push } = useRouter();
+  const { push } = useRouter();
   const [cookie] = useCookies(['data']);
   const { accounts } = useAccountsContext();
 
@@ -122,11 +122,10 @@ export default function ProfileDropdown({ className }: { className: string }) {
               <div className='border-b'>
                 {options(accounts?.defaultMerchant?.id ? 'Business' : 'Personal')?.map((item) => (
                   <Menu.Item key={item.title}>
-                    {({ active }) => (
+                    {({ active, close }) => (
                       <span>
-                        <Link href={item?.link}>
-                          <div className={`${active || pathname === item.link ? 'bg-primary'
-                            : 'bg-white'} ${active ? 'bg-opacity-5' : ''} flex justify-between items-center px-4 py-2`}>
+                        <Link href={item?.link} onClick={close}>
+                          <div className={`${active ? 'bg-primary bg-opacity-5' : 'bg-white'} flex justify-between items-center px-4 py-2`}>
                             <div className="flex text-black items-center">
                               {item.icon}
                               <span className="mt-1.5 font-bold">{item.title}</span>
