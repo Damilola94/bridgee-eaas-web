@@ -7,6 +7,9 @@ function ListStatusTabs({ options = [], pathname = '' }: { options: TabProps[], 
   const router = useRouter();
   const { tab, status } = router.query || {};
 
+  const tabQuery: any = {};
+  if (tab) tabQuery.tab = tab;
+
   return (
     <div className="w-full overflow-auto hide-scroll mb-5">
       <ul className="inline-flex min-w-max rounded-md bg-white shadow-md">
@@ -14,7 +17,7 @@ function ListStatusTabs({ options = [], pathname = '' }: { options: TabProps[], 
           <li className="" key={item?.title}>
             <button
               type="button"
-              onClick={() => router.push({ pathname, query: { tab, status: item?.status } })}
+              onClick={() => router.push({ pathname, query: { ...tabQuery, status: item?.status } })}
               className={`py-3 px-5 rounded-md font-semibold ${
                 status === item?.status ? 'bg-primary text-white' : 'text-[#6B7280]'}`}
             >

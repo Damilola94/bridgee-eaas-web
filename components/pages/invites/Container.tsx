@@ -13,7 +13,7 @@ const options = [
   { title: 'Expired', status: 'expired' }
 ];
 
-function DisputesContainer() {
+function InviteContainer() {
   const router = useRouter();
 
   useEffect(() => {
@@ -30,4 +30,4 @@ function DisputesContainer() {
   );
 }
 
-export default DisputesContainer;
+export default InviteContainer;

@@ -26,10 +26,10 @@ import Loading from './Loading';
 
 const options = (bagde = 'Personal') => [
   {
-    title: 'Profile', icon: <BsPerson className="w-5 h-auto mr-2" />, link: '/profile', bagde
+    title: 'Profile', icon: <BsPerson className="w-5 h-auto mr-2" />, link: '/settings?tab=profile', bagde
   },
-  { title: 'Settings', icon: <FiSettings className="w-5 h-auto mr-2" />, link: '/profile/settings' },
-  { title: 'Support', icon: <MdOutlineSecurity className="w-5 h-auto mr-2" />, link: '/profile/support' }
+  { title: 'Settings', icon: <FiSettings className="w-5 h-auto mr-2" />, link: 'settings?tab=profile' },
+  { title: 'Support', icon: <MdOutlineSecurity className="w-5 h-auto mr-2" />, link: '/support' }
 ];
 
 export default function ProfileDropdown({ className }: { className: string }) {

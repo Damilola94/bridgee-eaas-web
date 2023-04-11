@@ -2,12 +2,14 @@ import DashboardIcon from '../assets/svgs/dashboard.svg';
 import TransactionsIcon from '../assets/svgs/transactions.svg';
 import DisputesIcon from '../assets/svgs/dispute.svg';
 import InviteIcon from '../assets/svgs/invite.svg';
+import SettingsIcon from '../assets/svgs/settings.svg';
 
 const menu = [
   { title: 'Dashboard', link: '/dashboard', icon: DashboardIcon },
   { title: 'Transactions', link: '/transactions', icon: TransactionsIcon },
   { title: 'Disputes', link: '/disputes', icon: DisputesIcon },
-  { title: 'Invites', link: '/invites', icon: InviteIcon }
+  { title: 'Invites', link: '/invites', icon: InviteIcon },
+  { title: 'Settings', link: '/settings', icon: SettingsIcon }
 ];
 
 export default menu;

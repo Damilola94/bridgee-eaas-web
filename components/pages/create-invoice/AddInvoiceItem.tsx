@@ -108,8 +108,8 @@ function AddInvoiceItem({ onAdd = () => {}, onClose = () => {} }: Props) {
             </div>
           </div>
         </div>
-        <div className="w-full flex justify-end" onClick={handleAddItem}>
-          <Button paddingX="px-10">Add Item</Button>
+        <div className="w-full flex justify-end">
+          <Button paddingX="px-10" onClick={handleAddItem}>Add Item</Button>
         </div>
       </div>
     </Modal>
