@@ -30,15 +30,24 @@ a {
   overflow: hidden !important;
 }
 
-.hide-scroll::-webkit-scrollbar {
-  display: none;
-}
 .hide-scroll {
   scrollbar-width: none;
+}
+.hide-scroll::-webkit-scrollbar {
+  display: none;
 }
 
 .show {
   transform: translate3d(0, 0, 0) !important;
+}
+
+.header-side-menu {
+  transition: transform .5s cubic-bezier(0, .52, 0, 1);
+  transform: translate3d(100%, 0, 0);
+}
+
+.header-side-link {
+  @apply text-2xl font-bold text-center px-5 py-4 hover:bg-primary hover:bg-opacity-5;
 }
 
 .right-menu {
@@ -51,16 +60,22 @@ a {
   transform: translate3d(100%, 0, 0);
 }
 
+.index-title {
+  @apply ff-bold text-4xl sm:text-[50px] sm:leading-[50px];
+}
+
 .predefined-date-btn {
   @apply text-xs rounded-md bg-gray-100 px-3 py-1.5 mb-2 min-w-max transition-all hover:bg-gray-200
 }
 
+.header-content {
+  @apply max-w-[1300px] mx-auto px-6;
+}
+.index-content {
+  @apply max-w-[1120px] mx-auto px-6;
+}
 .content {
   @apply max-w-screen-xl px-6;
-}
-
-.index-content {
-  @apply max-w-[1100px] px-6;
 }
 
 .file-input input::file-selector-button {
@@ -69,6 +84,10 @@ a {
 
 .text-input {
   @apply bg-inputBg px-5 h-12 outline-none w-full rounded-[10px] border border-borderColor disabled:bg-gray-200;
+}
+
+.image-blurred-edge {
+  box-shadow: 10px 0 20px white inset;
 }
 
 @media (prefers-color-scheme: dark) {
