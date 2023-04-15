@@ -6,12 +6,14 @@ export type ProfileProps = {
 };
 
 export type BusinessProps = {
-  businessName?: string;
+  name?: string;
   address?: string;
   phoneNumber?: string;
-  email?: string;
+  businessEmail?: string;
   instagram?: string;
   facebook?: string;
   whatsapp?: string;
-  referral?: string;
+  logoPath?: string;
+  twitter?: string;
+  website?: string;
 };

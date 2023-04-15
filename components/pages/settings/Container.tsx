@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import BankAccounts from './BankAccounts';
 import BusinessDetails from './BusinessDetails';
-import ProfileDetails from './ProfileDetails';
+import PersonalDetails from './PersonalDetails';
 import SecuritySettings from './SecuritySettings';
 
 import Tabs from './Tabs';
@@ -28,7 +28,7 @@ function SettingsContainer() {
     <div className="w-full">
       <Tabs options={options} pathname="/settings" />
 
-      {tab === 'personal-details' && <ProfileDetails />}
+      {tab === 'personal-details' && <PersonalDetails />}
       {tab === 'business-details' && <BusinessDetails />}
       {tab === 'bank-accounts' && <BankAccounts />}
       {tab === 'security-settings' && <SecuritySettings />}
