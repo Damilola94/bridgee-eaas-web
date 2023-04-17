@@ -37,8 +37,8 @@ function HowItWorks() {
       <div className="w-full index-content pt-24 pb-28">
         <h1 className="index-title text-white text-center">How it works in 5 steps</h1>
 
-        <div className="w-full hidden mdx2:flex pt-20">
-          <div className="w-1/2 pr-12 py-16 border-r-4 border-[#523488]">
+        <div className="w-full min-h-[659px] h-full hidden mdx2:flex pt-20">
+          <div className="w-1/2 pr-12 border-r-4 border-[#523488]">
             <div className="w-full h-full flex items-center">
               {steps.map((item, i) => (
                 <Image
