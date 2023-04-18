@@ -22,7 +22,7 @@ function BankTransferModal({ onClose }: Props) {
           <div className="w-full text-center bg-secondary rounded-xl px-5 py-5 mb-10">
             <h4 className="font-bold text-lg mb-1">Wema Bank</h4>
             <h2 className="ff-heavy text-2xl mb-3">{accounts?.defaultWallets?.[0]?.virtualAccount}</h2>
-            <p className="">Use this account for this transaction only Account expires in 15 minutes</p>
+            <p className="">To fund your wallet for any transaction, please use this account number.</p>
           </div>
           <Button
             border
