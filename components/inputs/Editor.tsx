@@ -36,7 +36,7 @@ const formats = [
 ];
 
 function Editor({
-  onChange = () => {}, name, value, className, label, placeholder
+  onChange, name, value, className, label, placeholder
 }: Props) {
   return (
     <div className={`${className} editor-container`}>

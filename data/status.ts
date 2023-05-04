@@ -7,6 +7,13 @@ export const statusColors = {
   dispute: '#99154B',
   draft: '#111928',
 
+  Pending: '#5521B5',
+  Processing: '#42389D',
+  OutForDelivery: '#5521B5',
+  Delivered: '#03543F',
+  Returned: '#9B1C1C',
+  Cancelled: '#111928',
+
   pending: '#5521B5',
   awaiting: '#42389D',
   successful: '#03543F',
@@ -24,6 +31,13 @@ export const statusTitle = {
   declined: 'Declined',
   dispute: 'Dispute',
   draft: 'Draft',
+
+  Pending: 'Pending Delivery',
+  Processing: 'Processing Delivery',
+  OutForDelivery: 'Out For Delivery',
+  Delivered: 'Delivered',
+  Returned: 'Item(s) Returned',
+  Cancelled: 'Delivery Cancelled',
 
   pending: 'Pending',
   awaiting: 'Awaiting',

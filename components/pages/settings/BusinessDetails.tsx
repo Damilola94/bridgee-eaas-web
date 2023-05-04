@@ -95,6 +95,7 @@ function BusinessDetails() {
               {isEditable ? 'Cancel Edit' : 'Edit'}
             </button>
           </div>
+
           <div className="w-full">
             <div className="flex flex-wrap items-end -mx-2">
               <div className="w-full sm:w-1/2 px-2">

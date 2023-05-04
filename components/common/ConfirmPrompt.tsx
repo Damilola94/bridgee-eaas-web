@@ -18,7 +18,6 @@ function ConfirmPrompt({
       isOpen={isOpen}
       maxWidth="max-w-[400px]"
       onClose={onClose}
-      isCenter
     >
       <div className="px-5 py-3">
         <h3 className="font-semibold mb-2">
@@ -28,11 +27,11 @@ function ConfirmPrompt({
           {message}
         </div>
         <div className="flex justify-end space-x-5">
-          <Button bgColor="bg-red-500" onClick={handleYes}>
-            Yes
-          </Button>
           <Button onClick={onClose}>
             No
+          </Button>
+          <Button bgColor="bg-error" onClick={handleYes}>
+            Yes
           </Button>
         </div>
       </div>

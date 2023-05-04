@@ -61,7 +61,7 @@ function InvoiceList({ showFilter = true, isDashboard = false }) {
                       <td className="px-3 py-5">{item?.dueDate}</td>
                       <td className="px-3 py-5">{formatDisbursementType(item?.disbursementType)}</td>
                       <td className="px-3 py-5">
-                        <TransactionStatus status={item?.status} />
+                        <TransactionStatus status={item?.status === 'paymentcompleted' ? item?.deliveryStatus : item?.status} />
                       </td>
                       <td className="pr-10 pl-3 py-5">
                         <MenuOptions
