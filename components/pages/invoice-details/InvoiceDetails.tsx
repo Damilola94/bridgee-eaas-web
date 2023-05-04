@@ -153,9 +153,9 @@ function InvoiceDetails({ data = {} }: { data: any }) {
       {(isLoading || deliveryLoading) && <Loading message="Processing..." />}
       {otpLoading && <Loading message="Sending OTP..." />}
 
-      <div className="w-full bg-white px-10 py-8 rounded-lg shadow-md">
+      <div className="w-full bg-white px-5 sm:px-10 py-8 rounded-lg shadow-md">
         <div className="w-full mb-5">
-          <div className="flex w-full justify-between mb-5">
+          <div className="flex flex-wrap flex-col-reverse sm:flex-row w-full justify-between mb-5">
             <div className="text-left">
               <div className="flex mb-2">
                 <Image
@@ -178,7 +178,7 @@ function InvoiceDetails({ data = {} }: { data: any }) {
             </div>
           </div>
 
-          <div className="flex w-full justify-between">
+          <div className="sm:flex w-full justify-between">
             <div className="text-left">
               <h3 className="font-bold ff-bold text-lg mb-2">Recipient Details</h3>
               <p className="mb-1">{data?.recipientDetails?.name}</p>
@@ -266,7 +266,7 @@ function InvoiceDetails({ data = {} }: { data: any }) {
             onClick={() => setShowAgreementModal(true)}
             className="text-primary underline hover:no-underline"
           >
-            View Escrow Aggreement
+            View Escrow Agreement
           </button>
         </div>
 

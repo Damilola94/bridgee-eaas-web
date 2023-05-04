@@ -5,16 +5,17 @@ import clsx from 'clsx';
 import { CgClose } from 'react-icons/cg';
 
 type ModalProps = {
-	isOpen: boolean,
-  isShowCloseIcon?: boolean,
-  isCenter?: boolean,
-  children: React.ReactNode,
-	onClose?: () => void,
-  maxWidth?: string
+	isOpen: boolean;
+  isShowCloseIcon?: boolean;
+  isCenter?: boolean;
+  children: React.ReactNode;
+	onClose?: () => void;
+  maxWidth?: string;
+  isFullHieght?: boolean;
 }
 
 function Modal({
-  children, isOpen, onClose = () => {}, maxWidth, isShowCloseIcon, isCenter
+  children, isOpen, onClose = () => {}, maxWidth, isShowCloseIcon, isCenter, isFullHieght
 }: ModalProps) {
   return (
     <Dialog
@@ -29,7 +30,7 @@ function Modal({
         },
       )}
     >
-      <Dialog.Panel className={clsx("bg-white w-full rounded-xl relative p-5 mx-auto", maxWidth)}>
+      <Dialog.Panel className={clsx("bg-white w-full rounded-xl relative p-5 mx-auto", maxWidth, isFullHieght ? 'h-[90%]' : '')}>
         {isShowCloseIcon && (
           <button onClick={onClose} className="absolute top-5 right-5">
             <CgClose className="w-8 h-8 hover:bg-gray-300/50" />

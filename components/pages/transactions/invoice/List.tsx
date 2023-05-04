@@ -17,7 +17,8 @@ function InvoiceList({ showFilter = true, isDashboard = false }) {
     endpoint: 'escrow',
     queryKey: ['escrow', router?.query?.status],
     pQuery: {
-      escrowSatus: router?.query?.status === 'all' ? null : router?.query?.status
+      escrowSatus: router?.query?.status === 'all' ? null : router?.query?.status,
+      pageSize: isDashboard ? 5 : 20
     },
     enabled: !!router?.query?.status || isDashboard
   });
