@@ -12,7 +12,7 @@ function ListStatusTabs({ options = [], pathname = '' }: { options: TabProps[], 
 
   return (
     <div className="w-full overflow-auto hide-scroll mb-5">
-      <ul className="inline-flex min-w-max rounded-md bg-white shadow-md">
+      <ul className="inline-flex min-w-max rounded-md bg-white">
         {options.map((item) => (
           <li className="" key={item?.title}>
             <button

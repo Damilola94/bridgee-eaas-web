@@ -7,6 +7,7 @@ type SelectProps = {
   className: string,
   name: string,
   label?: string,
+  height?: string,
   value?: SelectOptionType,
   options?: SelectOptionType[],
   placeholder?: string,
@@ -17,7 +18,7 @@ type SelectProps = {
 };
 
 function SelectInput({
-  className, name, label, value, onChange, disabled, options,
+  className, name, label, height, value, onChange, disabled, options,
   multiple, placeholder, isClearable
 }: SelectProps) {
   return (
@@ -26,7 +27,7 @@ function SelectInput({
 
       <Select
         classNames={{
-          control: () => '!bg-inputBg !text-textColor px-2 !outline-none w-full h-[43.2px] !rounded-[10px] border !border-borderColor disabled:!bg-gray-200`'
+          control: () => `${height} !bg-inputBg !text-textColor px-2 !outline-none w-full !rounded-[10px] border !border-borderColor disabled:!bg-gray-200`
         }}
         name={name}
         id={name}
@@ -47,7 +48,8 @@ function SelectInput({
 
 SelectInput.defaultProps = {
   className: '',
-  name: ''
+  name: '',
+  height: 'h-[43.2px]'
 };
 
 export default SelectInput;

@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 
 import Image from 'next/image';
 import Calendar from 'react-calendar';
-import { GoX } from 'react-icons/go';
+import { CgClose } from 'react-icons/cg';
 
 import useClickOutsideBox from '../../hooks/useClickOutsideBox';
 
@@ -39,21 +39,22 @@ function DateRangePicker({ className = '', value = null, onChange = () => {} }: 
   return (
     <div className="relative" ref={wrapperRef}>
       <div
-        className={`${className} min-w-max w-full min-h-[38px] flex relative items-center py-1 bg-inputBg rounded-[10px] px-3 border border-borderColor`}
+        className={`${className} min-w-max w-full min-h-[38px] flex relative items-center pt-1.5 bg-inputBg rounded-[10px] px-5 border border-borderColor`}
         onClick={() => setOpen(!open)}
         role="presentation"
       >
         <span className={`text-sm ${value ? 'text-textColor' : 'text-labelColor'}`}>{stringValue || 'Date Range'}</span>
-        {value && <GoX onClick={clearValue} className="cursor-pointer ml-2 w-6 h-6 p-1 rounded hover:bg-primary/50 hover:text-white" />}
-        <div className="absolute right-2 w-14 h-14 flex justify-center items-center rounded-full transition-all bg-gray-100 ml-2 cursor-pointer hover:bg-primary/10">
+        {value && <CgClose onClick={clearValue} className="cursor-pointer ml-2 w-6 h-6 mb-1 px-1 rounded hover:bg-primary/50 hover:text-white" />}
+        <div className="absolute -top-1.5 right-2 w-14 h-14 flex justify-center items-center rounded-full transition-all bg-gray-100 ml-2 cursor-pointer hover:bg-primary/10">
           <Image src={CalendarIcon} alt="calendar" />
         </div>
       </div>
 
       {open && (
-        <div className="absolute z-10 bg-white right-0 top-[45px] shadow-box rounded-lg p-5">
+        <div className="absolute z-10 bg-white border right-0 top-[45px] shadow-box rounded-lg px-5 pt-5 pb-5">
+          <h3 className="ff-bold">Select Date Range</h3>
           <div className="flex relative">
-            <GoX className="absolute -right-5 -top-5 w-7 h-auto cursor-pointer" onClick={() => setOpen(false)} />
+            <CgClose className="absolute -right-3 -top-8 w-7 h-7 p-1 hover:bg-gray-50 rounded-lg cursor-pointer" onClick={() => setOpen(false)} />
             <Calendar
               selectRange
               value={value}
