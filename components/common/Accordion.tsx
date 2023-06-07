@@ -19,7 +19,7 @@ function Accordion({ header, children, className = '' }: Props) {
                 <span>{header}</span>
                 <CgChevronUp className={`${open ? 'rotate-180 transform' : ''} transition-all h-5 w-5`} />
               </Disclosure.Button>
-              <Disclosure.Panel className="pt-4 pb-2">
+              <Disclosure.Panel className="py-4 border-b">
                 {children}
               </Disclosure.Panel>
             </>

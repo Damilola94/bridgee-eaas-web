@@ -33,7 +33,7 @@ function Layout({ children }: Props) {
         <ListFilterContextProvider>
           <Header />
           <div className="w-full max-w-screen-2xl text-textColor lg:pl-72">
-            <main className={`w-full relative ${pathname === '/dashboard' ? 'px-5' : 'px-8'} pt-[92px] pb-16`}>
+            <main className={`w-full relative ${pathname === '/dashboard' ? 'px-5' : 'px-4 sm:px-8'} pt-[92px] pb-16`}>
               {children}
             </main>
           </div>

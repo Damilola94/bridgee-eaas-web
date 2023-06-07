@@ -5,22 +5,15 @@ import { HiFilter } from 'react-icons/hi';
 import { CgClose, CgChevronDown } from 'react-icons/cg';
 
 import TextInput from '../../../inputs/Text';
-import SelectInput from '../../../inputs/Select';
 import Button from '../../../inputs/Button';
-import DateRangePicker from '../../../inputs/DateRangePicker';
 import Modal from '../../../common/Modal';
 import Accordion from '../../../common/Accordion';
+import DatePicker from '../../../inputs/DatePicker';
 
 export type valueProps = {
   filter: any,
   onChange: React.Dispatch<React.SetStateAction<any>>
 };
-
-const transactionTypes = [
-  { label: '-All disbursement types-', value: '' },
-  { label: 'One Time', value: 'onetime' },
-  { label: 'Installment', value: 'installment' }
-];
 
 function Filter({ filter, onChange }: valueProps) {
   const [data, setData] = useState<any>(null);
@@ -62,28 +55,48 @@ function Filter({ filter, onChange }: valueProps) {
         <div className="relative w-full">
           <h3 className="text-base ff-bold mb-5">Filter</h3>
           <div className="w-full">
-            <Accordion className="mb-7" header="Date Range">
-              <DateRangePicker
-                value={data?.dateRange || null}
-                onChange={(val) => setData((state: any) => ({ ...state, dateRange: val }))}
-              />
+            <Accordion className="mb-5" header="Date Range">
+              <div className="flex -mx-2">
+                <div className="w-1/2 px-2">
+                  <DatePicker
+                    value={data?.startDate || null}
+                    maxDate={data?.endDate}
+                    placeholder="Start Date"
+                    onChange={(val) => setData((state: any) => ({ ...state, startDate: val }))}
+                  />
+                </div>
+                <div className="w-1/2 px-2">
+                  <DatePicker
+                    value={data?.endDate || null}
+                    minDate={data?.startDate}
+                    placeholder="End Date"
+                    onChange={(val) => setData((state: any) => ({ ...state, endDate: val }))}
+                  />
+                </div>
+              </div>
             </Accordion>
-            <Accordion className="mb-7" header="Amount Range">
-              <TextInput
-                placeholder="Enter Amount"
-                type='number'
-                height='h-[38px]'
-                value={data?.amount || ''}
-                onChange={(e) => setData((state: any) => ({ ...state, amount: e.target.value }))}
-              />
-            </Accordion>
-            <Accordion className="mb-7" header="Disbursement Type">
-              <SelectInput
-                height='h-[38px]'
-                value={data?.type || { label: '-All disbursement types-', value: '' }}
-                options={transactionTypes}
-                onChange={(val) => setData((state: any) => ({ ...state, type: val }))}
-              />
+            <Accordion className="mb-5" header="Amount Range">
+              <div className="flex -mx-2">
+                <div className="w-1/2 px-2">
+                  <TextInput
+                    placeholder="Min Amount"
+                    type='number'
+                    height='h-[38px]'
+                    value={data?.minAmount || ''}
+                    onChange={(e) => setData((state: any) => ({ ...state, minAmount: e.target.value }))}
+                  />
+                </div>
+                <div className="w-1/2 px-2">
+                  <TextInput
+                    placeholder="Max Amount"
+                    type='number'
+                    height='h-[38px]'
+                    minValue={data?.minAmount || 0}
+                    value={data?.maxAmount || ''}
+                    onChange={(e) => setData((state: any) => ({ ...state, maxAmount: e.target.value }))}
+                  />
+                </div>
+              </div>
             </Accordion>
 
             <div className="w-full flex justify-between">

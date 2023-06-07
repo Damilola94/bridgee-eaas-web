@@ -19,9 +19,9 @@ function TransactionHistory() {
       <div className="flex bg-white justify-between items-center pl-5 pr-7 py-5 border-b">
         <h3 className="text-lg font-bold ff-bold">Wallet Transactions</h3>
         <Link href="/transactions?tab=wallet">
-          <span className="text-primary text-xs flex items-end hover:underline">
+          <span className="text-primary text-sm flex items-center hover:underline">
             See All
-            <RxChevronRight className="w-5 h-auto" />
+            <RxChevronRight className="w-5 h-auto mb-1" />
           </span>
         </Link>
       </div>

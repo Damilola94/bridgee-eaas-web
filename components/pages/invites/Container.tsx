@@ -10,7 +10,8 @@ const options = [
   { title: 'Awaiting', status: 'awaiting' },
   { title: 'Accepted', status: 'accepted' },
   { title: 'Rejected', status: 'rejected' },
-  { title: 'Expired', status: 'expired' }
+  { title: 'Expired', status: 'expired' },
+  { title: 'Draft', status: 'draft' }
 ];
 
 function InviteContainer() {

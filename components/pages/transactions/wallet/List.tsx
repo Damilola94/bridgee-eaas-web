@@ -1,59 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, ChangeEventHandler } from 'react';
 
 import { useRouter } from 'next/router';
+import { debounce } from 'lodash';
 
 import InflowArrow from '../../../../assets/svg-tsx/InflowArrow';
 import OutflowArrow from '../../../../assets/svg-tsx/OutflowArrow';
 
 import useGetQuery from '../../../../hooks/useGetQuery';
 import { useAccountsContext } from '../../../../context/Accounts';
-
 import { formatApiDate, formatDateTime } from '../../../../utilities/dateTime';
 import { formatChannel, formatCurrency } from '../../../../utilities/general';
+
 import NoData from '../../../common/NoData';
 import Loading from '../../../common/Loading';
 import TransactionStatus from '../../../common/TransactionStatus';
 import Pagination from '../../../common/Pagination';
+import SearchInput from '../../../inputs/Search';
 import Filter from './Filter';
 
 import { PAGE_SIZE } from '../../../../data/constants';
-import SearchInput from '../../../inputs/Search';
 
 function TransactionList() {
   const { accounts } = useAccountsContext();
   const [filter, setFilter] = useState<any>(null);
   const [pageNumber, setPageNumber] = useState(0);
+  const [searchText, setSearchText] = useState('');
+  const [search, setSearch] = useState('');
 
   const router = useRouter();
 
   const { data, status, error } = useGetQuery({
     endpoint: 'transaction',
     extra: 'get-wallet-transactions',
-    queryKey: [router?.query?.status, accounts?.defaultWallets?.[0]?.id, filter, pageNumber],
+    queryKey: ['get-wallet-transactions', router?.query?.status, accounts, filter, pageNumber, search],
     pQuery: {
       pageSize: PAGE_SIZE,
       pageNumber: pageNumber + 1,
       walletId: accounts?.defaultWallets?.[0]?.id,
       status: router?.query?.status === 'all' ? null : router?.query?.status,
-      start: formatApiDate(filter?.dateRange?.[0]),
-      end: formatApiDate(filter?.dateRange?.[1]),
-      transactionType: filter?.type?.value,
-      channel: filter?.channel?.value,
-      search: filter?.amount
+      start: formatApiDate(filter?.startDate),
+      end: formatApiDate(filter?.endDate),
+      transactionType: filter?.type,
+      channel: filter?.channel,
+      search
     },
     enabled: !!accounts?.defaultWallets?.[0]?.id
   });
+
+  const debouncedSearch = useMemo(() => debounce(setSearch, 1000), [setSearch]);
+
+  const handleSearch: ChangeEventHandler<HTMLInputElement> = (e) => {
+    const { value } = e.target;
+    setSearchText(value);
+    debouncedSearch(value);
+  };
 
   return (
     <>
       {status === 'loading' && <Loading />}
 
       <div className="w-full bg-white shadow-md rounded-lg overflow-hidden">
-        <div className="flex items-center justify-between px-10 py-5">
-          <h3 className="font-bold text-lg mr-5">Wallet Transactions</h3>
-          <div className="flex space-x-2">
+        <div className="flex flex-wrap items-center justify-between px-5 sm:px-10 py-5">
+          <h3 className="font-bold text-lg mr-5 mb-2">Wallet Transactions</h3>
+          <div className="w-full max-w-[380px] flex space-x-2">
             <Filter filter={filter} onChange={setFilter} />
-            <SearchInput className="w-full max-w-xs" height="h-[35.6px]" />
+            <SearchInput
+              value={searchText}
+              onChange={handleSearch}
+              className="w-full max-w-xs"
+              height="h-[35.6px]"
+            />
           </div>
         </div>
 
@@ -61,14 +77,14 @@ function TransactionList() {
           <table className="w-full min-w-max table-auto text-left">
             <thead className="bg-secondary">
               <tr>
-                <th className="pl-10 pr-3 py-5">#</th>
+                <th className="pl-5 sm:pl-10 pr-3 py-5">#</th>
                 <th className="px-3 py-5">Transaction</th>
                 <th className="px-3 py-5">Reference Number</th>
                 <th className="px-3 py-5">Amount</th>
                 <th className="px-3 py-5">Channel</th>
                 <th className="px-3 py-5">Status</th>
                 <th className="px-3 py-5">Date</th>
-                <th className="pr-10 pl-3 py-5">ACTION</th>
+                <th className="pr-5 sm:pr-10 pl-3 py-5">ACTION</th>
               </tr>
             </thead>
             <tbody>
@@ -77,7 +93,7 @@ function TransactionList() {
                   <>
                     {data?.data?.transactions.map((item: any, index: number) => (
                       <tr className="border-t" key={item?.id}>
-                        <td className="pl-10 pr-3 py-5">{index + 1}</td>
+                        <td className="pl-5 sm:pl-10 pr-3 py-5">{index + 1}</td>
                         <td className="px-3 py-5">
                           <div className="flex items-center space-x-3">
                             <span className={`w-8 h-8 ${item?.type === 'credit' ? 'bg-success/10' : 'bg-error/10'} p-2 rounded-full`}>
@@ -96,7 +112,7 @@ function TransactionList() {
                           <TransactionStatus status={item?.status} />
                         </td>
                         <td className="px-3 py-5">{formatDateTime(item?.date)}</td>
-                        <td className="pr-10 pl-3 py-5">
+                        <td className="pr-5 sm:pr-10 pl-3 py-5">
                           <button
                             type="button"
                             className="border border-black rounded-lg px-3 py-1.5 hover:bg-gray-100"

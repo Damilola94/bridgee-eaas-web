@@ -15,9 +15,9 @@ function DisputeHistory() {
         <div className="w-full flex justify-between items-center py-5 pl-5 pr-7">
           <h3 className="text-lg font-bold ff-bold">Dispute</h3>
           <Link href="/disputes">
-            <span className="text-primary text-xs flex items-end hover:underline">
+            <span className="text-primary text-sm flex items-center hover:underline">
               See All
-              <RxChevronRight className="w-5 h-auto" />
+              <RxChevronRight className="w-5 h-auto mb-1" />
             </span>
           </Link>
         </div>

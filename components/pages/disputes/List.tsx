@@ -13,8 +13,8 @@ function InvoiceList({ showFilter = true }) {
 
   return (
     <div className="w-full bg-white shadow-md rounded-lg overflow-hidden">
-      <div className="flex items-center justify-between px-10 py-5">
-        <h3 className="font-bold text-lg mr-5">Invoice Disputes</h3>
+      <div className="flex flex-wrap items-center justify-between px-5 sm:px-10 py-5">
+        <h3 className="font-bold text-lg mr-5 mb-2">Invoice Disputes</h3>
         {showFilter && (
           <div className="max-w-xs w-full">
             <SelectInput placeholder="Filter" className="w-full" />
@@ -26,7 +26,7 @@ function InvoiceList({ showFilter = true }) {
         <table className="w-full min-w-max table-auto text-left">
           <thead className="bg-secondary">
             <tr className="">
-              <th className="pl-10 pr-3 py-5">#</th>
+              <th className="pl-5 sm:pl-10 pr-3 py-5">#</th>
               <th className="px-3 py-5">Invoice Title</th>
               <th className="px-3 py-5">Invoice Number</th>
               <th className="px-3 py-5">Dispute Reason</th>
@@ -38,7 +38,7 @@ function InvoiceList({ showFilter = true }) {
           <tbody className="">
             {invoices.map((item, index) => (
               <tr className="border-t" key={item?.id}>
-                <td className="pl-10 pr-3 py-5">{index + 1}</td>
+                <td className="pl-5 sm:pl-10 pr-3 py-5">{index + 1}</td>
                 <td className="px-3 py-5">{item?.title}</td>
                 <td className="px-3 py-5">{item?.number}</td>
                 <td className="px-3 py-5">{item?.disputeReason}</td>
@@ -46,7 +46,7 @@ function InvoiceList({ showFilter = true }) {
                 <td className="px-3 py-5">
                   <TransactionStatus status={item?.status} />
                 </td>
-                <td className="pr-10 pl-3 py-5">
+                <td className="pr-5 sm:pr-10 pl-3 py-5">
                   <MenuOptions
                     options={[
                       { title: 'View', action: () => router.push({ pathname: `disputes/manage-dispute/${item?.id}` }) },

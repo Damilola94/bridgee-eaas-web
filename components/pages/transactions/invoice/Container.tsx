@@ -10,8 +10,7 @@ const options = [
   { title: 'Awaiting Payment', status: 'awaitingpayment' },
   { title: 'Awaiting Confirmation', status: 'awaitingconfirmation' },
   { title: 'Rejected', status: 'rejected' },
-  { title: 'Dispute', status: 'dispute' },
-  { title: 'Draft', status: 'draft' }
+  { title: 'Dispute', status: 'dispute' }
 ];
 
 function InvoiceContainer() {
