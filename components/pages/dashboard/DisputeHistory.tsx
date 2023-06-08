@@ -12,7 +12,7 @@ function DisputeHistory() {
   return (
     <div className="w-full h-full">
       <div className="bg-white border-b">
-        <div className="w-full flex justify-between items-center py-5 pl-5 pr-7">
+        <div className="w-full flex justify-between items-center p-5">
           <h3 className="text-lg font-bold ff-bold">Dispute</h3>
           <Link href="/disputes">
             <span className="text-primary text-sm flex items-center hover:underline">
@@ -43,7 +43,7 @@ function DisputeHistory() {
         </div>
       </div>
 
-      <div className="w-full pl-5 pr-7 h-[calc(100%-100px)] overflow-auto hide-scroll">
+      <div className="w-full px-5 h-[calc(100%-100px)] overflow-auto hide-scroll">
         {disputes?.map((item) => (
           <div key={item?.invoiceNo} className="w-full flex justify-between py-3 bg-white shadow-md rounded-lg my-3 p-3">
             <div className="">

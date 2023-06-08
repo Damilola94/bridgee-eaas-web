@@ -4,8 +4,10 @@ import Head from 'next/head';
 import type { NextPageWithLayout } from './_app';
 
 import Layout from '../components/wrappers/Layout';
+
 import { useAccountsContext } from '../context/Accounts';
 import { logger } from '../utilities/general';
+
 import WalletCard from '../components/pages/dashboard/WalletCard';
 import TransactionStats from '../components/pages/dashboard/TransactionStats';
 import TransactionBanner from '../components/pages/dashboard/TransactionBanner';
@@ -25,7 +27,7 @@ const Home: NextPageWithLayout = () => {
       </Head>
 
       <div className="flex w-[calc(100%+36px)] -m-5">
-        <div className="w-full xl:w-[calc(100%-350px)] px-3 pt-3 pb-5">
+        <div className="w-full xl:w-[calc(100%-400px)] px-3 pt-3 pb-5">
           <div className="w-full mb-3">
             <WalletCard />
           </div>
@@ -36,11 +38,11 @@ const Home: NextPageWithLayout = () => {
             <TransactionBanner />
           </div>
           <div className="w-full">
-            <InvoiceList showFilter={false} isDashboard />
+            <InvoiceList isDashboard />
           </div>
         </div>
 
-        <div className="hidden xl:block fixed right-0 2xl:right-[calc(100%-1536px)] top-0 h-screen w-[350px] border-x pt-20">
+        <div className="hidden xl:block fixed right-0 top-0 h-screen w-[400px] border-l pt-20">
           <div className="h-full flex flex-col">
             <div className="h-1/2">
               <TransactionHistory />

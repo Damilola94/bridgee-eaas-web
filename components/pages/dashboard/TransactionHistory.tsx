@@ -16,7 +16,7 @@ function TransactionHistory() {
 
   return (
     <div className="w-full h-full">
-      <div className="flex bg-white justify-between items-center pl-5 pr-7 py-5 border-b">
+      <div className="flex bg-white justify-between items-center p-5 border-b">
         <h3 className="text-lg font-bold ff-bold">Wallet Transactions</h3>
         <Link href="/transactions?tab=wallet">
           <span className="text-primary text-sm flex items-center hover:underline">
@@ -26,7 +26,7 @@ function TransactionHistory() {
         </Link>
       </div>
 
-      <div className="w-full pl-5 pr-7 h-[calc(100%-62px)] overflow-auto hide-scroll">
+      <div className="w-full px-5 h-[calc(100%-62px)] overflow-auto hide-scroll">
         {transactions?.map((item) => (
           <div key={item?.id} className="w-full flex justify-between py-3 border-b">
             <div className="flex items-center space-x-3">

@@ -24,8 +24,8 @@ function WalletCard() {
           Hello&nbsp;
           <span className="font-bold">{accounts?.defaultMerchant?.name || accounts?.user?.firstName || ''}</span>
         </h3>
-        <div className="flex flex-wrap justify-between items-center space-x-3">
-          <div className="flex items-center space-x-3">
+        <div className="flex flex-wrap justify-between items-center">
+          <div className="flex items-center mr-3 space-x-3">
             <span className="bg-primary w-12 h-12 p-3 rounded-full">
               <Image src={WalletIcon} alt="" width={50} height={50} className="w-auto h-auto" />
             </span>

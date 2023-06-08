@@ -18,7 +18,7 @@ import Pagination from '../../../common/Pagination';
 
 import { PAGE_SIZE } from '../../../../data/constants';
 
-function InvoiceList({ showFilter = true, isDashboard = false }) {
+function InvoiceList({ isDashboard = false }) {
   const [filter, setFilter] = useState<any>(null);
   const [pageNumber, setPageNumber] = useState(0);
   const [searchText, setSearchText] = useState('');
@@ -53,7 +53,14 @@ function InvoiceList({ showFilter = true, isDashboard = false }) {
       <div className="w-full bg-white shadow-md rounded-lg overflow-hidden">
         <div className="flex flex-wrap items-center justify-between px-5 sm:px-10 py-5">
           <h3 className="font-bold text-lg mr-5 mb-2">Invoice Transactions</h3>
-          {showFilter ? (
+          {isDashboard ? (
+            <Link href="/transactions">
+              <span className="text-primary text-sm flex items-center hover:underline">
+              See All
+                <RxChevronRight className="w-5 h-auto mb-1" />
+              </span>
+            </Link>
+          ) : (
             <div className="w-full max-w-[380px] flex space-x-2">
               <TransactionFilter filter={filter} onChange={setFilter} />
               <SearchInput
@@ -63,13 +70,6 @@ function InvoiceList({ showFilter = true, isDashboard = false }) {
                 height="h-[35.6px]"
               />
             </div>
-          ) : (
-            <Link href="/transactions">
-              <span className="text-primary text-sm flex items-center hover:underline">
-                See All
-                <RxChevronRight className="w-5 h-auto mb-1" />
-              </span>
-            </Link>
           )}
         </div>
 
@@ -113,7 +113,7 @@ function InvoiceList({ showFilter = true, isDashboard = false }) {
                         </td>
                       </tr>
                     ))}
-                    {showFilter && (
+                    {!isDashboard && (
                       <tr>
                         <td colSpan={8} className="pt-4">
                           <Pagination

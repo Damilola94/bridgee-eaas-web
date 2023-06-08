@@ -16,7 +16,7 @@ const Invites: NextPageWithLayout = () => {
       <div className="w-full">
         <h2 className="font-bold ff-bold text-2xl mb-3">Invites</h2>
 
-        <div className="w-full max-w-6xl mt-10">
+        <div className="w-full max-w-7xl mt-10">
           <InvitesContainer />
         </div>
       </div>

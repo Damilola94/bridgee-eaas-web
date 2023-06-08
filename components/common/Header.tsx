@@ -13,13 +13,13 @@ function Header() {
   return (
     <>
       <header className="fixed z-20 w-full h-20 bg-white border-b lg:pl-72">
-        <div className="content w-full h-full flex items-center justify-end !pl-20 lg:!pl-4">
+        <div className="px-6 w-full h-full flex items-center justify-end !pl-20 lg:!pl-4">
           <div className="flex items-center space-x-5">
-            <Button paddingX="px-2" paddingY="pt-1.5 pb-1" onClick={() => setShowInviteModal(true)}>
+            <Button paddingX="px-2" paddingY="pt-1.5 pb-1" className="hidden xs:flex" onClick={() => setShowInviteModal(true)}>
               <BiPlus className="mr-1 mb-1" />
               Invite
             </Button>
-            <div className="flex items-start space-x-5 text-textColor mr-5">
+            <div className="flex items-start space-x-5 text-textColor mr-5 min-w-max">
               <Notifications />
               <ProfileDropdown />
             </div>

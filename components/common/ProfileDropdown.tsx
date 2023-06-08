@@ -7,7 +7,9 @@ import Link from 'next/link';
 import { useMutation, useQueryClient } from 'react-query';
 
 import { Menu, Transition, Popover } from '@headlessui/react';
-import { BsPerson, BsChevronRight, BsPlus } from 'react-icons/bs';
+import {
+  BsPerson, BsChevronRight, BsPlus, BsPersonAdd
+} from 'react-icons/bs';
 import { FiSettings, FiRefreshCcw } from 'react-icons/fi';
 import { HiOutlineLogout } from 'react-icons/hi';
 import { MdOutlineSecurity } from 'react-icons/md';
@@ -23,6 +25,7 @@ import { useAccountsContext } from '../../context/Accounts';
 import handleFetch from '../../services/api/handleFetch';
 import notification from '../../utilities/notification';
 import Loading from './Loading';
+import SendInvite from './SendInvite';
 
 const options = (bagde = 'Personal') => [
   {
@@ -40,6 +43,7 @@ export default function ProfileDropdown({ className }: { className: string }) {
   const [userPix, setUserPix] = useState<string | null>(null);
   const [imgHasError, setImgHasError] = useState(false);
   const [showBusinessForm, setShowBusinessForm] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
 
   useEffect(() => {
     if (!imgHasError) setUserPix(formatFileUrl(cookie?.data?.user?.imagePath));
@@ -90,7 +94,7 @@ export default function ProfileDropdown({ className }: { className: string }) {
         <Menu as="div" className="relative inline-block text-left">
           <div>
             <Menu.Button className="text-sm font-medium text-black">
-              <div className="flex space-x-3 items-center">
+              <div className="flex space-x-3 items-center min-w-max">
                 <Image
                   onError={handleImgError}
                   src={userPix || (accounts?.defaultMerchant ? BusinessPix : ProfilePix)}
@@ -209,6 +213,18 @@ export default function ProfileDropdown({ className }: { className: string }) {
                   {({ active }) => (
                     <button
                       type="button"
+                      onClick={() => setShowInviteModal(true)}
+                      className={`${active ? 'bg-primary bg-opacity-5' : 'bg-white'} w-full flex items-center px-4 py-2`}
+                    >
+                      <BsPersonAdd className="w-5 h-auto mr-2" />
+                      <span className="mt-1.5 font-bold">Send Invite</span>
+                    </button>
+                  )}
+                </Menu.Item>
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      type="button"
                       onClick={() => logout()}
                       className={`${active ? 'bg-error/5' : 'bg-white'} rounded-b-lg w-full text-error flex items-center px-4 py-2`}
                     >
@@ -224,6 +240,8 @@ export default function ProfileDropdown({ className }: { className: string }) {
       </div>
 
       <AddBusiness isOpen={showBusinessForm} onClose={() => setShowBusinessForm(false)} />
+      {showInviteModal && <SendInvite onClose={() => setShowInviteModal(false)} />}
+
     </>
   );
 }
