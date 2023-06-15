@@ -24,7 +24,7 @@ function AccountsContextProvider({ children }: Props) {
   const listFilterVal = useMemo(() => ({ accounts, setAccounts }), [accounts]);
 
   const { data, status, isFetching } = useGetQuery({
-    endpoint: 'user', extra: 'get-comprehensive-user-details', queryKey: ['accounts-context']
+    endpoint: 'dashboard', extra: 'comprehensive-user-details', queryKey: ['accounts-context']
   });
 
   useEffect(() => {

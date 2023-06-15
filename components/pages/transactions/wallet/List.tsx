@@ -40,6 +40,8 @@ function TransactionList() {
       status: router?.query?.status === 'all' ? null : router?.query?.status,
       start: formatApiDate(filter?.startDate),
       end: formatApiDate(filter?.endDate),
+      minAmount: Number(filter?.minAmount),
+      maxAmount: Number(filter?.maxAmount),
       transactionType: filter?.type,
       channel: filter?.channel,
       search

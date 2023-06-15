@@ -1,8 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { RxChevronRight } from 'react-icons/rx';
-
-import transactions from '../../../sample-data/transactions';
+import { BulletList } from 'react-content-loader';
 
 import InflowArrow from '../../../assets/svg-tsx/InflowArrow';
 import OutflowArrow from '../../../assets/svg-tsx/OutflowArrow';
@@ -10,9 +9,16 @@ import { statusTitle } from '../../../data/status';
 import { formatChannel, formatCurrency } from '../../../utilities/general';
 import { formatDateTime } from '../../../utilities/dateTime';
 import { useAccountsContext } from '../../../context/Accounts';
+import useGetQuery from '../../../hooks/useGetQuery';
 
 function TransactionHistory() {
   const { accounts } = useAccountsContext();
+
+  const { data, status, error } = useGetQuery({
+    endpoint: 'dashboard',
+    extra: 'recent-transactions',
+    queryKey: ['recent-transactions']
+  });
 
   return (
     <div className="w-full h-full">
@@ -27,7 +33,12 @@ function TransactionHistory() {
       </div>
 
       <div className="w-full px-5 h-[calc(100%-62px)] overflow-auto hide-scroll">
-        {transactions?.map((item) => (
+        {status === 'loading' && (
+          <div className="px-5">
+            <BulletList className="relative w-full" />
+          </div>
+        )}
+        {data?.data?.map((item: any) => (
           <div key={item?.id} className="w-full flex justify-between py-3 border-b">
             <div className="flex items-center space-x-3">
               <span className={`w-8 h-8 ${item?.type === 'credit' ? 'bg-success/10' : 'bg-error/10'} p-2 rounded-full`}>
@@ -47,6 +58,9 @@ function TransactionHistory() {
             </div>
           </div>
         ))}
+        {status === 'error' && (
+          <div className="px-5 text-center">{String(error)}</div>
+        )}
       </div>
     </div>
   );

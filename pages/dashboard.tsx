@@ -4,21 +4,21 @@ import Head from 'next/head';
 import type { NextPageWithLayout } from './_app';
 
 import Layout from '../components/wrappers/Layout';
-
-import { useAccountsContext } from '../context/Accounts';
-import { logger } from '../utilities/general';
+import useGetQuery from '../hooks/useGetQuery';
 
 import WalletCard from '../components/pages/dashboard/WalletCard';
 import TransactionStats from '../components/pages/dashboard/TransactionStats';
 import TransactionBanner from '../components/pages/dashboard/TransactionBanner';
-import InvoiceList from '../components/pages/transactions/invoice/List';
 import TransactionHistory from '../components/pages/dashboard/TransactionHistory';
 import DisputeHistory from '../components/pages/dashboard/DisputeHistory';
+import InvoiceHistory from '../components/pages/dashboard/InvoiceHistory';
 
 const Home: NextPageWithLayout = () => {
-  const { accounts } = useAccountsContext();
-
-  logger(accounts);
+  const { data, status, error } = useGetQuery({
+    endpoint: 'dashboard',
+    extra: 'recent-invoices-and-summary',
+    queryKey: ['recent-invoices-and-summary']
+  });
 
   return (
     <>
@@ -32,13 +32,13 @@ const Home: NextPageWithLayout = () => {
             <WalletCard />
           </div>
           <div className="w-full mb-3">
-            <TransactionStats />
+            <TransactionStats data={data?.data?.invoiceTransactionSummary} />
           </div>
           <div className="w-full mb-3">
             <TransactionBanner />
           </div>
           <div className="w-full">
-            <InvoiceList isDashboard />
+            <InvoiceHistory data={data?.data?.recentInvoice} status={status} error={error} />
           </div>
         </div>
 
