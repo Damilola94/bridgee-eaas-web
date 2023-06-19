@@ -86,10 +86,10 @@ function InvoiceList({ showFilter = true }) {
                         <td className="pl-5 sm:pl-10 pr-3 py-5">{index + 1}</td>
                         <td className="px-3 py-5">
                           <div className="flex items-center space-x-3">
-                            <span className={`w-8 h-8 ${item?.invitationDirection === 'incoming' ? 'bg-success/10' : 'bg-error/10'} p-2 rounded-full`}>
+                            <span className={`w-8 h-8 ${item?.invitationDirection === 'incoming' ? 'bg-error/10' : 'bg-success/10'} p-2 rounded-full`}>
                               {item?.invitationDirection === 'incoming'
-                                ? <InflowArrow className="w-4 h-4" color="#03543F" />
-                                : <OutflowArrow className="w-4 h-4" color="#EB4336" />
+                                ? <InflowArrow className="w-4 h-4" color="#EB4336" />
+                                : <OutflowArrow className="w-4 h-4" color="#03543F" />
                               }
                             </span>
                             <span className="capitalize">{item?.title}</span>
