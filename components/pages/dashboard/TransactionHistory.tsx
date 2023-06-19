@@ -10,14 +10,17 @@ import { formatChannel, formatCurrency } from '../../../utilities/general';
 import { formatDateTime } from '../../../utilities/dateTime';
 import { useAccountsContext } from '../../../context/Accounts';
 import useGetQuery from '../../../hooks/useGetQuery';
+import NoData from '../../common/NoData';
 
 function TransactionHistory() {
   const { accounts } = useAccountsContext();
 
-  const { data, status, error } = useGetQuery({
+  const {
+    data, status, error, isRefetching
+  } = useGetQuery({
     endpoint: 'dashboard',
     extra: 'recent-transactions',
-    queryKey: ['recent-transactions']
+    queryKey: ['recent-transactions', accounts]
   });
 
   return (
@@ -33,31 +36,37 @@ function TransactionHistory() {
       </div>
 
       <div className="w-full px-5 h-[calc(100%-62px)] overflow-auto hide-scroll">
-        {status === 'loading' && (
+        {(status === 'loading' || isRefetching) ? (
           <div className="px-5">
             <BulletList className="relative w-full" />
           </div>
-        )}
-        {data?.data?.map((item: any) => (
-          <div key={item?.id} className="w-full flex justify-between py-3 border-b">
-            <div className="flex items-center space-x-3">
-              <span className={`w-8 h-8 ${item?.type === 'credit' ? 'bg-success/10' : 'bg-error/10'} p-2 rounded-full`}>
-                {item?.type === 'credit'
-                  ? <InflowArrow className="w-4 h-4" color="#03543F" />
-                  : <OutflowArrow className="w-4 h-4" color="#EB4336" />
-                }
-              </span>
-              <div>
-                <p className="text-base font-bold">{formatChannel(item?.channel)}</p>
-                <p className="text-xs text-lightText">{statusTitle?.[item?.status as keyof typeof statusTitle] || item?.status}</p>
+        ) : (
+          <>
+            {data?.data?.map((item: any) => (
+              <div key={item?.id} className="w-full flex justify-between py-3 border-b">
+                <div className="flex items-center space-x-3">
+                  <span className={`w-8 h-8 ${item?.type === 'credit' ? 'bg-success/10' : 'bg-error/10'} p-2 rounded-full`}>
+                    {item?.type === 'credit'
+                      ? <InflowArrow className="w-4 h-4" color="#03543F" />
+                      : <OutflowArrow className="w-4 h-4" color="#EB4336" />
+                    }
+                  </span>
+                  <div>
+                    <p className="text-base font-bold">{formatChannel(item?.channel)}</p>
+                    <p className="text-xs text-lightText">{statusTitle?.[item?.status as keyof typeof statusTitle] || item?.status}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-base font-bold">{formatCurrency(item?.amount, true, accounts?.defaultWallets?.[0]?.currency?.code)}</p>
+                  <p className="text-xs text-lightText">{formatDateTime(item?.date)}</p>
+                </div>
               </div>
-            </div>
-            <div className="text-right">
-              <p className="text-base font-bold">{formatCurrency(item?.amount, true, accounts?.defaultWallets?.[0]?.currency?.code)}</p>
-              <p className="text-xs text-lightText">{formatDateTime(item?.date)}</p>
-            </div>
-          </div>
-        ))}
+            ))}
+            {data?.data?.length < 1 && (
+              <NoData />
+            )}
+          </>
+        )}
         {status === 'error' && (
           <div className="px-5 text-center">{String(error)}</div>
         )}

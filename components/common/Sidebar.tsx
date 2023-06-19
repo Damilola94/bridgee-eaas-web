@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import PropTypes from 'prop-types';
+import { useMutation } from 'react-query';
 
 import { IoIosArrowBack, IoIosArrowDown } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
@@ -15,6 +16,9 @@ import LogoutIcon from '../../assets/svgs/logout.svg';
 import menuList from '../../configs/sidebarMenu';
 import useClickOutsideBox from '../../hooks/useClickOutsideBox';
 import { logout } from '../../services/auth';
+import handleFetch from '../../services/api/handleFetch';
+import Loading from './Loading';
+import notification from '../../utilities/notification';
 
 function Sidebar() {
   const wrapperRef = useRef(null);
@@ -27,12 +31,30 @@ function Sidebar() {
     setShowMenu(!showMenu);
   };
 
+  const logoutMutation = useMutation(handleFetch, {
+    retry: 3,
+    onSuccess: () => logout(),
+    onError: (err: unknown) => {
+      notification({
+        title: 'Logout Failed',
+        message: String(err) || 'Something went wrong.',
+        type: 'danger'
+      });
+    }
+  });
+
   const handleLogout = () => {
-    logout();
+    logoutMutation.mutate({
+      endpoint: 'auth', extra: 'logout', method: 'POST', auth: true
+    });
   };
+
+  const { isLoading, isSuccess } = logoutMutation;
 
   return (
     <div ref={wrapperRef}>
+      {(isLoading || isSuccess) && <Loading message="Logging out..." />}
+
       <div className={`${showMenu ? 'hidden' : ''} fixed cursor-pointer top-5 left-6 z-30 lg:hidden`}>
         <FiMenu
           onClick={toggleMenu}

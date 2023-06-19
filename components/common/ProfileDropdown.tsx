@@ -73,6 +73,24 @@ export default function ProfileDropdown({ className }: { className: string }) {
     }
   });
 
+  const logoutMutation = useMutation(handleFetch, {
+    retry: 3,
+    onSuccess: () => logout(),
+    onError: (err: unknown) => {
+      notification({
+        title: 'Logout Failed',
+        message: String(err) || 'Something went wrong.',
+        type: 'danger'
+      });
+    }
+  });
+
+  const handleLogout = () => {
+    logoutMutation.mutate({
+      endpoint: 'auth', extra: 'logout', method: 'POST', auth: true
+    });
+  };
+
   const handleSwitch = (switchType = 'personal', merchantId = null) => {
     businessMutation.mutate({
       endpoint: 'user',
@@ -85,10 +103,12 @@ export default function ProfileDropdown({ className }: { className: string }) {
   };
 
   const { isLoading } = businessMutation;
+  const { isLoading: isLoggingOut, isSuccess } = logoutMutation;
 
   return (
     <>
       {isLoading && <Loading message={accounts?.user?.isActive ? 'Switching account...' : 'Activating account...'} />}
+      {(isLoggingOut || isSuccess) && <Loading message="Logging out..." />}
 
       <div className={`${className} text-right`}>
         <Menu as="div" className="relative inline-block text-left">
@@ -225,7 +245,7 @@ export default function ProfileDropdown({ className }: { className: string }) {
                   {({ active }) => (
                     <button
                       type="button"
-                      onClick={() => logout()}
+                      onClick={handleLogout}
                       className={`${active ? 'bg-error/5' : 'bg-white'} rounded-b-lg w-full text-error flex items-center px-4 py-2`}
                     >
                       <HiOutlineLogout className="w-5 h-auto mr-2" />
