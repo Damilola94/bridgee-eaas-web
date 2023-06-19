@@ -4,6 +4,9 @@ import { useRouter } from 'next/router';
 import { RxChevronRight } from 'react-icons/rx';
 import { BulletList } from 'react-content-loader';
 
+import InflowArrow from '../../../assets/svg-tsx/InflowArrow';
+import OutflowArrow from '../../../assets/svg-tsx/OutflowArrow';
+
 import { formatCurrency, formatDisbursementType } from '../../../utilities/general';
 import { formatDateTime } from '../../../utilities/dateTime';
 
@@ -63,7 +66,17 @@ function InvoiceHistory({ data, status, error }: Props) {
                     {data?.map((item: any, index: number) => (
                       <tr className="border-t" key={item?.escrowId}>
                         <td className="pl-5 sm:pl-10 pr-3 py-5">{index + 1}</td>
-                        <td className="px-3 py-5">{item?.title}</td>
+                        <td className="px-3 py-5">
+                          <div className="flex items-center space-x-3">
+                            <span className={`w-8 h-8 ${item?.isIncoming ? 'bg-success/10' : 'bg-error/10'} p-2 rounded-full`}>
+                              {item?.isIncoming
+                                ? <InflowArrow className="w-4 h-4" color="#03543F" />
+                                : <OutflowArrow className="w-4 h-4" color="#EB4336" />
+                              }
+                            </span>
+                            <span className="capitalize">{item?.title}</span>
+                          </div>
+                        </td>
                         <td className="px-3 py-5">{`#${item?.invoiceNumber}`}</td>
                         <td className="px-3 py-5">{formatCurrency(item?.amount)}</td>
                         <td className="px-3 py-5">{formatDateTime(item?.createdAt)}</td>

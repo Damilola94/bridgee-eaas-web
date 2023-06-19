@@ -55,7 +55,7 @@ const Index: NextPageWithLayout = () => {
           </div>
 
           <div className="w-full xl:w-5/12 p-4">
-            <ActivityLog />
+            <ActivityLog data={data?.data} />
           </div>
         </div>
       </div>)}

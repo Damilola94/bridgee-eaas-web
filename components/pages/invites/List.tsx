@@ -2,6 +2,9 @@ import React, { useState, useMemo, ChangeEventHandler } from 'react';
 import { useRouter } from 'next/router';
 import { debounce } from 'lodash';
 
+import InflowArrow from '../../../assets/svg-tsx/InflowArrow';
+import OutflowArrow from '../../../assets/svg-tsx/OutflowArrow';
+
 import useGetQuery from '../../../hooks/useGetQuery';
 import { formatDate } from '../../../utilities/dateTime';
 import { formatCurrency } from '../../../utilities/general';
@@ -81,9 +84,19 @@ function InvoiceList({ showFilter = true }) {
                     {data?.data?.paginatedData?.map((item: any, index: number) => (
                       <tr className={`border-t ${item?.invitationDirection === 'incoming' ? 'bg-primary bg-opacity-[0.03]' : ''}`} key={item?.inviteNumber}>
                         <td className="pl-5 sm:pl-10 pr-3 py-5">{index + 1}</td>
-                        <td className="px-3 py-5">{item?.title}</td>
-                        <td className="px-3 py-5">{`${item?.sender}${item?.invitationDirection === 'incoming' ? '' : ' (Me)'}`}</td>
-                        <td className="px-3 py-5">{`${item?.receiver}${item?.invitationDirection === 'incoming' ? ' (Me)' : ''}`}</td>
+                        <td className="px-3 py-5">
+                          <div className="flex items-center space-x-3">
+                            <span className={`w-8 h-8 ${item?.invitationDirection === 'incoming' ? 'bg-success/10' : 'bg-error/10'} p-2 rounded-full`}>
+                              {item?.invitationDirection === 'incoming'
+                                ? <InflowArrow className="w-4 h-4" color="#03543F" />
+                                : <OutflowArrow className="w-4 h-4" color="#EB4336" />
+                              }
+                            </span>
+                            <span className="capitalize">{item?.title}</span>
+                          </div>
+                        </td>
+                        <td className="px-3 py-5">{item?.sender}</td>
+                        <td className="px-3 py-5">{item?.receiver}</td>
                         <td className="px-3 py-5">{formatCurrency(item?.amount)}</td>
                         <td className="px-3 py-5">{formatDate(item?.expires)}</td>
                         <td className="px-3 py-5">
