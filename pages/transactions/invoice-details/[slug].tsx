@@ -27,7 +27,7 @@ const Index: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Bridge by ALAT - Create Invoice</title>
+        <title>Bridge by ALAT - Invoice Details</title>
       </Head>
 
       {status === 'loading' && <Loading />}

@@ -1,4 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { RiFileCopyLine } from 'react-icons/ri';
+
 import { useAccountsContext } from '../../../context/Accounts';
 
 import Modal from '../../common/Modal';
@@ -10,6 +14,7 @@ type Props = {
 
 function BankTransferModal({ onClose }: Props) {
   const { accounts } = useAccountsContext();
+  const [copiedAccountNo, setCopiedAccountNo] = useState(false);
 
   return (
     <Modal isOpen onClose={onClose} maxWidth='max-w-[400px]'>
@@ -21,7 +26,20 @@ function BankTransferModal({ onClose }: Props) {
         <div className="w-full">
           <div className="w-full text-center bg-secondary rounded-xl px-5 py-5 mb-10">
             <h4 className="font-bold text-lg mb-1">Wema Bank</h4>
-            <h2 className="ff-heavy text-2xl mb-3">{accounts?.defaultWallets?.[0]?.virtualAccount}</h2>
+            <h2 className="flex ff-heavy text-2xl justify-center items-center mb-3">
+              <span className="mr-4">{accounts?.defaultWallets?.[0]?.virtualAccount}</span>
+              {copiedAccountNo
+                ? <span className="text-[#9CA3AF] text-sm">Copied</span>
+                : (
+                  <CopyToClipboard
+                    text={accounts?.defaultWallets?.[0]?.virtualAccount}
+                    onCopy={() => setCopiedAccountNo(true)}
+                  >
+                    <RiFileCopyLine className="text-[#9CA3AF] cursor-pointer" />
+                  </CopyToClipboard>
+                )}
+            </h2>
+
             <p className="">To fund your wallet for any transaction, please use this account number.</p>
           </div>
           <Button
