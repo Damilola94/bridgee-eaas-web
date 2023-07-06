@@ -48,10 +48,10 @@ function BankTransferModal({ onClose }: Props) {
             paddingX="px-10"
             bgColor="bg-white"
             textColor="text-success"
-            className="w-full text-lg ff-bold !rounded-md mdx2:!rounded-xl"
+            className="w-full text-lg ff-bold !rounded-md mdx2:!rounded-xl hover:bg-success hover:text-white"
             paddingY="p-3.5"
           >
-            Okay
+            I&apos;ve sent the money
           </Button>
         </div>
       </div>

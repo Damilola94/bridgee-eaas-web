@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { formatDateTime } from '../../../utilities/dateTime';
+import NoData from '../../common/NoData';
 
 function ActivityLog({ data = {} }: { data: any }) {
   return (
@@ -22,6 +23,8 @@ function ActivityLog({ data = {} }: { data: any }) {
               </li>
             ))}
           </ul>
+
+          {data?.activities?.length < 1 && <NoData message="No activity yet" py="py-5" />}
         </div>
       </div>
     </div>

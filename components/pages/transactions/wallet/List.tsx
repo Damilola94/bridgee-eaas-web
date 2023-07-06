@@ -3,22 +3,18 @@ import React, { useState, useMemo, ChangeEventHandler } from 'react';
 import { useRouter } from 'next/router';
 import { debounce } from 'lodash';
 
-import InflowArrow from '../../../../assets/svg-tsx/InflowArrow';
-import OutflowArrow from '../../../../assets/svg-tsx/OutflowArrow';
-
 import useGetQuery from '../../../../hooks/useGetQuery';
 import { useAccountsContext } from '../../../../context/Accounts';
-import { formatApiDate, formatDateTime } from '../../../../utilities/dateTime';
-import { formatChannel, formatCurrency } from '../../../../utilities/general';
+import { formatApiDate } from '../../../../utilities/dateTime';
 
 import NoData from '../../../common/NoData';
 import Loading from '../../../common/Loading';
-import TransactionStatus from '../../../common/TransactionStatus';
 import Pagination from '../../../common/Pagination';
 import SearchInput from '../../../inputs/Search';
 import Filter from './Filter';
 
 import { PAGE_SIZE } from '../../../../data/constants';
+import ListItem from './ListItem';
 
 function TransactionList() {
   const { accounts } = useAccountsContext();
@@ -94,35 +90,7 @@ function TransactionList() {
                 data?.data?.transactions?.length > 0 ? (
                   <>
                     {data?.data?.transactions.map((item: any, index: number) => (
-                      <tr className="border-t" key={item?.id}>
-                        <td className="pl-5 sm:pl-10 pr-3 py-5">{index + 1}</td>
-                        <td className="px-3 py-5">
-                          <div className="flex items-center space-x-3">
-                            <span className={`w-8 h-8 ${item?.type === 'credit' ? 'bg-success/10' : 'bg-error/10'} p-2 rounded-full`}>
-                              {item?.type === 'credit'
-                                ? <InflowArrow className="w-4 h-4" color="#03543F" />
-                                : <OutflowArrow className="w-4 h-4" color="#EB4336" />
-                              }
-                            </span>
-                            <span className="capitalize">{item?.type}</span>
-                          </div>
-                        </td>
-                        <td className="px-3 py-5">{item?.transactionReference}</td>
-                        <td className="px-3 py-5">{formatCurrency(item?.amount, true, accounts?.defaultWallets?.[0]?.currency?.code)}</td>
-                        <td className="px-3 py-5">{formatChannel(item?.channel)}</td>
-                        <td className="px-3 py-5">
-                          <TransactionStatus status={item?.status} />
-                        </td>
-                        <td className="px-3 py-5">{formatDateTime(item?.date)}</td>
-                        <td className="pr-5 sm:pr-10 pl-3 py-5">
-                          <button
-                            type="button"
-                            className="border border-black rounded-lg px-3 py-1.5 hover:bg-gray-100"
-                          >
-                            View
-                          </button>
-                        </td>
-                      </tr>
+                      <ListItem key={item?.id} data={item} index={index} />
                     ))}
                     <tr>
                       <td colSpan={8} className="pt-4">
