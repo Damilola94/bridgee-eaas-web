@@ -40,7 +40,7 @@ export default function ProfileDropdown({ className }: { className: string }) {
   const [cookie] = useCookies(['data']);
   const { accounts } = useAccountsContext();
 
-  const [userPix, setUserPix] = useState<string | null>(null);
+  const [userPix, setUserPix] = useState<string | undefined>(undefined);
   const [imgHasError, setImgHasError] = useState(false);
   const [showBusinessForm, setShowBusinessForm] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);

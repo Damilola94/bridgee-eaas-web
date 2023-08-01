@@ -15,9 +15,11 @@ type Props = {
 function FileInput({
   value, onChange, name, disabled, readOnly, label
 }: Props) {
+
   const onClick = () => {
     document.getElementById(name || '')?.click();
   };
+
   return (
     <div className="relative">
       <TextInput

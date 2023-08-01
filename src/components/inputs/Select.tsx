@@ -1,7 +1,7 @@
 import React from 'react';
 import Select, { MultiValue, SingleValue, ActionMeta } from 'react-select';
 
-type SelectOptionType = { label: string, value: string | number }
+export type SelectOptionType = { label: string, value: string | number }
 
 type SelectProps = {
   className: string,
@@ -23,7 +23,7 @@ function SelectInput({
 }: SelectProps) {
   return (
     <div className={`${className || ''} relative`}>
-      {label && <label htmlFor={name} className="flex mb-1">{label}</label>}
+      {label && <label className="flex mb-1">{label}</label>}
 
       <Select
         classNames={{

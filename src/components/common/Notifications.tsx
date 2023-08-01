@@ -1,7 +1,6 @@
 import React, {
   useEffect, useState, useRef, useCallback
 } from 'react';
-import { IoMdClose } from 'react-icons/io';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { BulletList } from 'react-content-loader';
 import { useCookies } from 'react-cookie';
@@ -10,7 +9,7 @@ import Image from 'next/image';
 
 import BellIcon from '../../assets/svgs/notification.svg';
 import Loading from '../../assets/svgs/loading.svg';
-import UserAvater from '../../assets/images/profile-pic.jpg';
+import UserAvatar from '../../assets/images/profile-pic.jpg';
 import { formatFileUrl } from '../../utilities/general';
 import { formatTimeFromNow } from '../../utilities/dateTime';
 import useClickOutsideBox from '../../hooks/useClickOutsideBox';
@@ -65,7 +64,6 @@ function Notifications({ isResponsive }: { isResponsive?: boolean }) {
         >
           <div className="w-full flex items-center justify-between py-4 px-5 border-b border-borderColor">
             <h2 className="text-xl font-bold">Notifications</h2>
-            <IoMdClose className="cursor-pointer w-8 h-auto hover:text-primary" onClick={() => setOpen(false)} />
           </div>
           <div className="h-[300px] overflow-auto">
             <div className="w-full py-5">
@@ -97,13 +95,13 @@ function Notifications({ isResponsive }: { isResponsive?: boolean }) {
 Notifications.defaultProps = { responsive: false };
 
 function NotificationItem({ details }: { details: NotificationProps}) {
-  const [userPix, setUserPix] = useState<string | null>(null);
+  const [userPix, setUserPix] = useState<string | undefined>(undefined);
   const [imgHasError, setImgHasError] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
   const [isRead, setIsRead] = useState(details?.read);
 
   useEffect(() => {
-    if (!imgHasError) setUserPix(formatFileUrl(details.profilePicture));
+    if (!imgHasError) setUserPix(formatFileUrl(details?.profilePicture));
   }, [imgHasError, details]);
 
   const handleImgError = () => {
@@ -151,7 +149,7 @@ function NotificationItem({ details }: { details: NotificationProps}) {
     <div className={`w-full flex px-5 py-3 border-b border-borderColor last:border-b-0 ${isRead ? '' : 'bg-primary/5'}`}>
       <Image
         onError={handleImgError}
-        src={userPix || UserAvater}
+        src={userPix || UserAvatar}
         className="w-10 h-10 mr-3 rounded-full"
         alt="notification"
       />

@@ -8,11 +8,12 @@ class MyDocument extends Document {
       <Html>
         <Head>
           <link rel="icon" href="/favicon.svg" />
-          <meta name="description" content="Plan your Finances, all in one place" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <meta name="description" content="Shield yourself from online scams, protect your transactions with Bridge by ALAT" />
           <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;900&display=swap" rel="stylesheet" />
         </Head>
+
         <body>
           <Main />
           <NextScript />

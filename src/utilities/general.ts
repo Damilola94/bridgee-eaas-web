@@ -44,7 +44,7 @@ export const format2Digits = (num: number) => {
 
 export const formatFileUrl = (path: string) => {
   if (path) return `${process.env.NEXT_PUBLIC_API_BASE_URL}/${path}`;
-  return null;
+  return undefined;
 };
 
 export const toggleScroll = () => {
@@ -61,14 +61,14 @@ export const convertImgToBase64 = (inputFile: File) => {
   if (inputFile === undefined) return '';
   const file = new FileReader();
 
-  return new Promise((resolve, reject) => {
+  return new Promise<string>((resolve, reject) => {
     file.onerror = () => {
       file.abort();
       reject(new DOMException('Problem parsing input file.'));
     };
 
     file.onload = () => {
-      resolve(file.result);
+      resolve(String(file.result));
     };
     file.readAsDataURL(inputFile);
   });
