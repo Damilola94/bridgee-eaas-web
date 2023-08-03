@@ -6,6 +6,7 @@ import { convertImgToBase64 } from '../../../../utilities/general';
 import notification from '../../../../utilities/notification';
 
 import Button from '../../../inputs/Button';
+import SelectInput from '../../../inputs/Select';
 import TextareaInput from '../../../inputs/Textarea';
 
 function NewProposalForm({ onClose }: { onClose: () => void }) {
@@ -83,8 +84,16 @@ function NewProposalForm({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="w-full">
-      <p className="text-base font-bold mb-2">New Proposal</p>
-      <TextareaInput rows={4} className="mb-5" value={proposal} onChange={(e) => setProposal(e.target.value)} />
+      <p className="text-base font-bold mb-2">Comment</p>
+
+      <TextareaInput
+        rows={4}
+        className="mb-5"
+        value={proposal}
+        onChange={(e) => setProposal(e.target.value)}
+      />
+
+      <SelectInput label='New Proposal' className="mb-7" />
 
       <div className="w-full">
         <label className="flex mb-1">Upload Files (Supported file types are pdf, docx, doc, jpeg, png and gif)</label>
@@ -112,13 +121,13 @@ function NewProposalForm({ onClose }: { onClose: () => void }) {
         ))}
       </div>
 
-      <div className="w-full flex space-x-3 mb-3">
-        <Button paddingY="py-2.5" className="w-full">Send Proposal</Button>
+      <div className="w-full flex space-x-3">
+        <Button paddingY="py-2" className="">Send Proposal</Button>
         <Button
           onClick={onClose}
-          paddingY="py-2.5" className="w-full" border borderColor="border-error" textColor="text-error" bgColor="bg-white"
+          paddingY="py-2" className="" border borderColor="border-error" textColor="text-error" bgColor="bg-white"
         >
-          Cancel Proposal
+          Cancel
         </Button>
       </div>
     </div>
