@@ -10,7 +10,7 @@ import Button from '../../../inputs/Button';
 import FormIndicator from './FormIndicator';
 import OpenDispute from './OpenDispute';
 import DisputeGuide from './DisputeGuide';
-import DisputeProgress from './DisputeProgress';
+import DisputeActivities from './DisputeActivities';
 
 import useGetQuery from '../../../../hooks/useGetQuery';
 import Loading from '../../../common/Loading';
@@ -142,8 +142,8 @@ function ManageDisputeContainer() {
 
               <div className="w-full">
                 {formIndex === 0 && <OpenDispute onNext={() => setFormIndex(1)} />}
-                {formIndex === 1 && <DisputeProgress onNext={() => setFormIndex(2)} />}
-                {formIndex === 2 && <DisputeProgress onNext={() => setFormIndex(2)} />}
+                {formIndex === 1 && <DisputeActivities onNext={() => setFormIndex(2)} />}
+                {formIndex === 2 && <DisputeActivities onNext={() => setFormIndex(2)} />}
               </div>
             </div>
 

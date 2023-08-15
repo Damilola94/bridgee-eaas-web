@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 
 const forms = [
   'Open Dispute',
-  'Bridge Steps in',
+  'Negotiation',
   'Dispute Closed'
 ];
 

@@ -9,6 +9,13 @@ import Button from '../../../inputs/Button';
 import SelectInput from '../../../inputs/Select';
 import TextareaInput from '../../../inputs/Textarea';
 
+const proposalOptions = [
+  { label: 'Refund', value: 'refund' },
+  { label: 'Replace order', value: 'replace' },
+  { label: 'Ship additional item', value: 'ship-additional' },
+  { label: 'Full refund with return of order', value: 'refund-and-return' }
+];
+
 function NewProposalForm({ onClose }: { onClose: () => void }) {
   const [proposal, setProposal] = useState('');
   const [b64FileArray, setB64FileArray] = useState<string []>([]);
@@ -84,19 +91,19 @@ function NewProposalForm({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="w-full">
-      <p className="text-base font-bold mb-2">Comment</p>
+      <p className="text-base mb-1">Comment</p>
 
       <TextareaInput
-        rows={4}
+        rows={3}
         className="mb-5"
         value={proposal}
         onChange={(e) => setProposal(e.target.value)}
       />
 
-      <SelectInput label='New Proposal' className="mb-7" />
+      <SelectInput label='New Proposal' className="mb-7" options={proposalOptions} />
 
       <div className="w-full">
-        <label className="flex mb-1">Upload Files (Supported file types are pdf, docx, doc, jpeg, png and gif)</label>
+        <label className="flex mb-1">Upload Evidence</label>
         <button
           onClick={handleFilesUpload}
           className="w-full flex justify-center outline-none border border-dashed rounded-lg py-2.5 bg-inputBg"
@@ -104,6 +111,7 @@ function NewProposalForm({ onClose }: { onClose: () => void }) {
           <HiOutlineCloudUpload className="w-6 h-6 text-success mr-3" />
           <span className="text-lightText font-bold mt-1">Click to upload a new document</span>
         </button>
+        <p className="text-lightText">PNG, JPG, PDF, GIF.  Max. 1MB</p>
         <input type="file" hidden id="image-upload" />
       </div>
       <div className="mb-8">

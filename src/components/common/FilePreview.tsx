@@ -1,36 +1,25 @@
-import React, { useState } from 'react';
+import React from 'react';
+import Link from 'next/link';
 
-import { formatFileUrl } from '../../utilities/general';
-import Modal from './Modal';
+import { FaFileImage } from 'react-icons/fa';
 
-function FilePreview({ file }: { file: any }) {
-  const [show, setShow] = useState(false);
-
+function FilePreview({ file }: { file: { filename: string, filepath: string } }) {
   return (
     <>
       <div className="flex items-center mt-2">
-        <button
-          type="button"
-          className="underline flex text-sm text-blue-400 mr-3"
-          onClick={() => setShow(true)}
-        >
-          {file.fileName}
-        </button>
-      </div>
+        <p className="flex items-center">
+          <FaFileImage className="w-5 h-5 mr-2" />
+          {file.filename}
+        </p>
 
-      {show && (
-        <Modal
-          isOpen={show}
-          onClose={() => setShow(false)}
+        <Link
+          href={file.filepath}
+          target="_blank"
+          className="text-sm text-success hover:underline ml-10"
         >
-          <iframe
-            title={file.fileName}
-            src={`https://docs.google.com/gview?url=${formatFileUrl(file.documentPath)}&embedded=true`}
-            className="w-full h-full"
-            frameBorder="0"
-          />
-        </Modal>
-      )}
+          View evidence
+        </Link>
+      </div>
     </>
   );
 }

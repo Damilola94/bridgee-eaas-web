@@ -23,11 +23,12 @@ const requestOptions = [
 ];
 
 const reasonOptions = [
-  { label: 'Defective or Damaged Product', value: 'Defective or Damaged Product' },
-  { label: 'Wrong item or size', value: 'Wrong item or size' },
-  { label: 'Item not as described', value: 'Item not as described' },
-  { label: 'Expired or short shelf life', value: 'Expired or short shelf life' },
-  { label: 'Missing parts or accessories', value: 'Missing parts or accessories' }
+  { label: 'Non-Conformance to Description', value: 'Non-Conformance to Description' },
+  { label: 'Counterfeit or Fraudulent Items', value: 'Counterfeit or Fraudulent Items' },
+  { label: 'Damaged or Defective Goods', value: 'Damaged or Defective Goods' },
+  { label: 'Incomplete or Missing Deliverables', value: 'Incomplete or Missing Deliverables' },
+  { label: 'Delivery to Wrong Address', value: 'Delivery to Wrong Address' },
+  { label: 'Disputed Inspection Results', value: 'Disputed Inspection Results' }
 ];
 
 function OpenDispute({ onNext = () => {} }: { onNext?: () => void }) {
@@ -111,13 +112,24 @@ function OpenDispute({ onNext = () => {} }: { onNext?: () => void }) {
           <h3 className="font-bold text-xl ff-bold mb-2">Open Dispute</h3>
         </div>
 
+        <div className="w-full mb-8">
+          <SelectInput
+            name="reason"
+            value={reason}
+            options={reasonOptions}
+            onChange={(val: any) => setReason(val)}
+            label="Dispute Reason"
+            className=""
+          />
+        </div>
+
         <div className="w-full mb-6">
-          <h3 className="text-base ff-bold font-bold mb-1">Dispute Request</h3>
+          <h3 className="">Proposal</h3>
 
           <div className="w-full">
             <div className="flex flex-wrap -mx-2">
               {requestOptions.map((item) => (
-                <div className="w-full sm:w-1/2 p-2" key={item?.value}>
+                <div className="w-full sm:w-1/2 px-2 py-1" key={item?.value}>
                   <div
                     role="presentation"
                     onClick={() => setRequest(item?.value)}
@@ -141,19 +153,8 @@ function OpenDispute({ onNext = () => {} }: { onNext?: () => void }) {
           </div>
         </div>
 
-        <div className="w-full mb-8">
-          <SelectInput
-            name="reason"
-            value={reason}
-            options={reasonOptions}
-            onChange={(val: any) => setReason(val)}
-            label="Dispute Reason"
-            className=""
-          />
-        </div>
-
         <div className="w-full">
-          <label className="flex mb-1">Upload Evidence (Supported file types are pdf, docx, doc, jpeg, png and gif)</label>
+          <label className="flex mb-1">Upload Evidence</label>
           <button
             onClick={handleFilesUpload}
             className="w-full flex justify-center outline-none border border-dashed rounded-lg py-2.5 bg-inputBg"
@@ -161,6 +162,7 @@ function OpenDispute({ onNext = () => {} }: { onNext?: () => void }) {
             <HiOutlineCloudUpload className="w-6 h-6 text-success mr-3" />
             <span className="text-lightText font-bold mt-1">Click to upload a new document</span>
           </button>
+          <p className="text-lightText">PNG, JPG, PDF, GIF.  Max. 1MB</p>
           <input type="file" hidden id="image-upload" />
         </div>
         <div className="mb-10">

@@ -18,6 +18,7 @@ export type OrderListItemProps = {
   amount?: string | number;
   quantity?: string | number;
   size?: number;
+  weight?: number;
   total?: number;
 };
 
@@ -26,4 +27,13 @@ export type RecipientDetailsProps = {
   recipientName?: string;
   phoneNumber?: string;
   email?: string;
+};
+
+export type ReturnFormProps = {
+  escrowItems?: OrderListItemProps[];
+  weight?: string | number;
+  isDeliveryOnUs?: boolean;
+  pickUpAddress?: string;
+  inspectionDuration?: string;
+  recipientDetails?: RecipientDetailsProps;
 };
