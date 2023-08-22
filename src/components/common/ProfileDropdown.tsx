@@ -118,7 +118,7 @@ export default function ProfileDropdown({ className }: { className: string }) {
                 <Image
                   onError={handleImgError}
                   src={userPix || (accounts?.defaultMerchant ? BusinessPix : ProfilePix)}
-                  alt="user avater"
+                  alt="user avatar"
                   width={40}
                   height={40}
                   className="rounded-full mr-1 w-auto h-auto"

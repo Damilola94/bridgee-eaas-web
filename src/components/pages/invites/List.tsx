@@ -18,7 +18,7 @@ import Pagination from '../../common/Pagination';
 
 import { PAGE_SIZE } from '../../../data/constants';
 
-function InvoiceList({ showFilter = true }) {
+function InviteList() {
   const router = useRouter();
   const [pageNumber, setPageNumber] = useState(0);
   const [searchText, setSearchText] = useState('');
@@ -51,16 +51,14 @@ function InvoiceList({ showFilter = true }) {
       <div className="w-full bg-white shadow-md rounded-lg overflow-hidden">
         <div className="flex flex-wrap items-center justify-between px-5 sm:px-10 py-5">
           <h3 className="font-bold text-lg mr-5 mb-2">Invites</h3>
-          {showFilter && (
-            <div className="max-w-xs w-full">
-              <SearchInput
-                value={searchText}
-                onChange={handleSearch}
-                className="w-full max-w-xs"
-                height="h-[35.6px]"
-              />
-            </div>
-          )}
+          <div className="max-w-xs w-full">
+            <SearchInput
+              value={searchText}
+              onChange={handleSearch}
+              className="w-full max-w-xs"
+              height="h-[35.6px]"
+            />
+          </div>
         </div>
 
         <div className="w-full overflow-auto pb-20">
@@ -70,7 +68,7 @@ function InvoiceList({ showFilter = true }) {
                 <th className="pl-5 sm:pl-10 pr-3 py-5">#</th>
                 <th className="px-3 py-5">Invoice Title</th>
                 <th className="px-3 py-5">Sender Name</th>
-                <th className="px-3 py-5">Reciever Email</th>
+                <th className="px-3 py-5">Receiver Email</th>
                 <th className="px-3 py-5">Amount</th>
                 <th className="px-3 py-5">Expiry Date</th>
                 <th className="px-3 py-5">Status</th>
@@ -152,4 +150,4 @@ function InvoiceList({ showFilter = true }) {
   );
 }
 
-export default InvoiceList;
+export default InviteList;

@@ -72,7 +72,7 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
                 onChange={(e) => handleChange(e, 'recipient')}
                 label="Full Name"
                 className="w-full mb-4"
-                placeholder="Recipient’s Name"
+                placeholder="Recipient's Name"
               />
             </div>
             <div className="w-full sm:w-1/2 px-2">
@@ -83,7 +83,7 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
                 className="w-full mb-4"
                 label="Email"
                 type="email"
-                placeholder="Recipient’s Email"
+                placeholder="Recipient's Email"
               />
             </div>
           </div>

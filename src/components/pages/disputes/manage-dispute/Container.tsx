@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { HiOutlineArrowLeft } from 'react-icons/hi';
@@ -16,64 +16,26 @@ import useGetQuery from '../../../../hooks/useGetQuery';
 import Loading from '../../../common/Loading';
 import { formatDateTime } from '../../../../utilities/dateTime';
 import { formatCurrency } from '../../../../utilities/general';
+import { useDisputeContext } from '../../../../context/Dispute';
 
 function ManageDisputeContainer() {
   const router = useRouter();
+  const { setDispute } = useDisputeContext();
   const [formIndex, setFormIndex] = useState(0);
 
   const { data, status, error } = useGetQuery({
     endpoint: 'escrow',
-    queryKey: ['escrow', router?.query?.slug],
+    queryKey: ['escrow-details', router?.query?.slug],
     param: router?.query?.slug,
     enabled: !!router?.query?.slug
   });
 
-  // "data": {
-  //   "sellerDetails": {
-  //       "name": "Robert Eru",
-  //       "address": "N/A",
-  //       "pictPath": "https://bridge-alat.netlify.app/_next/static/media/logo.06df0a0f.svg"
-  //   },
-  //   "escrowId": "7114cceb-9cec-4e00-bf8f-884010c10ea4",
-  //   "title": "Mac Product",
-  //   "invoiceNumber": "6984348",
-  //   "totalAmount": 100000.00,
-  //   "amountPaid": 100000.00,
-  //   "fee": 0,
-  //   "deliveryFee": 0,
-  //   "recipientDetails": {
-  //       "address": "River road abraka",
-  //       "name": "Chuknonso",
-  //       "phoneNumber": "08162487592",
-  //       "email": "chuksjoe@live.com"
-  //   },
-  //   "items": [
-  //       {
-  //           "name": "Aipod",
-  //           "quantity": 1,
-  //           "weight": 2,
-  //           "unitPrice": 100000.00,
-  //           "totalAmount": 100000.00
-  //       }
-  //   ],
-  //   "activities": [
-  //       {
-  //           "title": "Order accepted",
-  //           "datetime": "2023-06-16T05:49:42.2233333"
-  //       }
-  //   ],
-  //   "dueDate": null,
-  //   "totalItemWeight": 2,
-  //   "inspectionDay": 7,
-  //   "disbursementType": "onetime",
-  //   "status": "completed",
-  //   "agreementWrittenTerms": "<p>I dont  refund</p>",
-  //   "agreemmentDocPath": "",
-  //   "createAt": "2023-06-16T05:47:33.9233333",
-  //   "updatedAt": "0001-01-01T00:00:00",
-  //   "deliveryStatus": "Delivered",
-  //   "isSeller": false
-  // }
+  useEffect(() => {
+    if (status === 'success' && data?.data?.disputes?.[0]?.id) {
+      setDispute(data?.data?.disputes?.[0]);
+      setFormIndex(1);
+    }
+  }, [status, data, setDispute]);
 
   return (
     <div className="w-full">

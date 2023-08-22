@@ -30,7 +30,7 @@ function InvoiceList({ isDashboard = false }) {
 
   const { data, status, error } = useGetQuery({
     endpoint: 'escrow',
-    queryKey: ['escrow', router?.query?.status, pageNumber, search, filter],
+    queryKey: ['escrow-list', router?.query?.status, pageNumber, search, filter],
     pQuery: {
       escrowSatus: router?.query?.status === 'all' ? null : router?.query?.status,
       start: formatApiDate(filter?.startDate),

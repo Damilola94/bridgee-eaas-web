@@ -21,7 +21,7 @@ export const AccountsContext = createContext<valueProps>({ accounts: null, setAc
 
 function AccountsContextProvider({ children }: Props) {
   const [accounts, setAccounts] = useState<any>(null);
-  const listFilterVal = useMemo(() => ({ accounts, setAccounts }), [accounts]);
+  const accountsMemo = useMemo(() => ({ accounts, setAccounts }), [accounts]);
 
   const { data, status, isFetching } = useGetQuery({
     endpoint: 'dashboard', extra: 'comprehensive-user-details', queryKey: ['accounts-context']
@@ -38,7 +38,7 @@ function AccountsContextProvider({ children }: Props) {
   }
 
   return (
-    <AccountsContext.Provider value={listFilterVal}>
+    <AccountsContext.Provider value={accountsMemo}>
       {children}
     </AccountsContext.Provider>
   );

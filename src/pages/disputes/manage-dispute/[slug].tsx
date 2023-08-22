@@ -6,6 +6,7 @@ import type { NextPageWithLayout } from '../../_app';
 
 import Layout from '../../../components/wrappers/Layout';
 import ManageDisputeContainer from '../../../components/pages/disputes/manage-dispute/Container';
+import DisputeContextProvider from '../../../context/Dispute';
 
 const ManageDispute: NextPageWithLayout = () => {
   return (
@@ -14,7 +15,9 @@ const ManageDispute: NextPageWithLayout = () => {
         <title>Bridge by ALAT - Manage Dispute</title>
       </Head>
 
-      <ManageDisputeContainer />
+      <DisputeContextProvider>
+        <ManageDisputeContainer />
+      </DisputeContextProvider>
     </>
   );
 };

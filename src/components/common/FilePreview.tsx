@@ -3,6 +3,8 @@ import Link from 'next/link';
 
 import { FaFileImage } from 'react-icons/fa';
 
+import { formatFileUrl } from '../../utilities/general';
+
 function FilePreview({ file }: { file: { filename: string, filepath: string } }) {
   return (
     <>
@@ -13,7 +15,7 @@ function FilePreview({ file }: { file: { filename: string, filepath: string } })
         </p>
 
         <Link
-          href={file.filepath}
+          href={formatFileUrl(file.filepath) || ''}
           target="_blank"
           className="text-sm text-success hover:underline ml-10"
         >

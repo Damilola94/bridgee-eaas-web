@@ -1,41 +1,45 @@
 import React, { useState } from 'react';
 
-import { FaCheck } from 'react-icons/fa';
 import { HiOutlineCloudUpload } from 'react-icons/hi';
 import { RiDeleteBin5Line } from 'react-icons/ri';
+import { useMutation, useQueryClient } from 'react-query';
+import { useRouter } from 'next/router';
 
 import Button from '../../../inputs/Button';
 import { convertImgToBase64 } from '../../../../utilities/general';
 import notification from '../../../../utilities/notification';
 import SelectInput, { SelectOptionType } from '../../../inputs/Select';
-
-const requestOptions = [
-  {
-    value: 'refund',
-    header: 'Refund',
-    desc: 'An escrow transaction involving just two parties/entities (buyer and seller).'
-  },
-  {
-    value: 'replace-goods',
-    header: 'Replace Goods',
-    desc: 'An escrow transaction involving just two parties/entities (buyer and seller).'
-  }
-];
-
-const reasonOptions = [
-  { label: 'Non-Conformance to Description', value: 'Non-Conformance to Description' },
-  { label: 'Counterfeit or Fraudulent Items', value: 'Counterfeit or Fraudulent Items' },
-  { label: 'Damaged or Defective Goods', value: 'Damaged or Defective Goods' },
-  { label: 'Incomplete or Missing Deliverables', value: 'Incomplete or Missing Deliverables' },
-  { label: 'Delivery to Wrong Address', value: 'Delivery to Wrong Address' },
-  { label: 'Disputed Inspection Results', value: 'Disputed Inspection Results' }
-];
+import { reasonOptions, proposalOptions } from '../../../../data/dispute';
+import handleFetch from '../../../../services/api/handleFetch';
+import Loading from '../../../common/Loading';
 
 function OpenDispute({ onNext = () => {} }: { onNext?: () => void }) {
-  const [request, setRequest] = useState('refund');
+  const router = useRouter();
+
   const [reason, setReason] = useState<SelectOptionType>();
+  const [proposal, setProposal] = useState<SelectOptionType>();
   const [b64FileArray, setB64FileArray] = useState<string []>([]);
   const [fileArray, setFileArray] = useState<File []>([]);
+
+  const queryClient = useQueryClient();
+  const disputeMutation = useMutation(handleFetch, {
+    onSuccess: (res: any) => {
+      queryClient.invalidateQueries(['escrow-details']);
+      notification({
+        title: 'Successful',
+        message: res?.message || 'Dispute opened successfully',
+        type: 'success'
+      });
+      onNext();
+    },
+    onError: (err: any) => {
+      notification({
+        title: 'Error',
+        message: err?.toString() || 'Something went wrong.',
+        type: 'danger'
+      });
+    }
+  });
 
   const handleFilesUpload = () => {
     const uploadField = document.getElementById('image-upload') as HTMLInputElement;
@@ -105,52 +109,62 @@ function OpenDispute({ onNext = () => {} }: { onNext?: () => void }) {
     setB64FileArray(newB64list);
   };
 
+  const validateForm = () => {
+    if (!reason?.value) return 'The dispute reason is required';
+    if (!proposal?.value) return 'Your proposal is required';
+    return null;
+  };
+
+  const handleSubmit = () => {
+    const error = validateForm();
+
+    if (error) {
+      notification({ title: 'Form Error', message: error, type: 'danger' });
+      return;
+    }
+
+    const body = new FormData();
+
+    body.append('invoiceId', String(router?.query?.slug));
+    body.append('disputeReasons', String(reason?.value));
+    body.append('proposal', String(proposal?.value));
+
+    fileArray.forEach((file: File) => {
+      body.append('evidence', file);
+    });
+
+    disputeMutation.mutate({
+      endpoint: 'dispute', extra: 'open-dispute', body, method: 'POST', auth: true, multipart: true
+    });
+  };
+
+  const { isLoading } = disputeMutation;
+
   return (
     <div>
+      {isLoading && <Loading />}
+
       <div className="w-full bg-white px-10 py-8 rounded-lg shadow-md">
         <div className="w-full mb-6">
           <h3 className="font-bold text-xl ff-bold mb-2">Open Dispute</h3>
         </div>
 
-        <div className="w-full mb-8">
+        <div className="w-full mb-5">
           <SelectInput
-            name="reason"
             value={reason}
-            options={reasonOptions}
+            options={reasonOptions || []}
             onChange={(val: any) => setReason(val)}
             label="Dispute Reason"
-            className=""
           />
         </div>
 
-        <div className="w-full mb-6">
-          <h3 className="">Proposal</h3>
-
-          <div className="w-full">
-            <div className="flex flex-wrap -mx-2">
-              {requestOptions.map((item) => (
-                <div className="w-full sm:w-1/2 px-2 py-1" key={item?.value}>
-                  <div
-                    role="presentation"
-                    onClick={() => setRequest(item?.value)}
-                    className={`w-full h-full rounded-lg ${request === item?.value
-                      ? 'border-success border-2' : 'border'} bg-secondary p-5 cursor-pointer`}
-                  >
-                    <div className="w-full relative">
-                      <span
-                        className={`rounded-full inline-block ${request === item?.value
-                          ? 'bg-primary' : 'bg-gray-400'} p-1 w-5 h-5 absolute right-0`}
-                      >
-                        <FaCheck className="text-white w-3 h-3" />
-                      </span>
-                      <h3 className="text-base ff-bold font-bold mb-2 pr-6">{item?.header}</h3>
-                      <p className="">{item?.desc}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div className="w-full mb-5">
+          <SelectInput
+            value={proposal}
+            options={proposalOptions || []}
+            onChange={(val: any) => setProposal(val)}
+            label="Proposal"
+          />
         </div>
 
         <div className="w-full">
@@ -181,7 +195,7 @@ function OpenDispute({ onNext = () => {} }: { onNext?: () => void }) {
         </div>
 
         <div className="w-full mb-3">
-          <Button paddingY="py-3" className="w-full" onClick={onNext}>Open Dispute</Button>
+          <Button paddingY="py-3" className="w-full" onClick={handleSubmit}>Open Dispute</Button>
         </div>
       </div>
     </div>

@@ -20,7 +20,11 @@ export const statusColors = {
   failed: '#9B1C1C',
 
   rejected: '#9B1C1C',
-  accepted: '#03543F'
+  accepted: '#03543F',
+
+  Open: '#5521B5',
+  Resolved: '#03543F',
+  Closed: '#111928'
 };
 
 export const statusTitle = {

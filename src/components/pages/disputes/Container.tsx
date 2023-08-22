@@ -6,8 +6,8 @@ import InvoiceList from './List';
 
 const options = [
   { title: 'All', status: 'all' },
-  { title: 'In Progress', status: 'in-progress' },
-  { title: 'Resolved', status: 'resolved' }
+  { title: 'Open dispute', status: 'Open' },
+  { title: 'Resolved dispute', status: 'Resolved' }
 ];
 
 function DisputesContainer() {

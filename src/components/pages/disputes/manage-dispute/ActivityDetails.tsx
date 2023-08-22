@@ -2,10 +2,19 @@ import React, { useState } from 'react';
 import { MdClose, MdCheck } from 'react-icons/md';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
 import { useRouter } from 'next/router';
+import { useMutation, useQueryClient } from 'react-query';
 
 import FilePreview from '../../../common/FilePreview';
 import Button from '../../../inputs/Button';
 import NewProposalForm from './NewProposalForm';
+import { useAccountsContext } from '../../../../context/Accounts';
+import { formatDateTime } from '../../../../utilities/dateTime';
+import { proposalsObject } from '../../../../data/dispute';
+import notification from '../../../../utilities/notification';
+import handleFetch from '../../../../services/api/handleFetch';
+import { useDisputeContext } from '../../../../context/Dispute';
+import ConfirmPrompt from '../../../common/ConfirmPrompt';
+import Loading from '../../../common/Loading';
 
 const formatActivity = (activity: string) => {
   if (activity === 'escalated') {
@@ -20,21 +29,83 @@ const formatActivity = (activity: string) => {
   return activity;
 };
 
-const activitiesWithAction = ['opened a dispute', 'rejected with a new proposal'];
+const activitiesWithAction = [
+  'opened a dispute',
+  'rejected with a new proposal',
+  'proposed a new proposal',
+  'proposed a new proposal'
+];
 
-function ProposalDetails({ data, isLast }: any) {
+// {
+//   "date": "2023-08-17T21:15:58.6521227+00:00",
+//   "user": "High Climbers",
+//   "role": "Buyer",
+//   "activity": "Opened a dispute",
+//   "shippingStat": "General",
+//   "reason": null,
+//   "proposal": {
+//       "name": "Refund",
+//       "isAccepted": false
+//   },
+//   "comment": "Non-Conformance to Description",
+//   "decision": null,
+//   "files": [
+//       {
+//           "filename": "DisputeEvidenceDocument-638278893586296504.png",
+//           "filepath": "DisputeEvidenceDocument\\DisputeEvidenceDocument-638278893586296504.png"
+//       }
+//   ]
+// }
+
+function ActivityDetails({ data, isLast }: any) {
   const router = useRouter();
+  const { accounts } = useAccountsContext();
+  const { dispute } = useDisputeContext();
   const [showNewProposalForm, setShowNewProposalForm] = useState(false);
+  const [showAcceptancePrompt, setShowAcceptancePrompt] = useState(false);
+
+  const isUser = data?.user ===
+    (accounts?.defaultMerchant?.name || `${accounts?.user?.firstName} ${accounts?.user?.lastName}`);
+
+  const queryClient = useQueryClient();
+  const acceptanceMutation = useMutation(handleFetch, {
+    onSuccess: (res: any) => {
+      queryClient.invalidateQueries(['dispute-activities']);
+      notification({
+        title: 'Successful',
+        message: res?.message || 'Dispute opened successfully',
+        type: 'success'
+      });
+    },
+    onError: (err: any) => {
+      notification({
+        title: 'Error',
+        message: err?.toString() || 'Something went wrong.',
+        type: 'danger'
+      });
+    }
+  });
+
+  const handleAcceptance = () => {
+    setShowAcceptancePrompt(false);
+    acceptanceMutation.mutate({
+      endpoint: 'dispute', extra: `${dispute?.id}/accept`, method: 'PATCH', auth: true, multipart: true
+    });
+  };
+
+  const { isLoading } = acceptanceMutation;
 
   return (
     <div className="w-full">
+      {isLoading && <Loading />}
+
       <div className="w-full mb-4">
         <div className="flex flex-wrap sm:flex-nowrap justify-between">
           <p className="text-base mb-2 mr-5">
-            <b>{data?.user}&nbsp;</b>
+            <b>{isUser ? 'You' : data?.user}&nbsp;</b>
             {formatActivity(data?.activity)}
           </p>
-          <p className="text-lightText min-w-max mb-2">{data?.date}</p>
+          <p className="text-lightText min-w-max mb-2">{formatDateTime(data?.date)}</p>
         </div>
         {data?.reason && (
           <p className="">
@@ -55,13 +126,13 @@ function ProposalDetails({ data, isLast }: any) {
             ))}
           </div>
         )}
-        {data?.proposal && (
+        {data?.proposal?.name && (
           <div className="bg-inputBg rounded-r-lg border border-l-4 border-l-primary px-5 py-3 mt-5">
             <p className="text-base mb-2">
               <b>{data?.user}&nbsp;</b>
               proposal
             </p>
-            <p className="">{data.proposal}</p>
+            <p className="">{proposalsObject[data.proposal.name as keyof typeof proposalsObject]}</p>
           </div>
         )}
         {data?.decision && (
@@ -77,7 +148,7 @@ function ProposalDetails({ data, isLast }: any) {
 
       {isLast && (
         <>
-          {activitiesWithAction.includes(data?.activity) && (
+          {activitiesWithAction.includes(data?.activity?.toLowerCase()) && !isUser && (
             showNewProposalForm ? (
               <div className="">
                 <NewProposalForm onClose={() => setShowNewProposalForm(false)} />
@@ -91,7 +162,7 @@ function ProposalDetails({ data, isLast }: any) {
                   <MdClose className="mr-1 mb-1" />
                   Reject
                 </Button>
-                <Button paddingX="px-3">
+                <Button paddingX="px-3" onClick={() => setShowAcceptancePrompt(true)}>
                   <MdCheck className="mr-1 mb-1" />
                   Accept
                 </Button>
@@ -99,13 +170,13 @@ function ProposalDetails({ data, isLast }: any) {
             )
           )}
 
-          {data?.activity === 'give verdict' && (
+          {(data?.activity === 'give verdict' || data?.shippingStat === 'Initiator') && (
             <div className="w-full">
-              <p className="mb-2">Start delivery process</p>
+              <p className="mb-2">Start shipment process</p>
               <Button
                 paddingX="px-3"
                 className="mb-3"
-                onClick={() => router.push('/disputes/return-goods')}
+                onClick={() => router.push(`/disputes/return-goods/${dispute?.invoiceId}`)}
               >
                 Start Now
               </Button>
@@ -121,8 +192,16 @@ function ProposalDetails({ data, isLast }: any) {
           )}
         </>
       )}
+
+      <ConfirmPrompt
+        title='Confirm action'
+        message='Are you sure you want to accept this dispute proposal?'
+        isOpen={showAcceptancePrompt}
+        handleYes={handleAcceptance}
+        onClose={() => setShowAcceptancePrompt(false)}
+      />
     </div>
   );
 }
 
-export default ProposalDetails;
+export default ActivityDetails;

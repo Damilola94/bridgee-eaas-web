@@ -7,10 +7,8 @@ import Button from '../../../inputs/Button';
 import notification from '../../../../utilities/notification';
 import { useReturnGoodsContext } from '../../../../context/ReturnGoods';
 
-import { invoice } from '../../../../sample-data/invoiceList';
-
 function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
-  const { form, setForm } = useReturnGoodsContext();
+  const { form, setForm, invoice } = useReturnGoodsContext();
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -23,8 +21,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         recipientName: invoice?.recipientDetails?.name
       }
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [invoice, setForm]);
 
   const handleAddItem = (itemPayload: OrderListItemProps) => {
     setForm((state) => ({

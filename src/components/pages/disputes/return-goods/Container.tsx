@@ -1,29 +1,40 @@
 
-import { ReactElement, useState } from 'react';
-import Head from 'next/head';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { HiOutlineArrowLeft } from 'react-icons/hi';
 
-import type { NextPageWithLayout } from '../_app';
+import Button from '../../../inputs/Button';
 
-import Layout from '../../components/wrappers/Layout';
-import Button from '../../components/inputs/Button';
+import FormIndicator from '../../create-invoice/FormIndicator';
+import InvoiceSummary from './InvoiceSummary';
+import OrderDetails from './OrderDetails';
+import RecipientDetails from './RecipientDetails';
+import useGetQuery from '../../../../hooks/useGetQuery';
+import Loading from '../../../common/Loading';
+import { useReturnGoodsContext } from '../../../../context/ReturnGoods';
 
-import ReturnGoodsContextProvider from '../../context/ReturnGoods';
-
-import FormIndicator from '../../components/pages/create-invoice/FormIndicator';
-import InvoiceSummary from '../../components/pages/disputes/return-goods/InvoiceSummary';
-import OrderDetails from '../../components/pages/disputes/return-goods/OrderDetails';
-import RecipientDetails from '../../components/pages/disputes/return-goods/RecipientDetails';
-
-const ReturnGoods: NextPageWithLayout = () => {
+function ReturnGoodsContainer() {
   const router = useRouter();
+  const { setInvoice } = useReturnGoodsContext();
   const [formIndex, setFormIndex] = useState(0);
+
+  const { data, status, error } = useGetQuery({
+    endpoint: 'escrow',
+    queryKey: ['escrow', router?.query?.slug],
+    param: router?.query?.slug,
+    enabled: !!router?.query?.slug
+  });
+
+  useEffect(() => {
+    if (status === 'success') {
+      setInvoice(data?.data);
+    }
+  }, [data, status, setInvoice]);
 
   const handleBack = () => {
     if (formIndex === 0) {
-      router.push('/dashboard');
+      router.back();
     } else {
       setFormIndex((state) => state -= 1);
     }
@@ -31,9 +42,7 @@ const ReturnGoods: NextPageWithLayout = () => {
 
   return (
     <>
-      <Head>
-        <title>Bridge by ALAT - Create Invoice</title>
-      </Head>
+      {status === 'loading' && <Loading />}
 
       <div className="w-full mb-3">
         <Button
@@ -49,7 +58,7 @@ const ReturnGoods: NextPageWithLayout = () => {
         </Button>
       </div>
 
-      <ReturnGoodsContextProvider>
+      {status === 'success' && (
         <div className="w-full">
           <div className="flex flex-wrap -m-4">
             <div className="w-full xl:w-7/12 p-4">
@@ -62,13 +71,15 @@ const ReturnGoods: NextPageWithLayout = () => {
             </div>
           </div>
         </div>
-      </ReturnGoodsContextProvider>
+      )}
+
+      {status === 'error' && (
+        <div className="w-full py-10">
+          {String(error)}
+        </div>
+      )}
     </>
   );
 };
 
-ReturnGoods.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
-};
-
-export default ReturnGoods;
+export default ReturnGoodsContainer;

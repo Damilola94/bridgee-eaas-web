@@ -147,7 +147,7 @@ function InvoiceSummary() {
             </thead>
             <tbody>
               {form?.escrowItems?.map((item) => (
-                <tr key={item?.id}>
+                <tr key={JSON.stringify(item)}>
                   <td className="px-3 py-3">{item?.name}</td>
                   <td className="px-3 py-3">{`${item?.weight || 0}kg`}</td>
                   <td className="px-3 py-3">{item?.quantity}</td>

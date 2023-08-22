@@ -46,19 +46,21 @@ const Index: NextPageWithLayout = () => {
         </Button>
       </div>
 
-      {status === 'success' && (<div className="w-full">
-        <div className="flex flex-wrap -m-4">
-          <div className="w-full xl:w-7/12 p-4">
-            <div className="w-full">
-              <InvoiceDetails data={data?.data} />
+      {status === 'success' && (
+        <div className="w-full">
+          <div className="flex flex-wrap -m-4">
+            <div className="w-full xl:w-7/12 p-4">
+              <div className="w-full">
+                <InvoiceDetails data={data?.data} />
+              </div>
+            </div>
+
+            <div className="w-full xl:w-5/12 p-4">
+              <ActivityLog data={data?.data} />
             </div>
           </div>
-
-          <div className="w-full xl:w-5/12 p-4">
-            <ActivityLog data={data?.data} />
-          </div>
         </div>
-      </div>)}
+      )}
 
       {status === 'error' && (
         <div className="w-full py-10">
