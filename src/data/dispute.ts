@@ -2,8 +2,8 @@ export const proposalOptions = [
   { label: "Refund", value: "Refund" },
   { label: "Replace order", value: "ReplaceOrder" },
   { label: "Ship additional item", value: "ShipAdditionalItem" },
-  { label: "Full refund and return order", value: "ReturnOrderWithFullRefund" },
-  { label: "Partial refund and replacement of order", value: "PartialRefundAndReplacement" }
+  { label: "Full refund and return order", value: "ReturnOrderWithFullRefund" }
+  // { label: "Partial refund and replacement of order", value: "PartialRefundAndReplacement" }
 ];
 
 export const proposalsObject = {

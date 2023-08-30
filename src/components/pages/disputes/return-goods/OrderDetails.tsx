@@ -7,11 +7,13 @@ import Button from '../../../inputs/Button';
 import notification from '../../../../utilities/notification';
 import { useReturnGoodsContext } from '../../../../context/ReturnGoods';
 import { useRouter } from 'next/router';
+import MenuOptions from '../../../common/MenuOptions';
 
 function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const router = useRouter();
   const { form, setForm, invoice } = useReturnGoodsContext();
   const [show, setShow] = useState(false);
+  const [itemToEdit, setItemToEdit] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -19,7 +21,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     setForm({
       isDeliveryOnUs: false,
       escrowItems: invoice?.items,
-      recipientDetails: router?.query?.type === 'return' ?
+      recipientDetails: invoice?.disputes?.[0]?.status === 'AwaitingReturn' ?
         {
           recipientName: invoice?.sellerDetails?.name,
           address: invoice?.sellerDetails?.address,
@@ -30,13 +32,13 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
           ...invoice?.recipientDetails,
           recipientName: invoice?.recipientDetails?.name
         },
-      senderDetails: router?.query?.type === 'return' ?
+      senderDetails: invoice?.disputes?.[0]?.status === 'AwaitingReturn' ?
         {
           ...invoice?.recipientDetails,
-          recipientName: invoice?.recipientDetails?.name
+          name: invoice?.recipientDetails?.name
         } :
         {
-          recipientName: invoice?.sellerDetails?.name,
+          name: invoice?.sellerDetails?.name,
           address: invoice?.sellerDetails?.address,
           phoneNumber: '',
           email: ''
@@ -44,17 +46,21 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     });
   }, [invoice, setForm, router?.query?.type]);
 
-  const handleAddItem = (itemPayload: OrderListItemProps) => {
+  const handleUpdateItem = (itemPayload: OrderListItemProps) => {
     setForm((state) => ({
       ...state,
-      escrowItems: [...state?.escrowItems || [], itemPayload]
+      escrowItems: state?.escrowItems?.map((item) => item?.id === itemPayload?.id ? itemPayload : item)
     }));
   };
 
-  // eslint-disable-next-line no-unused-vars
   const handleDeleteItem = (id: string) => {
     const escrowItems = form?.escrowItems?.filter((item) => item?.id !== id) || [];
     setForm((state) => ({ ...state, escrowItems }));
+  };
+
+  const handleEdit = (data: any) => {
+    setItemToEdit(data);
+    setShow(true);
   };
 
   const validateForm = () => {
@@ -97,12 +103,14 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
                 <td className="px-3 py-3">{item?.name}</td>
                 <td className="px-3 py-3">{item?.quantity}</td>
                 <td className="px-3 py-3">{`${item?.weight || 0}kg`}</td>
-                {/* <td className="px-3 py-3">
-                  <MenuOptions position='bottom' options={[
-                    { title: 'Delete Item', action: () => handleDeleteItem(item?.id || '') },
-                    { title: 'Edit Item', action: () => {} }
-                  ]} />
-                </td> */}
+                {invoice?.disputes?.[0]?.status === 'AwaitingShipAdditional' && (
+                  <td className="px-3 py-3 flex justify-end">
+                    <MenuOptions position='bottom' options={[
+                      { title: 'Delete Item', action: () => handleDeleteItem(item?.id || '') },
+                      { title: 'Edit Item', action: () => handleEdit(item) }
+                    ]} />
+                  </td>
+                )}
               </tr>
             ))}
 
@@ -121,7 +129,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         <Button paddingY="py-3" className="w-full" onClick={handleSubmit}>Next: Recipient Details</Button>
       </div>
 
-      {show && <AddInvoiceItem onAdd={handleAddItem} onClose={() => setShow(false)} />}
+      {show && <AddInvoiceItem data={itemToEdit} onEdit={handleUpdateItem} onClose={() => setShow(false)} />}
     </div>
   );
 }

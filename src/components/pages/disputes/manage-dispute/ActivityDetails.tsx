@@ -229,10 +229,7 @@ function ActivityDetails({ data, isLast }: any) {
               <Button
                 paddingX="px-3"
                 className="mb-3"
-                onClick={() => router.push({
-                  pathname: `/disputes/return-goods/${dispute?.invoiceId}`,
-                  query: { type: 'return' }
-                })}
+                onClick={() => router.push(`/disputes/return-goods/${dispute?.invoiceId}`)}
               >
                 Start Now
               </Button>

@@ -17,6 +17,7 @@ export type OrderListItemProps = {
   name?: string;
   amount?: string | number;
   quantity?: string | number;
+  oldQuantity?: string | number;
   size?: number;
   weight?: number;
   total?: number;

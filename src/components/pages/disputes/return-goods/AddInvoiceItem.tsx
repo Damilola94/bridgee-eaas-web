@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import React, { useEffect, useState } from 'react';
 
 import { OrderListItemProps } from '../../../../types/invoice';
 import notification from '../../../../utilities/notification';
@@ -9,12 +8,24 @@ import Button from '../../../inputs/Button';
 import TextInput from '../../../inputs/Text';
 
 type Props = {
-  onAdd?: (payload: OrderListItemProps) => void,
+  data?: any,
+  onEdit?: (payload: OrderListItemProps) => void,
   onClose: () => void
 };
 
-function AddInvoiceItem({ onAdd = () => {}, onClose = () => {} }: Props) {
+function AddInvoiceItem({ data, onEdit = () => {}, onClose = () => {} }: Props) {
   const [form, setForm] = useState<OrderListItemProps>({});
+
+  useEffect(() => {
+    if (data?.id) {
+      setForm({
+        ...data,
+        size: data?.weight,
+        amount: data?.unitPrice,
+        total: data?.totalAmount
+      });
+    }
+  }, [data]);
 
   const handleChange = (val: any, type = 'input', inputName = '') => {
     if (type === 'input') {
@@ -38,11 +49,11 @@ function AddInvoiceItem({ onAdd = () => {}, onClose = () => {} }: Props) {
       notification({ title: 'Form Error', message: error, type: 'danger' });
       return;
     }
-    onAdd({
+    onEdit({
       ...form,
-      id: uuidv4(),
       amount: Number(form?.amount),
       quantity: Number(form?.quantity),
+      oldQuantity: data?.quantity,
       total: Number(form?.amount) * Number(form?.quantity),
       size: Number(form?.size)
     });
@@ -59,9 +70,9 @@ function AddInvoiceItem({ onAdd = () => {}, onClose = () => {} }: Props) {
             <div className="w-full sm:w-1/2 px-2">
               <TextInput
                 name="name"
+                readOnly
                 value={form?.name || ''}
-                onChange={handleChange}
-                label="Item Name"
+                label="Item Name (Not Editable)"
                 className="w-full mb-4"
                 placeholder="Item Name"
               />
@@ -74,7 +85,8 @@ function AddInvoiceItem({ onAdd = () => {}, onClose = () => {} }: Props) {
                 className="w-full mb-4"
                 label="Quantity"
                 type="number"
-                minValue={0}
+                minValue={1}
+                maxValue={data?.oldQuantity || data?.quantity}
                 placeholder="Quantity"
               />
             </div>
@@ -86,10 +98,8 @@ function AddInvoiceItem({ onAdd = () => {}, onClose = () => {} }: Props) {
               <TextInput
                 name="amount"
                 value={form?.amount || ''}
-                onChange={handleChange}
-                type="number"
-                minValue={0}
-                label="Price per unit (NGN)"
+                readOnly
+                label="Price per unit (NGN) (Not Editable)"
                 className="w-full mb-4"
                 placeholder="Price per unit"
               />
@@ -97,19 +107,17 @@ function AddInvoiceItem({ onAdd = () => {}, onClose = () => {} }: Props) {
             <div className="w-full sm:w-1/2 px-2">
               <TextInput
                 name="size"
+                readOnly
                 value={form?.size || ''}
-                onChange={handleChange}
                 className="w-full mb-4"
-                label="Wieght per unit (KG)"
-                type="number"
-                minValue={0}
+                label="Weight per unit (KG) (Not Editable)"
                 placeholder="Weight per unit"
               />
             </div>
           </div>
         </div>
         <div className="w-full flex justify-end">
-          <Button paddingX="px-10" onClick={handleAddItem}>Add Item</Button>
+          <Button paddingX="px-10" onClick={handleAddItem}>Update Item</Button>
         </div>
       </div>
     </Modal>
