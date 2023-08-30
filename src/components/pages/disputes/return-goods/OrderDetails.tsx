@@ -6,8 +6,10 @@ import NoData from '../../../common/NoData';
 import Button from '../../../inputs/Button';
 import notification from '../../../../utilities/notification';
 import { useReturnGoodsContext } from '../../../../context/ReturnGoods';
+import { useRouter } from 'next/router';
 
 function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
+  const router = useRouter();
   const { form, setForm, invoice } = useReturnGoodsContext();
   const [show, setShow] = useState(false);
 
@@ -15,13 +17,32 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     window.scrollTo(0, 0);
 
     setForm({
+      isDeliveryOnUs: false,
       escrowItems: invoice?.items,
-      recipientDetails: {
-        ...invoice?.recipientDetails,
-        recipientName: invoice?.recipientDetails?.name
-      }
+      recipientDetails: router?.query?.type === 'return' ?
+        {
+          recipientName: invoice?.sellerDetails?.name,
+          address: invoice?.sellerDetails?.address,
+          phoneNumber: '',
+          email: ''
+        } :
+        {
+          ...invoice?.recipientDetails,
+          recipientName: invoice?.recipientDetails?.name
+        },
+      senderDetails: router?.query?.type === 'return' ?
+        {
+          ...invoice?.recipientDetails,
+          recipientName: invoice?.recipientDetails?.name
+        } :
+        {
+          recipientName: invoice?.sellerDetails?.name,
+          address: invoice?.sellerDetails?.address,
+          phoneNumber: '',
+          email: ''
+        }
     });
-  }, [invoice, setForm]);
+  }, [invoice, setForm, router?.query?.type]);
 
   const handleAddItem = (itemPayload: OrderListItemProps) => {
     setForm((state) => ({

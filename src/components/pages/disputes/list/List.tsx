@@ -2,18 +2,18 @@ import React, { useState, useMemo, ChangeEventHandler } from 'react';
 import { useRouter } from 'next/router';
 import { debounce } from 'lodash';
 
-import { PAGE_SIZE } from '../../../data/constants';
-import useGetQuery from '../../../hooks/useGetQuery';
+import { PAGE_SIZE } from '../../../../data/constants';
+import useGetQuery from '../../../../hooks/useGetQuery';
 
-import { formatApiDate, formatDateTime } from '../../../utilities/dateTime';
+import { formatApiDate, formatDateTime } from '../../../../utilities/dateTime';
 
-import MenuOptions from '../../common/MenuOptions';
-import NoData from '../../common/NoData';
-import TransactionStatus from '../../common/TransactionStatus';
-import SearchInput from '../../inputs/Search';
+import MenuOptions from '../../../common/MenuOptions';
+import NoData from '../../../common/NoData';
+import TransactionStatus from '../../../common/TransactionStatus';
+import SearchInput from '../../../inputs/Search';
 import DisputeFilter from './Filter';
-import Loading from '../../common/Loading';
-import Pagination from '../../common/Pagination';
+import Loading from '../../../common/Loading';
+import Pagination from '../../../common/Pagination';
 
 function InvoiceList() {
   const router = useRouter();

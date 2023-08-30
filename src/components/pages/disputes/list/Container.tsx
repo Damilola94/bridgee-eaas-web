@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
-import ListStatusTabs from '../../common/ListStatusTabs';
+import ListStatusTabs from '../../../common/ListStatusTabs';
 import InvoiceList from './List';
 
 const options = [

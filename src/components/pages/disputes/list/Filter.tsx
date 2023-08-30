@@ -4,10 +4,10 @@ import { GoX } from 'react-icons/go';
 import { HiFilter } from 'react-icons/hi';
 import { CgClose, CgChevronDown } from 'react-icons/cg';
 
-import Button from '../../inputs/Button';
-import Modal from '../../common/Modal';
-import Accordion from '../../common/Accordion';
-import DatePicker from '../../inputs/DatePicker';
+import Button from '../../../inputs/Button';
+import Modal from '../../../common/Modal';
+import Accordion from '../../../common/Accordion';
+import DatePicker from '../../../inputs/DatePicker';
 
 export type valueProps = {
   filter: any,

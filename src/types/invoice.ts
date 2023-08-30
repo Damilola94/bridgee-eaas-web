@@ -29,6 +29,13 @@ export type RecipientDetailsProps = {
   email?: string;
 };
 
+export type SenderDetailsProps = {
+  address?: string;
+  name?: string;
+  phoneNumber?: string;
+  email?: string;
+};
+
 export type ReturnFormProps = {
   escrowItems?: OrderListItemProps[];
   weight?: string | number;
@@ -36,4 +43,5 @@ export type ReturnFormProps = {
   pickUpAddress?: string;
   inspectionDuration?: string;
   recipientDetails?: RecipientDetailsProps;
+  senderDetails?: SenderDetailsProps;
 };

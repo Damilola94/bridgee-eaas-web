@@ -309,7 +309,13 @@ function InvoiceDetails({ data = {} }: { data: any }) {
               </div>
             )}
             {data?.status === 'paymentcompleted' && data?.deliveryStatus === 'Delivered' && (
-              <div className="w-full flex justify-end">
+              <div className="w-full flex justify-end space-x-3">
+                <Button
+                  bgColor="bg-error"
+                  onClick={() => router.push({ pathname: `/disputes/manage-dispute/${data?.escrowId}` })}
+                >
+                  Raise Dispute
+                </Button>
                 <Button onClick={() => handleOtpGeneration('EscrowOrderCompleted')}>Confirm Delivery</Button>
               </div>
             )}

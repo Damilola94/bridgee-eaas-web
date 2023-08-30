@@ -61,7 +61,7 @@ function ManageDisputeContainer() {
             <div className="w-full xl:w-7/12 p-4">
               <FormIndicator formIndex={formIndex} />
 
-              <div className="w-full flex justify-between bg-white px-10 py-8 rounded-lg shadow-md mb-5">
+              <div className="w-full sm:flex justify-between bg-white px-10 py-8 rounded-lg shadow-md mb-5">
                 <div>
                   <table className="text-[#888888]">
                     <tbody>
@@ -80,7 +80,9 @@ function ManageDisputeContainer() {
                       <tr>
                         <td className="py-1 pr-5">Order Status</td>
                         <td className="py-1">
-                          <TransactionStatus status={data?.data?.status} />
+                          <TransactionStatus
+                            status={data?.data?.status === 'paymentcompleted' ? data?.data?.deliveryStatus : data?.data?.status}
+                          />
                         </td>
                       </tr>
                     </tbody>

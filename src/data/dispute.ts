@@ -31,3 +31,26 @@ export const reasonsObject = {
   DeliveryToWrongAddress: 'Delivery to Wrong Address',
   DisputedInspectionResult: 'Disputed Inspection Results'
 };
+
+export const shippingStatuses = [
+  { label: 'In Transit', value: 'InTransit' },
+  { label: 'Rider Pickup Order', value: 'RiderPickUpOrder' },
+  { label: 'Return In Progress', value: 'ReturnInProgress' },
+  { label: 'Return Delivered', value: 'ReturnDelivered' },
+  { label: 'Awaiting Return', value: 'AwaitingReturn' },
+  { label: 'Awaiting Additional Item', value: 'AwaitingAdditionalItem' },
+  { label: 'Additional Item In Progress', value: 'AdditionalItemInProgress' },
+  { label: 'Additional Item In Transit', value: 'AdditionalItemInTransit' },
+  { label: 'Additional Item Delivered', value: 'AdditionalItemDelivered' },
+  { label: 'Additional Item Confirmed', value: 'AdditionalItemConfirmed' },
+  { label: 'Return In Transit', value: 'ReturnInTransit' },
+  { label: 'Return Confirmed', value: 'ReturnConfirmed' },
+  { label: 'Awaiting Replacement', value: 'AwaitingReplacement' },
+  { label: 'Replacement In Process', value: 'ReplacementInProcess' },
+  { label: 'Replacement In Transit', value: 'ReplacementInTransit' },
+  { label: 'Replacement Delivered', value: 'ReplacementDelivered' },
+  { label: 'Replacement Confirmed', value: 'ReplacementConfirmed' },
+  { label: 'Resolved', value: 'Resolved' },
+  { label: 'Cancelled', value: 'Cancelled' },
+  { label: 'New Dispute Opened', value: 'NewDisputeOpened' }
+];

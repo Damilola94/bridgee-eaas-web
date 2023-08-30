@@ -6,21 +6,21 @@ import Button from '../../../inputs/Button';
 import Loading from '../../../common/Loading';
 
 import { useReturnGoodsContext } from '../../../../context/ReturnGoods';
-import { formatCurrency, logger } from '../../../../utilities/general';
+import { formatCurrency } from '../../../../utilities/general';
 import notification from '../../../../utilities/notification';
 import handleFetch from '../../../../services/api/handleFetch';
 
 function InvoiceSummary() {
   const router = useRouter();
-  const { form } = useReturnGoodsContext();
+  const { form, invoice } = useReturnGoodsContext();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const escrowMutation = useMutation(handleFetch, {
+  const sendGoodsMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
-      router.push('/dashboard');
+      router.push(`/disputes/manage-dispute/${router?.query?.slug}`);
       notification({
         message: res?.message || 'You have successfully created an invoice',
         type: 'success'
@@ -36,42 +36,28 @@ function InvoiceSummary() {
   });
 
   const handleSubmit = () => {
-    const body = new FormData();
+    const body = {
+      isDeliveryOnUs: form?.isDeliveryOnUs,
+      // timeExtensionDate: 2023-08-29T18:14:50.615Z,
+      inspectionDuration: form?.inspectionDuration,
+      recipientDetails: form?.recipientDetails,
+      pickUpAddress: form?.pickUpAddress,
+      escrowItem: form?.escrowItems?.map((item) => ({ itemId: item.id, quantity: item.quantity }))
+    };
 
-    if (form?.escrowItems?.length) {
-      form.escrowItems.forEach((item) => body.append('escrowItems', JSON.stringify(item)));
-    }
-    if (form?.isDeliveryOnUs) body.append('isDeliveryOnUs', form.isDeliveryOnUs as any);
-    if (form?.recipientDetails?.recipientName) {
-      body.append('recipientDetails.recipientName', form.recipientDetails.recipientName);
-    }
-    if (form?.recipientDetails?.phoneNumber) {
-      body.append('recipientDetails.phoneNumber', form.recipientDetails.phoneNumber);
-    }
-    if (form?.recipientDetails?.address) {
-      body.append('recipientDetails.address', form.recipientDetails.address);
-    }
-    if (form?.recipientDetails?.email) {
-      body.append('recipientDetails.email', form.recipientDetails.email);
-    }
-    if (form?.inspectionDuration) body.append('inspectionDuration', form.inspectionDuration);
-    if (form?.pickUpAddress) body.append('pickUpAddress', form.pickUpAddress);
-
-    logger(body);
-
-    // escrowMutation.mutate({
-    //   endpoint: 'escrow', extra: 'create-escrow-seller', method: 'POST', body, auth: true, multipart: true
-    // });
+    sendGoodsMutation.mutate({
+      endpoint: 'dispute', extra: `${invoice?.disputes?.[0]?.id}/ship-order`, method: 'PATCH', body, auth: true
+    });
   };
 
-  const { isLoading } = escrowMutation;
+  const { isLoading, isSuccess } = sendGoodsMutation;
 
   return (
     <>
-      {isLoading && <Loading />}
+      {(isLoading || isSuccess) && <Loading />}
 
-      <div className="w-full flex justify-between bg-white px-10 py-8 rounded-lg shadow-md mb-5">
-        <div>
+      <div className="w-full md:flex justify-between bg-white px-10 py-8 rounded-lg shadow-md mb-5">
+        <div className="w-1/2">
           <table className="text-[#888888]">
             <thead>
               <tr>
@@ -81,24 +67,24 @@ function InvoiceSummary() {
             <tbody>
               <tr>
                 <td className="py-1 pr-5">Name:</td>
-                <td className="py-1">{form?.recipientDetails?.recipientName}</td>
+                <td className="py-1">{form?.senderDetails?.name}</td>
               </tr>
               <tr>
                 <td className="py-1 pr-5">Phone:</td>
-                <td className="py-1">{form?.recipientDetails?.phoneNumber}</td>
+                <td className="py-1">{form?.senderDetails?.phoneNumber}</td>
               </tr>
               <tr>
                 <td className="py-1 pr-5">Email:</td>
-                <td className="py-1">{form?.recipientDetails?.email}</td>
+                <td className="py-1">{form?.senderDetails?.email}</td>
               </tr>
               <tr>
                 <td className="py-1 pr-5">Address:</td>
-                <td className="py-1">{form?.recipientDetails?.address}</td>
+                <td className="py-1">{form?.pickUpAddress || form?.senderDetails?.address}</td>
               </tr>
             </tbody>
           </table>
         </div>
-        <div>
+        <div className="w-1/2">
           <table className="text-[#888888]">
             <thead>
               <tr>

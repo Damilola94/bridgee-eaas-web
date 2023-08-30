@@ -13,7 +13,7 @@ const ReturnGoods: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Bridge by ALAT - Create Invoice</title>
+        <title>Bridge by ALAT - Return goods</title>
       </Head>
 
       <ReturnGoodsContextProvider>

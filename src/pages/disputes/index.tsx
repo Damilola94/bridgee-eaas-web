@@ -4,7 +4,7 @@ import Head from 'next/head';
 import type { NextPageWithLayout } from '../_app';
 
 import Layout from '../../components/wrappers/Layout';
-import DisputesContainer from '../../components/pages/disputes/Container';
+import DisputesContainer from '../../components/pages/disputes/list/Container';
 
 const Disputes: NextPageWithLayout = () => {
   return (

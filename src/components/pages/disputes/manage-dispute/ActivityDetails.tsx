@@ -9,12 +9,13 @@ import Button from '../../../inputs/Button';
 import NewProposalForm from './NewProposalForm';
 import { useAccountsContext } from '../../../../context/Accounts';
 import { formatDateTime } from '../../../../utilities/dateTime';
-import { proposalsObject } from '../../../../data/dispute';
+import { proposalsObject, shippingStatuses } from '../../../../data/dispute';
 import notification from '../../../../utilities/notification';
 import handleFetch from '../../../../services/api/handleFetch';
 import { useDisputeContext } from '../../../../context/Dispute';
 import ConfirmPrompt from '../../../common/ConfirmPrompt';
 import Loading from '../../../common/Loading';
+import SelectInput, { SelectOptionType } from '../../../inputs/Select';
 
 const formatActivity = (activity: string) => {
   if (activity === 'escalated') {
@@ -36,33 +37,17 @@ const activitiesWithAction = [
   'proposed a new proposal'
 ];
 
-// {
-//   "date": "2023-08-17T21:15:58.6521227+00:00",
-//   "user": "High Climbers",
-//   "role": "Buyer",
-//   "activity": "Opened a dispute",
-//   "shippingStat": "General",
-//   "reason": null,
-//   "proposal": {
-//       "name": "Refund",
-//       "isAccepted": false
-//   },
-//   "comment": "Non-Conformance to Description",
-//   "decision": null,
-//   "files": [
-//       {
-//           "filename": "DisputeEvidenceDocument-638278893586296504.png",
-//           "filepath": "DisputeEvidenceDocument\\DisputeEvidenceDocument-638278893586296504.png"
-//       }
-//   ]
-// }
-
 function ActivityDetails({ data, isLast }: any) {
   const router = useRouter();
   const { accounts } = useAccountsContext();
   const { dispute } = useDisputeContext();
+
   const [showNewProposalForm, setShowNewProposalForm] = useState(false);
   const [showAcceptancePrompt, setShowAcceptancePrompt] = useState(false);
+  const [showShippingUpdatePrompt, setShowShippingUpdatePrompt] = useState(false);
+  const [showShippingConfirmationPrompt, setShowShippingConfirmationPrompt] = useState(false);
+
+  const [shippingStatus, setShippingStatus] = useState<SelectOptionType>();
 
   const isUser = data?.user ===
     (accounts?.defaultMerchant?.name || `${accounts?.user?.firstName} ${accounts?.user?.lastName}`);
@@ -86,18 +71,86 @@ function ActivityDetails({ data, isLast }: any) {
     }
   });
 
+  const shippingMutation = useMutation(handleFetch, {
+    onSuccess: (res: any) => {
+      queryClient.invalidateQueries(['dispute-activities']);
+      notification({
+        title: 'Successful',
+        message: res?.message || 'Dispute opened successfully',
+        type: 'success'
+      });
+    },
+    onError: (err: any) => {
+      notification({
+        title: 'Error',
+        message: err?.toString() || 'Something went wrong.',
+        type: 'danger'
+      });
+    }
+  });
+
+  const shippingConfirmationMutation = useMutation(handleFetch, {
+    onSuccess: (res: any) => {
+      queryClient.invalidateQueries(['dispute-activities']);
+      notification({
+        title: 'Successful',
+        message: res?.message || 'Dispute opened successfully',
+        type: 'success'
+      });
+    },
+    onError: (err: any) => {
+      notification({
+        title: 'Error',
+        message: err?.toString() || 'Something went wrong.',
+        type: 'danger'
+      });
+    }
+  });
+
   const handleAcceptance = () => {
     setShowAcceptancePrompt(false);
     acceptanceMutation.mutate({
-      endpoint: 'dispute', extra: `${dispute?.id}/accept`, method: 'PATCH', auth: true, multipart: true
+      endpoint: 'dispute', extra: `${dispute?.id}/accept`, method: 'PATCH', auth: true
+    });
+  };
+
+  const processShippingUpdate = () => {
+    if (!shippingStatus?.value) {
+      notification({
+        title: 'Process Error',
+        message: 'Please, select a status',
+        type: 'danger'
+      });
+      return;
+    }
+    setShowShippingUpdatePrompt(true);
+  };
+
+  const handleShippingStatusUpdate = () => {
+    setShowShippingUpdatePrompt(false);
+    shippingMutation.mutate({
+      endpoint: 'dispute',
+      extra: `${dispute?.id}/update-shipped-order-status`,
+      method: 'PATCH',
+      auth: true,
+      pQuery: { requestStatus: shippingStatus?.value }
+    });
+  };
+
+  const handleShippingConfirmation = () => {
+    setShowShippingConfirmationPrompt(false);
+    shippingConfirmationMutation.mutate({
+      endpoint: 'dispute', extra: `${dispute?.id}/confirm-shipped-order`, method: 'PATCH', auth: true
     });
   };
 
   const { isLoading } = acceptanceMutation;
+  const { isLoading: isLoadingShipping } = shippingMutation;
+  const { isLoading: isLoadingConfirmation } = shippingConfirmationMutation;
 
   return (
     <div className="w-full">
-      {isLoading && <Loading />}
+      {(isLoading || isLoadingShipping || isLoadingConfirmation) && <Loading />}
 
       <div className="w-full mb-4">
         <div className="flex flex-wrap sm:flex-nowrap justify-between">
@@ -129,7 +182,7 @@ function ActivityDetails({ data, isLast }: any) {
         {data?.proposal?.name && (
           <div className="bg-inputBg rounded-r-lg border border-l-4 border-l-primary px-5 py-3 mt-5">
             <p className="text-base mb-2">
-              <b>{data?.user}&nbsp;</b>
+              <b>{isUser ? 'Your' : data?.user}&nbsp;</b>
               proposal
             </p>
             <p className="">{proposalsObject[data.proposal.name as keyof typeof proposalsObject]}</p>
@@ -170,13 +223,16 @@ function ActivityDetails({ data, isLast }: any) {
             )
           )}
 
-          {(data?.activity === 'give verdict' || data?.shippingStat === 'Initiator') && (
+          {data?.shippingStat === 'Initiator' && (
             <div className="w-full">
               <p className="mb-2">Start shipment process</p>
               <Button
                 paddingX="px-3"
                 className="mb-3"
-                onClick={() => router.push(`/disputes/return-goods/${dispute?.invoiceId}`)}
+                onClick={() => router.push({
+                  pathname: `/disputes/return-goods/${dispute?.invoiceId}`,
+                  query: { type: 'return' }
+                })}
               >
                 Start Now
               </Button>
@@ -190,6 +246,54 @@ function ActivityDetails({ data, isLast }: any) {
               </div>
             </div>
           )}
+
+          {data?.shippingStat === 'Recipient' && (
+            <p className="">{`${data?.role === 'Buyer' ? 'Seller' : 'Buyer'} will be shipping the item(s) based on your agreement.`}</p>
+          )}
+
+          {data?.statusUpdateStat === 'Initiator' && (
+            <div className="">
+              <p className="mb-3">Process your delivery:</p>
+              <div className="xs:flex">
+                <SelectInput
+                  height="h-[35px]"
+                  placeholder='Select Status'
+                  value={shippingStatus}
+                  onChange={(val: any) => setShippingStatus(val)}
+                  options={shippingStatuses || []}
+                  className="w-full max-w-[250px] mr-5 mb-4 xs:mb-0"
+                />
+                <Button onClick={processShippingUpdate}>Process</Button>
+              </div>
+            </div>
+          )}
+
+          {data?.confirmStat === 'Initiator' && (
+            <div className="">
+              <p className="">The goods has been delivered to you. Inspect the goods, then confirm if it is in good condition.</p>
+              <div className="w-full flex flex-wrap">
+                <Button
+                  border
+                  paddingX="px-3"
+                  borderColor="border-error"
+                  textColor="text-error"
+                  bgColor="bg-white"
+                  className="mr-3 mt-3"
+                >
+                  <MdClose className="mr-1 mb-1" />
+                  Raise Dispute
+                </Button>
+                <Button
+                  paddingX="px-3"
+                  className="mt-3"
+                  onClick={() => setShowShippingConfirmationPrompt(true)}
+                >
+                  <MdCheck className="mr-1 mb-1" />
+                  Confirm Shipment
+                </Button>
+              </div>
+            </div>
+          )}
         </>
       )}
 
@@ -199,6 +303,22 @@ function ActivityDetails({ data, isLast }: any) {
         isOpen={showAcceptancePrompt}
         handleYes={handleAcceptance}
         onClose={() => setShowAcceptancePrompt(false)}
+      />
+
+      <ConfirmPrompt
+        title='Confirm action'
+        message={`Are you sure you want to change the status to "${shippingStatus?.label}"?`}
+        isOpen={showShippingUpdatePrompt}
+        handleYes={handleShippingStatusUpdate}
+        onClose={() => setShowShippingUpdatePrompt(false)}
+      />
+
+      <ConfirmPrompt
+        title='Confirm action'
+        message='Are you sure you want to confirm the delivery of the shipped goods?'
+        isOpen={showShippingConfirmationPrompt}
+        handleYes={handleShippingConfirmation}
+        onClose={() => setShowShippingConfirmationPrompt(false)}
       />
     </div>
   );
