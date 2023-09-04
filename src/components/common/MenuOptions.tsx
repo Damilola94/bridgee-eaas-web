@@ -3,7 +3,7 @@ import { Menu, Transition } from '@headlessui/react';
 import { HiEllipsisVertical } from 'react-icons/hi2';
 
 type Props = { options?: OptionProps[], position?: string };
-type OptionProps = { title: string, action: () => void };
+type OptionProps = { title: string, action: () => void, disabled?: boolean };
 
 export default function MenuOptions({ options = [], position = 'top' }: Props) {
   return (
@@ -30,8 +30,9 @@ export default function MenuOptions({ options = [], position = 'top' }: Props) {
                   <Menu.Item key={item?.title}>
                     <button
                       type="button"
+                      disabled={item?.disabled}
                       onClick={item?.action}
-                      className="w-full font-semibold text-left px-2 py-2 hover:bg-gray-50"
+                      className="w-full font-semibold text-left px-2 py-2 hover:bg-gray-50 disabled:text-lightText hover:disabled:bg-white"
                     >
                       {item?.title}
                     </button>

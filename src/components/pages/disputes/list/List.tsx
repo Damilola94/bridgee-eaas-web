@@ -87,9 +87,9 @@ function InvoiceList() {
                         <td className="px-3 py-5">{item?.reasons}</td>
                         <td className="px-3 py-5">{formatDateTime(item?.date)}</td>
                         <td className="px-3 py-5">
-                          <TransactionStatus status={item?.status} />
+                          <TransactionStatus status={`dispute-${item?.status}`} />
                         </td>
-                        <td className="pr-5 sm:pr-10 pl-3 py-5">
+                        <td className="pr-5 sm:pr-10 pl-3 py-5 flex justify-end">
                           <MenuOptions
                             options={[
                               {

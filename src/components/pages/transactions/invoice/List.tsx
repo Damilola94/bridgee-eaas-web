@@ -118,8 +118,15 @@ function InvoiceList({ isDashboard = false }) {
                         <td className="pr-5 sm:pr-10 pl-3 py-5">
                           <MenuOptions
                             options={[
-                              { title: 'View', action: () => router.push({ pathname: `/transactions/invoice-details/${item?.escrowId}` }) },
-                              { title: 'Open Dispute', action: () => router.push({ pathname: `/disputes/manage-dispute/${item?.escrowId}` }) },
+                              {
+                                title: 'View',
+                                action: () => router.push({ pathname: `/transactions/invoice-details/${item?.escrowId}` })
+                              },
+                              {
+                                title: 'Open Dispute',
+                                action: () => router.push({ pathname: `/disputes/manage-dispute/${item?.escrowId}` }),
+                                disabled: item?.escrowDeliveryStatus !== 'Delivered'
+                              },
                               { title: 'Delete', action: () => {} }
                             ]}
                           />

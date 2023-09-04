@@ -8,6 +8,7 @@ import handleFetch from '../../../../services/api/handleFetch';
 import notification from '../../../../utilities/notification';
 import ConfirmPrompt from '../../../common/ConfirmPrompt';
 import Loading from '../../../common/Loading';
+import TransactionStatus from '../../../common/TransactionStatus';
 import Button from '../../../inputs/Button';
 
 import ActivityDetails from './ActivityDetails';
@@ -49,7 +50,10 @@ function DisputeActivities({ onNext = () => {} }: { onNext?: () => void }) {
   const handleEscalation = () => {
     setShowEscalationPrompt(false);
     escalationMutation.mutate({
-      endpoint: 'dispute', extra: `${dispute?.id}/escalate-to-arbitrator`, method: 'PATCH', auth: true
+      endpoint: 'dispute',
+      extra: `${dispute?.id}/escalate-to-arbitrator`,
+      method: 'PATCH',
+      auth: true
     });
   };
 
@@ -67,7 +71,12 @@ function DisputeActivities({ onNext = () => {} }: { onNext?: () => void }) {
         {status === 'success' && (
           <>
             <div className="flex flex-wrap justify-between items-center mb-7">
-              <h3 className="font-bold text-xl ff-bold mb-1">Dispute</h3>
+              <div className="flex items-center space-x-2  mb-2">
+                <h3 className="font-bold text-xl ff-bold">Dispute</h3>
+                <div>
+                  <TransactionStatus status={`dispute-${dispute?.status}`} />
+                </div>
+              </div>
               <div className="">
                 <Button paddingY="py-2" onClick={() => setShowEscalationPrompt(true)}>
                   Escalate to Bridge mediator

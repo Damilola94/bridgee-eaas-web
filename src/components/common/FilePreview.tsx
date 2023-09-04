@@ -19,7 +19,7 @@ function FilePreview({ file }: { file: { filename: string, filepath: string } })
           target="_blank"
           className="text-sm text-success hover:underline ml-10"
         >
-          View evidence
+          View
         </Link>
       </div>
     </>
