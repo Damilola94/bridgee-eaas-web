@@ -39,6 +39,8 @@ function AddInvoiceItem({ data, onEdit = () => {}, onClose = () => {} }: Props) 
   const validateForm = () => {
     if (!form?.name) return 'Item name is required';
     if (!form?.quantity) return 'Item quantity is required';
+    if (form?.quantity > data?.quantity) return 'Item quantity must not be greater than the original quantity';
+    if (form?.quantity < 1) return 'Item quantity must not be less than 1';
     if (!form?.amount) return 'Item unit price is required';
     return null;
   };

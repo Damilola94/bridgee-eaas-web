@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { HiOutlineCloudUpload } from 'react-icons/hi';
@@ -17,6 +18,7 @@ import SelectInput, { SelectOptionType } from '../../../inputs/Select';
 import TextareaInput from '../../../inputs/Textarea';
 
 function NewProposalForm({ onClose }: { onClose: () => void }) {
+  const router = useRouter();
   const { dispute } = useDisputeContext();
   const [comment, setComment] = useState('');
   const [proposal, setProposal] = useState<SelectOptionType>();
@@ -27,6 +29,8 @@ function NewProposalForm({ onClose }: { onClose: () => void }) {
   const rejectionMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
       queryClient.invalidateQueries(['dispute-activities']);
+      queryClient.invalidateQueries(['escrow-details', router?.query?.slug]);
+
       notification({
         title: 'Successful',
         message: res?.message || 'Dispute opened successfully',

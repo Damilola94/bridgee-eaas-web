@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { List } from 'react-content-loader';
 import { useMutation, useQueryClient } from 'react-query';
@@ -13,7 +14,8 @@ import Button from '../../../inputs/Button';
 
 import ActivityDetails from './ActivityDetails';
 
-function DisputeActivities({ onNext = () => {} }: { onNext?: () => void }) {
+function DisputeActivities() {
+  const router = useRouter();
   const { dispute } = useDisputeContext();
   const [showEscalationPrompt, setShowEscalationPrompt] = useState(false);
 
@@ -32,6 +34,7 @@ function DisputeActivities({ onNext = () => {} }: { onNext?: () => void }) {
   const escalationMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
       queryClient.invalidateQueries(['dispute-activities']);
+      queryClient.invalidateQueries(['escrow-details', router?.query?.slug]);
       notification({
         title: 'Successful',
         message: res?.message || 'Dispute opened successfully',

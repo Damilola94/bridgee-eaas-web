@@ -1,5 +1,6 @@
 export const statusColors = {
   completed: '#03543F',
+  refunded: '#03543F',
   'in-progress': '#42389D',
   'awaiting-confirmation': '#111928', // to be changed
   'awaitingpayment': '#5521B5',
@@ -38,6 +39,7 @@ export const statusColors = {
 
 export const statusTitle = {
   completed: 'Completed',
+  refunded: 'Refunded',
   'in-progress': 'In Progress',
   'awaiting-confirmation': 'Awaiting Confirmation',
   'awaitingpayment': 'Awaiting Payment',
@@ -64,7 +66,7 @@ export const statusTitle = {
   'dispute-Resolved': 'Resolved',
   'dispute-InProgress': 'In Progress',
   'dispute-AwaitingReturn': 'Awaiting Return',
-  'dispute-AwaitingShipAdditional': 'Awaiting ShipAdditional',
+  'dispute-AwaitingShipAdditional': 'Awaiting Ship Additional',
   'dispute-ReturnReceived': 'Return Received',
   'dispute-AwaitingReplacement': 'Awaiting Replacement',
   'dispute-ReplacementSent': 'Replacement Sent',

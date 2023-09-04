@@ -31,6 +31,7 @@ const disbursementTypes = [
 function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const { form, setForm } = useCreateInvoiceContext();
   const [show, setShow] = useState(false);
+  const [itemToEdit, setItemToEdit] = useState<OrderListItemProps>();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -51,11 +52,28 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     }
   };
 
+  const handleEdit = (data: any) => {
+    setItemToEdit(data);
+    setShow(true);
+  };
+
+  const handleStartAdd = () => {
+    setItemToEdit(undefined);
+    setShow(true);
+  };
+
   const handleAddItem = (itemPayload: OrderListItemProps) => {
-    setForm((state) => ({
-      ...state,
-      escrowItems: [...state?.escrowItems || [], itemPayload]
-    }));
+    if (form?.escrowItems?.filter((item) => item.id === itemPayload.id)?.length) {
+      setForm((state) => ({
+        ...state,
+        escrowItems: state?.escrowItems?.map((item) => item?.id === itemPayload?.id ? itemPayload : item)
+      }));
+    } else {
+      setForm((state) => ({
+        ...state,
+        escrowItems: [...state?.escrowItems || [], itemPayload]
+      }));
+    }
   };
 
   const handleDeleteItem = (id: string) => {
@@ -118,10 +136,10 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
                 <td className="px-3 py-1">{`${item?.size || 0}kg`}</td>
                 <td className="px-3 py-1">{formatCurrency(item?.amount)}</td>
                 <td className="px-3 py-1">{formatCurrency(item?.total)}</td>
-                <td className="px-3 py-1">
+                <td className="px-3 py-1 flex justify-end">
                   <MenuOptions position='bottom' options={[
                     { title: 'Delete Item', action: () => handleDeleteItem(item?.id || '') },
-                    { title: 'Edit Item', action: () => {} }
+                    { title: 'Edit Item', action: () => handleEdit(item) }
                   ]} />
                 </td>
               </tr>
@@ -139,7 +157,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       </div>
 
       <div className="w-full mb-10 flex justify-end">
-        <Button onClick={() => setShow(true)}>
+        <Button onClick={handleStartAdd}>
           <BiPlus className="mr-1 mb-1" />
           Add Item
         </Button>
@@ -205,7 +223,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         <Button paddingY="py-3" className="w-full" onClick={handleSubmit}>Next: Recipient Details</Button>
       </div>
 
-      {show && <AddInvoiceItem onAdd={handleAddItem} onClose={() => setShow(false)} />}
+      {show && <AddInvoiceItem data={itemToEdit} onAdd={handleAddItem} onClose={() => setShow(false)} />}
     </div>
   );
 }

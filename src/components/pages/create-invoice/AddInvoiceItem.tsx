@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { OrderListItemProps } from '../../../types/invoice';
@@ -9,12 +9,17 @@ import Button from '../../inputs/Button';
 import TextInput from '../../inputs/Text';
 
 type Props = {
+  data?: OrderListItemProps
   onAdd?: (payload: OrderListItemProps) => void,
-  onClose: () => void
+  onClose: () => void,
 };
 
-function AddInvoiceItem({ onAdd = () => {}, onClose = () => {} }: Props) {
+function AddInvoiceItem({ data, onAdd = () => {}, onClose = () => {} }: Props) {
   const [form, setForm] = useState<OrderListItemProps>({});
+
+  useEffect(() => {
+    if (data?.id) setForm({ ...data });
+  }, [data]);
 
   const handleChange = (val: any, type = 'input', inputName = '') => {
     if (type === 'input') {
@@ -40,7 +45,7 @@ function AddInvoiceItem({ onAdd = () => {}, onClose = () => {} }: Props) {
     }
     onAdd({
       ...form,
-      id: uuidv4(),
+      id: form?.id || uuidv4(),
       amount: Number(form?.amount),
       quantity: Number(form?.quantity),
       total: Number(form?.amount) * Number(form?.quantity),
@@ -100,7 +105,7 @@ function AddInvoiceItem({ onAdd = () => {}, onClose = () => {} }: Props) {
                 value={form?.size || ''}
                 onChange={handleChange}
                 className="w-full mb-4"
-                label="Wieght per unit (KG)"
+                label="Weight per unit (KG)"
                 type="number"
                 minValue={0}
                 placeholder="Weight per unit"
@@ -109,7 +114,9 @@ function AddInvoiceItem({ onAdd = () => {}, onClose = () => {} }: Props) {
           </div>
         </div>
         <div className="w-full flex justify-end">
-          <Button paddingX="px-10" onClick={handleAddItem}>Add Item</Button>
+          <Button paddingX="px-10" onClick={handleAddItem}>
+            {data?.id ? 'Update Item' : 'Add Item'}
+          </Button>
         </div>
       </div>
     </Modal>

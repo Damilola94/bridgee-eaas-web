@@ -18,6 +18,8 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   useEffect(() => {
     window.scrollTo(0, 0);
 
+    if (form?.escrowItems?.length) return;
+
     setForm({
       isDeliveryOnUs: false,
       escrowItems: invoice?.items,
@@ -44,7 +46,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
           email: ''
         }
     });
-  }, [invoice, setForm, router?.query?.type]);
+  }, [invoice, setForm, form, router?.query?.type]);
 
   const handleUpdateItem = (itemPayload: OrderListItemProps) => {
     setForm((state) => ({

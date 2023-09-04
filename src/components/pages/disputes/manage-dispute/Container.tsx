@@ -33,7 +33,11 @@ function ManageDisputeContainer() {
   useEffect(() => {
     if (status === 'success' && data?.data?.disputes?.[0]?.id) {
       setDispute(data?.data?.disputes?.[0]);
-      setFormIndex(1);
+      if (data?.data?.disputes?.[0]?.status === 'Resolved') {
+        setFormIndex(2);
+      } else {
+        setFormIndex(1);
+      }
     }
   }, [status, data, setDispute]);
 
@@ -106,8 +110,8 @@ function ManageDisputeContainer() {
 
               <div className="w-full">
                 {formIndex === 0 && <OpenDispute onNext={() => setFormIndex(1)} />}
-                {formIndex === 1 && <DisputeActivities onNext={() => setFormIndex(2)} />}
-                {formIndex === 2 && <DisputeActivities onNext={() => setFormIndex(2)} />}
+                {formIndex === 1 && <DisputeActivities />}
+                {formIndex === 2 && <DisputeActivities />}
               </div>
             </div>
 

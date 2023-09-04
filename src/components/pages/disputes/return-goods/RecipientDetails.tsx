@@ -34,10 +34,11 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
     if (!form?.recipientDetails?.recipientName) return 'Recipient name is required';
     if (!form?.recipientDetails?.phoneNumber) return 'Recipient phone number is required';
     if (!form?.recipientDetails?.email) return 'Recipient email is required';
-    if (!form?.recipientDetails?.address) return 'Recipient address is required';
-
+    if (!/^([a-zA-Z0-9_\-.&]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/.test(form?.recipientDetails?.email || '')) {
+      return 'Please enter a valid email for the recipient';
+    }
     if (!form?.inspectionDuration) return 'Inspection duration is required';
-
+    if (!form?.recipientDetails?.address) return 'Recipient address is required';
     if (form?.isDeliveryOnUs && !form?.pickUpAddress) {
       return 'Pickup address is required';
     }

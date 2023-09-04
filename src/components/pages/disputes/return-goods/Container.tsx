@@ -61,7 +61,7 @@ function ReturnGoodsContainer() {
       {status === 'success' && (
         <div className="w-full">
           <div className="flex flex-wrap -m-4">
-            <div className="w-full xl:w-7/12 p-4">
+            <div className="w-full max-w-4xl p-4">
               <FormIndicator formIndex={formIndex} />
               <div className="w-full">
                 {formIndex === 0 && <OrderDetails onNext={() => setFormIndex(1)} />}

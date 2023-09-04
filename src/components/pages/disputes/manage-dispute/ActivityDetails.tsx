@@ -56,6 +56,8 @@ function ActivityDetails({ data, isLast }: any) {
   const acceptanceMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
       queryClient.invalidateQueries(['dispute-activities']);
+      queryClient.invalidateQueries(['escrow-details', router?.query?.slug]);
+
       notification({
         title: 'Successful',
         message: res?.message || 'Dispute opened successfully',
@@ -74,6 +76,8 @@ function ActivityDetails({ data, isLast }: any) {
   const shippingMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
       queryClient.invalidateQueries(['dispute-activities']);
+      queryClient.invalidateQueries(['escrow-details', router?.query?.slug]);
+
       notification({
         title: 'Successful',
         message: res?.message || 'Dispute opened successfully',
@@ -92,6 +96,8 @@ function ActivityDetails({ data, isLast }: any) {
   const shippingConfirmationMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
       queryClient.invalidateQueries(['dispute-activities']);
+      queryClient.invalidateQueries(['escrow-details', router?.query?.slug]);
+
       notification({
         title: 'Successful',
         message: res?.message || 'Dispute opened successfully',
@@ -245,7 +251,9 @@ function ActivityDetails({ data, isLast }: any) {
           )}
 
           {data?.shippingStat === 'Recipient' && (
-            <p className="">{`${data?.role === 'Buyer' ? 'Seller' : 'Buyer'} will be shipping the item(s) based on your agreement.`}</p>
+            <p className="">
+              The shipment of your good(s) is yet to resume.
+            </p>
           )}
 
           {data?.statusUpdateStat === 'Initiator' && (
