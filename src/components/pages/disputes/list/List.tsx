@@ -95,8 +95,7 @@ function InvoiceList() {
                               {
                                 title: 'View',
                                 action: () => router.push({
-                                  pathname: `disputes/manage-dispute/${item?.invoiceId}`,
-                                  query: { status: item?.status }
+                                  pathname: `disputes/manage-dispute/${item?.invoiceId}`
                                 })
                               },
                               { title: 'Delete', action: () => {} }

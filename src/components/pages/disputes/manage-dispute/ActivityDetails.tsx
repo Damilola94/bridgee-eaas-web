@@ -16,6 +16,7 @@ import { useDisputeContext } from '../../../../context/Dispute';
 import ConfirmPrompt from '../../../common/ConfirmPrompt';
 import Loading from '../../../common/Loading';
 import SelectInput, { SelectOptionType } from '../../../inputs/Select';
+import DisputeShipmentDetails from './actions/DisputeShipmentDetails';
 
 const formatActivity = (activity: string) => {
   if (activity === 'escalated') {
@@ -30,11 +31,24 @@ const formatActivity = (activity: string) => {
   return activity;
 };
 
+const formatActionType = (activity: string) => {
+  if (activity === 'shipped return items') return 'Return';
+  if (activity === 'shipped replaced items') return 'Replacement';
+  if (activity === 'shipped additional items') return 'AdditionalShipment';
+  return undefined;
+};
+
 const activitiesWithAction = [
   'opened a dispute',
   'rejected with a new proposal',
   'proposed a new proposal',
   'proposed a new proposal'
+];
+
+const activitiesWithInvoice = [
+  'shipped return items',
+  'shipped replaced items',
+  'shipped additional items'
 ];
 
 function ActivityDetails({ data, isLast }: any) {
@@ -202,6 +216,12 @@ function ActivityDetails({ data, isLast }: any) {
             </p>
             <p className="">{data.decision}</p>
           </div>
+        )}
+        {activitiesWithInvoice.includes(data?.activity) && (
+          <DisputeShipmentDetails
+            disputeId={dispute?.id}
+            actionType={formatActionType(data?.activity)}
+          />
         )}
       </div>
 
