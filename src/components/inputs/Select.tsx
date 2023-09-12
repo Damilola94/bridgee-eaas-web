@@ -22,7 +22,7 @@ function SelectInput({
   multiple, placeholder, isClearable
 }: SelectProps) {
   return (
-    <div className={`${className || ''} relative`}>
+    <div className={`${className || ''} relative select`}>
       {label && <label className="flex mb-1">{label}</label>}
 
       <Select
@@ -35,6 +35,7 @@ function SelectInput({
         value={value}
         isMulti={multiple}
         isClearable={isClearable}
+        classNamePrefix="react-select"
         isSearchable
         onChange={onChange}
         menuPlacement="auto"

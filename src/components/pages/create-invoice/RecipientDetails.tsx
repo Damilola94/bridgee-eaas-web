@@ -19,11 +19,18 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
       const { value, name } = val.target;
       setForm((state) => ({ ...state, [name]: value }));
     } else if (type === 'recipient') {
-      const { value, name } = val.target;
-      setForm((state) => ({
-        ...state,
-        recipientDetails: { ...state.recipientDetails, [name]: value }
-      }));
+      if (inputName === 'address') {
+        setForm((state) => ({
+          ...state,
+          recipientDetails: { ...state.recipientDetails, [inputName]: val }
+        }));
+      } else {
+        const { value, name } = val.target;
+        setForm((state) => ({
+          ...state,
+          recipientDetails: { ...state.recipientDetails, [name]: value }
+        }));
+      }
     } else {
       setForm((state) => ({ ...state, [inputName]: val }));
     }
@@ -124,6 +131,11 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
             className="w-full mb-4"
             placeholder="Recipient's Address"
           />
+          {/* <LocationInput
+            value={form?.recipientDetails?.address || ''}
+            onChange={(val) => handleChange(val, 'recipient', 'address')}
+            label="Recipient Address"
+          /> */}
         </div>
       </div>
 

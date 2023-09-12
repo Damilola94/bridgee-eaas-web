@@ -24,7 +24,7 @@ export type OrderListItemProps = {
 };
 
 export type RecipientDetailsProps = {
-  address?: string;
+  address?: string | any;
   recipientName?: string;
   phoneNumber?: string;
   email?: string;
