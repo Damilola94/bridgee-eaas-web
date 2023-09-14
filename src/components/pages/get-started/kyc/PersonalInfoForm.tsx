@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { personalInfoProps } from '../../../../types/kyc';
+import { PersonalInfoProps } from '../../../../types/kyc';
 import Button from '../../../inputs/Button';
 
 import SelectInput from '../../../inputs/Select';
@@ -9,7 +9,7 @@ import TextInput from '../../../inputs/Text';
 
 function PersonalInfoForm() {
   const router = useRouter();
-  const [form, setForm] = useState<personalInfoProps>({});
+  const [form, setForm] = useState<PersonalInfoProps>({});
 
   const handleChange = (val: any, type = 'input', inputName = '') => {
     if (type === 'input') {
