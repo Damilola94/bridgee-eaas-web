@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
+
 import BankAccounts from './BankAccounts';
 import BusinessDetails from './BusinessDetails';
 import PersonalDetails from './PersonalDetails';
