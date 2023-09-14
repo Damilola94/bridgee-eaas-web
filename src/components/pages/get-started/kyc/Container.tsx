@@ -5,30 +5,33 @@ import PersonalInfoForm from './PersonalInfoForm';
 import BvnForm from './BvnForm';
 import ResidentialInfoForm from './ResidentialInfoForm';
 import IdInfoForm from './IdInfoForm';
+import KycSteps from './KycSteps';
 
-// const forms = [
-//   { title: 'Personal Information', tab: 'personal-info' },
-//   { title: 'BVN Validation', tab: 'bvn-validation' },
-//   { title: 'Residential Information', tab: 'residential-info' },
-//   { title: 'ID Card Details', tab: 'id-details' }
-// ];
+const steps = [
+  { title: 'Personal Information', step: 'personal-info' },
+  { title: 'BVN Validation', step: 'bvn-validation' },
+  { title: 'Residential Information', step: 'residential-info' },
+  { title: 'ID Card Details', step: 'id-details' }
+];
 
 function KycContainer() {
   const router = useRouter();
-  const { tab } = router?.query || {};
+  const { step } = router?.query || {};
 
   useEffect(() => {
-    if (!router?.query?.tab) {
-      router.push({ pathname: '/get-started/kyc', query: { tab: 'personal-info' } });
+    if (!router?.query?.step) {
+      router.push({ pathname: '/get-started/kyc', query: { step: 'personal-info' } });
     }
   }, [router, router?.query?.status]);
 
   return (
-    <div className="w-full">
-      {tab === 'personal-info' && <PersonalInfoForm />}
-      {tab === 'bvn-validation' && <BvnForm />}
-      {tab === 'residential-info' && <ResidentialInfoForm />}
-      {tab === 'id-details' && <IdInfoForm />}
+    <div className="relative  w-full">
+      <KycSteps steps={steps} />
+
+      {step === 'personal-info' && <PersonalInfoForm />}
+      {step === 'bvn-validation' && <BvnForm />}
+      {step === 'residential-info' && <ResidentialInfoForm />}
+      {step === 'id-details' && <IdInfoForm />}
     </div>
   );
 }

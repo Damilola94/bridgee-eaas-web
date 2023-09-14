@@ -14,14 +14,14 @@ function IdInfoForm() {
   const handleChange = (val: any, type = 'input', inputName = '') => {
     if (type === 'input') {
       const { value, name } = val.target;
-      setForm((state) => ({ ...state, [name]: value }));
+      setForm((prev) => ({ ...prev, [name]: value }));
     } else {
-      setForm((state) => ({ ...state, [inputName]: val }));
+      setForm((prev) => ({ ...prev, [inputName]: val }));
     }
   };
 
   const handleSubmit = () => {
-    router.push('/get-started/kyc?tab=id-details');
+    router.push('/get-started/kyc?step=id-details');
   };
 
   return (
@@ -64,7 +64,7 @@ function IdInfoForm() {
             textColor="text-black"
             className="w-full"
             paddingY="py-3"
-            onClick={() => router.push('/get-started/kyc?tab=residential-info')}
+            onClick={() => router.push('/get-started/kyc?step=residential-info')}
           >
             Back
           </Button>

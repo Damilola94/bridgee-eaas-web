@@ -21,13 +21,9 @@ function AddInvoiceItem({ data, onAdd = () => {}, onClose = () => {} }: Props) {
     if (data?.id) setForm({ ...data });
   }, [data]);
 
-  const handleChange = (val: any, type = 'input', inputName = '') => {
-    if (type === 'input') {
-      const { value, name } = val.target;
-      setForm((state) => ({ ...state, [name]: value }));
-    } else {
-      setForm((state) => ({ ...state, [inputName]: val }));
-    }
+  const handleChange = (e: any) => {
+    const { value, name } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const validateForm = () => {

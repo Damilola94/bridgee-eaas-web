@@ -14,14 +14,14 @@ function PersonalInfoForm() {
   const handleChange = (val: any, type = 'input', inputName = '') => {
     if (type === 'input') {
       const { value, name } = val.target;
-      setForm((state) => ({ ...state, [name]: value }));
+      setForm((prev) => ({ ...prev, [name]: value }));
     } else {
-      setForm((state) => ({ ...state, [inputName]: val }));
+      setForm((prev) => ({ ...prev, [inputName]: val }));
     }
   };
 
   const handleSubmit = () => {
-    router.push('/get-started/kyc?tab=bvn-validation');
+    router.push('/get-started/kyc?step=bvn-validation');
   };
 
   return (
@@ -34,7 +34,7 @@ function PersonalInfoForm() {
 
           <div className="w-full">
             <div className="flex -mx-2">
-              <div className="w-1/2 p-2">
+              <div className="w-1/2 px-2">
                 <TextInput
                   name="firstName"
                   onChange={handleChange}
@@ -43,7 +43,7 @@ function PersonalInfoForm() {
                   label="First name"
                 />
               </div>
-              <div className="w-1/2 p-2">
+              <div className="w-1/2 px-2">
                 <TextInput
                   name="lastName"
                   onChange={handleChange}

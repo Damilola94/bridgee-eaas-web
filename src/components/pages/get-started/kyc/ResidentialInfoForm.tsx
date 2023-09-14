@@ -1,27 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+
+import statesJson from '../../../../data/states.json';
 
 import { ResidentialInfoProps } from '../../../../types/kyc';
 import Button from '../../../inputs/Button';
 
-import SelectInput from '../../../inputs/Select';
+import SelectInput, { SelectOptionType } from '../../../inputs/Select';
 import TextInput from '../../../inputs/Text';
 
 function ResidentialInfoForm() {
   const router = useRouter();
-  const [form, setForm] = useState<ResidentialInfoProps>({});
+  const [form, setForm] = useState<ResidentialInfoProps>({
+    country: { label: 'Nigeria', value: 'Nigeria' }
+  });
+  const [states, setStates] = useState<SelectOptionType[]>();
+  const [lgas, setLgas] = useState<SelectOptionType[]>();
+
+  useEffect(() => {
+    const list = statesJson?.map((item) => ({ label: item?.name, value: item?.name }));
+    setStates(list);
+  }, []);
+
+  useEffect(() => {
+    const getLgas = statesJson.filter((item) => item?.name === form?.state?.value)?.[0]?.lgas;
+    const list = getLgas?.map((item) => ({ label: item, value: item }));
+    setForm((prev) => ({ ...prev, lga: undefined }));
+    setLgas(list);
+  }, [form.state]);
 
   const handleChange = (val: any, type = 'input', inputName = '') => {
     if (type === 'input') {
       const { value, name } = val.target;
-      setForm((state) => ({ ...state, [name]: value }));
+      setForm((prev) => ({ ...prev, [name]: value }));
     } else {
-      setForm((state) => ({ ...state, [inputName]: val }));
+      setForm((prev) => ({ ...prev, [inputName]: val }));
     }
   };
 
   const handleSubmit = () => {
-    router.push('/get-started/kyc?tab=id-details');
+    router.push('/get-started/kyc?step=id-details');
   };
 
   return (
@@ -41,7 +59,7 @@ function ResidentialInfoForm() {
               label="Full Address"
             />
             <div className="flex -mx-2">
-              <div className="w-1/2 p-2">
+              <div className="w-1/2 px-2">
                 <TextInput
                   name="buildingNo"
                   onChange={handleChange}
@@ -50,7 +68,7 @@ function ResidentialInfoForm() {
                   label="Building/Apartment No."
                 />
               </div>
-              <div className="w-1/2 p-2">
+              <div className="w-1/2 px-2">
                 <TextInput
                   name="street"
                   onChange={handleChange}
@@ -75,7 +93,7 @@ function ResidentialInfoForm() {
               label="Town"
             />
             <TextInput
-              name="town"
+              name="city"
               onChange={handleChange}
               value={form?.city || ''}
               className="w-full mb-4"
@@ -84,36 +102,46 @@ function ResidentialInfoForm() {
             <SelectInput
               label="Country"
               value={form?.country || undefined}
-              onChange={(val) => handleChange(val, 'country')}
-              options={[{ label: 'Male', value: 'male' }, { label: 'Female', value: 'female' }]}
+              onChange={(val) => handleChange(val, 'select', 'country')}
+              options={[{ label: 'Nigeria', value: 'Nigeria' }, { label: 'Others', value: 'Others' }]}
               className="mb-4"
             />
-            <div className="flex -mx-2">
-              <div className="w-1/2 p-2">
-                <SelectInput
-                  label="State"
-                  value={form?.state || undefined}
-                  onChange={(val) => handleChange(val, 'state')}
-                  options={[{ label: 'Male', value: 'male' }, { label: 'Female', value: 'female' }]}
-                  className="mb-4"
-                />
+            {form?.country?.value === 'Nigeria' ? (
+              <div className="flex -mx-2">
+                <div className="w-1/2 px-2">
+                  <SelectInput
+                    label="State"
+                    value={form?.state || undefined}
+                    onChange={(val) => handleChange(val, 'select', 'state')}
+                    options={states || []}
+                    className="mb-4"
+                  />
+                </div>
+                <div className="w-1/2 px-2">
+                  <SelectInput
+                    label="LGA"
+                    value={form?.lga || undefined}
+                    onChange={(val) => handleChange(val, 'select', 'lga')}
+                    options={lgas || []}
+                    className="mb-4"
+                  />
+                </div>
               </div>
-              <div className="w-1/2 p-2">
-                <SelectInput
-                  label="LGA"
-                  value={form?.lga || undefined}
-                  onChange={(val) => handleChange(val, 'lga')}
-                  options={[{ label: 'Male', value: 'male' }, { label: 'Female', value: 'female' }]}
-                  className="mb-4"
-                />
-              </div>
-            </div>
+            ) : (
+              <TextInput
+                name="nonNigeriaState"
+                onChange={handleChange}
+                value={form?.nonNigeriaState || ''}
+                className="w-full mb-4"
+                label="Non Nigeria State"
+              />
+            )}
           </div>
         </div>
       </div>
 
       <div className="flex mt-5 -mx-2">
-        <div className="w-1/2 p-2">
+        <div className="w-1/2 px-2">
           <Button
             border
             borderColor="border-gray-300"
@@ -121,12 +149,12 @@ function ResidentialInfoForm() {
             textColor="text-black"
             className="w-full"
             paddingY="py-3"
-            onClick={() => router.push('/get-started/kyc?tab=bvn-validation')}
+            onClick={() => router.push('/get-started/kyc?step=bvn-validation')}
           >
             Back
           </Button>
         </div>
-        <div className="w-1/2 p-2">
+        <div className="w-1/2 px-2">
           <Button
             className="w-full"
             paddingY="py-3"

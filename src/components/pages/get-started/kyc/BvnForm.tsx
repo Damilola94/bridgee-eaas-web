@@ -13,14 +13,14 @@ function BvnForm() {
   const handleChange = (val: any, type = 'input', inputName = '') => {
     if (type === 'input') {
       const { value, name } = val.target;
-      setForm((state) => ({ ...state, [name]: value }));
+      setForm((prev) => ({ ...prev, [name]: value }));
     } else {
-      setForm((state) => ({ ...state, [inputName]: val }));
+      setForm((prev) => ({ ...prev, [inputName]: val }));
     }
   };
 
   const handleSubmit = () => {
-    router.push('/get-started/kyc?tab=residential-info');
+    router.push('/get-started/kyc?step=residential-info');
   };
 
   return (
@@ -55,7 +55,7 @@ function BvnForm() {
             textColor="text-black"
             className="w-full"
             paddingY="py-3"
-            onClick={() => router.push('/get-started/kyc?tab=personal-info')}
+            onClick={() => router.push('/get-started/kyc?step=personal-info')}
           >
             Back
           </Button>

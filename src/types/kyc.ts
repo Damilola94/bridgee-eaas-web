@@ -1,3 +1,5 @@
+import { SelectOptionType } from "../components/inputs/Select";
+
 export type PersonalInfoProps = {
   firstName?: string;
   lastName?: string;
@@ -6,7 +8,7 @@ export type PersonalInfoProps = {
   phoneNumber?: string;
   dob?: string;
   bvn?: string;
-  gender?: { label: string, value: string };
+  gender?: SelectOptionType;
 };
 
 export type ResidentialInfoProps = {
@@ -16,12 +18,13 @@ export type ResidentialInfoProps = {
   landmark?: string;
   town?: string;
   city?: string;
-  country?: { label: string, value: string };
-  state?: { label: string, value: string };
-  lga?: { label: string, value: string };
+  country?: SelectOptionType;
+  state?: SelectOptionType;
+  nonNigeriaState?: string;
+  lga?: SelectOptionType;
 };
 
 export type IdFormProps = {
   idNumber?: string;
-  idType?: { label: string, value: string };
+  idType?: SelectOptionType;
 };

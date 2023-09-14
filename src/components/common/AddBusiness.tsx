@@ -24,9 +24,9 @@ function AddBusiness({ isOpen, onClose }: Props) {
   const handleChange = (val: any, type = 'input', inputName = '') => {
     if (type === 'input') {
       const { value, name } = val.target;
-      setForm((state) => ({ ...state, [name]: value }));
+      setForm((prev) => ({ ...prev, [name]: value }));
     } else {
-      setForm((state) => ({ ...state, [inputName]: val }));
+      setForm((prev) => ({ ...prev, [inputName]: val }));
     }
   };
 
