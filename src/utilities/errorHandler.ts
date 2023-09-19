@@ -15,7 +15,7 @@ const errorHandler = (error: any, auth: boolean) => {
     if (response?.status === 401 || response?.status === 403) {
       message = response?.data?.detail
         || response?.data?.title
-        || 'You are either not autorized to access this resource or your session has expired. Please login again.';
+        || 'You are either not authorized to access this resource or your session has expired. Please login again.';
       if (auth) {
         Cookies.set('err', message);
         logout();

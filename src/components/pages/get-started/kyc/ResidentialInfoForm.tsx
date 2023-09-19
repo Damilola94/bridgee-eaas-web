@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { useMutation, useQueryClient } from 'react-query';
 
 import statesJson from '../../../../data/states.json';
 
@@ -8,14 +9,19 @@ import Button from '../../../inputs/Button';
 
 import SelectInput, { SelectOptionType } from '../../../inputs/Select';
 import TextInput from '../../../inputs/Text';
+import { useKycContext } from '../../../../context/Kyc';
+import notification from '../../../../utilities/notification';
+import handleFetch from '../../../../services/api/handleFetch';
+import Loading from '../../../common/Loading';
 
 function ResidentialInfoForm() {
   const router = useRouter();
-  const [form, setForm] = useState<ResidentialInfoProps>({
-    country: { label: 'Nigeria', value: 'Nigeria' }
-  });
+  const { kycData } = useKycContext();
+  const [form, setForm] = useState<ResidentialInfoProps>();
   const [states, setStates] = useState<SelectOptionType[]>();
   const [lgas, setLgas] = useState<SelectOptionType[]>();
+
+  const { residentialAddress } = kycData || {};
 
   useEffect(() => {
     const list = statesJson?.map((item) => ({ label: item?.name, value: item?.name }));
@@ -27,7 +33,40 @@ function ResidentialInfoForm() {
     const list = getLgas?.map((item) => ({ label: item, value: item }));
     setForm((prev) => ({ ...prev, lga: undefined }));
     setLgas(list);
-  }, [form.state]);
+  }, [form?.state]);
+
+  useEffect(() => {
+    setForm((prev) => ({
+      ...prev,
+      ...residentialAddress,
+      country: residentialAddress?.country
+        ? { label: residentialAddress?.country, value: residentialAddress?.country }
+        : { label: 'Nigeria', value: 'Nigeria' },
+      state: residentialAddress?.state
+        ? { label: residentialAddress?.state, value: residentialAddress?.state } : undefined,
+      lga: residentialAddress?.lga
+        ? { label: residentialAddress?.lga, value: residentialAddress?.lga } : undefined
+    }));
+  }, [residentialAddress]);
+
+  const queryClient = useQueryClient();
+  const residentialMutation = useMutation(handleFetch, {
+    onSuccess: (res: any) => {
+      queryClient.invalidateQueries(['user-information']);
+      router.push('/get-started/kyc?step=id-details');
+      notification({
+        message: res?.message || 'You have successfully created an invoice',
+        type: 'success'
+      });
+    },
+    onError: (err: any) => {
+      notification({
+        title: 'Error',
+        message: err?.toString() || 'Something went wrong.',
+        type: 'danger'
+      });
+    }
+  });
 
   const handleChange = (val: any, type = 'input', inputName = '') => {
     if (type === 'input') {
@@ -38,12 +77,42 @@ function ResidentialInfoForm() {
     }
   };
 
-  const handleSubmit = () => {
-    router.push('/get-started/kyc?step=id-details');
+  const validateForm = () => {
+    if (!form?.fullAddress) return 'Please, enter your full address.';
+    if (!form?.apartmentNo) return 'Please, enter your apartment number.';
+    if (!form?.street) return 'Please, enter your street name.';
+    if (!form?.landMark) return 'Please, enter your nearest landmark.';
+    if (!form?.town) return 'Please, enter your town.';
+    if (!form?.country) return 'Please, enter your country.';
+    if (!form?.state) return 'Please, enter your state.';
+    if (!form?.lga) return 'Please, enter your LGA.';
+    return null;
   };
+
+  const handleSubmit = () => {
+    const error = validateForm();
+    if (error) {
+      notification({ title: 'Form Error', message: error, type: 'danger' });
+      return;
+    }
+
+    const body = {
+      ...form,
+      country: form?.country?.value,
+      state: form?.state?.value,
+      lga: form?.lga?.value
+    };
+
+    residentialMutation.mutate({
+      endpoint: 'user', extra: 'add-user-residential-address', method: 'POST', body, auth: true
+    });
+  };
+
+  const { isLoading } = residentialMutation;
 
   return (
     <div className="w-full max-w-md mx-auto">
+      {isLoading && <Loading />}
       <div className="w-full bg-white rounded-xl px-8 py-7 shadow">
         <div className="w-full">
           <div className="flex justify-between items-start">
@@ -61,9 +130,9 @@ function ResidentialInfoForm() {
             <div className="flex -mx-2">
               <div className="w-1/2 px-2">
                 <TextInput
-                  name="buildingNo"
+                  name="apartmentNo"
                   onChange={handleChange}
-                  value={form?.buildingNo || ''}
+                  value={form?.apartmentNo || ''}
                   className="w-full mb-4"
                   label="Building/Apartment No."
                 />
@@ -79,9 +148,9 @@ function ResidentialInfoForm() {
               </div>
             </div>
             <TextInput
-              name="landmark"
+              name="landMark"
               onChange={handleChange}
-              value={form?.landmark || ''}
+              value={form?.landMark || ''}
               className="w-full mb-4"
               label="Landmark (Optional)"
             />
@@ -91,13 +160,6 @@ function ResidentialInfoForm() {
               value={form?.town || ''}
               className="w-full mb-4"
               label="Town"
-            />
-            <TextInput
-              name="city"
-              onChange={handleChange}
-              value={form?.city || ''}
-              className="w-full mb-4"
-              label="City"
             />
             <SelectInput
               label="Country"
@@ -131,7 +193,7 @@ function ResidentialInfoForm() {
               <TextInput
                 name="nonNigeriaState"
                 onChange={handleChange}
-                value={form?.nonNigeriaState || ''}
+                value={form?.otherCountry || ''}
                 className="w-full mb-4"
                 label="Non Nigeria State"
               />
@@ -156,7 +218,20 @@ function ResidentialInfoForm() {
         </div>
         <div className="w-1/2 px-2">
           <Button
+            border
+            borderColor="border-gray-300"
+            bgColor="bg-white"
+            textColor="text-black"
             className="w-full"
+            paddingY="py-3"
+            onClick={() => router.push('/get-started/kyc?step=id-details')}
+          >
+            Next
+          </Button>
+        </div>
+        <div className="w-1/2 px-2">
+          <Button
+            className="w-full whitespace-nowrap"
             paddingY="py-3"
             onClick={handleSubmit}
           >

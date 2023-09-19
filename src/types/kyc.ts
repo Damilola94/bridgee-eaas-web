@@ -3,28 +3,34 @@ import { SelectOptionType } from "../components/inputs/Select";
 export type PersonalInfoProps = {
   firstName?: string;
   lastName?: string;
-  middleName?: string;
+  otherName?: string;
   email?: string;
   phoneNumber?: string;
-  dob?: string;
+  dateOfBirth?: string;
   bvn?: string;
+  selfiePict?: string,
   gender?: SelectOptionType;
+  id?: string;
 };
 
 export type ResidentialInfoProps = {
   fullAddress?: string;
-  buildingNo?: string;
+  apartmentNo?: string;
   street?: string;
-  landmark?: string;
+  landMark?: string;
   town?: string;
   city?: string;
   country?: SelectOptionType;
   state?: SelectOptionType;
-  nonNigeriaState?: string;
+  otherCountry?: string;
   lga?: SelectOptionType;
 };
 
 export type IdFormProps = {
-  idNumber?: string;
-  idType?: SelectOptionType;
+  personalAccountDocumentType?: SelectOptionType;
+  identificationNumber?: string;
+  front?: File;
+  back?: File;
+  frontPath?: string;
+  backPath?: string;
 };

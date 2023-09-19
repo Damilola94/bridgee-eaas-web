@@ -42,7 +42,7 @@ export const format2Digits = (num: number) => {
   return num.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false }) || 0;
 };
 
-export const formatFileUrl = (path: string) => {
+export const formatFileUrl = (path?: string) => {
   if (path) return `${process.env.NEXT_PUBLIC_API_BASE_URL}/${path?.replaceAll('\\', '/')}`;
   return undefined;
 };

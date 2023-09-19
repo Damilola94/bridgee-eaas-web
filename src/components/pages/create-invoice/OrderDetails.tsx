@@ -37,8 +37,8 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     window.scrollTo(0, 0);
   }, []);
 
-  const handleChange = (val: any, type = 'input', inputName = '') => {
-    if (type === 'input') {
+  const handleChange = (val: any, inputType = 'input', inputName = '') => {
+    if (inputType === 'input') {
       const {
         value, name, type, files
       } = val.target;
@@ -63,7 +63,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   };
 
   const handleAddItem = (itemPayload: OrderListItemProps) => {
-    if (form?.escrowItems?.filter((item) => item.id === itemPayload.id)?.length) {
+    if (form?.escrowItems?.find((item) => item.id === itemPayload.id)) {
       setForm((state) => ({
         ...state,
         escrowItems: state?.escrowItems?.map((item) => item?.id === itemPayload?.id ? itemPayload : item)
@@ -214,7 +214,6 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
             value={form?.contract}
             onChange={handleChange}
             label="Upload file"
-            className="file-input"
           />
         </div>
       </div>

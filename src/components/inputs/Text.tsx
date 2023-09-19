@@ -9,6 +9,7 @@ type Props = {
   label?: string,
   placeholder?: string,
   height?: string
+  accept?: string
   readOnly?: boolean,
   disabled?: boolean,
   minValue?: number,
@@ -22,7 +23,7 @@ type Props = {
 
 function TextInput({
   className, value, name, readOnly, onBlur, disabled, onKeyPress, onKeyDown,
-  minValue, maxValue, type, onChange, label, placeholder, error, height
+  minValue, maxValue, type, onChange, label, placeholder, error, height, accept
 }: Props) {
   const [inputType, setInputType] = useState(type);
 
@@ -35,6 +36,7 @@ function TextInput({
         } bg-inputBg px-5 ${(inputType === 'password' && value) ? 'text-4xl' : ''
         } outline-none w-full rounded-[10px] border border-borderColor disabled:bg-gray-200`}
         type={inputType}
+        accept={accept}
         name={name}
         id={name}
         value={value}

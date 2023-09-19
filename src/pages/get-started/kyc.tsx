@@ -9,6 +9,7 @@ import type { NextPageWithLayout } from '../_app';
 import Layout from '../../components/wrappers/Layout';
 import Button from '../../components/inputs/Button';
 import KycContainer from '../../components/pages/get-started/kyc/Container';
+import KycContextProvider from '../../context/Kyc';
 
 const KYC: NextPageWithLayout = () => {
   const router = useRouter();
@@ -34,7 +35,9 @@ const KYC: NextPageWithLayout = () => {
       </div>
 
       <div className="w-full">
-        <KycContainer />
+        <KycContextProvider>
+          <KycContainer />
+        </KycContextProvider>
       </div>
 
     </>

@@ -1,14 +1,37 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import { useMutation, useQueryClient } from 'react-query';
 
 import { PersonalInfoProps } from '../../../../types/kyc';
 import Button from '../../../inputs/Button';
 
 import TextInput from '../../../inputs/Text';
+import notification from '../../../../utilities/notification';
+import Loading from '../../../common/Loading';
+import handleFetch from '../../../../services/api/handleFetch';
 
 function BvnForm() {
   const router = useRouter();
   const [form, setForm] = useState<PersonalInfoProps>({});
+
+  const queryClient = useQueryClient();
+  const personalMutation = useMutation(handleFetch, {
+    onSuccess: (res: any) => {
+      queryClient.invalidateQueries(['user-information']);
+      router.push('/get-started/kyc?step=residential-info');
+      notification({
+        message: res?.message || 'You have successfully created an invoice',
+        type: 'success'
+      });
+    },
+    onError: (err: any) => {
+      notification({
+        title: 'Error',
+        message: err?.toString() || 'Something went wrong.',
+        type: 'danger'
+      });
+    }
+  });
 
   const handleChange = (val: any, type = 'input', inputName = '') => {
     if (type === 'input') {
@@ -19,12 +42,31 @@ function BvnForm() {
     }
   };
 
-  const handleSubmit = () => {
-    router.push('/get-started/kyc?step=residential-info');
+  const validateForm = () => {
+    if (!form?.bvn) return 'Please, enter your BVN.';
+    if (form?.bvn?.length !== 11) return 'Please, enter a valid BVN.';
+    return null;
   };
+
+  const handleSubmit = () => {
+    const error = validateForm();
+    if (error) {
+      notification({ title: 'Form Error', message: error, type: 'danger' });
+      return;
+    }
+
+    const body = { bvn: form?.bvn };
+
+    personalMutation.mutate({
+      endpoint: 'user', extra: 'add-and-validate-bvn', method: 'POST', body, auth: true
+    });
+  };
+
+  const { isLoading } = personalMutation;
 
   return (
     <div className="w-full max-w-md mx-auto">
+      {isLoading && <Loading />}
       <div className="w-full bg-white rounded-xl px-8 py-7 shadow">
         <div className="w-full">
           <div className="flex justify-between items-start">
@@ -34,7 +76,7 @@ function BvnForm() {
           <div className="w-full">
             <TextInput
               name="bvn"
-              onChange={handleChange}
+              onChange={(e) => /^\d{0,12}$/g.test(e.target.value) && handleChange(e)}
               value={form?.bvn || ''}
               className="w-full mb-1"
               label="BVN"
@@ -47,7 +89,7 @@ function BvnForm() {
       </div>
 
       <div className="flex mt-5 -mx-2">
-        <div className="w-1/2 p-2">
+        <div className="w-1/2 px-2">
           <Button
             border
             borderColor="border-gray-300"
@@ -60,9 +102,22 @@ function BvnForm() {
             Back
           </Button>
         </div>
-        <div className="w-1/2 p-2">
+        <div className="w-1/2 px-2">
           <Button
+            border
+            borderColor="border-gray-300"
+            bgColor="bg-white"
+            textColor="text-black"
             className="w-full"
+            paddingY="py-3"
+            onClick={() => router.push('/get-started/kyc?step=residential-info')}
+          >
+            Next
+          </Button>
+        </div>
+        <div className="w-1/2 px-2">
+          <Button
+            className="w-full whitespace-nowrap"
             paddingY="py-3"
             onClick={handleSubmit}
           >
