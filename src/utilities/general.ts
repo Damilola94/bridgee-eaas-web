@@ -1,4 +1,5 @@
 import moment from 'moment-timezone';
+import { idTypes } from '../data/kyc';
 
 export const formatCurrency = (value: any, showCurrency: boolean = true, currency: string = 'NGN') => {
   if (value) {
@@ -89,4 +90,8 @@ export const formatDisbursementType = (type: string) => {
   case 'installment': return 'Installment';
   default: return type;
   }
+};
+
+export const formatIDTypeLabel = (value: string) => {
+  return idTypes.find((item) => item.value === value)?.label;
 };

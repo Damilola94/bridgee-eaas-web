@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useMutation, useQueryClient } from 'react-query';
 
 import { PersonalInfoProps } from '../../../../types/kyc';
 import Button from '../../../inputs/Button';
+import { useKycContext } from '../../../../context/Kyc';
 
 import TextInput from '../../../inputs/Text';
 import notification from '../../../../utilities/notification';
@@ -12,7 +13,14 @@ import handleFetch from '../../../../services/api/handleFetch';
 
 function BvnForm() {
   const router = useRouter();
+  const { kycData } = useKycContext();
   const [form, setForm] = useState<PersonalInfoProps>({});
+
+  const { personalInformation } = kycData || {};
+
+  useEffect(() => {
+    setForm({ bvn: personalInformation?.bvn });
+  }, [personalInformation]);
 
   const queryClient = useQueryClient();
   const personalMutation = useMutation(handleFetch, {

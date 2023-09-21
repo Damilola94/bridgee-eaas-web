@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useMutation } from 'react-query';
+import Skeleton from 'react-loading-skeleton';
 
 import DefaultLogo from '../../../assets/images/business-logo.png';
 
@@ -13,6 +14,7 @@ import { useAccountsContext } from '../../../context/Accounts';
 import { formatCurrency } from '../../../utilities/general';
 import notification from '../../../utilities/notification';
 import handleFetch from '../../../services/api/handleFetch';
+import useGetQuery from '../../../hooks/useGetQuery';
 
 function InvoiceSummary() {
   const router = useRouter();
@@ -24,7 +26,13 @@ function InvoiceSummary() {
   }, []);
 
   const total = form?.escrowItems?.reduce((sum, item) => sum + (item?.total || 0), 0) || 0;
-  const escrowFee = (total || 0) * 0.05;
+  const { data, status, isFetching } = useGetQuery({
+    endpoint: 'transaction',
+    extra: 'calculate-fee',
+    pQuery: { feeType: 'Escrow', amount: total },
+    queryKey: ['calculate-fee', total],
+    enabled: !!total
+  });
 
   const escrowMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
@@ -133,8 +141,12 @@ function InvoiceSummary() {
               <p className="font-bold ff-bold">{formatCurrency(total)}</p>
             </div>
             <div className="w-full flex justify-between mb-3">
-              <p className="">Escrow fee (5%)</p>
-              <p className="font-bold ff-bold">{formatCurrency(escrowFee)}</p>
+              <p className="">Escrow fee</p>
+              <p className="font-bold ff-bold">
+                {(status === 'loading' || isFetching)
+                  ? <Skeleton className="w-[80px]" />
+                  : formatCurrency(data?.data || 0)}
+              </p>
             </div>
             <div className="w-full flex justify-between mb-3">
               <p className="">Delivery Fee</p>
@@ -142,7 +154,11 @@ function InvoiceSummary() {
             </div>
             <div className="w-full flex justify-between mb-3 text-lg">
               <p className="">TOTAL</p>
-              <p className="font-bold ff-bold">{formatCurrency(total + escrowFee)}</p>
+              <p className="font-bold ff-bold">
+                {(status === 'loading' || isFetching)
+                  ? <Skeleton className="w-[80px]" />
+                  : formatCurrency(total + (data?.data || 0))}
+              </p>
             </div>
           </div>
         </div>
@@ -155,7 +171,12 @@ function InvoiceSummary() {
           >
             Save Draft
           </Button>
-          <Button onClick={handleSubmit}>Send</Button>
+          <Button
+            onClick={handleSubmit}
+            disabled={status === 'loading'}
+          >
+            Send
+          </Button>
         </div>
       </div>
     </>

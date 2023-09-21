@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useMutation, useQueryClient } from 'react-query';
 
@@ -21,6 +21,8 @@ function ResidentialInfoForm() {
   const [states, setStates] = useState<SelectOptionType[]>();
   const [lgas, setLgas] = useState<SelectOptionType[]>();
 
+  const initialLoad = useRef(false);
+
   const { residentialAddress } = kycData || {};
 
   useEffect(() => {
@@ -31,11 +33,17 @@ function ResidentialInfoForm() {
   useEffect(() => {
     const getLgas = statesJson.filter((item) => item?.name === form?.state?.value)?.[0]?.lgas;
     const list = getLgas?.map((item) => ({ label: item, value: item }));
-    setForm((prev) => ({ ...prev, lga: undefined }));
+    if (initialLoad.current) {
+      setForm((prev) => ({ ...prev, lga: { label: residentialAddress?.lga, value: residentialAddress?.lga } }));
+      initialLoad.current = false;
+    } else {
+      setForm((prev) => ({ ...prev, lga: { label: '', value: '' } }));
+    }
     setLgas(list);
-  }, [form?.state]);
+  }, [form?.state, residentialAddress?.lga]);
 
   useEffect(() => {
+    initialLoad.current = true;
     setForm((prev) => ({
       ...prev,
       ...residentialAddress,
@@ -81,7 +89,6 @@ function ResidentialInfoForm() {
     if (!form?.fullAddress) return 'Please, enter your full address.';
     if (!form?.apartmentNo) return 'Please, enter your apartment number.';
     if (!form?.street) return 'Please, enter your street name.';
-    if (!form?.landMark) return 'Please, enter your nearest landmark.';
     if (!form?.town) return 'Please, enter your town.';
     if (!form?.country) return 'Please, enter your country.';
     if (!form?.state) return 'Please, enter your state.';
@@ -191,11 +198,11 @@ function ResidentialInfoForm() {
               </div>
             ) : (
               <TextInput
-                name="nonNigeriaState"
+                name="otherCountry"
                 onChange={handleChange}
                 value={form?.otherCountry || ''}
                 className="w-full mb-4"
-                label="Non Nigeria State"
+                label="Specify Country"
               />
             )}
           </div>

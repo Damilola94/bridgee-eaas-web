@@ -24,6 +24,7 @@ function PersonalInfoForm() {
     setForm((prev) => ({
       ...prev,
       ...personalInformation,
+      dateOfBirth: formatApiDate(personalInformation?.dateOfBirth),
       gender: personalInformation?.gender
         ? { label: personalInformation?.gender, value: personalInformation?.gender }
         : undefined
@@ -72,6 +73,7 @@ function PersonalInfoForm() {
     }
 
     const body = new FormData();
+    body.append('otherName', form.otherName!);
     body.append('dateOfBirth', form.dateOfBirth!);
     body.append('gender', String(form?.gender?.value));
 
@@ -96,7 +98,7 @@ function PersonalInfoForm() {
               <div className="w-1/2 px-2">
                 <TextInput
                   readOnly
-                  onChange={handleChange}
+                  disabled
                   value={form?.firstName || ''}
                   className="w-full mb-4"
                   label="First name"
@@ -105,7 +107,7 @@ function PersonalInfoForm() {
               <div className="w-1/2 px-2">
                 <TextInput
                   readOnly
-                  onChange={handleChange}
+                  disabled
                   value={form?.lastName || ''}
                   className="w-full mb-4"
                   label="Last name"
@@ -113,7 +115,7 @@ function PersonalInfoForm() {
               </div>
             </div>
             <TextInput
-              readOnly
+              name="otherName"
               onChange={handleChange}
               value={form?.otherName || ''}
               className="w-full mb-4"
@@ -121,21 +123,20 @@ function PersonalInfoForm() {
             />
             <TextInput
               readOnly
-              onChange={handleChange}
+              disabled
               value={form?.phoneNumber || ''}
               className="w-full mb-4"
               label="Phone number"
             />
             <TextInput
               readOnly
-              onChange={handleChange}
+              disabled
               value={form?.email || ''}
               className="w-full mb-4"
               label="Email Address"
             />
             <TextInput
               type="date"
-              name="dob"
               onChange={(val) => handleChange(formatApiDate(val.target.value), 'date', 'dateOfBirth')}
               value={form?.dateOfBirth || ''}
               className="w-full mb-4"

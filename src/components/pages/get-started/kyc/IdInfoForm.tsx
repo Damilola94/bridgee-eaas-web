@@ -13,7 +13,7 @@ import handleFetch from '../../../../services/api/handleFetch';
 import notification from '../../../../utilities/notification';
 import Loading from '../../../common/Loading';
 import FileInput from '../../../inputs/File';
-import { formatFileUrl } from '../../../../utilities/general';
+import { formatFileUrl, formatIDTypeLabel } from '../../../../utilities/general';
 import SuccessMessage from './SuccessMessage';
 
 function IdInfoForm() {
@@ -30,7 +30,7 @@ function IdInfoForm() {
       ...idCardInformation,
       personalAccountDocumentType: idCardInformation?.personalAccountDocumentType
         ? {
-          label: idCardInformation?.personalAccountDocumentType,
+          label: formatIDTypeLabel(idCardInformation?.personalAccountDocumentType),
           value: idCardInformation?.personalAccountDocumentType
         } : undefined
     }));

@@ -8,6 +8,8 @@ import { ReactNotifications } from 'react-notifications-component';
 import { QueryClient, QueryClientProvider, Hydrate } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 
+import 'react-loading-skeleton/dist/skeleton.css';
+
 import '../styles/globals.css';
 import '../styles/sidebar.scss';
 import '../styles/calendar.scss';

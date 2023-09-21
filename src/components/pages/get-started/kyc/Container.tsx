@@ -48,7 +48,7 @@ function KycContainer() {
   }, [data, status]);
 
   if (status === 'loading' || isFetching) {
-    return <Loading message={isFetching ? 'Updating KYC data...' : 'Loading KYC data...'} />;
+    return <Loading message={status === 'loading' ? 'Loading KYC data...' : 'Updating KYC data...'} />;
   }
 
   return (

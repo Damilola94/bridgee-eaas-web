@@ -15,7 +15,7 @@ const options = [
     title: 'Take dashboard tour (Optional)',
     desc: 'Your account is currently in test mode, so there are a few more',
     icon: <FaRegMap className="w-6 h-6 text-primary" />,
-    link: { title: 'Take tour', url: '/get-started' }
+    link: { title: 'Take tour', url: '/get-started', disabled: true }
   }
 ];
 
@@ -47,6 +47,7 @@ function GetStartedContainer() {
                   <div className="flex justify-center">
                     <Button
                       paddingY="py-2.5"
+                      disabled={item?.link?.disabled}
                       onClick={() => router.push(item?.link?.url)}
                     >
                       {item?.link?.title}

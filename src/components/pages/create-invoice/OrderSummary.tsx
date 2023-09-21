@@ -1,12 +1,22 @@
 import React from 'react';
+import Skeleton from 'react-loading-skeleton';
+
 import { useCreateInvoiceContext } from '../../../context/CreateInvoice';
+import useGetQuery from '../../../hooks/useGetQuery';
 import { formatCurrency } from '../../../utilities/general';
 
 function OrderSummary() {
   const { form } = useCreateInvoiceContext();
 
   const total = form?.escrowItems?.reduce((sum, item) => sum + (item?.total || 0), 0) || 0;
-  const escrowFee = (total || 0) * 0.05;
+
+  const { data, status, isFetching } = useGetQuery({
+    endpoint: 'transaction',
+    extra: 'calculate-fee',
+    pQuery: { feeType: 'Escrow', amount: total },
+    queryKey: ['calculate-fee', total],
+    enabled: !!total
+  });
 
   return (
     <div className="w-full bg-white rounded-lg shadow-md">
@@ -28,8 +38,12 @@ function OrderSummary() {
             <p className="font-bold ff-bold">{formatCurrency(total)}</p>
           </div>
           <div className="w-full flex justify-between py-3 border-b">
-            <p className="">Escrow fee (5%)</p>
-            <p className="font-bold ff-bold">{formatCurrency(escrowFee)}</p>
+            <p className="">Escrow fee</p>
+            <p className="font-bold ff-bold">
+              {(status === 'loading' || isFetching)
+                ? <Skeleton className="w-[80px]" />
+                : formatCurrency(data?.data || 0)}
+            </p>
           </div>
           <div className="w-full flex justify-between py-3">
             <p className="">Delivery Fee</p>
@@ -40,7 +54,11 @@ function OrderSummary() {
 
       <div className="w-full px-10 py-4 flex justify-between">
         <h3 className="font-semibold text-base ff-bold mb-2">Total</h3>
-        <p className="font-bold text-xl ff-bold text-primary">{formatCurrency(total + escrowFee)}</p>
+        <p className="font-bold text-xl ff-bold text-primary">
+          {(status === 'loading' || isFetching)
+            ? <Skeleton className="w-[80px]" />
+            : formatCurrency(total + (data?.data || 0))}
+        </p>
       </div>
     </div>
   );
