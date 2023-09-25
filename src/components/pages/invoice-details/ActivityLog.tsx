@@ -13,7 +13,7 @@ function ActivityLog({ data = {} }: { data: any }) {
           <ul className="p">
             {data?.activities?.map((item: any) => (
               <li
-                key={String(item)}
+                key={JSON.stringify(item)}
                 className="relative w-full px-5 pt-2 pb-5 border-l-2 border-primary
                 before:w-2.5 before:h-2.5 before:rounded-full before:bg-primary
                 before:absolute before:-left-1.5 before:top-2.5"

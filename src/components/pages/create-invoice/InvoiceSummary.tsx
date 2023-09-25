@@ -97,7 +97,7 @@ function InvoiceSummary() {
             <h3 className="font-bold text-xl">
               {accounts?.defaultMerchant?.name || `${accounts?.user?.firstName} ${accounts?.user?.lastName}`}
             </h3>
-            <p className="mb-1">291 N 4th St, Ikoyi, Lagos, Nigeria</p>
+            <p className="mb-1">291 N 4th St, Ikoyi [PLACEHOLDER]</p>
             <p className="text-lightText">{new Date().toDateString()}</p>
           </div>
           <div className="text-left">

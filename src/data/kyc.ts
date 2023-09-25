@@ -5,6 +5,13 @@ export const steps = [
   { title: 'ID Card Details', step: 'id-details', stage: 'IdCardDetails' }
 ];
 
+export const stepsByStep = {
+  'personal-info': 'PersonalInformation',
+  'bvn-validation': 'BvnValidation',
+  'residential-info': 'ResidentialInformation',
+  'id-details': 'IdCardDetails'
+};
+
 export const idTypes = [
   { label: 'National Identity Card', value: 'NationalIdentityCard' },
   { label: 'International Passport', value: 'InternationalPassPort' },

@@ -13,10 +13,12 @@ import { useKycContext } from '../../../../context/Kyc';
 import notification from '../../../../utilities/notification';
 import handleFetch from '../../../../services/api/handleFetch';
 import Loading from '../../../common/Loading';
+import useFormStage from '../../../../hooks/useFormStage';
 
 function ResidentialInfoForm() {
   const router = useRouter();
   const { kycData } = useKycContext();
+  const formStage = useFormStage();
   const [form, setForm] = useState<ResidentialInfoProps>();
   const [states, setStates] = useState<SelectOptionType[]>();
   const [lgas, setLgas] = useState<SelectOptionType[]>();
@@ -223,28 +225,32 @@ function ResidentialInfoForm() {
             Back
           </Button>
         </div>
-        <div className="w-1/2 px-2">
-          <Button
-            border
-            borderColor="border-gray-300"
-            bgColor="bg-white"
-            textColor="text-black"
-            className="w-full"
-            paddingY="py-3"
-            onClick={() => router.push('/get-started/kyc?step=id-details')}
-          >
-            Next
-          </Button>
-        </div>
-        <div className="w-1/2 px-2">
-          <Button
-            className="w-full whitespace-nowrap"
-            paddingY="py-3"
-            onClick={handleSubmit}
-          >
-            Save and Continue
-          </Button>
-        </div>
+        {(formStage?.kycStatus === 'Completed' || formStage?.kycStatus === 'Pending') && (
+          <div className="w-1/2 px-2">
+            <Button
+              border
+              borderColor="border-gray-300"
+              bgColor="bg-white"
+              textColor="text-black"
+              className="w-full"
+              paddingY="py-3"
+              onClick={() => router.push('/get-started/kyc?step=id-details')}
+            >
+              Next
+            </Button>
+          </div>
+        )}
+        {formStage?.kycStatus !== 'Completed' && (
+          <div className="w-1/2 px-2">
+            <Button
+              className="w-full whitespace-nowrap"
+              paddingY="py-3"
+              onClick={handleSubmit}
+            >
+              Save and Continue
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

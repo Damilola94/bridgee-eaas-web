@@ -10,10 +10,12 @@ import TextInput from '../../../inputs/Text';
 import notification from '../../../../utilities/notification';
 import Loading from '../../../common/Loading';
 import handleFetch from '../../../../services/api/handleFetch';
+import useFormStage from '../../../../hooks/useFormStage';
 
 function BvnForm() {
   const router = useRouter();
   const { kycData } = useKycContext();
+  const formStage = useFormStage();
   const [form, setForm] = useState<PersonalInfoProps>({});
 
   const { personalInformation } = kycData || {};
@@ -110,28 +112,31 @@ function BvnForm() {
             Back
           </Button>
         </div>
-        <div className="w-1/2 px-2">
-          <Button
-            border
-            borderColor="border-gray-300"
-            bgColor="bg-white"
-            textColor="text-black"
-            className="w-full"
-            paddingY="py-3"
-            onClick={() => router.push('/get-started/kyc?step=residential-info')}
-          >
-            Next
-          </Button>
-        </div>
-        <div className="w-1/2 px-2">
-          <Button
-            className="w-full whitespace-nowrap"
-            paddingY="py-3"
-            onClick={handleSubmit}
-          >
-            Save and Continue
-          </Button>
-        </div>
+        {formStage?.kycStatus === 'Completed' ? (
+          <div className="w-1/2 px-2">
+            <Button
+              border
+              borderColor="border-gray-300"
+              bgColor="bg-white"
+              textColor="text-black"
+              className="w-full"
+              paddingY="py-3"
+              onClick={() => router.push('/get-started/kyc?step=residential-info')}
+            >
+              Next
+            </Button>
+          </div>
+        ) : (
+          <div className="w-1/2 px-2">
+            <Button
+              className="w-full whitespace-nowrap"
+              paddingY="py-3"
+              onClick={handleSubmit}
+            >
+              Save and Continue
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

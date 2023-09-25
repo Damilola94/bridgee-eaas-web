@@ -1,15 +1,18 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
+import KycSteps from './KycSteps';
+import SmallKycSteps from './SmallKycSteps';
+import Loading from '../../../common/Loading';
+
 import PersonalInfoForm from './PersonalInfoForm';
 import BvnForm from './BvnForm';
 import ResidentialInfoForm from './ResidentialInfoForm';
 import IdInfoForm from './IdInfoForm';
-import KycSteps from './KycSteps';
-import useGetQuery from '../../../../hooks/useGetQuery';
-import Loading from '../../../common/Loading';
-import { useKycContext } from '../../../../context/Kyc';
 import Completion from './Completion';
+
+import useGetQuery from '../../../../hooks/useGetQuery';
+import { useKycContext } from '../../../../context/Kyc';
 import { steps } from '../../../../data/kyc';
 
 function KycContainer() {
@@ -34,7 +37,7 @@ function KycContainer() {
       for (let i = 0; i < steps.length; i += 1) {
         const curr = data?.data?.kycStages?.find((stage: any) => stage?.kycStage === steps[i]?.stage);
 
-        if (!curr) {
+        if (!curr || curr?.kycStatus === 'Rejected') {
           isOngoing = true;
           router.push({ pathname: '/get-started/kyc', query: { step: steps[i]?.step } });
           break;
@@ -55,6 +58,7 @@ function KycContainer() {
     <div className="w-full flex justify-center">
       <KycSteps steps={steps} />
       <div className="">
+        <SmallKycSteps steps={steps} />
         {step === 'personal-info' && <PersonalInfoForm />}
         {step === 'bvn-validation' && <BvnForm />}
         {step === 'residential-info' && <ResidentialInfoForm />}

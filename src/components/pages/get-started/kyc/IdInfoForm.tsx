@@ -15,10 +15,12 @@ import Loading from '../../../common/Loading';
 import FileInput from '../../../inputs/File';
 import { formatFileUrl, formatIDTypeLabel } from '../../../../utilities/general';
 import SuccessMessage from './SuccessMessage';
+import useFormStage from '../../../../hooks/useFormStage';
 
 function IdInfoForm() {
   const router = useRouter();
   const { kycData } = useKycContext();
+  const formStage = useFormStage();
   const [form, setForm] = useState<IdFormProps>({});
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
@@ -179,28 +181,32 @@ function IdInfoForm() {
             Back
           </Button>
         </div>
-        <div className="w-1/2 px-2">
-          <Button
-            border
-            borderColor="border-gray-300"
-            bgColor="bg-white"
-            textColor="text-black"
-            className="w-full"
-            paddingY="py-3"
-            onClick={() => router.push('/get-started/kyc?step=kyc-completed')}
-          >
-            Next
-          </Button>
-        </div>
-        <div className="w-1/2 px-2">
-          <Button
-            className="w-full whitespace-nowrap"
-            paddingY="py-3"
-            onClick={handleSubmit}
-          >
-            Save and Continue
-          </Button>
-        </div>
+        {(formStage?.kycStatus === 'Completed' || formStage?.kycStatus === 'Pending') && (
+          <div className="w-1/2 px-2">
+            <Button
+              border
+              borderColor="border-gray-300"
+              bgColor="bg-white"
+              textColor="text-black"
+              className="w-full"
+              paddingY="py-3"
+              onClick={() => router.push('/get-started/kyc?step=kyc-completed')}
+            >
+              Next
+            </Button>
+          </div>
+        )}
+        {formStage?.kycStatus !== 'Completed' && (
+          <div className="w-1/2 px-2">
+            <Button
+              className="w-full whitespace-nowrap"
+              paddingY="py-3"
+              onClick={handleSubmit}
+            >
+              Save and Continue
+            </Button>
+          </div>
+        )}
       </div>
 
       {showSuccessMessage && <SuccessMessage onClose={handleCloseSuccessMsg} />}

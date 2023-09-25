@@ -30,8 +30,6 @@ function InvoiceDetails({ data = {} }: { data: any }) {
 
   const deliveryPrompt = useRef<{ status?: string, message?: string }>({});
 
-  const total = data?.items?.reduce((sum: number, item: any) => sum + (item?.totalAmount || 0), 0) || 0;
-
   const queryClient = useQueryClient();
 
   const acceptanceMutation = useMutation(handleFetch, {
@@ -228,7 +226,7 @@ function InvoiceDetails({ data = {} }: { data: any }) {
             </thead>
             <tbody>
               {data?.items?.map((item: any) => (
-                <tr key={JSON.stringify(item)}>
+                <tr key={item?.id}>
                   <td className="px-3 py-3">{item?.name}</td>
                   <td className="px-3 py-3 text-center">{item?.quantity}</td>
                   <td className="px-3 py-3 text-center">{`${item?.weight}kg`}</td>
@@ -244,10 +242,10 @@ function InvoiceDetails({ data = {} }: { data: any }) {
           <div className="w-full max-w-[280px]">
             <div className="w-full flex justify-between mb-3">
               <p className="">SUBTOTAL</p>
-              <p className="font-bold ff-bold">{formatCurrency(total)}</p>
+              <p className="font-bold ff-bold">{formatCurrency(data?.totalAmount)}</p>
             </div>
             <div className="w-full flex justify-between mb-3">
-              <p className="">Escrow fee (5%)</p>
+              <p className="">Escrow fee</p>
               <p className="font-bold ff-bold">{formatCurrency(data?.fee)}</p>
             </div>
             <div className="w-full flex justify-between mb-3">
@@ -256,7 +254,7 @@ function InvoiceDetails({ data = {} }: { data: any }) {
             </div>
             <div className="w-full flex justify-between mb-3 text-lg">
               <p className="">TOTAL</p>
-              <p className="font-bold ff-bold">{formatCurrency(data?.totalAmount)}</p>
+              <p className="font-bold ff-bold">{formatCurrency(data?.totalAmount + data?.fee)}</p>
             </div>
           </div>
         </div>
