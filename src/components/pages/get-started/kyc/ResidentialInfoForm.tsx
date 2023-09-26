@@ -117,6 +117,7 @@ function ResidentialInfoForm() {
     });
   };
 
+  const isCompleted = formStage?.kycStatus === 'Completed';
   const { isLoading } = residentialMutation;
 
   return (
@@ -131,6 +132,7 @@ function ResidentialInfoForm() {
           <div className="w-full">
             <TextInput
               name="fullAddress"
+              disabled={isCompleted}
               onChange={handleChange}
               value={form?.fullAddress || ''}
               className="w-full mb-4"
@@ -140,6 +142,7 @@ function ResidentialInfoForm() {
               <div className="w-1/2 px-2">
                 <TextInput
                   name="apartmentNo"
+                  disabled={isCompleted}
                   onChange={handleChange}
                   value={form?.apartmentNo || ''}
                   className="w-full mb-4"
@@ -149,6 +152,7 @@ function ResidentialInfoForm() {
               <div className="w-1/2 px-2">
                 <TextInput
                   name="street"
+                  disabled={isCompleted}
                   onChange={handleChange}
                   value={form?.street || ''}
                   className="w-full mb-4"
@@ -158,6 +162,7 @@ function ResidentialInfoForm() {
             </div>
             <TextInput
               name="landMark"
+              disabled={isCompleted}
               onChange={handleChange}
               value={form?.landMark || ''}
               className="w-full mb-4"
@@ -165,6 +170,7 @@ function ResidentialInfoForm() {
             />
             <TextInput
               name="town"
+              disabled={isCompleted}
               onChange={handleChange}
               value={form?.town || ''}
               className="w-full mb-4"
@@ -172,6 +178,7 @@ function ResidentialInfoForm() {
             />
             <SelectInput
               label="Country"
+              disabled={isCompleted}
               value={form?.country || undefined}
               onChange={(val) => handleChange(val, 'select', 'country')}
               options={[{ label: 'Nigeria', value: 'Nigeria' }, { label: 'Others', value: 'Others' }]}
@@ -183,6 +190,7 @@ function ResidentialInfoForm() {
                   <SelectInput
                     label="State"
                     value={form?.state || undefined}
+                    disabled={isCompleted}
                     onChange={(val) => handleChange(val, 'select', 'state')}
                     options={states || []}
                     className="mb-4"
@@ -192,6 +200,7 @@ function ResidentialInfoForm() {
                   <SelectInput
                     label="LGA"
                     value={form?.lga || undefined}
+                    disabled={isCompleted}
                     onChange={(val) => handleChange(val, 'select', 'lga')}
                     options={lgas || []}
                     className="mb-4"
@@ -201,6 +210,7 @@ function ResidentialInfoForm() {
             ) : (
               <TextInput
                 name="otherCountry"
+                disabled={isCompleted}
                 onChange={handleChange}
                 value={form?.otherCountry || ''}
                 className="w-full mb-4"
@@ -225,7 +235,7 @@ function ResidentialInfoForm() {
             Back
           </Button>
         </div>
-        {(formStage?.kycStatus === 'Completed' || formStage?.kycStatus === 'Pending') && (
+        {(isCompleted || formStage?.kycStatus === 'Pending') && (
           <div className="w-1/2 px-2">
             <Button
               border
@@ -240,7 +250,7 @@ function ResidentialInfoForm() {
             </Button>
           </div>
         )}
-        {formStage?.kycStatus !== 'Completed' && (
+        {!isCompleted && (
           <div className="w-1/2 px-2">
             <Button
               className="w-full whitespace-nowrap"

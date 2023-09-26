@@ -72,6 +72,7 @@ function BvnForm() {
     });
   };
 
+  const isCompleted = formStage?.kycStatus === 'Completed';
   const { isLoading } = personalMutation;
 
   return (
@@ -86,6 +87,7 @@ function BvnForm() {
           <div className="w-full">
             <TextInput
               name="bvn"
+              disabled={isCompleted}
               onChange={(e) => /^\d{0,12}$/g.test(e.target.value) && handleChange(e)}
               value={form?.bvn || ''}
               className="w-full mb-1"
@@ -112,7 +114,7 @@ function BvnForm() {
             Back
           </Button>
         </div>
-        {formStage?.kycStatus === 'Completed' ? (
+        {isCompleted ? (
           <div className="w-1/2 px-2">
             <Button
               border

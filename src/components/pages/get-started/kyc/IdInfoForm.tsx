@@ -103,6 +103,7 @@ function IdInfoForm() {
     router.push('/get-started/kyc?step=kyc-completed');
   };
 
+  const isCompleted = formStage?.kycStatus === 'Completed';
   const { isLoading } = idMutation;
 
   return (
@@ -122,12 +123,14 @@ function IdInfoForm() {
             <SelectInput
               label="Identification Type"
               className="mb-4"
+              disabled={isCompleted}
               value={form?.personalAccountDocumentType || undefined}
               onChange={(val) => handleChange(val, 'select', 'personalAccountDocumentType')}
               options={idTypes || []}
             />
             <TextInput
               name="identificationNumber"
+              disabled={isCompleted}
               onChange={handleChange}
               value={form?.identificationNumber || ''}
               className="w-full mb-4"
@@ -136,6 +139,7 @@ function IdInfoForm() {
             <FileInput
               preview
               name="front"
+              disabled={isCompleted}
               value={form?.front}
               onChange={handleChange}
               label="Upload ID document (Front)"
@@ -152,6 +156,7 @@ function IdInfoForm() {
               preview
               name="back"
               value={form?.back}
+              disabled={isCompleted}
               onChange={handleChange}
               label="Upload ID document (Back)"
               className="file-input w-full mb-4"
@@ -181,7 +186,7 @@ function IdInfoForm() {
             Back
           </Button>
         </div>
-        {(formStage?.kycStatus === 'Completed' || formStage?.kycStatus === 'Pending') && (
+        {(isCompleted || formStage?.kycStatus === 'Pending') && (
           <div className="w-1/2 px-2">
             <Button
               border
@@ -196,7 +201,7 @@ function IdInfoForm() {
             </Button>
           </div>
         )}
-        {formStage?.kycStatus !== 'Completed' && (
+        {!isCompleted && (
           <div className="w-1/2 px-2">
             <Button
               className="w-full whitespace-nowrap"

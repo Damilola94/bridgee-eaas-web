@@ -35,7 +35,7 @@ function GetStartedContainer() {
         </div>
 
         <div className="">
-          <div className="flex justify-center">
+          <div className="flex flex-wrap justify-center">
             {options?.map((item) => (
               <div key={item?.title} className="w-full max-w-[300px] bg-white rounded-lg shadow-md px-8 py-10 m-5">
                 <div className="w-ful text-center">

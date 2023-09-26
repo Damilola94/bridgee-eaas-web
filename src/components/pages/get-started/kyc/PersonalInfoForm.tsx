@@ -84,6 +84,8 @@ function PersonalInfoForm() {
     });
   };
 
+  const isCompleted = formStage?.kycStatus === 'Completed';
+
   const { isLoading } = personalMutation;
 
   return (
@@ -118,6 +120,7 @@ function PersonalInfoForm() {
             </div>
             <TextInput
               name="otherName"
+              disabled={isCompleted}
               onChange={handleChange}
               value={form?.otherName || ''}
               className="w-full mb-4"
@@ -139,6 +142,7 @@ function PersonalInfoForm() {
             />
             <TextInput
               type="date"
+              disabled={isCompleted}
               onChange={(val) => handleChange(formatApiDate(val.target.value), 'date', 'dateOfBirth')}
               value={form?.dateOfBirth || ''}
               className="w-full mb-4"
@@ -148,6 +152,7 @@ function PersonalInfoForm() {
               label="Gender"
               className="mb-4"
               value={form?.gender || undefined}
+              disabled={isCompleted}
               onChange={(val) => handleChange(val, 'select', 'gender')}
               options={[{ label: 'Male', value: 'Male' }, { label: 'Female', value: 'Female' }]}
             />
@@ -156,7 +161,7 @@ function PersonalInfoForm() {
       </div>
 
       <div className="flex justify-end mt-5 -mx-2">
-        {(formStage?.kycStatus === 'Completed' || formStage?.kycStatus === 'Pending') && (
+        {(isCompleted || formStage?.kycStatus === 'Pending') && (
           <div className="w-1/2 px-2">
             <Button
               border

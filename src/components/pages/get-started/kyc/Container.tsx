@@ -57,8 +57,8 @@ function KycContainer() {
   return (
     <div className="w-full flex justify-center">
       <KycSteps steps={steps} />
-      <div className="">
-        <SmallKycSteps steps={steps} />
+      <div>
+        {step !== 'kyc-completed' && <SmallKycSteps steps={steps} />}
         {step === 'personal-info' && <PersonalInfoForm />}
         {step === 'bvn-validation' && <BvnForm />}
         {step === 'residential-info' && <ResidentialInfoForm />}
