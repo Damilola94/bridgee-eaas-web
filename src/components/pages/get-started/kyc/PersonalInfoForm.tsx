@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useMutation, useQueryClient } from 'react-query';
+import moment from 'moment-timezone';
 
 import { PersonalInfoProps } from '../../../../types/kyc';
 import Button from '../../../inputs/Button';
@@ -13,6 +14,7 @@ import notification from '../../../../utilities/notification';
 import { formatApiDate } from '../../../../utilities/dateTime';
 import Loading from '../../../common/Loading';
 import useFormStage from '../../../../hooks/useFormStage';
+import { MIN_AGE } from '../../../../data/constants';
 
 function PersonalInfoForm() {
   const router = useRouter();
@@ -63,6 +65,9 @@ function PersonalInfoForm() {
 
   const validateForm = () => {
     if (!form?.dateOfBirth) return 'Please, enter your date of birth.';
+    if (moment().diff(moment(form?.dateOfBirth), 'years') < MIN_AGE) {
+      return 'Sorry, you must be 18 years and above.';
+    }
     if (!form?.gender?.value) return 'Please, select your gender.';
     return null;
   };
@@ -142,7 +147,7 @@ function PersonalInfoForm() {
             />
             <TextInput
               type="date"
-              disabled={isCompleted}
+              // disabled={isCompleted}
               onChange={(val) => handleChange(formatApiDate(val.target.value), 'date', 'dateOfBirth')}
               value={form?.dateOfBirth || ''}
               className="w-full mb-4"
