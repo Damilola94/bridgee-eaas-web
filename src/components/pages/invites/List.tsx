@@ -109,8 +109,7 @@ function InviteList() {
                                   pathname: `transactions/invoice-details/${item?.escrowId}`,
                                   query: { reference: item?.inviteNumber }
                                 })
-                              },
-                              { title: 'Delete', action: () => {} }
+                              }
                             ]}
                           />
                         </td>

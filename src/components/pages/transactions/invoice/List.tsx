@@ -127,8 +127,7 @@ function InvoiceList({ isDashboard = false }) {
                                 action: () => router.push({ pathname: `/disputes/manage-dispute/${item?.escrowId}` }),
                                 disabled: !(item?.escrowDeliveryStatus === 'Delivered' || item?.status === 'dispute')
                                   || item?.status === 'completed'
-                              },
-                              { title: 'Delete', action: () => {} }
+                              }
                             ]}
                           />
                         </td>

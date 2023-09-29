@@ -17,11 +17,13 @@ import FileInput from '../../inputs/File';
 
 const disbursementTypes = [
   {
+    disabled: false,
     value: 'onetime',
     header: 'One Time Disbursement',
     desc: 'An escrow transaction involving just two parties/entities (buyer and seller).'
   },
   {
+    disabled: true,
     value: 'installment',
     header: 'In Installment',
     desc: 'An escrow transaction involving just two parties/entities (buyer and seller).'
@@ -172,11 +174,12 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
               <div className="w-full sm:w-1/2 p-2" key={item?.value}>
                 <div
                   role="presentation"
-                  onClick={() => handleChange(item?.value, 'options', 'disbursementType')}
+                  onClick={() => item?.disabled ? null : handleChange(item?.value, 'options', 'disbursementType')}
                   className={`w-full h-full rounded-lg ${form?.disbursementType === item?.value
-                    ? 'border-success border-2' : 'border'} bg-secondary p-5 cursor-pointer`}
+                    ? 'border-success border-2' : 'border'} bg-secondary p-5 ${
+                    item?.disabled ? '' : 'cursor-pointer'}`}
                 >
-                  <div className="w-full relative">
+                  <div className={`w-full relative ${item?.disabled ? 'text-lightText' : ''}`}>
                     <span
                       className={`rounded-full inline-block ${form?.disbursementType === item?.value
                         ? 'bg-primary' : 'bg-gray-400'} p-1 w-5 h-5 absolute right-0`}

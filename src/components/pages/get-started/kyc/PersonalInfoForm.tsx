@@ -147,7 +147,7 @@ function PersonalInfoForm() {
             />
             <TextInput
               type="date"
-              // disabled={isCompleted}
+              disabled={isCompleted}
               onChange={(val) => handleChange(formatApiDate(val.target.value), 'date', 'dateOfBirth')}
               value={form?.dateOfBirth || ''}
               className="w-full mb-4"
