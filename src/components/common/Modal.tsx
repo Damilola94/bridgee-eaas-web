@@ -11,11 +11,11 @@ type ModalProps = {
   children: React.ReactNode;
 	onClose?: () => void;
   maxWidth?: string;
-  isFullHieght?: boolean;
+  isFullHeight?: boolean;
 }
 
 function Modal({
-  children, isOpen, onClose = () => {}, maxWidth, isShowCloseIcon, isCenter, isFullHieght
+  children, isOpen, onClose = () => {}, maxWidth, isShowCloseIcon, isCenter, isFullHeight
 }: ModalProps) {
   return (
     <Dialog
@@ -30,7 +30,7 @@ function Modal({
         },
       )}
     >
-      <Dialog.Panel className={clsx("bg-white w-full rounded-xl relative p-5 mx-auto", maxWidth, isFullHieght ? 'h-[90%]' : '')}>
+      <Dialog.Panel className={clsx("bg-white w-full rounded-xl relative p-5 mx-auto", maxWidth, isFullHeight ? 'h-[90%]' : '')}>
         {isShowCloseIcon && (
           <button onClick={onClose} className="absolute z-20 top-3 right-3 outline-none">
             <CgClose className="w-8 h-8 p-1 hover:bg-gray-300/50 rounded-lg" />

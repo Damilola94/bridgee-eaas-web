@@ -61,7 +61,7 @@ function InvoiceDetails({ data = {} }: { data: any }) {
     onError: (err) => {
       notification({
         title: 'Error',
-        message: String(err) || 'An error occured while requesting for payment OTP',
+        message: String(err) || 'An error occurred while requesting for payment OTP',
         type: 'danger'
       });
     }

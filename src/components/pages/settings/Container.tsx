@@ -23,7 +23,7 @@ function SettingsContainer() {
     if (!router?.query?.tab) {
       router.push({ pathname: '/settings', query: { tab: 'personal-details' } });
     }
-  }, [router, router?.query?.status]);
+  }, [router]);
 
   return (
     <div className="w-full">

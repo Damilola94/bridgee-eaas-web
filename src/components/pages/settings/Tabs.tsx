@@ -10,8 +10,8 @@ function Tabs({ options = [], pathname = '' }: { options: TabProps[], pathname: 
   const { tab } = router.query || {};
 
   return (
-    <div className="w-full overflow-auto hide-scroll mb-7">
-      <ul className="inline-flex min-w-max rounded-md bg-white shadow-md">
+    <div className="w-full overflow-auto bg-white hide-scroll mb-5 border-b rounded-t-lg">
+      <ul className="inline-flex min-w-max">
         {options.map((item) => {
           if (!accounts?.defaultMerchant && item?.tab === 'business-details') return null;
           else return (
@@ -19,8 +19,8 @@ function Tabs({ options = [], pathname = '' }: { options: TabProps[], pathname: 
               <button
                 type="button"
                 onClick={() => router.push({ pathname, query: { tab: item?.tab } })}
-                className={`py-3 px-5 rounded-md font-semibold ${
-                  tab === item?.tab ? 'bg-primary text-white' : 'text-[#6B7280]'}`}
+                className={`py-3 px-5 text-base font-semibold ${
+                  tab === item?.tab ? 'border-b-[3px] border-primary text-primary' : 'text-[#91979D]'}`}
               >
                 {item?.title}
               </button>

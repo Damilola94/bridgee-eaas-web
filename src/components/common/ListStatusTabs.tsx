@@ -11,15 +11,15 @@ function ListStatusTabs({ options = [], pathname = '' }: { options: TabProps[], 
   if (tab) tabQuery.tab = tab;
 
   return (
-    <div className="w-full overflow-auto hide-scroll mb-5">
-      <ul className="inline-flex min-w-max rounded-md bg-white">
+    <div className="w-full overflow-auto bg-white hide-scroll mb-5 border-b rounded-t-lg">
+      <ul className="inline-flex min-w-max">
         {options.map((item) => (
           <li className="" key={item?.title}>
             <button
               type="button"
               onClick={() => router.push({ pathname, query: { ...tabQuery, status: item?.status } })}
-              className={`py-3 px-5 rounded-md font-semibold ${
-                status === item?.status ? 'bg-primary text-white' : 'text-[#6B7280]'}`}
+              className={`py-3 px-5 text-base font-semibold ${
+                status === item?.status ? 'border-b-[3px] border-primary text-primary' : 'text-[#91979D]'}`}
             >
               {item?.title}
             </button>

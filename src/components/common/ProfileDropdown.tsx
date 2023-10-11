@@ -27,12 +27,12 @@ import notification from '../../utilities/notification';
 import Loading from './Loading';
 import SendInvite from './SendInvite';
 
-const options = (bagde = 'Personal') => [
+const options = (badge = 'Personal') => [
   {
-    title: 'Profile', icon: <BsPerson className="w-5 h-auto mr-2" />, link: '/settings?tab=personal-details', bagde
+    title: 'Profile', icon: <BsPerson className="w-5 h-auto mr-2" />, link: '/settings?tab=personal-details', badge
   },
   { title: 'Settings', icon: <FiSettings className="w-5 h-auto mr-2" />, link: 'settings?tab=personal-details' },
-  { title: 'Support', icon: <MdOutlineSecurity className="w-5 h-auto mr-2" />, link: '/support' }
+  { title: 'Security', icon: <MdOutlineSecurity className="w-5 h-auto mr-2" />, link: 'settings?tab=security-settings' }
 ];
 
 export default function ProfileDropdown({ className }: { className: string }) {
@@ -154,9 +154,9 @@ export default function ProfileDropdown({ className }: { className: string }) {
                               {item.icon}
                               <span className="mt-1.5 font-bold">{item.title}</span>
                             </div>
-                            {item?.bagde && (
+                            {item?.badge && (
                               <span className="text-primary text-xs font-bold px-2 py-0.5 rounded bg-primary/10">
-                                {item?.bagde}
+                                {item?.badge}
                               </span>
                             )}
                           </div>

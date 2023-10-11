@@ -5,6 +5,7 @@ export type SignupFormProps = {
   firstName?: string
   lastName?: string
   phoneNumber?: string
+  dateOfBirth?: string
   email?: string
   password?: string
   termsAccepted?: string

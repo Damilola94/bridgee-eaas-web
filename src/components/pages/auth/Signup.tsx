@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useCookies } from 'react-cookie';
+import moment from 'moment-timezone';
 
 import ClickableLogo from './ClickableLogo';
 import TextInput from '../../inputs/Text';
@@ -14,6 +15,8 @@ import RadioInput from '../../inputs/Radio';
 
 import { SignupFormProps } from '../../../types/auth';
 import SelectInput from '../../inputs/Select';
+
+import { MIN_AGE } from '../../../data/constants';
 
 function Signup({ gotoNextForm }: any) {
   const [cookie, setCookie] = useCookies(['data', 'form']);
@@ -61,9 +64,14 @@ function Signup({ gotoNextForm }: any) {
     if (!form?.firstName) errors.unshift('First name is required');
     if (!form?.lastName) errors.unshift('Last name is required');
     if (!form?.phoneNumber) errors.unshift('Phone number is required');
+    if (form?.phoneNumber?.length !== 11) errors.unshift('Phone number is not valid');
     if (!form?.email) errors.unshift('Email address is required');
     if (!/^([a-zA-Z0-9_\-.&]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/.test(form?.email || '')) {
       errors.unshift('Please enter a valid email');
+    }
+    if (!form?.dateOfBirth) errors.unshift('Date of birth is required');
+    if (form?.dateOfBirth && moment().diff(moment(form?.dateOfBirth), 'years') < MIN_AGE) {
+      errors.unshift('Date of birth must not be less than 18 years');
     }
     if (!form?.password) errors.unshift('Password is required');
     if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(form?.password || '')) {
@@ -196,6 +204,15 @@ function Signup({ gotoNextForm }: any) {
             label="Email Address"
             name="email"
             placeholder="Email Address"
+          />
+
+          <TextInput
+            className="w-full mb-7"
+            onChange={handleChange}
+            value={form?.dateOfBirth || ''}
+            type="date"
+            label="Date of birth"
+            name="dateOfBirth"
           />
 
           <TextInput

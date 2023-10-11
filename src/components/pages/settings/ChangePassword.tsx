@@ -69,7 +69,7 @@ function ChangePassword() {
     <>
       {isLoading && <Loading />}
 
-      <div className="w-full max-w-md bg-white rounded-xl px-10 py-7 shadow">
+      <div className="w-full bg-white rounded-xl px-10 py-7 shadow">
         <div className="w-full">
           <h2 className="font-bold text-xl mb-5">Update Password</h2>
 

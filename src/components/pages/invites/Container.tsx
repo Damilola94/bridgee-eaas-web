@@ -21,7 +21,7 @@ function InviteContainer() {
     if (!router?.query?.status) {
       router.push({ pathname: '/invites', query: { status: 'all' } });
     }
-  }, [router, router?.query?.status]);
+  }, [router]);
 
   return (
     <div className="w-full">
