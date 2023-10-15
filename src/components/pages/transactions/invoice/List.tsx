@@ -126,7 +126,7 @@ function InvoiceList({ isDashboard = false }) {
                                 title: 'Open Dispute',
                                 action: () => router.push({ pathname: `/disputes/manage-dispute/${item?.escrowId}` }),
                                 disabled: !(item?.escrowDeliveryStatus === 'Delivered' || item?.status === 'dispute')
-                                  || item?.status === 'completed'
+                                  || item?.status === 'completed' || item?.status === 'refunded'
                               }
                             ]}
                           />

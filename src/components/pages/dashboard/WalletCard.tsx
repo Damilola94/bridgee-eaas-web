@@ -8,7 +8,7 @@ import { useAccountsContext } from '../../../context/Accounts';
 import Button from '../../inputs/Button';
 import { formatCurrency } from '../../../utilities/general';
 import BankTransferModal from './BankTransferModal';
-import WithdrawalModal from './WithdrawalModal';
+import WithdrawalModal from './fund-transfer-modal/WithdrawalModal';
 
 function WalletCard() {
   const [showBankTransfer, setShowBankTransfer] = useState(false);
@@ -57,7 +57,7 @@ function WalletCard() {
               paddingY="pt-2.5 pb-2"
               onClick={() => setShowWithdrawal(true)}
             >
-              Withdraw
+              Transfer
             </Button>
           </div>
         </div>

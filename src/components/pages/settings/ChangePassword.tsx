@@ -42,11 +42,11 @@ function ChangePassword() {
 
   const validateForm = () => {
     if (!body?.oldPassword) return 'Your current password is required';
-    if (!body?.newPassword) return 'Your current password is required';
-    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[.@$!%*?&])[A-Za-z\d.@$!%*?&]{8,}$/.test(body?.newPassword || '')) {
-      return 'Your new password must be minimum of eight characters, with at least one uppercase letter, one lowercase letter, one digit and one special character';
+    if (!body?.newPassword) return 'Your new password is required';
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$#!%*?&~`'"])[A-Za-z\d@$#!%*?&~`'"]{8,}$/.test(body?.newPassword || '')) {
+      return 'Your new password must be minimum of eight characters, with at least one uppercase letter, one lowercase letter, one digit and one special character (@$#!%*?&~`\'")';
     }
-    if (!body?.comparePassword) return 'Your current password is required';
+    if (!body?.comparePassword) return 'Your new password confirmation is required';
     if (body?.newPassword !== body?.comparePassword) return 'Password mismatch';
     return null;
   };

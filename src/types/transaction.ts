@@ -9,3 +9,14 @@ export type TransactionProps = {
   status: string // "successful"
   type: string // "debit"
 };
+
+export type FundTransferProps = {
+  bankCode?: { label: string, value: string }
+  accountNumber?: string
+  accountName?: string
+  amount?: string
+  categoryId?: { label: string, value: string }
+  narration?: string
+  pin?: string
+  saveAsBeneficiary?: boolean
+};

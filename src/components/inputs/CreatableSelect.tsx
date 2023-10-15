@@ -2,15 +2,13 @@ import React from 'react';
 import { ActionMeta, OnChangeValue } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 
-type SelectOptionType = {
-  readonly label: string;
-  readonly value: string | number;
-};
+import { SelectOptionType } from './Select';
 
 type SelectProps = {
-  className: string,
-  name: string,
+  className?: string,
+  name?: string,
   label?: string,
+  height?: string,
   value?: SelectOptionType | null | undefined,
   options?: SelectOptionType[],
   placeholder?: string,
@@ -23,7 +21,7 @@ type SelectProps = {
 };
 
 function CreatableSelectInput({
-  className, name, label, value, onChange, isDisabled, options,
+  className, name, label, value, onChange, isDisabled, options, height = 'h-[43.2px]',
   multiple, placeholder, isClearable, isLoading, onCreateOption
 }: SelectProps) {
   return (
@@ -31,7 +29,9 @@ function CreatableSelectInput({
       {label && <label htmlFor={name} className="flex text-labelColor mb-1">{label}</label>}
 
       <CreatableSelect
-        className="select"
+        classNames={{
+          control: () => `${height} !bg-inputBg !text-textColor px-2 !outline-none w-full !rounded-[10px] border !border-borderColor disabled:!bg-gray-200`
+        }}
         classNamePrefix="react-select"
         name={name}
         id={name}
@@ -52,10 +52,5 @@ function CreatableSelectInput({
     </div>
   );
 }
-
-CreatableSelectInput.defaultProps = {
-  className: '',
-  name: ''
-};
 
 export default CreatableSelectInput;

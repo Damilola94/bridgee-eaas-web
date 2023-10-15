@@ -95,7 +95,7 @@ function InvoiceHistory({ data, status, error }: Props) {
                                 title: 'Open Dispute',
                                 action: () => router.push({ pathname: `/disputes/manage-dispute/${item?.escrowId}` }),
                                 disabled: !(item?.escrowDeliveryStatus === 'Delivered' || item?.status === 'dispute')
-                                  || item?.status === 'completed'
+                                  || item?.status === 'completed' || item?.status === 'refunded'
                               }
                             ]}
                           />

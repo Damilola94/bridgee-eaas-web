@@ -13,7 +13,7 @@ function ToggleInput({ label = '', value = false, onChange = () => {} }: Props) 
       <Switch
         checked={value}
         onChange={onChange}
-        className={`${value ? 'bg-success' : 'bg-gray-400'}
+        className={`${value ? 'bg-primary' : 'bg-gray-400'}
           relative inline-flex h-[25px] w-[46px] shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75`}
       >
         <span className="sr-only">Use setting</span>

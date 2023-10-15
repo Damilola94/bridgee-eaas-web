@@ -74,8 +74,8 @@ function Signup({ gotoNextForm }: any) {
       errors.unshift('Date of birth must not be less than 18 years');
     }
     if (!form?.password) errors.unshift('Password is required');
-    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(form?.password || '')) {
-      errors.unshift('Your password must be minimum of eight characters, with at least one uppercase letter, one lowercase letter, one number and one special character');
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$#!%*?&~`'"])[A-Za-z\d@$#!%*?&~`'"]{8,}$/.test(form?.password || '')) {
+      errors.unshift('Your password must be minimum of eight characters, with at least one uppercase letter, one lowercase letter, one digit and one special character (@$#!%*?&~`\'")');
     }
     if (form?.termsAccepted !== 'true') errors.unshift('Please, accept terms and condition to proceed');
     return errors;
@@ -116,21 +116,21 @@ function Signup({ gotoNextForm }: any) {
         </h1>
 
         <div className="mb-5">
-          <p className="flex items-start mb-2">
-            Are you a business?
+          <p className="flex items-start">
+            Account type
           </p>
 
           <div className="flex space-x-6">
             <RadioInput
               name="isBusiness"
-              label="Yes"
+              label="Business"
               value="true"
               onChange={handleChange}
               checked={form?.isBusiness === 'true'}
             />
             <RadioInput
               name="isBusiness"
-              label="No"
+              label="Personal"
               value="false"
               onChange={handleChange}
               checked={form?.isBusiness === 'false'}

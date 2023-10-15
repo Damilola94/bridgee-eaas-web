@@ -12,10 +12,11 @@ type ModalProps = {
 	onClose?: () => void;
   maxWidth?: string;
   isFullHeight?: boolean;
+  zIndex?: string;
 }
 
 function Modal({
-  children, isOpen, onClose = () => {}, maxWidth, isShowCloseIcon, isCenter, isFullHeight
+  children, isOpen, onClose = () => {}, maxWidth, isShowCloseIcon, isCenter, isFullHeight, zIndex
 }: ModalProps) {
   return (
     <Dialog
@@ -23,7 +24,8 @@ function Modal({
       open={isOpen}
       onClose={onClose}
       className={clsx(
-        "fixed w-screen h-screen inset-0 z-40 px-5 py-10 overflow-y-auto",
+        zIndex,
+        "fixed w-screen h-screen inset-0 px-5 py-10 overflow-y-auto",
         {
           "bg-gray-500/50": isOpen,
           "flex justify-center items-center": isCenter
@@ -45,6 +47,7 @@ function Modal({
 
 Modal.defaultProps = {
   maxWidth: 'max-w-3xl',
+  zIndex: 'z-40',
   isOpen: false,
   isCenter: false,
   isShowCloseIcon: true

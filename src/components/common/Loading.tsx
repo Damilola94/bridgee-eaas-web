@@ -13,6 +13,7 @@ function Loading({ message }: LoadingProps) {
     <Modal
       isOpen
       isCenter
+      zIndex="z-50"
       isShowCloseIcon={false}
       onClose={() => {}}
       maxWidth="max-w-[200px]"
