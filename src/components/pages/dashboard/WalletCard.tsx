@@ -8,7 +8,7 @@ import { useAccountsContext } from '../../../context/Accounts';
 import Button from '../../inputs/Button';
 import { formatCurrency } from '../../../utilities/general';
 import BankTransferModal from './BankTransferModal';
-import WithdrawalModal from './fund-transfer-modal/WithdrawalModal';
+import FundTransferModal from './fund-transfer-modal';
 
 function WalletCard() {
   const [showBankTransfer, setShowBankTransfer] = useState(false);
@@ -64,7 +64,7 @@ function WalletCard() {
       </div>
 
       {showBankTransfer && <BankTransferModal onClose={() => setShowBankTransfer(false)} />}
-      {showWithdrawal && <WithdrawalModal onClose={() => setShowWithdrawal(false)} />}
+      {showWithdrawal && <FundTransferModal onClose={() => setShowWithdrawal(false)} />}
     </>
   );
 }

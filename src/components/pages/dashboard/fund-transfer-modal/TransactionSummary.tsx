@@ -31,7 +31,7 @@ function TransactionSummary({ onNext, onPrev, form }: Props) {
         <DisplayData label="Account Name:" value={form?.accountName} />
         <DisplayData label="Account Number:" value={form?.accountNumber} />
         <DisplayData label="Amount:" value={formatCurrency(form?.amount)} />
-        <DisplayData label="Fee:" value={formatCurrency(0)} />
+        <DisplayData label="Fee:" value={formatCurrency(form?.processFee)} />
         <DisplayData label="Category:" value={form?.categoryId?.label} />
         <DisplayData label="Narration:" value={form?.narration} />
       </div>

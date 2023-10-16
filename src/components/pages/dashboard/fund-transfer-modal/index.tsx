@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useMutation } from 'react-query';
 
 import SuccessSvg from '../../../../assets/svgs/success-tick.svg';
+import { useAccountsContext } from '../../../../context/Accounts';
 import useGetQuery from '../../../../hooks/useGetQuery';
 import handleFetch from '../../../../services/api/handleFetch';
 import { FundTransferProps } from '../../../../types/transaction';
@@ -20,12 +21,15 @@ type Props = {
   onClose: () => void
 };
 
-function WithdrawalModal({ onClose }: Props) {
+function Index({ onClose }: Props) {
+  const { accounts } = useAccountsContext();
   const [formIndex, setFormIndex] = useState(0);
   const [form, setForm] = useState<FundTransferProps>({});
 
   const [accountNoToBeVerified, setAccountNoToBeVerified] = useState<string | undefined>(undefined);
   const accountNoIsVerified = useRef(false);
+
+  const { defaultWallets } = accounts || {};
 
   const { data: banks, status } = useGetQuery({
     endpoint: 'transaction',
@@ -116,6 +120,9 @@ function WithdrawalModal({ onClose }: Props) {
   const processAmountDetails = () => {
     let error = undefined;
     if (!form?.amount) error = 'Please, enter the amount you want to transfer';
+    if ((Number(form?.amount) + (form?.processFee || 0)) > defaultWallets?.[0]?.balance) {
+      error = 'The sum of the amount and process fee must not be greater than your wallet balance';
+    }
     if (!form?.categoryId?.value) error = 'Please, select a category for the transfer';
     if (!form?.narration) error = 'Please, enter a narration/remark for your transfer';
 
@@ -142,6 +149,9 @@ function WithdrawalModal({ onClose }: Props) {
       bankCode: form?.bankCode?.value,
       categoryId: form?.categoryId?.value
     };
+
+    delete body.processFee;
+    delete body.accountName;
 
     transferMutation.mutate({
       endpoint: 'transaction', extra: 'interbank-fund-transfer', body, method: 'POST', auth: true
@@ -217,4 +227,4 @@ function WithdrawalModal({ onClose }: Props) {
   );
 }
 
-export default WithdrawalModal;
+export default Index;

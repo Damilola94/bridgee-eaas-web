@@ -19,4 +19,5 @@ export type FundTransferProps = {
   narration?: string
   pin?: string
   saveAsBeneficiary?: boolean
+  processFee?: number
 };
