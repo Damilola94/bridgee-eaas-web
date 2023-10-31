@@ -10,7 +10,7 @@ import { IoClose } from 'react-icons/io5';
 import { FiMenu } from 'react-icons/fi';
 import { BsDot } from 'react-icons/bs';
 
-import Logo from '../../assets/svgs/logo-white.svg';
+import Logo from '../../assets/svgs/logos/full-white.svg';
 import LogoutIcon from '../../assets/svgs/logout.svg';
 
 import menuList from '../../configs/sidebarMenu';
@@ -71,9 +71,8 @@ function Sidebar() {
           />
         </div>
         <div className="sidebar-menu text-white text-sm flex flex-col justify-between h-side-menu px-5 pb-10">
-          <div className="px-6 h-20 flex space-x-3 items-center">
-            <Image src={Logo} alt="ALAT Logo" priority width={40} height={40} className="w-auto h-auto" />
-            <h2 className="font-bold text-lg">Bridge by ALAT</h2>
+          <div className="px-6 py-5 h-20">
+            <Image src={Logo} alt="Bridge by ALAT logo" priority width={120} height={45} />
           </div>
 
           <ul className="menu-items pt-5">

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 
-import Image1 from '../../../assets/images/how-it-works-1.png';
-import Image2 from '../../../assets/images/how-it-works-2.png';
-import Image3 from '../../../assets/images/how-it-works-3.png';
-import Image4 from '../../../assets/images/how-it-works-4.png';
-import Image5 from '../../../assets/images/how-it-works-5.png';
+import Image1 from '../../../assets/images/how-it-works/step1.png';
+import Image2 from '../../../assets/images/how-it-works/step2.png';
+import Image3 from '../../../assets/images/how-it-works/step3.png';
+import Image4 from '../../../assets/images/how-it-works/step4.png';
+import Image5 from '../../../assets/images/how-it-works/step5.png';
 
 const steps = [
   { image: Image1, text: 'Buyer and Seller agree to terms' },
@@ -33,12 +33,12 @@ function HowItWorks() {
   }, [index]);
 
   return (
-    <div id="how-it-works" className="bg-primary">
-      <div className="w-full index-content pt-24 pb-28">
-        <h1 className="index-title text-white text-center">How it works in 5 steps</h1>
+    <section id="how-it-works" className="">
+      <div className="w-full index-content pt-24 pb-16">
+        <h1 className="index-title text-center">How it works in 5 steps</h1>
 
-        <div className="w-full min-h-[659px] h-full hidden mdx2:flex pt-20">
-          <div className="w-1/2 pr-12 border-r-4 border-[#523488]">
+        <div className="w-full min-h-[600px] h-full hidden mdx2:flex pt-16">
+          <div className="w-1/2 pr-12">
             <div className="w-full h-full flex items-center">
               {steps.map((item, i) => (
                 <Image
@@ -54,12 +54,16 @@ function HowItWorks() {
             <div className="w-full h-full flex items-center">
               <ul className="">
                 {steps?.map((item, i) => (
-                  <li
-                    key={item?.text}
-                    className={`ff-bold text-3xl text-white mb-10 ${
-                      index !== i ? 'text-opacity-50' : ''}`}
-                  >
-                    {item?.text}
+                  <li key={item?.text} className="mb-12 last:mb-0">
+                    <div className="flex items-center text-2xl mb-5">
+                      <span className={`w-10 h-10 flex justify-center items-center rounded-full ${
+                        index !== i ? 'bg-[#E0E0E0]' : 'bg-purple'} text-white p-1 mr-4`}>
+                        {i + 1}
+                      </span>
+                      <h4 className={`ff-medium ${index !== i ? 'text-[#E0E0E0]' : ''}`}>
+                        {item?.text}
+                      </h4>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -68,11 +72,14 @@ function HowItWorks() {
         </div>
 
         <div className="mdx2:hidden w-full max-w-xl mx-auto">
-          {steps?.map((item) => (
+          {steps?.map((item, i) => (
             <div key={item?.text} className="w-full mt-24">
-              <h3 className="bg-[#523488] text-white text-2xl ff-bold rounded p-4 mb-5">
-                {item?.text}
-              </h3>
+              <div className="flex justify-center items-center text-xl mb-5">
+                <span className="w-8 h-8 flex justify-center items-center rounded-full bg-purple text-white p-1 mr-4">
+                  {i + 1}
+                </span>
+                <h4 className="">{item?.text}</h4>
+              </div>
               <div className="w-full">
                 <Image src={item?.image} alt={item?.text} className="w-full h-auto" />
               </div>
@@ -80,7 +87,7 @@ function HowItWorks() {
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 

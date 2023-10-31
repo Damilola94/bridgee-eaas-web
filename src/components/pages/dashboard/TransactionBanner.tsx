@@ -11,7 +11,7 @@ function TransactionBanner() {
   const router = useRouter();
 
   return (
-    <div className="w-full bg-[url('../assets/svgs/transaction-banner.svg')] bg-center bg-cover bg-no-repeat py-10 px-12 rounded-xl">
+    <div className="w-full bg-primary py-10 px-12 rounded-xl">
       <div className="w-full flex justify-between items-center">
         <div className="w-full sm:w-[calc(100%-140px)] max-w-md text-white">
           <h2 className="font-bold ff-bold text-3xl mb-5">Start a transaction</h2>

@@ -7,12 +7,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#683AB7',
+        primary: '#0F1D86',
         secondary: '#F6F6F6',
         lightText: '#B5B6B6',
         inputBg: '#F9F9F9',
         borderColor: '#BDBFC355',
-        success: '#30BE6E',
+        success: '#CE18DF',
+        purple: '#8C5FF8',
         error: '#EB4336'
       },
       boxShadow: {
@@ -23,7 +24,7 @@ module.exports = {
       },
       screens: {
         mdx2: '900px',
-        sm: '620px',
+        sm: '640px',
         xs: '480px'
       },
       backgroundImage: {

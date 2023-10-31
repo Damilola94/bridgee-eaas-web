@@ -1,22 +1,14 @@
-import React, { useEffect } from 'react';
-import { useCookies } from 'react-cookie';
+import React from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 import Kite from '../../../assets/images/success-kite.gif';
 
-import ClickableLogo from './ClickableLogo';
+import ClickableLogo from '../auth/ClickableLogo';
 import Button from '../../inputs/Button';
 
-import { ResetPasswordProps } from '../../../types/auth';
-
-function SuccessMessage({ message = '' }: ResetPasswordProps) {
+function SuccessMessage() {
   const router = useRouter();
-  const [,, removeCookie] = useCookies(['form']);
-
-  useEffect(() => {
-    return () => removeCookie('form');
-  }, [removeCookie]);
 
   return (
     <div className="flex w-full h-full items-center">
@@ -24,7 +16,9 @@ function SuccessMessage({ message = '' }: ResetPasswordProps) {
         <ClickableLogo className="mb-10" />
 
         <div className="mb-7">
-          <h1 className="w-full text-textColor ff-bold text-xl mb-2">{message}</h1>
+          <h1 className="w-full text-textColor ff-medium text-xl mb-2">
+            You have successfully joined our waitlist. Watch out for us.
+          </h1>
         </div>
 
         <div className="w-full text-center">
@@ -32,10 +26,10 @@ function SuccessMessage({ message = '' }: ResetPasswordProps) {
 
           <Button
             className="w-full text-lg ff-bold !rounded-md mdx2:!rounded-xl mt-5"
-            onClick={() => router.push('/login')}
+            onClick={() => router.push('/')}
             paddingY="p-3.5"
           >
-            Login
+            Homepage
           </Button>
         </div>
       </div>

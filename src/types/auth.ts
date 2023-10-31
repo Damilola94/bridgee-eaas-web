@@ -22,3 +22,11 @@ export type BusinessFormProps = {
   email?: string
   businessType?: { label: string, value: string }
 };
+
+export type WaitlistProps = {
+  firstName?: string
+  lastName?: string
+  phoneNumber?: string
+  email?: string
+  termsAccepted?: string
+};

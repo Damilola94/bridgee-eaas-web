@@ -95,7 +95,7 @@ function Login() {
 
           <p className="mb-7">
             Forgot Password?&nbsp;
-            <Link href="/reset-password"><span className='text-primary cursor-pointer'>Reset here</span></Link>
+            <Link href="/reset-password"><span className='text-success cursor-pointer'>Reset here</span></Link>
           </p>
 
           <Button
@@ -109,7 +109,7 @@ function Login() {
 
         <p className="mt-5 text-center">
           Don&apos;t have an account?&nbsp;
-          <Link href="/signup"><span className='text-primary cursor-pointer'>Create an account</span></Link>
+          <Link href="/signup"><span className='text-success cursor-pointer'>Create an account</span></Link>
         </p>
       </form>
     </div>

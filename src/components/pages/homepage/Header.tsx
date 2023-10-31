@@ -5,13 +5,15 @@ import { HiOutlineMenu } from 'react-icons/hi';
 import Link from 'next/link';
 import { MdClose } from 'react-icons/md';
 
-import Logo from '../../../assets/svgs/logo-full.svg';
+import Logo from '../../../assets/svgs/logos/full-pink.svg';
 
 import Button from '../../inputs/Button';
 import { toggleScroll } from '../../../utilities/general';
+import { useHomepageContext } from '../../../context/Homepage';
 
 function Header() {
   const router = useRouter();
+  const { homepageData } = useHomepageContext();
 
   const [showMenu, setShowMenu] = useState(false);
 
@@ -38,36 +40,61 @@ function Header() {
 
   return (
     <>
-      <header className="fixed z-20 w-full h-24 border-b bg-white/50 backdrop-blur-2xl">
+      <header className="fixed z-20 w-full h-24 border-b bg-[#FAE9FC]">
         <div className="header-content flex items-center w-full h-full text-textColor">
           <div className="w-full flex items-center justify-between">
-            <div className="flex items-center space-x-16">
-              <div className="">
-                <Link href="/#top" onClick={handleScroll}>
-                  <Image src={Logo} alt="ALAT Logo" priority width={134} height={49} className="w-auto h-auto" />
-                </Link>
-              </div>
-              <div className="hidden sm:block">
-                <ul className="flex space-x-5 text-lg font-bold">
-                  <Link href="#why-us" onClick={handleScroll}>
-                    <li className="">Why us</li>
-                  </Link>
-                  <Link href="#how-it-works" onClick={handleScroll}>
-                    <li className="">How it works</li>
-                  </Link>
-                </ul>
-              </div>
+            <div className="">
+              <Link href="/#top" onClick={handleScroll}>
+                <Image src={Logo} alt="Bridge by ALAT logo" priority width={120} height={45} />
+              </Link>
             </div>
             <div className="hidden sm:block">
-              <Button
-                onClick={() => router.push('/login')}
-                fontSize="text-sm"
-                bgColor="bg-primary"
-                paddingX="px-5"
-                paddingY="py-3"
-              >
-                Get Started
-              </Button>
+              <ul className="flex space-x-10 text-lg font-bold">
+                <Link href="#why-us" onClick={handleScroll}>
+                  <li className="">Why us</li>
+                </Link>
+                <Link href="#how-it-works" onClick={handleScroll}>
+                  <li className="">How it works</li>
+                </Link>
+              </ul>
+            </div>
+            <div className="hidden sm:block">
+              {homepageData?.isWaitlist ? (
+                <Button
+                  onClick={() => router.push('/login')}
+                  border
+                  borderColor='border-success'
+                  fontSize="text-sm"
+                  bgColor="bg-transparent"
+                  textColor='text-success'
+                  paddingX="px-8"
+                  paddingY="py-3"
+                >
+                  Contact Us
+                </Button>
+              ) : (
+                <div className="flex space-x-2">
+                  <Button
+                    onClick={() => router.push('/login')}
+                    border
+                    borderColor='border-success'
+                    fontSize="text-sm"
+                    bgColor="bg-transparent"
+                    textColor='text-success'
+                    paddingX="px-8"
+                    paddingY="py-3"
+                  >
+                    Login
+                  </Button>
+                  <Button
+                    onClick={() => router.push('/signup')}
+                    paddingX="px-8"
+                    paddingY="py-3"
+                  >
+                    Create account
+                  </Button>
+                </div>
+              )}
             </div>
             <div className="sm:hidden">
               <HiOutlineMenu className="w-8 h-auto cursor-pointer" onClick={() => setShowMenu(true)} />
@@ -85,7 +112,7 @@ function Header() {
             <div className="flex justify-between px-5 py-8">
               <div className="logo">
                 <Link href="/" onClick={handleScroll}>
-                  <Image src={Logo} className="w-40 h-auto" alt="Idea Factory Logo" />
+                  <Image src={Logo} priority width={120} height={45} alt="Bridge by Bridge by ALAT logo" />
                 </Link>
               </div>
               <div className="">
@@ -118,15 +145,24 @@ function Header() {
               </ul>
 
               <div className="w-full border-t py-10 mt-5">
-                <div className="justify-center flex">
+                <div className="flex justify-center space-x-2">
                   <Button
                     onClick={() => router.push('/login')}
+                    border
+                    borderColor='border-success'
                     fontSize="text-sm"
-                    bgColor="bg-primary"
-                    paddingX="px-5"
+                    bgColor="bg-transparent"
+                    textColor='text-success'
+                    paddingX="px-8"
                     paddingY="py-3"
                   >
-                    Get Started
+                    Login
+                  </Button>
+                  <Button
+                    paddingX="px-8"
+                    paddingY="py-3"
+                  >
+                    Create account
                   </Button>
                 </div>
               </div>

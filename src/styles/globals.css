@@ -8,14 +8,15 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: 'visbycf-regular', 'Helvetica Neue', sans-serif;
+  font-family: 'aeonik-regular', 'Helvetica Neue', sans-serif;
   font-size: 0.9rem;
 }
 
-.ff-thin { font-family: 'visbycf-thin'; }
-.ff-light { font-family: 'visbycf-light'; }
-.ff-bold { font-family: 'visbycf-bold'; }
-.ff-heavy { font-family: 'visbycf-heavy'; }
+.ff-thin { font-family: 'aeonik-thin'; }
+.ff-light { font-family: 'aeonik-light'; }
+.ff-medium { font-family: 'aeonik-medium'; }
+.ff-bold { font-family: 'aeonik-bold'; }
+.ff-heavy { font-family: 'aeonik-heavy'; }
 
 a {
   color: inherit;
@@ -61,7 +62,7 @@ a {
 }
 
 .index-title {
-  @apply ff-bold text-4xl sm:text-[50px] sm:leading-[50px];
+  @apply ff-medium text-4xl sm:text-[45px] sm:leading-[50px];
 }
 
 .predefined-date-btn {
@@ -72,7 +73,7 @@ a {
   @apply max-w-[1300px] mx-auto px-6;
 }
 .index-content {
-  @apply max-w-[1120px] mx-auto px-6;
+  @apply max-w-[1200px] mx-auto px-6;
 }
 .content {
   @apply max-w-screen-xl px-6;

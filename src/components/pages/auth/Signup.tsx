@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useCookies } from 'react-cookie';
 import moment from 'moment-timezone';
+import Link from 'next/link';
 
 import ClickableLogo from './ClickableLogo';
 import TextInput from '../../inputs/Text';
@@ -10,7 +11,6 @@ import Loading from '../../common/Loading';
 
 import notification from '../../../utilities/notification';
 import handleFetch from '../../../services/api/handleFetch';
-import Link from 'next/link';
 import RadioInput from '../../inputs/Radio';
 
 import { SignupFormProps } from '../../../types/auth';

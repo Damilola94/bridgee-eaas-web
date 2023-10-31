@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { ImFacebook, ImTwitter, ImLinkedin2 } from 'react-icons/im';
 import { TbBrandInstagram } from 'react-icons/tb';
 
-import Logo from '../../../assets/svgs/logo-full.svg';
+import Logo from '../../../assets/svgs/logos/blue-full.svg';
 
 function Footer() {
   return (
@@ -12,7 +12,7 @@ function Footer() {
       <div className="index-content">
         <div className="w-full border-b border-w pb-7">
           <div className="">
-            <Image src={Logo} alt="ALAT Logo" priority width={134} height={49} className="w-auto h-auto" />
+            <Image src={Logo} alt="Bridge by ALAT logo" priority width={134} height={49} />
           </div>
         </div>
         <div className="w-full">

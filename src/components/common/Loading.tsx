@@ -23,7 +23,7 @@ function Loading({ message }: LoadingProps) {
           <Image
             src={Logo}
             priority
-            alt="ALAT Logo"
+            alt="Bridge by ALAT logo"
             className="w-[100px] h-[100px] mx-auto"
             height={100}
             width={100}

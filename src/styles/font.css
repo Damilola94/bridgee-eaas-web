@@ -1,29 +1,35 @@
 @font-face {
-  font-family: 'nexa-thin';
+  font-family: 'aeonik-thin';
   font-style: normal;
-  src: url('../assets/fonts/visbycf-thin.otf') format('opentype');
+  src: url('../assets/fonts/aeonik-thin.otf') format('opentype');
 }
 
 @font-face {
-  font-family: 'visbycf-light';
+  font-family: 'aeonik-light';
   font-style: normal;
-  src: url('../assets/fonts/visbycf-light.otf') format('opentype');
+  src: url('../assets/fonts/aeonik-light.otf') format('opentype');
 }
 
 @font-face {
-  font-family: 'visbycf-regular';
+  font-family: 'aeonik-regular';
   font-style: normal;
-  src: url('../assets/fonts/visbycf-regular.otf') format('opentype');
+  src: url('../assets/fonts/aeonik-regular.otf') format('opentype');
 }
 
 @font-face {
-  font-family: 'visbycf-bold';
+  font-family: 'aeonik-medium';
   font-style: normal;
-  src: url('../assets/fonts/visbycf-bold.otf') format('opentype');
+  src: url('../assets/fonts/aeonik-medium.otf') format('opentype');
 }
 
 @font-face {
-  font-family: 'visbycf-heavy';
+  font-family: 'aeonik-bold';
   font-style: normal;
-  src: url('../assets/fonts/visbycf-heavy.otf') format('opentype');
+  src: url('../assets/fonts/aeonik-bold.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'aeonik-heavy';
+  font-style: normal;
+  src: url('../assets/fonts/aeonik-black.otf') format('opentype');
 }
