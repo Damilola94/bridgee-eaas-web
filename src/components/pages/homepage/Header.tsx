@@ -61,7 +61,7 @@ function Header() {
             <div className="hidden sm:block">
               {homepageData?.isWaitlist ? (
                 <Button
-                  onClick={() => router.push('/login')}
+                  onClick={() => router.push('/')}
                   border
                   borderColor='border-success'
                   fontSize="text-sm"
@@ -146,24 +146,42 @@ function Header() {
 
               <div className="w-full border-t py-10 mt-5">
                 <div className="flex justify-center space-x-2">
-                  <Button
-                    onClick={() => router.push('/login')}
-                    border
-                    borderColor='border-success'
-                    fontSize="text-sm"
-                    bgColor="bg-transparent"
-                    textColor='text-success'
-                    paddingX="px-8"
-                    paddingY="py-3"
-                  >
-                    Login
-                  </Button>
-                  <Button
-                    paddingX="px-8"
-                    paddingY="py-3"
-                  >
-                    Create account
-                  </Button>
+                  {homepageData?.isWaitlist ? (
+                    <Button
+                      onClick={() => router.push('/')}
+                      border
+                      borderColor='border-success'
+                      fontSize="text-sm"
+                      bgColor="bg-transparent"
+                      textColor='text-success'
+                      paddingX="px-8"
+                      paddingY="py-3"
+                    >
+                      Contact Us
+                    </Button>
+                  ) : (
+                    <div className="flex space-x-2">
+                      <Button
+                        onClick={() => router.push('/login')}
+                        border
+                        borderColor='border-success'
+                        fontSize="text-sm"
+                        bgColor="bg-transparent"
+                        textColor='text-success'
+                        paddingX="px-8"
+                        paddingY="py-3"
+                      >
+                        Login
+                      </Button>
+                      <Button
+                        onClick={() => router.push('/signup')}
+                        paddingX="px-8"
+                        paddingY="py-3"
+                      >
+                        Create account
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

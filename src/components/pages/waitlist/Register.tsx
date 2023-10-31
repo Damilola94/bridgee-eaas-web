@@ -40,8 +40,11 @@ function Register({ gotoNextForm }: any) {
     const errors = [];
     if (!form?.firstName) errors.unshift('First name is required');
     if (!form?.lastName) errors.unshift('Last name is required');
-    if (!form?.phoneNumber) errors.unshift('Phone number is required');
     if (form?.phoneNumber?.length !== 11) errors.unshift('Phone number is not valid');
+    if (!form?.email) errors.unshift('Email address is required');
+    if (!/^([a-zA-Z0-9_\-.&]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/.test(form?.email || '')) {
+      errors.unshift('Please enter a valid email');
+    }
     if (form?.termsAccepted !== 'true') errors.unshift('Please, accept terms and condition to proceed');
     return errors;
   };

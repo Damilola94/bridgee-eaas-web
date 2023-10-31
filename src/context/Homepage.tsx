@@ -24,7 +24,9 @@ export const HomepageContext = createContext<valueProps>({
 });
 
 function HomepageContextProvider({ children }: Props) {
-  const [homepageData, setHomepageData] = useState<HomepageProps>({ isWaitlist: true });
+  const [homepageData, setHomepageData] = useState<HomepageProps>({
+    isWaitlist: process.env.NEXT_PUBLIC_WAITLIST === 'true'
+  });
   const homepageMemo = useMemo(() => ({ homepageData, setHomepageData }), [homepageData]);
 
   return (

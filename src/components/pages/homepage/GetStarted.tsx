@@ -6,9 +6,11 @@ import { BsArrowRight } from 'react-icons/bs';
 import HappyCustomer from '../../../assets/images/happy-customer.png';
 
 import Button from '../../inputs/Button';
+import { useHomepageContext } from '../../../context/Homepage';
 
 function GetStarted() {
   const router = useRouter();
+  const { homepageData } = useHomepageContext();
 
   return (
     <div className="w-full">
@@ -20,17 +22,31 @@ function GetStarted() {
                 Ready to experience the future of secure digital transactions?
               </h1>
               <div className="inline-block mb-10">
-                <Button
-                  onClick={() => router.push('/login')}
-                  className="!rounded-full"
-                  fontSize="text-xl"
-                  bgColor="bg-[#B80074]"
-                  paddingX="px-6"
-                  paddingY="py-5"
-                >
-                  Get started now
-                  <BsArrowRight className="ml-3 w-6 h-auto" />
-                </Button>
+                {homepageData?.isWaitlist ? (
+                  <Button
+                    onClick={() => router.push('/waitlist')}
+                    className="!rounded-full"
+                    fontSize="text-xl"
+                    bgColor="bg-[#B80074]"
+                    paddingX="px-6"
+                    paddingY="py-5"
+                  >
+                    Join the waiting list
+                    <BsArrowRight className="ml-3 w-6 h-auto" />
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => router.push('/login')}
+                    className="!rounded-full"
+                    fontSize="text-xl"
+                    bgColor="bg-[#B80074]"
+                    paddingX="px-6"
+                    paddingY="py-5"
+                  >
+                    Get started now
+                    <BsArrowRight className="ml-3 w-6 h-auto" />
+                  </Button>
+                )}
               </div>
             </div>
           </div>
