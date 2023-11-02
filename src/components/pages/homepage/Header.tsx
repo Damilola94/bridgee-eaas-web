@@ -60,18 +60,12 @@ function Header() {
             </div>
             <div className="hidden sm:block">
               {homepageData?.isWaitlist ? (
-                <Button
-                  onClick={() => router.push('/')}
-                  border
-                  borderColor='border-success'
-                  fontSize="text-sm"
-                  bgColor="bg-transparent"
-                  textColor='text-success'
-                  paddingX="px-8"
-                  paddingY="py-3"
+                <a
+                  href={`mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}`}
+                  className="text-sm bg-transparent text-success px-8 py-3 rounded-lg border border-success flex justify-center items-center"
                 >
                   Contact Us
-                </Button>
+                </a>
               ) : (
                 <div className="flex space-x-2">
                   <Button

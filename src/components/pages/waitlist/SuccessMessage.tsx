@@ -17,7 +17,7 @@ function SuccessMessage() {
 
         <div className="mb-7">
           <h1 className="w-full text-textColor ff-medium text-xl mb-2">
-            You have successfully joined our waitlist. Watch out for us.
+            Thank You for Joining Our Waiting List!
           </h1>
         </div>
 

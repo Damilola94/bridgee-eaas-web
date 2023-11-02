@@ -6,6 +6,7 @@ import Image2 from '../../../assets/images/how-it-works/step2.png';
 import Image3 from '../../../assets/images/how-it-works/step3.png';
 import Image4 from '../../../assets/images/how-it-works/step4.png';
 import Image5 from '../../../assets/images/how-it-works/step5.png';
+import PinkLogo from '../../../assets/images/logos/pink-3d.png';
 
 const steps = [
   { image: Image1, text: 'Buyer and Seller agree to terms' },
@@ -33,8 +34,10 @@ function HowItWorks() {
   }, [index]);
 
   return (
-    <section id="how-it-works" className="">
-      <div className="w-full index-content pt-24 pb-16">
+    <section id="how-it-works" className="relative overflow-hidden pt-24 pb-16">
+      <Image src={PinkLogo} alt="Pink 3D logo" className="absolute w-[210px] h-auto top-[400px] -left-20 hidden lg:block" />
+
+      <div className="w-full index-content">
         <h1 className="index-title text-center">How it works in 5 steps</h1>
 
         <div className="w-full min-h-[600px] h-full hidden mdx2:flex pt-16">

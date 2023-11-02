@@ -5,6 +5,8 @@ import SecurityBadge from '../../../assets/svgs/badges/security.svg';
 import TrustBadge from '../../../assets/svgs/badges/trust.svg';
 import DisputeBadge from '../../../assets/svgs/badges/dispute.svg';
 
+import PurpleLogo from '../../../assets/images/logos/purple-3d.png';
+
 const benefits = [
   {
     badge: SecurityBadge,
@@ -28,7 +30,7 @@ const benefits = [
 
 function Benefits() {
   return (
-    <section id="why-us" className="w-full py-28">
+    <section id="why-us" className="w-full relative overflow- py-28">
       <div className="w-full index-content">
         <div className="w-full max-w-4xl text-center mx-auto">
           <h1 className="index-title mb-7">
@@ -57,6 +59,7 @@ function Benefits() {
           </div>
         </div>
       </div>
+      <Image src={PurpleLogo} alt="Purple 3D logo" className="absolute w-[190px] h-auto -bottom-20 right-20 hidden md:block" />
     </section>
   );
 }

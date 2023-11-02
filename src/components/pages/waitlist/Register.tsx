@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useMutation } from 'react-query';
 
 import ClickableLogo from '../auth/ClickableLogo';
 import TextInput from '../../inputs/Text';
@@ -7,12 +6,12 @@ import Button from '../../inputs/Button';
 import Loading from '../../common/Loading';
 
 import notification from '../../../utilities/notification';
-import handleFetch from '../../../services/api/handleFetch';
 
 import { WaitlistProps } from '../../../types/auth';
 
 function Register({ gotoNextForm }: any) {
   const [form, setForm] = useState<WaitlistProps>();
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (val: any, type = 'input', inputName = '') => {
     if (type === 'input') {
@@ -22,19 +21,6 @@ function Register({ gotoNextForm }: any) {
       setForm((prev) => ({ ...prev, [inputName]: val }));
     }
   };
-
-  const joinWaitlistMutation = useMutation(handleFetch, {
-    onSuccess: (res: any) => {
-      gotoNextForm();
-    },
-    onError: (err: any) => {
-      notification({
-        title: 'Error',
-        message: err?.toString() || 'Something went wrong.',
-        type: 'danger'
-      });
-    }
-  });
 
   const validateForm = () => {
     const errors = [];
@@ -49,7 +35,7 @@ function Register({ gotoNextForm }: any) {
     return errors;
   };
 
-  const handleSignup = (e: any) => {
+  const handleSignup = async (e: any) => {
     e.preventDefault();
     const errors = validateForm();
 
@@ -58,22 +44,37 @@ function Register({ gotoNextForm }: any) {
       return;
     }
 
-    const body = {
-      ...form,
-      termsAccepted: form?.termsAccepted === 'true'
-    };
+    setLoading(true);
 
-    joinWaitlistMutation.mutate({
-      endpoint: 'auth', extra: 'join-waitlist', method: 'POST', body
-    });
+    const body = new FormData();
+
+    body.append('First Name', form?.firstName || '');
+    body.append('Last Name', form?.lastName || '');
+    body.append('Email Address', form?.email || '');
+    body.append('Phone Number', form?.phoneNumber || '');
+
+    await fetch('https://script.google.com/macros/s/AKfycbx2m1HJpH2uQ_vtKUSgtwQ3sfHao1hb5l5pOI48kOz4GJC2vbR1nU2H4j608lk_1Z3ZXQ/exec', {
+      method: 'POST', body
+    })
+      .then((response) => response.json())
+      .then((res) => {
+        setLoading(false);
+        if (res?.error) {
+          notification({
+            title: 'Error',
+            message: res?.error?.toString() || 'Sorry, something went wrong. Please, try again.',
+            type: 'danger'
+          });
+        } else {
+          gotoNextForm();
+        }
+      });
   };
-
-  const { isLoading } = joinWaitlistMutation;
 
   return (
     <div className="flex w-full min-h-screen items-center">
       <form className="w-[35rem] px-8 my-20 mx-auto" onSubmit={handleSignup}>
-        {isLoading && <Loading />}
+        {loading && <Loading />}
 
         <ClickableLogo className="mb-10" />
 
