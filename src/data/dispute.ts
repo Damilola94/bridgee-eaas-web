@@ -54,3 +54,19 @@ export const shippingStatuses = [
   { label: 'Cancelled', value: 'Cancelled' },
   { label: 'New Dispute Opened', value: 'NewDisputeOpened' }
 ];
+
+export const statusOptions = [
+  { title: 'All', status: 'all' },
+  { title: 'Open dispute', status: 'Open' },
+  { title: 'Resolved dispute', status: 'Resolved' },
+  { title: 'In Progress', status: 'InProgress' },
+  { title: 'Awaiting Return', status: 'AwaitingReturn' },
+  { title: 'Awaiting Ship Additional', status: 'AwaitingShipAdditional' },
+  { title: 'Return Received', status: 'ReturnReceived' },
+  { title: 'Awaiting Replacement', status: 'AwaitingReplacement' },
+  { title: 'Replacement Sent', status: 'ReplacementSent' },
+  { title: 'Cancelled', status: 'Cancelled' },
+  { title: 'New Dispute Opened', status: 'NewDisputeOpened' },
+  { title: 'Awaiting Mediator Review', status: 'AwaitingMediatorReview' },
+  { title: 'Awaiting Approval', status: 'AwaitingApproval' }
+];

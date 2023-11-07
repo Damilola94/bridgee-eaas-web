@@ -16,6 +16,7 @@ function ConfirmPrompt({
   return (
     <Modal
       isOpen={isOpen}
+      isCloseOnOverlayClick
       maxWidth="max-w-[400px]"
       onClose={onClose}
     >

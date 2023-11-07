@@ -1,13 +1,27 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { RxChevronRight } from 'react-icons/rx';
+import { BulletList } from 'react-content-loader';
 
-import { disputes } from '../../../sample-data/disputes';
 import { formatDate } from '../../../utilities/dateTime';
 import TransactionStatus from '../../common/TransactionStatus';
+import useGetQuery from '../../../hooks/useGetQuery';
+import NoData from '../../common/NoData';
 
 function DisputeHistory() {
   const [currentTab, setCurrentTab] = useState(0);
+
+  const {
+    data, status, error, isRefetching
+  } = useGetQuery({
+    endpoint: 'dispute',
+    queryKey: ['dispute-history', currentTab],
+    pQuery: {
+      pageSize: 3,
+      pageNumber: 1,
+      status: currentTab === 0 ? 'Open' : 'Resolved'
+    }
+  });
 
   return (
     <div className="w-full h-full">
@@ -44,33 +58,48 @@ function DisputeHistory() {
       </div>
 
       <div className="w-full px-5 h-[calc(100%-100px)] overflow-auto hide-scroll">
-        {disputes?.map((item) => (
-          <div key={item?.invoiceNo} className="w-full flex justify-between py-3 bg-white shadow-md rounded-lg my-3 p-3">
-            <div className="">
-              <div>
-                <p className="text-xs text-lightText">Invoice Number</p>
-                <p className="text-base font-bold">{item?.invoiceNo}</p>
-              </div>
-              <div className="mt-5">
-                <p className="text-xs text-lightText">InspectionPeriod</p>
-                <p className="text-base font-bold">{`${item?.inspectionPeriod} Days`}</p>
-              </div>
-            </div>
-
-            <div className="">
-              <div>
-                <p className="text-xs text-lightText">Status</p>
-                <p className="mt-1">
-                  <TransactionStatus status={item?.status} />
-                </p>
-              </div>
-              <div className="mt-5">
-                <p className="text-xs text-lightText">Due Date</p>
-                <p className="text-base font-bold">{formatDate(item?.dueDate)}</p>
-              </div>
-            </div>
+        {(status === 'loading' || isRefetching) ? (
+          <div className="px-5">
+            <BulletList className="relative w-full" />
           </div>
-        ))}
+        ) : (
+          <>
+            {data?.data?.disputes?.map((item: any) => (
+              <div key={item?.id} className="w-full flex justify-between py-3 bg-white shadow-md rounded-lg my-3 p-3">
+                <div className="">
+                  <div>
+                    <p className="text-xs text-lightText">Invoice Title</p>
+                    <p className="text-base font-bold">{item?.invoiceTitle}</p>
+                  </div>
+                  <div className="mt-5">
+                    <p className="text-xs text-lightText">Invoice Number</p>
+                    <p className="text-base font-bold">{`#${item?.invoiceNumber}`}</p>
+                  </div>
+                </div>
+
+                <div className="">
+                  <div>
+                    <p className="text-xs text-lightText">Status</p>
+                    <p className="mt-1">
+                      <TransactionStatus status={`dispute-${item?.status}`} />
+                    </p>
+                  </div>
+                  <div className="mt-5">
+                    <p className="text-xs text-lightText">Date Opened</p>
+                    <p className="text-base font-bold">{formatDate(item?.date)}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+            {data?.data?.disputes?.length < 1 && (
+              <NoData />
+            )}
+          </>
+        )}
+        {status === 'error' && (
+          <div className="px-5 py-10 text-center">{String(error)}</div>
+        )}
+
       </div>
     </div>
   );

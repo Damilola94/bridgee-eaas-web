@@ -8,6 +8,7 @@ type ModalProps = {
 	isOpen: boolean;
   isShowCloseIcon?: boolean;
   isCenter?: boolean;
+  isCloseOnOverlayClick?: boolean;
   children: React.ReactNode;
 	onClose?: () => void;
   maxWidth?: string;
@@ -16,13 +17,14 @@ type ModalProps = {
 }
 
 function Modal({
-  children, isOpen, onClose = () => {}, maxWidth, isShowCloseIcon, isCenter, isFullHeight, zIndex
+  children, isOpen, onClose = () => {}, maxWidth, isShowCloseIcon,
+  isCenter, isFullHeight, isCloseOnOverlayClick, zIndex
 }: ModalProps) {
   return (
     <Dialog
       as="div"
       open={isOpen}
-      onClose={onClose}
+      onClose={() => isCloseOnOverlayClick ? onClose() : null}
       className={clsx(
         zIndex,
         "fixed w-screen h-screen inset-0 px-5 py-10 overflow-y-auto",

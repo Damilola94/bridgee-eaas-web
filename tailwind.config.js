@@ -10,6 +10,7 @@ module.exports = {
         primary: '#0F1D86',
         secondary: '#F6F6F6',
         lightText: '#B5B6B6',
+        textColor: '#1A1A1A',
         inputBg: '#F9F9F9',
         borderColor: '#BDBFC355',
         success: '#CE18DF',

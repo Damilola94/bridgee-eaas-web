@@ -31,7 +31,7 @@ const options = (badge = 'Personal') => [
   {
     title: 'Profile', icon: <BsPerson className="w-5 h-auto mr-2" />, link: '/settings?tab=personal-details', badge
   },
-  { title: 'Settings', icon: <FiSettings className="w-5 h-auto mr-2" />, link: 'settings?tab=personal-details' },
+  { title: 'Settings', icon: <FiSettings className="w-5 h-auto mr-2" />, link: 'settings' },
   { title: 'Security', icon: <MdOutlineSecurity className="w-5 h-auto mr-2" />, link: 'settings?tab=security-settings' }
 ];
 
@@ -112,25 +112,25 @@ export default function ProfileDropdown({ className }: { className: string }) {
 
       <div className={`${className} text-right`}>
         <Menu as="div" className="relative inline-block text-left">
-          <div>
+          <div className="flex space-x-3 items-center">
+            <div className="flex space-x-3 items-center min-w-max">
+              <Image
+                onError={handleImgError}
+                src={userPix || (accounts?.defaultMerchant ? BusinessPix : ProfilePix)}
+                alt="user avatar"
+                width={40}
+                height={40}
+                className="rounded-full mr-1 w-auto h-auto"
+              />
+              <span className="text-primary font-bold px-2 py-0.5 rounded bg-primary/10">
+                {accounts?.defaultMerchant?.name || accounts?.user?.firstName || '---'}
+              </span>
+            </div>
             <Menu.Button className="text-sm font-medium text-black">
-              <div className="flex space-x-3 items-center min-w-max">
-                <Image
-                  onError={handleImgError}
-                  src={userPix || (accounts?.defaultMerchant ? BusinessPix : ProfilePix)}
-                  alt="user avatar"
-                  width={40}
-                  height={40}
-                  className="rounded-full mr-1 w-auto h-auto"
-                />
-                <span className="text-primary font-bold px-2 py-0.5 rounded bg-primary/10">
-                  {accounts?.defaultMerchant?.name || accounts?.user?.firstName || '---'}
-                </span>
-                <IoIosArrowDown
-                  className="ml-1.5 h-5 w-5"
-                  aria-hidden="true"
-                />
-              </div>
+              <IoIosArrowDown
+                className="h-8 w-8 p-1 rounded-lg hover:bg-gray-200"
+                aria-hidden="true"
+              />
             </Menu.Button>
           </div>
           <Transition

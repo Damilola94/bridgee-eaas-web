@@ -164,13 +164,13 @@ function InvoiceSummary() {
         </div>
 
         <div className="w-full flex justify-end space-x-3">
-          <Button
+          {/* <Button
             border
             bgColor="bg-transparent"
             textColor="text-success"
           >
             Save Draft
-          </Button>
+          </Button> */}
           <Button
             onClick={handleSubmit}
             disabled={status === 'loading'}

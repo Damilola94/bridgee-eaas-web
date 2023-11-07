@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 
-import Logo from '../../assets/images/loading.gif';
+import Logo from '../../assets/svgs/logos/full-pink.svg';
 import Modal from './Modal';
 
 type LoadingProps = {
@@ -19,14 +19,13 @@ function Loading({ message }: LoadingProps) {
       maxWidth="max-w-[200px]"
     >
       <div className="px-3 pb-5 rounded bg-white text-center">
-        <div className="mb-1">
+        <div className="my-8">
           <Image
-            src={Logo}
             priority
+            src={Logo}
+            className="mx-auto"
+            width={120} height={45}
             alt="Bridge by ALAT logo"
-            className="w-[100px] h-[100px] mx-auto"
-            height={100}
-            width={100}
           />
         </div>
         <p className="text-base">{message}</p>
