@@ -4,8 +4,8 @@ import Select, { MultiValue, SingleValue, ActionMeta } from 'react-select';
 export type SelectOptionType = { label: string, value: string | number }
 
 type SelectProps = {
-  className: string,
-  name: string,
+  className?: string,
+  name?: string,
   label?: string,
   height?: string,
   value?: SelectOptionType,
@@ -18,7 +18,7 @@ type SelectProps = {
 };
 
 function SelectInput({
-  className = '', name, label, height = 'h-[43.2px]', value, onChange, disabled, options,
+  className = '', name = '', label, height = 'h-[43.2px]', value, onChange, disabled, options,
   multiple, placeholder, isClearable
 }: SelectProps) {
   return (
