@@ -16,7 +16,7 @@ function TransactionBanner() {
         <div className="w-full sm:w-[calc(100%-140px)] max-w-md text-white">
           <h2 className="font-bold ff-bold text-3xl mb-5">Start a transaction</h2>
           <p className="text-base leading-relaxed mb-10">
-            Start a transaction by creating an invoice and inviting to other parties to fulfil it. Anyone can start a transaction.
+            Start a transaction by creating an invoice and inviting the other party to fulfil it. Anyone can start a transaction.
           </p>
           <Button paddingY="py-3" onClick={() => router.push('/create-invoice')}>
             Start a transaction
