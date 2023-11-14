@@ -75,6 +75,7 @@ function PersonalInfoForm() {
 
     const body = new FormData();
     body.append('otherName', form.otherName!);
+    body.append('dob', form.dateOfBirth!);
     body.append('gender', String(form?.gender?.value));
 
     personalMutation.mutate({
@@ -140,8 +141,9 @@ function PersonalInfoForm() {
             />
             <TextInput
               type="date"
+              name='dateOfBirth'
               disabled={isCompleted}
-              onChange={(val) => handleChange(formatApiDate(val.target.value), 'date', 'dateOfBirth')}
+              onChange={handleChange}
               value={form?.dateOfBirth || ''}
               className="w-full mb-4"
               label="Date of Birth"
