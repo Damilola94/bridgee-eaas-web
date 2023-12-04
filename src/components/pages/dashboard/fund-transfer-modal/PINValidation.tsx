@@ -20,6 +20,7 @@ function PINValidation({ onPrev, onSubmit, onChange }: Props) {
         <p className="text-sm font-bold mb-1">Enter PIN</p>
         <AuthCode
           length={4}
+          isPassword
           allowedCharacters="numeric"
           containerClassName="w-full flex justify-between mb-2"
           inputClassName="w-[22%] rounded-lg h-[60px] border border-[#777] outline-none text-center text-xl"

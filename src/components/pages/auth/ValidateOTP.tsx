@@ -105,6 +105,7 @@ function ValidateOTP({ endpointExtra = '', gotoPrevForm = () => {}, gotoNextForm
 
         <div className="w-full">
           <AuthCode
+            isPassword
             allowedCharacters="numeric"
             containerClassName="w-full flex justify-between mb-2"
             inputClassName="w-[15%] rounded h-16 border border-[#777] text-center"

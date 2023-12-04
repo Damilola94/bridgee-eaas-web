@@ -50,14 +50,22 @@ function TextInput({
         max={maxValue}
       />
 
-      {error ? <p className="error-msg">{error}</p> : null}
+      {error ? <p className="error-msg" data-testid="error-msg">{error}</p> : null}
 
       {type === 'password' && (
-        <span className="absolute right-4 bottom-3 items-center text-gray-700">
+        <span data-testid="toggle-password" className="absolute right-4 bottom-3 items-center text-gray-700">
           {inputType === 'password' ? (
-            <BsEyeSlash className="w-5 h-auto cursor-pointer items-center text-[#B5B6B6]" onClick={() => setInputType('text')} />
+            <BsEyeSlash
+              data-testid="eye-closed"
+              className="w-5 h-auto cursor-pointer items-center text-[#B5B6B6]"
+              onClick={() => setInputType('text')}
+            />
           ) : (
-            <BsEye className="w-5 h-auto cursor-pointer" onClick={() => setInputType('password')} />
+            <BsEye
+              data-testid="eye-open"
+              className="w-5 h-auto cursor-pointer"
+              onClick={() => setInputType('password')}
+            />
           )}
         </span>
       )}

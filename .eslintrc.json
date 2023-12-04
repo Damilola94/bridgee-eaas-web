@@ -35,5 +35,13 @@
     "react/jsx-filename-extension": ["error", {
       "extensions": [".js", ".ts", ".tsx"]
     }]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["*-test.js","*.spec.js", "*jest.setup.js"],
+      "rules": {
+        "no-undef":"off"
+      }
+    }
+  ]
 }

@@ -75,6 +75,7 @@ function PaymentModal({ onClose, escrowId }: Props) {
               <p className="text-sm font-bold mb-1">Enter OTP</p>
               <AuthCode
                 length={6}
+                isPassword
                 allowedCharacters="numeric"
                 containerClassName="w-full flex justify-between mb-2"
                 inputClassName="w-[15%] rounded-lg h-[60px] border border-[#777] outline-none text-center text-xl"

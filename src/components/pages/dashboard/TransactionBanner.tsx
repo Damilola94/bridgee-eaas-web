@@ -19,7 +19,7 @@ function TransactionBanner() {
             Start a transaction by creating an invoice and inviting the other party to fulfil it. Anyone can start a transaction.
           </p>
           <Button paddingY="py-3" onClick={() => router.push('/create-invoice')}>
-            Start a transaction
+            Create an Invoice
             <FiArrowRight className="ml-2" />
           </Button>
         </div>

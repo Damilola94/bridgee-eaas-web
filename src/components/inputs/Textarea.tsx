@@ -39,7 +39,7 @@ function TextareaInput({
         rows={rows}
       />
 
-      {error ? <p className="error-msg">{error}</p> : null}
+      {error ? <p className="error-msg" data-testid="error-msg">{error}</p> : null}
     </div>
   );
 }
