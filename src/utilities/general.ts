@@ -1,4 +1,5 @@
 import moment from 'moment-timezone';
+
 import { idTypes } from '../data/kyc';
 
 export const formatCurrency = (value: any, showCurrency: boolean = true, currency: string = 'NGN') => {
@@ -15,7 +16,7 @@ export const formatCurrency = (value: any, showCurrency: boolean = true, currenc
 
 export const formatPercent = (value: number) => {
   if (value >= 0) {
-    let val = Math.round(value * 100);
+    const val = Math.round(value * 100);
     return `${val}%`;
   }
   return null;
@@ -34,8 +35,8 @@ export const concealValue = (value = '') => (value ? value.replace(/\w/g, '*') :
 
 export const logger = (...logs: any) => (process.env.NODE_ENV === 'development'
   // eslint-disable-next-line no-console
-  ? console.log(...logs, `(Log time - ${moment().format('LLL')})`) :
-  undefined);
+  ? console.log(...logs, `(Log time - ${moment().format('LLL')})`)
+  : undefined);
 
 export const format2Digits = (num: number) => {
   if (typeof num !== 'number' || Number.isNaN(num)) return 0;
@@ -92,6 +93,5 @@ export const formatDisbursementType = (type: string) => {
   }
 };
 
-export const formatIDTypeLabel = (value: string) => {
-  return idTypes.find((item) => item.value === value)?.label;
-};
+export const formatIDTypeLabel = (value: string) => idTypes
+  .find((item) => item.value === value)?.label;

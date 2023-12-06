@@ -3,14 +3,17 @@ import { useMutation } from 'react-query';
 import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/router';
 
-import ClickableLogo from './ClickableLogo';
+import Link from 'next/link';
+
 import TextInput from '../../inputs/Text';
+
 import Button from '../../inputs/Button';
 import Loading from '../../common/Loading';
 
 import notification from '../../../utilities/notification';
 import handleFetch from '../../../services/api/handleFetch';
-import Link from 'next/link';
+
+import ClickableLogo from './ClickableLogo';
 
 function Login() {
   const router = useRouter();
@@ -95,7 +98,7 @@ function Login() {
 
           <p className="mb-7">
             Forgot Password?&nbsp;
-            <Link href="/reset-password"><span className='text-success cursor-pointer'>Reset here</span></Link>
+            <Link href="/reset-password"><span className="text-success cursor-pointer">Reset here</span></Link>
           </p>
 
           <Button
@@ -109,7 +112,7 @@ function Login() {
 
         <p className="mt-5 text-center">
           Don&apos;t have an account?&nbsp;
-          <Link href="/signup"><span className='text-success cursor-pointer'>Create an account</span></Link>
+          <Link href="/signup"><span className="text-success cursor-pointer">Create an account</span></Link>
         </p>
       </form>
     </div>

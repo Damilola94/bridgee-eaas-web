@@ -14,8 +14,10 @@ import notification from '../../../utilities/notification';
 import Loading from '../../common/Loading';
 import TransactionStatus from '../../common/TransactionStatus';
 import AcceptInvite from '../invites/AcceptInvite';
-import PaymentModal from './PaymentModal';
+
 import ConfirmPrompt from '../../common/ConfirmPrompt';
+
+import PaymentModal from './PaymentModal';
 import ConfirmDelivery from './ConfirmDelivery';
 import ViewAgreement from './ViewAgreement';
 
@@ -146,224 +148,226 @@ function InvoiceDetails({ data = {} }: { data: any }) {
   const { isLoading: otpLoading } = requestOtpMutation;
   const { isLoading: deliveryLoading } = deliveryStatusMutation;
 
-  if (data?.escrowId) return (
-    <>
-      {(isLoading || deliveryLoading) && <Loading message="Processing..." />}
-      {otpLoading && <Loading message="Sending OTP..." />}
+  if (data?.escrowId) {
+    return (
+      <>
+        {(isLoading || deliveryLoading) && <Loading message="Processing..." />}
+        {otpLoading && <Loading message="Sending OTP..." />}
 
-      <div className="w-full bg-white px-5 sm:px-10 py-8 rounded-lg shadow-md">
-        <div className="w-full mb-5">
-          <div className="flex flex-wrap flex-col-reverse sm:flex-row w-full justify-between mb-5">
-            <div className="text-left">
-              <div className="flex mb-2">
-                <Image
-                  src={data?.sellerDetails?.pictPath || DefaultLogo}
-                  alt="Seller Logo"
-                  width={80}
-                  height={80}
-                  className="w-20 h-20"
-                />
+        <div className="w-full bg-white px-5 sm:px-10 py-8 rounded-lg shadow-md">
+          <div className="w-full mb-5">
+            <div className="flex flex-wrap flex-col-reverse sm:flex-row w-full justify-between mb-5">
+              <div className="text-left">
+                <div className="flex mb-2">
+                  <Image
+                    src={data?.sellerDetails?.pictPath || DefaultLogo}
+                    alt="Seller Logo"
+                    width={80}
+                    height={80}
+                    className="w-20 h-20"
+                  />
+                </div>
+                <h3 className="font-bold text-xl">
+                  {data?.sellerDetails?.name}
+                </h3>
+                <p className="mb-1">{data?.sellerDetails?.address}</p>
+                <p className="text-lightText">{formatDate(data?.createAt)}</p>
               </div>
-              <h3 className="font-bold text-xl">
-                {data?.sellerDetails?.name}
-              </h3>
-              <p className="mb-1">{data?.sellerDetails?.address}</p>
-              <p className="text-lightText">{formatDate(data?.createAt)}</p>
-            </div>
-            <div className="text-right">
-              <h2 className="ff-bold font-bold text-2xl">{`Invoice #${data?.invoiceNumber}`}</h2>
-              <TransactionStatus status={data?.status === 'paymentcompleted' ? data?.deliveryStatus : data?.status} />
-            </div>
-          </div>
-
-          <div className="sm:flex w-full justify-between">
-            <div className="text-left">
-              <h3 className="font-bold ff-bold text-lg mb-2">Recipient Details</h3>
-              <p className="mb-1">{data?.recipientDetails?.name}</p>
-              <div className="w-full text-lightText">
-                <p className="mb-1">{data?.recipientDetails?.email}</p>
-                <p className="mb-1">{data?.recipientDetails?.phoneNumber}</p>
-                <p className="mb-1">{data?.recipientDetails?.address}</p>
+              <div className="text-right">
+                <h2 className="ff-bold font-bold text-2xl">{`Invoice #${data?.invoiceNumber}`}</h2>
+                <TransactionStatus status={data?.status === 'paymentcompleted' ? data?.deliveryStatus : data?.status} />
               </div>
             </div>
 
-            <div className="text-right">
-              <h3 className="font-bold ff-bold text-lg mb-2">Order Details</h3>
-              <div className="w-full">
-                <p className="mb-1">
-                  <span className="text-lightText">Disbursement Type:&nbsp;</span>
-                  {formatDisbursementType(data?.disbursementType)}
-                </p>
-                <p className="mb-1">
-                  <span className="text-lightText">Dispute Manager:&nbsp;</span>
-                  Bridge by ALAT
-                </p>
-                <p className="mb-1">
-                  <span className="text-lightText">Inspection:&nbsp;</span>
-                  {`${data?.inspectionDay} Hours(s)`}
-                </p>
-                {data?.disbursementType === 'installment' && (
+            <div className="sm:flex w-full justify-between">
+              <div className="text-left">
+                <h3 className="font-bold ff-bold text-lg mb-2">Recipient Details</h3>
+                <p className="mb-1">{data?.recipientDetails?.name}</p>
+                <div className="w-full text-lightText">
+                  <p className="mb-1">{data?.recipientDetails?.email}</p>
+                  <p className="mb-1">{data?.recipientDetails?.phoneNumber}</p>
+                  <p className="mb-1">{data?.recipientDetails?.address}</p>
+                </div>
+              </div>
+
+              <div className="text-right">
+                <h3 className="font-bold ff-bold text-lg mb-2">Order Details</h3>
+                <div className="w-full">
                   <p className="mb-1">
-                    <span className="text-lightText">Due Date:&nbsp;</span>
-                    {formatDate(data?.dueDate)}
+                    <span className="text-lightText">Disbursement Type:&nbsp;</span>
+                    {formatDisbursementType(data?.disbursementType)}
                   </p>
-                )}
+                  <p className="mb-1">
+                    <span className="text-lightText">Dispute Manager:&nbsp;</span>
+                    Bridge by ALAT
+                  </p>
+                  <p className="mb-1">
+                    <span className="text-lightText">Inspection:&nbsp;</span>
+                    {`${data?.inspectionDay} Hours(s)`}
+                  </p>
+                  {data?.disbursementType === 'installment' && (
+                    <p className="mb-1">
+                      <span className="text-lightText">Due Date:&nbsp;</span>
+                      {formatDate(data?.dueDate)}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="w-full mb-5 overflow-auto">
-          <table className="w-full min-w-max table-auto text-left border-b">
-            <thead className="bg-secondary uppercase">
-              <tr>
-                <th className="px-3 py-3">Item Name</th>
-                <th className="px-3 py-3 text-center">Quantity</th>
-                <th className="px-3 py-3 text-center">Weight</th>
-                <th className="px-3 py-3">Unit Price</th>
-                <th className="px-3 py-3 text-right">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data?.items?.map((item: any) => (
-                <tr key={item?.id}>
-                  <td className="px-3 py-3">{item?.name}</td>
-                  <td className="px-3 py-3 text-center">{item?.quantity}</td>
-                  <td className="px-3 py-3 text-center">{`${item?.weight}kg`}</td>
-                  <td className="px-3 py-3">{formatCurrency(item?.unitPrice)}</td>
-                  <td className="px-3 py-3 font-bold ff-bold text-right">{formatCurrency(item?.totalAmount)}</td>
+          <div className="w-full mb-5 overflow-auto">
+            <table className="w-full min-w-max table-auto text-left border-b">
+              <thead className="bg-secondary uppercase">
+                <tr>
+                  <th className="px-3 py-3">Item Name</th>
+                  <th className="px-3 py-3 text-center">Quantity</th>
+                  <th className="px-3 py-3 text-center">Weight</th>
+                  <th className="px-3 py-3">Unit Price</th>
+                  <th className="px-3 py-3 text-right">Total</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {data?.items?.map((item: any) => (
+                  <tr key={item?.id}>
+                    <td className="px-3 py-3">{item?.name}</td>
+                    <td className="px-3 py-3 text-center">{item?.quantity}</td>
+                    <td className="px-3 py-3 text-center">{`${item?.weight}kg`}</td>
+                    <td className="px-3 py-3">{formatCurrency(item?.unitPrice)}</td>
+                    <td className="px-3 py-3 font-bold ff-bold text-right">{formatCurrency(item?.totalAmount)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-        <div className="w-full flex justify-end mb-5">
-          <div className="w-full max-w-[280px]">
-            <div className="w-full flex justify-between mb-3">
-              <p className="">SUBTOTAL</p>
-              <p className="font-bold ff-bold">{formatCurrency(data?.totalAmount)}</p>
-            </div>
-            <div className="w-full flex justify-between mb-3">
-              <p className="">Escrow fee</p>
-              <p className="font-bold ff-bold">{formatCurrency(data?.fee)}</p>
-            </div>
-            <div className="w-full flex justify-between mb-3">
-              <p className="">Delivery Fee</p>
-              <p className="font-bold ff-bold">{formatCurrency(data?.deliveryFee)}</p>
-            </div>
-            <div className="w-full flex justify-between mb-3 text-lg">
-              <p className="">TOTAL</p>
-              <p className="font-bold ff-bold">{formatCurrency(data?.totalAmount + data?.fee)}</p>
+          <div className="w-full flex justify-end mb-5">
+            <div className="w-full max-w-[280px]">
+              <div className="w-full flex justify-between mb-3">
+                <p className="">SUBTOTAL</p>
+                <p className="font-bold ff-bold">{formatCurrency(data?.totalAmount)}</p>
+              </div>
+              <div className="w-full flex justify-between mb-3">
+                <p className="">Escrow fee</p>
+                <p className="font-bold ff-bold">{formatCurrency(data?.fee)}</p>
+              </div>
+              <div className="w-full flex justify-between mb-3">
+                <p className="">Delivery Fee</p>
+                <p className="font-bold ff-bold">{formatCurrency(data?.deliveryFee)}</p>
+              </div>
+              <div className="w-full flex justify-between mb-3 text-lg">
+                <p className="">TOTAL</p>
+                <p className="font-bold ff-bold">{formatCurrency(data?.totalAmount + data?.fee)}</p>
+              </div>
             </div>
           </div>
+
+          <div className="w-full flex justify-end mb-5">
+            <button
+              onClick={() => setShowAgreementModal(true)}
+              className="text-primary underline hover:no-underline"
+            >
+              View Escrow Agreement
+            </button>
+          </div>
+
+          {data?.isSeller ? (
+            <>
+              {data?.status === 'paymentcompleted' && (
+                <>
+                  {data?.deliveryStatus === 'Pending' && (
+                    <div className="w-full flex justify-end space-x-3">
+                      <Button bgColor="bg-error" onClick={() => handleDeliveryPrompt('Cancelled')}>Cancel</Button>
+                      <Button onClick={() => handleDeliveryPrompt('Processing')}>Process Order</Button>
+                    </div>
+                  )}
+                  {data?.deliveryStatus === 'Processing' && (
+                    <div className="w-full flex justify-end space-x-3">
+                      <Button bgColor="bg-error" onClick={() => handleDeliveryPrompt('Cancelled')}>Cancel</Button>
+                      <Button onClick={() => handleDeliveryPrompt('OutForDelivery')}>Out for Delivery</Button>
+                    </div>
+                  )}
+                  {data?.deliveryStatus === 'OutForDelivery' && (
+                    <div className="w-full flex justify-end space-x-3">
+                      <Button bgColor="bg-error" onClick={() => handleDeliveryPrompt('Cancelled')}>Cancel</Button>
+                      <Button onClick={() => handleDeliveryPrompt('Delivered')}>Delivered</Button>
+                    </div>
+                  )}
+                </>
+              )}
+            </>
+          ) : (
+            <>
+              {data?.status === 'pending' && (
+                <div className="w-full flex justify-end space-x-3">
+                  <Button bgColor="bg-error" onClick={() => setShowDeclineModal(true)}>Decline</Button>
+                  <Button onClick={() => setShowAcceptModal(true)}>Accept</Button>
+                </div>
+              )}
+              {data?.status === 'awaitingpayment' && (
+                <div className="w-full flex justify-end">
+                  <Button onClick={() => handleOtpGeneration('EscrowDeposit')}>Make Payment</Button>
+                </div>
+              )}
+              {data?.status === 'paymentcompleted' && data?.deliveryStatus === 'Delivered' && (
+                <div className="w-full flex justify-end space-x-3">
+                  <Button
+                    bgColor="bg-error"
+                    onClick={() => router.push({ pathname: `/disputes/manage-dispute/${data?.escrowId}` })}
+                  >
+                    Raise Dispute
+                  </Button>
+                  <Button onClick={() => handleOtpGeneration('EscrowOrderCompleted')}>Confirm Delivery</Button>
+                </div>
+              )}
+            </>
+          )}
         </div>
 
-        <div className="w-full flex justify-end mb-5">
-          <button
-            onClick={() => setShowAgreementModal(true)}
-            className="text-primary underline hover:no-underline"
-          >
-            View Escrow Agreement
-          </button>
-        </div>
-
-        {data?.isSeller ? (
-          <>
-            {data?.status === 'paymentcompleted' && (
-              <>
-                {data?.deliveryStatus === 'Pending' && (
-                  <div className="w-full flex justify-end space-x-3">
-                    <Button bgColor="bg-error" onClick={() => handleDeliveryPrompt('Cancelled')}>Cancel</Button>
-                    <Button onClick={() => handleDeliveryPrompt('Processing')}>Process Order</Button>
-                  </div>
-                )}
-                {data?.deliveryStatus === 'Processing' && (
-                  <div className="w-full flex justify-end space-x-3">
-                    <Button bgColor="bg-error" onClick={() => handleDeliveryPrompt('Cancelled')}>Cancel</Button>
-                    <Button onClick={() => handleDeliveryPrompt('OutForDelivery')}>Out for Delivery</Button>
-                  </div>
-                )}
-                {data?.deliveryStatus === 'OutForDelivery' && (
-                  <div className="w-full flex justify-end space-x-3">
-                    <Button bgColor="bg-error" onClick={() => handleDeliveryPrompt('Cancelled')}>Cancel</Button>
-                    <Button onClick={() => handleDeliveryPrompt('Delivered')}>Delivered</Button>
-                  </div>
-                )}
-              </>
-            )}
-          </>
-        ) : (
-          <>
-            {data?.status === 'pending' && (
-              <div className="w-full flex justify-end space-x-3">
-                <Button bgColor="bg-error" onClick={() => setShowDeclineModal(true)}>Decline</Button>
-                <Button onClick={() => setShowAcceptModal(true)}>Accept</Button>
-              </div>
-            )}
-            {data?.status === 'awaitingpayment' && (
-              <div className="w-full flex justify-end">
-                <Button onClick={() => handleOtpGeneration('EscrowDeposit')}>Make Payment</Button>
-              </div>
-            )}
-            {data?.status === 'paymentcompleted' && data?.deliveryStatus === 'Delivered' && (
-              <div className="w-full flex justify-end space-x-3">
-                <Button
-                  bgColor="bg-error"
-                  onClick={() => router.push({ pathname: `/disputes/manage-dispute/${data?.escrowId}` })}
-                >
-                  Raise Dispute
-                </Button>
-                <Button onClick={() => handleOtpGeneration('EscrowOrderCompleted')}>Confirm Delivery</Button>
-              </div>
-            )}
-          </>
+        {showAgreementModal && (
+          <ViewAgreement
+            onClose={() => setShowAgreementModal(false)}
+            file={data?.agreemmentDocPath}
+            text={data?.agreementWrittenTerms}
+          />
         )}
-      </div>
 
-      {showAgreementModal && (
-        <ViewAgreement
-          onClose={() => setShowAgreementModal(false)}
-          file={data?.agreemmentDocPath}
-          text={data?.agreementWrittenTerms}
+        {showAcceptModal && (
+          <AcceptInvite onClose={() => setShowAcceptModal(false)} />
+        )}
+
+        <ConfirmPrompt
+          title="Confirm action"
+          message="Are you sure you want to reject/decline this invite?"
+          isOpen={showDeclineModal}
+          handleYes={handleDecline}
+          onClose={() => setShowDeclineModal(false)}
         />
-      )}
 
-      {showAcceptModal && (
-        <AcceptInvite onClose={() => setShowAcceptModal(false)} />
-      )}
+        {showPaymentModal && (
+          <PaymentModal
+            onClose={() => setShowPaymentModal(false)}
+            escrowId={data?.escrowId}
+          />
+        )}
 
-      <ConfirmPrompt
-        title='Confirm action'
-        message='Are you sure you want to reject/decline this invite?'
-        isOpen={showDeclineModal}
-        handleYes={handleDecline}
-        onClose={() => setShowDeclineModal(false)}
-      />
-
-      {showPaymentModal && (
-        <PaymentModal
-          onClose={() => setShowPaymentModal(false)}
-          escrowId={data?.escrowId}
+        <ConfirmPrompt
+          title="Confirm delivery action"
+          message={deliveryPrompt.current?.message}
+          isOpen={confirmStatusUpdate}
+          handleYes={handleDeliveryStatusUpdate}
+          onClose={() => setConfirmStatusUpdate(false)}
         />
-      )}
 
-      <ConfirmPrompt
-        title='Confirm delivery action'
-        message={deliveryPrompt.current?.message}
-        isOpen={confirmStatusUpdate}
-        handleYes={handleDeliveryStatusUpdate}
-        onClose={() => setConfirmStatusUpdate(false)}
-      />
-
-      {showDeliveryConfirmationModal && (
-        <ConfirmDelivery
-          onClose={() => setShowDeliveryConfirmationModal(false)}
-          escrowId={data?.escrowId}
-        />
-      )}
-    </>
-  );
+        {showDeliveryConfirmationModal && (
+          <ConfirmDelivery
+            onClose={() => setShowDeliveryConfirmationModal(false)}
+            escrowId={data?.escrowId}
+          />
+        )}
+      </>
+    );
+  }
 
   return null;
 }

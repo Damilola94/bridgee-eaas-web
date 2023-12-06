@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 
-import DangerIcon from '../../../assets/svgs/danger.svg';
 import Link from 'next/link';
+
+import DangerIcon from '../../../assets/svgs/danger.svg';
 import useGetQuery from '../../../hooks/useGetQuery';
 import { steps } from '../../../data/kyc';
 

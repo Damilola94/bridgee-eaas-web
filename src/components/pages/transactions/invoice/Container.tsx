@@ -1,6 +1,7 @@
 import React from 'react';
 
 import ListStatusTabs from '../../../common/ListStatusTabs';
+
 import InvoiceList from './List';
 
 const options = [

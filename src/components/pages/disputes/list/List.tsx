@@ -11,9 +11,11 @@ import MenuOptions from '../../../common/MenuOptions';
 import NoData from '../../../common/NoData';
 import TransactionStatus from '../../../common/TransactionStatus';
 import SearchInput from '../../../inputs/Search';
-import DisputeFilter from './Filter';
+
 import Loading from '../../../common/Loading';
 import Pagination from '../../../common/Pagination';
+
+import DisputeFilter from './Filter';
 
 function InvoiceList() {
   const router = useRouter();

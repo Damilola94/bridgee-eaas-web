@@ -3,6 +3,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 import { logout } from '../auth';
+
 import endpoints from './endpoints';
 
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -27,6 +28,9 @@ async function refreshTokenFn() {
   } catch (error) {
     logout();
   }
-};
+  return null;
+}
 
-export const memoizedRefreshToken = mem(refreshTokenFn, { maxAge: 10000 });
+const memoizedRefreshToken = mem(refreshTokenFn, { maxAge: 10000 });
+
+export default memoizedRefreshToken;

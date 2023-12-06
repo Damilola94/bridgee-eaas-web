@@ -7,12 +7,16 @@ import { HiOutlineArrowLeft } from 'react-icons/hi';
 import Button from '../../../inputs/Button';
 
 import FormIndicator from '../../create-invoice/FormIndicator';
+
+import useGetQuery from '../../../../hooks/useGetQuery';
+
+import Loading from '../../../common/Loading';
+
+import { useReturnGoodsContext } from '../../../../context/ReturnGoods';
+
 import InvoiceSummary from './InvoiceSummary';
 import OrderDetails from './OrderDetails';
 import RecipientDetails from './RecipientDetails';
-import useGetQuery from '../../../../hooks/useGetQuery';
-import Loading from '../../../common/Loading';
-import { useReturnGoodsContext } from '../../../../context/ReturnGoods';
 
 function ReturnGoodsContainer() {
   const router = useRouter();
@@ -80,6 +84,6 @@ function ReturnGoodsContainer() {
       )}
     </>
   );
-};
+}
 
 export default ReturnGoodsContainer;

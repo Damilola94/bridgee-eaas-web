@@ -13,7 +13,13 @@ function SmallKycSteps({ steps }: { steps: { title: string, step: string, stage:
     <div className="sm:hidden w-full max-w-md mx-auto mb-5">
       <div className="w-full">
         <p className="text-lightText text-sm">
-          Step {currentFormIndex + 1} of {steps?.length}
+          Step
+          {' '}
+          {currentFormIndex + 1}
+          {' '}
+          of
+          {' '}
+          {steps?.length}
         </p>
         <h3 className="font-bold text-xl my-1">{steps[currentFormIndex]?.title}</h3>
         <div className="w-full">

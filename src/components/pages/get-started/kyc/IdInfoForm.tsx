@@ -14,8 +14,10 @@ import notification from '../../../../utilities/notification';
 import Loading from '../../../common/Loading';
 import FileInput from '../../../inputs/File';
 import { formatFileUrl, formatIDTypeLabel } from '../../../../utilities/general';
-import SuccessMessage from './SuccessMessage';
+
 import useFormStage from '../../../../hooks/useFormStage';
+
+import SuccessMessage from './SuccessMessage';
 
 function IdInfoForm() {
   const router = useRouter();

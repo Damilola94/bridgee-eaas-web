@@ -12,7 +12,7 @@ type Props = {
 
 function ViewAgreement({ onClose, text, file }: Props) {
   return (
-    <Modal isOpen onClose={onClose} maxWidth='max-w-[700px]' isFullHeight={!!file}>
+    <Modal isOpen onClose={onClose} maxWidth="max-w-[700px]" isFullHeight={!!file}>
       <div className="w-full h-[95%] py-5">
         <h2 className="w-full text-textColor ff-bold text-xl mb-5">Escrow Agreement</h2>
 

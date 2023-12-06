@@ -20,7 +20,7 @@ function HowItWorks() {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const intervalId = setInterval(function() {
+    const intervalId = setInterval(() => {
       if (index > 3) {
         setIndex(0);
       } else {
@@ -60,7 +60,8 @@ function HowItWorks() {
                   <li key={item?.text} className="mb-12 last:mb-0">
                     <div className="flex items-center text-2xl mb-5">
                       <span className={`w-10 h-10 flex justify-center items-center rounded-full ${
-                        index !== i ? 'bg-[#E0E0E0]' : 'bg-purple'} text-white p-1 mr-4`}>
+                        index !== i ? 'bg-[#E0E0E0]' : 'bg-purple'} text-white p-1 mr-4`}
+                      >
                         {i + 1}
                       </span>
                       <h4 className={`ff-medium ${index !== i ? 'text-[#E0E0E0]' : ''}`}>

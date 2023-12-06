@@ -17,8 +17,10 @@ import menuList from '../../configs/sidebarMenu';
 import useClickOutsideBox from '../../hooks/useClickOutsideBox';
 import { logout } from '../../services/auth';
 import handleFetch from '../../services/api/handleFetch';
-import Loading from './Loading';
+
 import notification from '../../utilities/notification';
+
+import Loading from './Loading';
 
 function Sidebar() {
   const wrapperRef = useRef(null);
@@ -63,7 +65,8 @@ function Sidebar() {
       </div>
 
       <nav className={`z-30 page-sidebar fixed w-72 bg-primary overflow-auto h-screen hide-scroll ${
-        showMenu ? 'show' : ''} shadow-box lg:shadow-none`}>
+        showMenu ? 'show' : ''} shadow-box lg:shadow-none`}
+      >
         <div className="fixed cursor-pointer top-5 right-5 lg:hidden">
           <IoClose
             onClick={toggleMenu}

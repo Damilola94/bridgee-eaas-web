@@ -4,8 +4,6 @@ import { useRouter } from 'next/router';
 
 import { HiOutlineArrowLeft } from 'react-icons/hi';
 
-import type { NextPageWithLayout } from './_app';
-
 import Layout from '../components/wrappers/Layout';
 import Button from '../components/inputs/Button';
 
@@ -15,6 +13,8 @@ import OrderDetails from '../components/pages/create-invoice/OrderDetails';
 import RecipientDetails from '../components/pages/create-invoice/RecipientDetails';
 import InvoiceSummary from '../components/pages/create-invoice/InvoiceSummary';
 import CreateInvoiceContextProvider from '../context/CreateInvoice';
+
+import type { NextPageWithLayout } from './_app';
 
 const CreateInvoice: NextPageWithLayout = () => {
   const router = useRouter();

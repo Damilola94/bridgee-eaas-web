@@ -89,7 +89,8 @@ function AmountDetails({
           <ToggleInput
             value={form?.saveAsBeneficiary}
             label="Add to beneficiary"
-            onChange={(val) => onChange(val, 'toggle', 'saveAsBeneficiary')} />
+            onChange={(val) => onChange(val, 'toggle', 'saveAsBeneficiary')}
+          />
         </div>
       </div>
 

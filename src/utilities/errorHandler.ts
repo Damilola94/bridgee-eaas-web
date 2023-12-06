@@ -1,7 +1,8 @@
 import Cookies from 'js-cookie';
 
-import { logger } from './general';
 import { logout } from '../services/auth';
+
+import { logger } from './general';
 
 const errorHandler = (error: any, auth: boolean) => {
   let message = '';

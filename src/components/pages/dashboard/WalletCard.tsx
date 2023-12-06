@@ -7,6 +7,7 @@ import WalletIcon from '../../../assets/svgs/wallet.svg';
 import { useAccountsContext } from '../../../context/Accounts';
 import Button from '../../inputs/Button';
 import { formatCurrency } from '../../../utilities/general';
+
 import BankTransferModal from './BankTransferModal';
 import FundTransferModal from './fund-transfer-modal';
 

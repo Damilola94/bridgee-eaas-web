@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import { useCookies } from 'react-cookie';
 
-import ClickableLogo from './ClickableLogo';
 import TextInput from '../../inputs/Text';
 import Button from '../../inputs/Button';
 import Loading from '../../common/Loading';
@@ -10,6 +9,8 @@ import Loading from '../../common/Loading';
 import notification from '../../../utilities/notification';
 import handleFetch from '../../../services/api/handleFetch';
 import { ResetPasswordProps } from '../../../types/auth';
+
+import ClickableLogo from './ClickableLogo';
 
 function SetNewPassword({ gotoNextForm = () => {} }: ResetPasswordProps) {
   const [cookie] = useCookies(['form']);

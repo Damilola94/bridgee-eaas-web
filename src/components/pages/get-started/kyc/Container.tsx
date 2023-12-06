@@ -1,19 +1,22 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
+import Loading from '../../../common/Loading';
+
+import useGetQuery from '../../../../hooks/useGetQuery';
+
+import { useKycContext } from '../../../../context/Kyc';
+
+import { steps } from '../../../../data/kyc';
+
 import KycSteps from './KycSteps';
 import SmallKycSteps from './SmallKycSteps';
-import Loading from '../../../common/Loading';
 
 import PersonalInfoForm from './PersonalInfoForm';
 import BvnForm from './BvnForm';
 import ResidentialInfoForm from './ResidentialInfoForm';
 import IdInfoForm from './IdInfoForm';
 import Completion from './Completion';
-
-import useGetQuery from '../../../../hooks/useGetQuery';
-import { useKycContext } from '../../../../context/Kyc';
-import { steps } from '../../../../data/kyc';
 
 function KycContainer() {
   const { setKycData } = useKycContext();

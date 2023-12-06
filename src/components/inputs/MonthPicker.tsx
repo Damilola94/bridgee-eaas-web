@@ -77,9 +77,7 @@ function MonthPicker({
     }
   };
 
-  const isSelectedMonth = (index: number): boolean => {
-    return currentMonth === index && value?.[1] === currentYear;
-  };
+  const isSelectedMonth = (index: number): boolean => currentMonth === index && value?.[1] === currentYear;
 
   return (
     <div className={`${className || ''} relative z-10`} ref={wrapperRef}>

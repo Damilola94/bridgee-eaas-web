@@ -5,7 +5,7 @@ import { BiPlus } from 'react-icons/bi';
 
 import TextInput from '../../inputs/Text';
 import { OrderListItemProps } from '../../../types/invoice';
-import AddInvoiceItem from './AddInvoiceItem';
+
 import MenuOptions from '../../common/MenuOptions';
 import NoData from '../../common/NoData';
 import Editor from '../../inputs/Editor';
@@ -14,6 +14,8 @@ import { useCreateInvoiceContext } from '../../../context/CreateInvoice';
 import { formatCurrency } from '../../../utilities/general';
 import notification from '../../../utilities/notification';
 import FileInput from '../../inputs/File';
+
+import AddInvoiceItem from './AddInvoiceItem';
 
 const disbursementTypes = [
   {
@@ -68,7 +70,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     if (form?.escrowItems?.find((item) => item.id === itemPayload.id)) {
       setForm((state) => ({
         ...state,
-        escrowItems: state?.escrowItems?.map((item) => item?.id === itemPayload?.id ? itemPayload : item)
+        escrowItems: state?.escrowItems?.map((item) => (item?.id === itemPayload?.id ? itemPayload : item))
       }));
     } else {
       setForm((state) => ({
@@ -139,10 +141,13 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
                 <td className="px-3 py-1">{formatCurrency(item?.amount)}</td>
                 <td className="px-3 py-1">{formatCurrency(item?.total)}</td>
                 <td className="px-3 py-1 flex justify-end">
-                  <MenuOptions position='bottom' options={[
-                    { title: 'Delete Item', action: () => handleDeleteItem(item?.id || '') },
-                    { title: 'Edit Item', action: () => handleEdit(item) }
-                  ]} />
+                  <MenuOptions
+                    position="bottom"
+                    options={[
+                      { title: 'Delete Item', action: () => handleDeleteItem(item?.id || '') },
+                      { title: 'Edit Item', action: () => handleEdit(item) }
+                    ]}
+                  />
                 </td>
               </tr>
             ))}
@@ -174,7 +179,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
               <div className="w-full sm:w-1/2 p-2" key={item?.value}>
                 <div
                   role="presentation"
-                  onClick={() => item?.disabled ? null : handleChange(item?.value, 'options', 'disbursementType')}
+                  onClick={() => (item?.disabled ? null : handleChange(item?.value, 'options', 'disbursementType'))}
                   className={`w-full h-full rounded-lg ${form?.disbursementType === item?.value
                     ? 'border-success border-2' : 'border'} bg-secondary p-5 ${
                     item?.disabled ? '' : 'cursor-pointer'}`}

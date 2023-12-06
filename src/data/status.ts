@@ -3,7 +3,7 @@ export const statusColors = {
   refunded: '#03543F',
   'in-progress': '#42389D',
   'awaiting-confirmation': '#111928', // to be changed
-  'awaitingpayment': '#5521B5',
+  awaitingpayment: '#5521B5',
   declined: '#9B1C1C',
   dispute: '#99154B',
   draft: '#111928',
@@ -42,7 +42,7 @@ export const statusTitle = {
   refunded: 'Refunded',
   'in-progress': 'In Progress',
   'awaiting-confirmation': 'Awaiting Confirmation',
-  'awaitingpayment': 'Awaiting Payment',
+  awaitingpayment: 'Awaiting Payment',
   declined: 'Declined',
   dispute: 'Dispute',
   draft: 'Draft',

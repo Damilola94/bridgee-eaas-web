@@ -18,13 +18,15 @@ const Signup: NextPage = () => {
   }, [router]);
 
   return (
-    <AuthWrapper title='Bridge by ALAT - Signup'>
+    <AuthWrapper title="Bridge by ALAT - Signup">
       {formIndex === 0 && <SignupForm gotoNextForm={() => setFormIndex(1)} />}
-      {formIndex === 1 && <ValidateOTP
-        endpointExtra='validate-otp'
-        gotoPrevForm={() => setFormIndex(0)}
-        gotoNextForm={() => setFormIndex(2)}
-      />}
+      {formIndex === 1 && (
+        <ValidateOTP
+          endpointExtra="validate-otp"
+          gotoPrevForm={() => setFormIndex(0)}
+          gotoNextForm={() => setFormIndex(2)}
+        />
+      )}
       {formIndex === 2 && <SuccessMessage gotoNextForm={() => {}} message="Account Verified" />}
     </AuthWrapper>
   );

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import HomepageContextProvider from '../../../context/Homepage';
+
 import Header from './Header';
 import Hero from './Hero';
 import Benefits from './Benefits';
@@ -7,7 +9,6 @@ import HowItWorks from './HowItWorks';
 import GetStarted from './GetStarted';
 import Footer from './Footer';
 
-import HomepageContextProvider from '../../../context/Homepage';
 import Intro from './Intro';
 
 function Container() {

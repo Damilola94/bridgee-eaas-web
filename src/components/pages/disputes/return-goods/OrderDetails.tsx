@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 
+import { useRouter } from 'next/router';
+
 import { OrderListItemProps } from '../../../../types/invoice';
-import AddInvoiceItem from './AddInvoiceItem';
+
 import NoData from '../../../common/NoData';
 import Button from '../../../inputs/Button';
 import notification from '../../../../utilities/notification';
 import { useReturnGoodsContext } from '../../../../context/ReturnGoods';
-import { useRouter } from 'next/router';
 import MenuOptions from '../../../common/MenuOptions';
+
+import AddInvoiceItem from './AddInvoiceItem';
 
 function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const router = useRouter();
@@ -23,23 +26,23 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     setForm({
       isDeliveryOnUs: false,
       escrowItems: invoice?.items,
-      recipientDetails: invoice?.disputes?.[0]?.status === 'AwaitingReturn' ?
-        {
+      recipientDetails: invoice?.disputes?.[0]?.status === 'AwaitingReturn'
+        ? {
           recipientName: invoice?.sellerDetails?.name,
           address: invoice?.sellerDetails?.address,
           phoneNumber: '',
           email: ''
-        } :
-        {
+        }
+        : {
           ...invoice?.recipientDetails,
           recipientName: invoice?.recipientDetails?.name
         },
-      senderDetails: invoice?.disputes?.[0]?.status === 'AwaitingReturn' ?
-        {
+      senderDetails: invoice?.disputes?.[0]?.status === 'AwaitingReturn'
+        ? {
           ...invoice?.recipientDetails,
           name: invoice?.recipientDetails?.name
-        } :
-        {
+        }
+        : {
           name: invoice?.sellerDetails?.name,
           address: invoice?.sellerDetails?.address,
           phoneNumber: '',
@@ -51,7 +54,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const handleUpdateItem = (itemPayload: OrderListItemProps) => {
     setForm((state) => ({
       ...state,
-      escrowItems: state?.escrowItems?.map((item) => item?.id === itemPayload?.id ? itemPayload : item)
+      escrowItems: state?.escrowItems?.map((item) => (item?.id === itemPayload?.id ? itemPayload : item))
     }));
   };
 
@@ -107,10 +110,13 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
                 <td className="px-3 py-3">{`${item?.weight || 0}kg`}</td>
                 {invoice?.disputes?.[0]?.status === 'AwaitingShipAdditional' && (
                   <td className="px-3 py-3 flex justify-end">
-                    <MenuOptions position='bottom' options={[
-                      { title: 'Delete Item', action: () => handleDeleteItem(item?.id || '') },
-                      { title: 'Edit Item', action: () => handleEdit(item) }
-                    ]} />
+                    <MenuOptions
+                      position="bottom"
+                      options={[
+                        { title: 'Delete Item', action: () => handleDeleteItem(item?.id || '') },
+                        { title: 'Edit Item', action: () => handleEdit(item) }
+                      ]}
+                    />
                   </td>
                 )}
               </tr>

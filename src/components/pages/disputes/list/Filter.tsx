@@ -42,7 +42,7 @@ function DisputeFilter({ filter, onChange }: valueProps) {
         onClick={() => setOpen(!open)}
         role="presentation"
       >
-        {!!filter
+        {filter
           ? <GoX onClick={handleClear} className="cursor-pointer ml-2 w-6 h-6 p-1 rounded hover:bg-primary/50 hover:text-white" />
           : <HiFilter className="w-5 h-5 text-lightText" />}
         <p className="text-sm ff-bold mt-1">Filter</p>

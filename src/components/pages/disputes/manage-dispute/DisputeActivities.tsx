@@ -112,8 +112,8 @@ function DisputeActivities() {
       </div>
 
       <ConfirmPrompt
-        title='Confirm action'
-        message='Are you sure you want to escalate this dispute to Bridge mediator?'
+        title="Confirm action"
+        message="Are you sure you want to escalate this dispute to Bridge mediator?"
         isOpen={showEscalationPrompt}
         handleYes={handleEscalation}
         onClose={() => setShowEscalationPrompt(false)}

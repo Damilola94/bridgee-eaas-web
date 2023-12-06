@@ -40,6 +40,6 @@ function AuthWrapper({ title, children }: Props) {
       </div>
     </div>
   );
-};
+}
 
 export default AuthWrapper;

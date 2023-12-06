@@ -4,12 +4,13 @@ import AuthCode from 'react-auth-code-input';
 import { useMutation } from 'react-query';
 import { useCookies } from 'react-cookie';
 
-import ClickableLogo from './ClickableLogo';
 import Button from '../../inputs/Button';
 import Loading from '../../common/Loading';
 
 import notification from '../../../utilities/notification';
 import handleFetch from '../../../services/api/handleFetch';
+
+import ClickableLogo from './ClickableLogo';
 
 type Props = {
   gotoNextForm?: () => void
@@ -94,7 +95,7 @@ function ValidateOTP({ endpointExtra = '', gotoPrevForm = () => {}, gotoNextForm
     <div className="flex w-full h-full items-center">
       <form className="w-[30rem] px-8 pt-10 pb-12 mx-auto" onSubmit={handleValidateToken}>
         {(isLoading || isSuccess) && <Loading />}
-        {resendingOtp && <Loading message='Resending OTP...' />}
+        {resendingOtp && <Loading message="Resending OTP..." />}
 
         <ClickableLogo className="mb-10" />
 
@@ -127,13 +128,13 @@ function ValidateOTP({ endpointExtra = '', gotoPrevForm = () => {}, gotoNextForm
             paddingY="p-3.5"
             type="submit"
           >
-          Proceed
+            Proceed
           </Button>
         </div>
 
         <p className="mt-5 text-center">
           Wrong email?&nbsp;
-          <button type="button" onClick={gotoPrevForm} className='text-primary cursor-pointer outline-none'>click here</button>
+          <button type="button" onClick={gotoPrevForm} className="text-primary cursor-pointer outline-none">click here</button>
         </p>
       </form>
     </div>

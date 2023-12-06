@@ -57,7 +57,7 @@ function Filter({ filter, onChange }: valueProps) {
         onClick={() => setOpen(!open)}
         role="presentation"
       >
-        {!!filter
+        {filter
           ? <GoX onClick={handleClear} className="cursor-pointer ml-2 w-6 h-6 p-1 rounded hover:bg-primary/50 hover:text-white" />
           : <HiFilter className="w-5 h-5 text-lightText" />}
         <p className="text-sm ff-bold mt-1">Filter</p>
@@ -93,8 +93,8 @@ function Filter({ filter, onChange }: valueProps) {
                 <div className="w-1/2 px-2">
                   <TextInput
                     placeholder="Min Amount"
-                    type='number'
-                    height='h-[38px]'
+                    type="number"
+                    height="h-[38px]"
                     value={data?.minAmount || ''}
                     onChange={(e) => setData((state: any) => ({ ...state, minAmount: e.target.value }))}
                   />
@@ -102,8 +102,8 @@ function Filter({ filter, onChange }: valueProps) {
                 <div className="w-1/2 px-2">
                   <TextInput
                     placeholder="Max Amount"
-                    type='number'
-                    height='h-[38px]'
+                    type="number"
+                    height="h-[38px]"
                     minValue={data?.minAmount || 0}
                     value={data?.maxAmount || ''}
                     onChange={(e) => setData((state: any) => ({ ...state, maxAmount: e.target.value }))}

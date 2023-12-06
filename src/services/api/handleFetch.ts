@@ -1,10 +1,11 @@
 import Cookies from 'js-cookie';
 
-import { axiosInstance } from '.';
-import endpoints from './endpoints';
-
 import { logger } from '../../utilities/general';
 import errorHandler from '../../utilities/errorHandler';
+
+import endpoints from './endpoints';
+
+import axiosInstance from '.';
 
 const handleFetch = async ({
   endpoint = '', extra = null, method = 'GET', auth = false,

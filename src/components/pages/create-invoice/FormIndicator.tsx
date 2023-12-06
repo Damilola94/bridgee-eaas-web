@@ -20,7 +20,8 @@ function FormIndicator({ formIndex }: { formIndex: number }) {
                 {index + 1}
               </span>
               <p className={`absolute text-xs min-w-max mt-1 left-[50%] -translate-x-1/2 ${
-                formIndex >= index ? 'text-primary' : 'text-lightText'}`}>
+                formIndex >= index ? 'text-primary' : 'text-lightText'}`}
+              >
                 {item}
               </p>
             </div>

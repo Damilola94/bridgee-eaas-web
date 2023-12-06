@@ -4,7 +4,6 @@ import { useCookies } from 'react-cookie';
 import moment from 'moment-timezone';
 import Link from 'next/link';
 
-import ClickableLogo from './ClickableLogo';
 import TextInput from '../../inputs/Text';
 import Button from '../../inputs/Button';
 import Loading from '../../common/Loading';
@@ -17,6 +16,8 @@ import { SignupFormProps } from '../../../types/auth';
 import SelectInput from '../../inputs/Select';
 
 import { MIN_AGE } from '../../../data/constants';
+
+import ClickableLogo from './ClickableLogo';
 
 function Signup({ gotoNextForm }: any) {
   const [cookie, setCookie] = useCookies(['data', 'form']);
@@ -248,7 +249,7 @@ function Signup({ gotoNextForm }: any) {
 
         <p className="mt-5 text-center">
           Already have an account?&nbsp;
-          <Link href="/login"><span className='text-success cursor-pointer'>Login here</span></Link>
+          <Link href="/login"><span className="text-success cursor-pointer">Login here</span></Link>
         </p>
       </form>
     </div>

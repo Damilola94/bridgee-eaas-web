@@ -113,7 +113,11 @@ function InvoiceSummary() {
                   colSpan={2}
                   className="py-1 pr-5"
                 >
-                  <b>Inspection Period:</b> {form?.inspectionDuration} hour(s)
+                  <b>Inspection Period:</b>
+                  {' '}
+                  {form?.inspectionDuration}
+                  {' '}
+                  hour(s)
                 </td>
               </tr>
             </tbody>

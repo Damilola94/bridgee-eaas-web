@@ -6,24 +6,22 @@ import type { NextPageWithLayout } from '../_app';
 import Layout from '../../components/wrappers/Layout';
 import DisputesContainer from '../../components/pages/disputes/list/Container';
 
-const Disputes: NextPageWithLayout = () => {
-  return (
-    <>
-      <Head>
-        <title>Bridge by ALAT - Disputes</title>
-      </Head>
+const Disputes: NextPageWithLayout = () => (
+  <>
+    <Head>
+      <title>Bridge by ALAT - Disputes</title>
+    </Head>
 
-      <div className="w-full">
-        <h2 className="font-bold ff-bold text-2xl mb-3">Disputes</h2>
+    <div className="w-full">
+      <h2 className="font-bold ff-bold text-2xl mb-3">Disputes</h2>
 
-        <div className="w-full max-w-7xl mt-10">
-          <DisputesContainer />
-        </div>
+      <div className="w-full max-w-7xl mt-10">
+        <DisputesContainer />
       </div>
+    </div>
 
-    </>
-  );
-};
+  </>
+);
 
 Disputes.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;

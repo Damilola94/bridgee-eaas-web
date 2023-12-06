@@ -130,7 +130,7 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
       <div className="w-full mb-5">
         <div className="flex items-center space-x-2 pb-5">
           <ToggleInput
-            label='Delivery'
+            label="Delivery"
             value={form?.isDeliveryOnUs}
             onChange={(val) => handleChange(val, 'toggle', 'isDeliveryOnUs')}
           />

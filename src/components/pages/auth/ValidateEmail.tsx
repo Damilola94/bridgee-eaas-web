@@ -4,7 +4,6 @@ import { useCookies } from 'react-cookie';
 import { HiArrowLeft } from 'react-icons/hi';
 import { useRouter } from 'next/router';
 
-import ClickableLogo from './ClickableLogo';
 import TextInput from '../../inputs/Text';
 import Button from '../../inputs/Button';
 import Loading from '../../common/Loading';
@@ -12,6 +11,8 @@ import Loading from '../../common/Loading';
 import notification from '../../../utilities/notification';
 import handleFetch from '../../../services/api/handleFetch';
 import { ResetPasswordProps } from '../../../types/auth';
+
+import ClickableLogo from './ClickableLogo';
 
 function ValidateEmail({ gotoNextForm = () => {} }: ResetPasswordProps) {
   const router = useRouter();

@@ -5,8 +5,8 @@ import type { AppProps } from 'next/app';
 import type { NextPage } from 'next';
 
 import { ReactNotifications } from 'react-notifications-component';
-import { QueryClient, QueryClientProvider, Hydrate } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
+import { QueryClient, QueryClientProvider, Hydrate } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 import 'react-loading-skeleton/dist/skeleton.css';
 

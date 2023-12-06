@@ -27,7 +27,8 @@ function KycSteps({ steps }: { steps: { title: string, step: string, stage: stri
                   <FaCheck className="absolute left-0 -top-0.5  text-white bg-success w-5 h-5 p-[3px] rounded-full" />
                 ) : (
                   <span className={`absolute left-0 -top-0.5 inline-block w-5 h-5 bg-white border-2 ${
-                    item?.step === step ? 'border-success' : ''} rounded-full`} />
+                    item?.step === step ? 'border-success' : ''} rounded-full`}
+                  />
                 )}
               {item?.title}
             </li>

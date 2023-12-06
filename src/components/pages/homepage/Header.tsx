@@ -29,11 +29,11 @@ function Header() {
 
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault();
-    const href = e.currentTarget.href;
-    const targetId = href.replace(/.*\#/, "");
+    const { href } = e.currentTarget;
+    const targetId = href.replace(/.*#/, '');
     const elem = document.getElementById(targetId);
     elem?.scrollIntoView({
-      behavior: "smooth"
+      behavior: 'smooth'
     });
     setShowMenu(false);
   };
@@ -50,11 +50,11 @@ function Header() {
             </div>
             <div className="hidden sm:block">
               <ul className="flex space-x-10 text-lg font-bold">
-                <Link href="#why-us" onClick={handleScroll}>
-                  <li className="">Why us</li>
-                </Link>
                 <Link href="#how-it-works" onClick={handleScroll}>
                   <li className="">How it works</li>
+                </Link>
+                <Link href="#why-us" onClick={handleScroll}>
+                  <li className="">Why us</li>
                 </Link>
               </ul>
             </div>
@@ -71,10 +71,10 @@ function Header() {
                   <Button
                     onClick={() => router.push('/login')}
                     border
-                    borderColor='border-success'
+                    borderColor="border-success"
                     fontSize="text-sm"
                     bgColor="bg-transparent"
-                    textColor='text-success'
+                    textColor="text-success"
                     paddingX="px-8"
                     paddingY="py-3"
                   >
@@ -126,14 +126,14 @@ function Header() {
                     Home
                   </li>
                 </Link>
-                <Link href="#why-us" onClick={handleScroll}>
-                  <li className={`${location.hash === '#why-us' ? 'bg-primary bg-opacity-20' : ''} header-side-link`}>
-                    Why us
-                  </li>
-                </Link>
                 <Link href="#how-it-works" onClick={handleScroll}>
                   <li className={`${location.hash === '#how-it-works' ? 'bg-primary bg-opacity-20' : ''} header-side-link`}>
                     How it works
+                  </li>
+                </Link>
+                <Link href="#why-us" onClick={handleScroll}>
+                  <li className={`${location.hash === '#why-us' ? 'bg-primary bg-opacity-20' : ''} header-side-link`}>
+                    Why us
                   </li>
                 </Link>
               </ul>
@@ -144,10 +144,10 @@ function Header() {
                     <Button
                       onClick={() => router.push('/')}
                       border
-                      borderColor='border-success'
+                      borderColor="border-success"
                       fontSize="text-sm"
                       bgColor="bg-transparent"
-                      textColor='text-success'
+                      textColor="text-success"
                       paddingX="px-8"
                       paddingY="py-3"
                     >
@@ -158,10 +158,10 @@ function Header() {
                       <Button
                         onClick={() => router.push('/login')}
                         border
-                        borderColor='border-success'
+                        borderColor="border-success"
                         fontSize="text-sm"
                         bgColor="bg-transparent"
-                        textColor='text-success'
+                        textColor="text-success"
                         paddingX="px-8"
                         paddingY="py-3"
                       >

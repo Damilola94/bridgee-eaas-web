@@ -21,7 +21,6 @@ describe('Testing TextInput component', () => {
     render(<TextInput value="Sample text" onChange={onChange} name="test-input" />);
     expect(screen.getByDisplayValue(/Sample/)).toBeInTheDocument();
     await userEvent.type(screen.getByRole('textbox'), 'We are changing things');
-    screen.debug();
     expect(onChange).toHaveBeenCalledTimes(22);
   });
   test('render a password input', () => {

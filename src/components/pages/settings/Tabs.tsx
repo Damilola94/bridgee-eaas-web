@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import React from 'react';
+
 import { useAccountsContext } from '../../../context/Accounts';
 
 type TabProps = { title: string, tab: string };
@@ -14,7 +15,7 @@ function Tabs({ options = [], pathname = '' }: { options: TabProps[], pathname: 
       <ul className="inline-flex min-w-max">
         {options.map((item) => {
           if (!accounts?.defaultMerchant && item?.tab === 'business-details') return null;
-          else return (
+          return (
             <li className="" key={item?.title}>
               <button
                 type="button"

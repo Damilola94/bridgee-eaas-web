@@ -63,7 +63,7 @@ function PaymentModal({ onClose, escrowId }: Props) {
     <>
       {isLoading && <Loading />}
 
-      <Modal isOpen onClose={onClose} maxWidth='max-w-[400px]'>
+      <Modal isOpen onClose={onClose} maxWidth="max-w-[400px]">
         {formIndex === 0 && (
           <div className="w-full py-5">
             <div className="mb-7">

@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { BiPlus } from 'react-icons/bi';
 
 import Button from '../inputs/Button';
-import Notifications from './Notifications';
 
+import Notifications from './Notifications';
 import ProfileDropdown from './ProfileDropdown';
 import SendInvite from './SendInvite';
 

@@ -34,7 +34,7 @@ function Hero() {
                 onClick={() => router.push('/waitlist')}
                 paddingX="px-10"
                 paddingY="py-4"
-                fontSize='text-lg'
+                fontSize="text-lg"
               >
                 Join the waiting list
               </Button>
@@ -43,7 +43,7 @@ function Hero() {
                 onClick={() => router.push('/signup')}
                 paddingX="px-10"
                 paddingY="py-4"
-                fontSize='text-lg'
+                fontSize="text-lg"
               >
                 Awesome! Let&apos;s do it
               </Button>

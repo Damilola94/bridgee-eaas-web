@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from 'react-query';
 
 import FilePreview from '../../../common/FilePreview';
 import Button from '../../../inputs/Button';
-import NewProposalForm from './NewProposalForm';
+
 import { useAccountsContext } from '../../../../context/Accounts';
 import { formatDateTime } from '../../../../utilities/dateTime';
 import { proposalsObject, shippingStatuses } from '../../../../data/dispute';
@@ -16,11 +16,18 @@ import { useDisputeContext } from '../../../../context/Dispute';
 import ConfirmPrompt from '../../../common/ConfirmPrompt';
 import Loading from '../../../common/Loading';
 import SelectInput, { SelectOptionType } from '../../../inputs/Select';
+
+import NewProposalForm from './NewProposalForm';
 import DisputeShipmentDetails from './actions/DisputeShipmentDetails';
 
 const formatActivity = (activity: string) => {
   if (activity === 'escalated') {
-    return <span className="">escalated to <b>Bridge Mediator</b></span>;
+    return (
+      <span className="">
+        escalated to
+        <b>Bridge Mediator</b>
+      </span>
+    );
   }
   if (activity === 'reviewing') {
     return 'is reviewing the dispute, considering all available evidence and communication between the parties.';
@@ -63,8 +70,8 @@ function ActivityDetails({ data, isLast }: any) {
 
   const [shippingStatus, setShippingStatus] = useState<SelectOptionType>();
 
-  const isUser = data?.user ===
-    (accounts?.defaultMerchant?.name || `${accounts?.user?.firstName} ${accounts?.user?.lastName}`);
+  const isUser = data?.user
+    === (accounts?.defaultMerchant?.name || `${accounts?.user?.firstName} ${accounts?.user?.lastName}`);
 
   const queryClient = useQueryClient();
   const acceptanceMutation = useMutation(handleFetch, {
@@ -175,7 +182,10 @@ function ActivityDetails({ data, isLast }: any) {
       <div className="w-full mb-4">
         <div className="flex flex-wrap sm:flex-nowrap justify-between">
           <p className="text-base mb-2 mr-5">
-            <b>{isUser ? 'You' : data?.user}&nbsp;</b>
+            <b>
+              {isUser ? 'You' : data?.user}
+&nbsp;
+            </b>
             {formatActivity(data?.activity)}
           </p>
           <p className="text-lightText min-w-max mb-2">{formatDateTime(data?.date)}</p>
@@ -202,7 +212,10 @@ function ActivityDetails({ data, isLast }: any) {
         {data?.proposal?.name && (
           <div className="bg-inputBg rounded-r-lg border border-l-4 border-l-primary px-5 py-3 mt-5">
             <p className="text-base mb-2">
-              <b>{isUser ? 'Your' : data?.user}&nbsp;</b>
+              <b>
+                {isUser ? 'Your' : data?.user}
+&nbsp;
+              </b>
               proposal
             </p>
             <p className="">{proposalsObject[data.proposal.name as keyof typeof proposalsObject]}</p>
@@ -211,7 +224,10 @@ function ActivityDetails({ data, isLast }: any) {
         {data?.decision && (
           <div className="bg-inputBg rounded-r-lg border border-l-4 border-l-primary px-5 py-3 mt-5">
             <p className="text-base mb-2">
-              <b>{data?.user}&nbsp;</b>
+              <b>
+                {data?.user}
+&nbsp;
+              </b>
               decision
             </p>
             <p className="">{data.decision}</p>
@@ -236,7 +252,11 @@ function ActivityDetails({ data, isLast }: any) {
               <div className="w-full flex space-x-3">
                 <Button
                   onClick={() => setShowNewProposalForm(true)}
-                  paddingX="px-3" border borderColor="border-error" textColor="text-error" bgColor="bg-white"
+                  paddingX="px-3"
+                  border
+                  borderColor="border-error"
+                  textColor="text-error"
+                  bgColor="bg-white"
                 >
                   <MdClose className="mr-1 mb-1" />
                   Reject
@@ -282,7 +302,7 @@ function ActivityDetails({ data, isLast }: any) {
               <div className="xs:flex">
                 <SelectInput
                   height="h-[35px]"
-                  placeholder='Select Status'
+                  placeholder="Select Status"
                   value={shippingStatus}
                   onChange={(val: any) => setShippingStatus(val)}
                   options={shippingStatuses || []}
@@ -323,15 +343,15 @@ function ActivityDetails({ data, isLast }: any) {
       )}
 
       <ConfirmPrompt
-        title='Confirm action'
-        message='Are you sure you want to accept this dispute proposal?'
+        title="Confirm action"
+        message="Are you sure you want to accept this dispute proposal?"
         isOpen={showAcceptancePrompt}
         handleYes={handleAcceptance}
         onClose={() => setShowAcceptancePrompt(false)}
       />
 
       <ConfirmPrompt
-        title='Confirm action'
+        title="Confirm action"
         message={`Are you sure you want to change the status to "${shippingStatus?.label}"?`}
         isOpen={showShippingUpdatePrompt}
         handleYes={handleShippingStatusUpdate}
@@ -339,8 +359,8 @@ function ActivityDetails({ data, isLast }: any) {
       />
 
       <ConfirmPrompt
-        title='Confirm action'
-        message='Are you sure you want to confirm the delivery of the shipped goods?'
+        title="Confirm action"
+        message="Are you sure you want to confirm the delivery of the shipped goods?"
         isOpen={showShippingConfirmationPrompt}
         handleYes={handleShippingConfirmation}
         onClose={() => setShowShippingConfirmationPrompt(false)}

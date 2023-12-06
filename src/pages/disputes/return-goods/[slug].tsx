@@ -9,19 +9,17 @@ import ReturnGoodsContainer from '../../../components/pages/disputes/return-good
 
 import ReturnGoodsContextProvider from '../../../context/ReturnGoods';
 
-const ReturnGoods: NextPageWithLayout = () => {
-  return (
-    <>
-      <Head>
-        <title>Bridge by ALAT - Return goods</title>
-      </Head>
+const ReturnGoods: NextPageWithLayout = () => (
+  <>
+    <Head>
+      <title>Bridge by ALAT - Return goods</title>
+    </Head>
 
-      <ReturnGoodsContextProvider>
-        <ReturnGoodsContainer />
-      </ReturnGoodsContextProvider>
-    </>
-  );
-};
+    <ReturnGoodsContextProvider>
+      <ReturnGoodsContainer />
+    </ReturnGoodsContextProvider>
+  </>
+);
 
 ReturnGoods.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;

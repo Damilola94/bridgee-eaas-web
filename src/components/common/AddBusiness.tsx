@@ -8,8 +8,8 @@ import notification from '../../utilities/notification';
 import Button from '../inputs/Button';
 import SelectInput from '../inputs/Select';
 import TextInput from '../inputs/Text';
-import Loading from './Loading';
 
+import Loading from './Loading';
 import Modal from './Modal';
 
 type Props = {
@@ -83,7 +83,7 @@ function AddBusiness({ isOpen, onClose }: Props) {
   const { isLoading } = businessMutation;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCenter maxWidth='max-w-[450px]'>
+    <Modal isOpen={isOpen} onClose={onClose} isCenter maxWidth="max-w-[450px]">
       {isLoading && <Loading message="Creating Business..." />}
 
       <form className="w-full py-5" onSubmit={handleAddBusiness}>

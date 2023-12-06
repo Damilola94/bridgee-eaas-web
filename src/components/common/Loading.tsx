@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 
 import Logo from '../../assets/images/loading.gif';
+
 import Modal from './Modal';
 
 type LoadingProps = {
@@ -24,7 +25,8 @@ function Loading({ message }: LoadingProps) {
             priority
             src={Logo}
             className="mx-auto"
-            width={120} height={45}
+            width={120}
+            height={45}
             alt="Bridge by ALAT logo"
           />
         </div>

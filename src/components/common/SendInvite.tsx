@@ -7,8 +7,8 @@ import handleFetch from '../../services/api/handleFetch';
 import notification from '../../utilities/notification';
 import Button from '../inputs/Button';
 import TextInput from '../inputs/Text';
-import Loading from './Loading';
 
+import Loading from './Loading';
 import Modal from './Modal';
 
 type Props = {
@@ -52,7 +52,7 @@ function SendInvite({ onClose }: Props) {
   const { isLoading } = sendInviteMutation;
 
   return (
-    <Modal isOpen onClose={onClose} isCenter maxWidth='max-w-[400px]'>
+    <Modal isOpen onClose={onClose} isCenter maxWidth="max-w-[400px]">
       {isLoading && <Loading message="Sending invite..." />}
 
       <div className="w-full pb-3">

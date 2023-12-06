@@ -28,8 +28,7 @@ function TransactionDetails({ data, onClose }: { data: TransactionProps, onClose
           <span className={`inline-block ${data?.type === 'credit' ? 'bg-success/10' : 'bg-error/10'} p-3 rounded-full mb-4`}>
             {data?.type === 'credit'
               ? <InflowArrow className="w-5 h-5" color="#03543F" />
-              : <OutflowArrow className="w-5 h-5" color="#EB4336" />
-            }
+              : <OutflowArrow className="w-5 h-5" color="#EB4336" />}
           </span>
           <h2 className="text-primary text-3xl sm:text-[40px] ff-bold mb-5">
             {formatCurrency(data?.amount, true, accounts?.defaultWallets?.[0]?.currency?.code)}

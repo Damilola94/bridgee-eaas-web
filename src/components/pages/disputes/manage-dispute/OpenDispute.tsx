@@ -47,7 +47,7 @@ function OpenDispute({ onNext = () => {} }: { onNext?: () => void }) {
     uploadField?.click();
     uploadField.onchange = async () => {
       if (!uploadField?.files?.[0]) return;
-      const { type, size } = uploadField?.files[0];
+      const { type, size } = uploadField?.files[0] || {};
 
       const supportedTypes = [
         'jpeg', 'png', 'gif', 'pdf',

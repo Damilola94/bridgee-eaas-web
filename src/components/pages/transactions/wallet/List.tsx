@@ -11,9 +11,11 @@ import NoData from '../../../common/NoData';
 import Loading from '../../../common/Loading';
 import Pagination from '../../../common/Pagination';
 import SearchInput from '../../../inputs/Search';
-import Filter from './Filter';
 
 import { PAGE_SIZE } from '../../../../data/constants';
+
+import Filter from './Filter';
+
 import ListItem from './ListItem';
 
 function TransactionList() {

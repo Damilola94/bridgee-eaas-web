@@ -1,4 +1,4 @@
-import { SelectOptionType } from "../components/inputs/Select";
+import { SelectOptionType } from '../components/inputs/Select';
 
 export type PersonalInfoProps = {
   firstName?: string;

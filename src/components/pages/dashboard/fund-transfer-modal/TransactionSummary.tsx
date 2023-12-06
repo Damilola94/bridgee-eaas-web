@@ -10,14 +10,14 @@ type Props = {
   onPrev: () => void
 };
 
-const DisplayData = ({ label = '', value = '' }) => {
+function DisplayData({ label = '', value = '' }) {
   return (
     <div className="w-full flex justify-between py-3.5 border-t">
       <span className="">{label}</span>
       <span className="font-bold text-right">{value}</span>
     </div>
   );
-};
+}
 
 function TransactionSummary({ onNext, onPrev, form }: Props) {
   return (

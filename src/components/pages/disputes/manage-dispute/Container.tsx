@@ -7,16 +7,16 @@ import { HiOutlineArrowLeft } from 'react-icons/hi';
 import TransactionStatus from '../../../common/TransactionStatus';
 import Button from '../../../inputs/Button';
 
-import FormIndicator from './FormIndicator';
-import OpenDispute from './OpenDispute';
-import DisputeGuide from './DisputeGuide';
-import DisputeActivities from './DisputeActivities';
-
 import useGetQuery from '../../../../hooks/useGetQuery';
 import Loading from '../../../common/Loading';
 import { formatDateTime } from '../../../../utilities/dateTime';
 import { formatCurrency } from '../../../../utilities/general';
 import { useDisputeContext } from '../../../../context/Dispute';
+
+import DisputeActivities from './DisputeActivities';
+import DisputeGuide from './DisputeGuide';
+import OpenDispute from './OpenDispute';
+import FormIndicator from './FormIndicator';
 
 function ManageDisputeContainer() {
   const router = useRouter();
@@ -71,7 +71,10 @@ function ManageDisputeContainer() {
                     <tbody>
                       <tr>
                         <td className="py-1 pr-5">Invoice Number</td>
-                        <td className="py-1">#{data?.data?.invoiceNumber}</td>
+                        <td className="py-1">
+                          #
+                          {data?.data?.invoiceNumber}
+                        </td>
                       </tr>
                       <tr>
                         <td className="py-1 pr-5">Invoice Title</td>
@@ -101,7 +104,11 @@ function ManageDisputeContainer() {
                       </tr>
                       <tr>
                         <td className="py-1 pr-5">Inspection Period</td>
-                        <td className="py-1">{data?.data?.inspectionDay} hour(s)</td>
+                        <td className="py-1">
+                          {data?.data?.inspectionDay}
+                          {' '}
+                          hour(s)
+                        </td>
                       </tr>
                     </tbody>
                   </table>

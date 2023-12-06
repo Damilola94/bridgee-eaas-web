@@ -9,13 +9,15 @@ import 'pure-react-carousel/dist/react-carousel.es.css';
 function IntroSlides() {
   const dotClasses = 'w-2.5 h-1.5 bg-white/20 rounded-full disabled:w-8 disabled:bg-white';
 
-  const Dots = () => (
-    <>
-      <Dot slide={0} className={dotClasses} />
-      <Dot slide={1} className={dotClasses} />
-      <Dot slide={2} className={dotClasses} />
-    </>
-  );
+  function Dots() {
+    return (
+      <>
+        <Dot slide={0} className={dotClasses} />
+        <Dot slide={1} className={dotClasses} />
+        <Dot slide={2} className={dotClasses} />
+      </>
+    );
+  }
 
   return (
     <div className="w-full">

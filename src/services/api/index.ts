@@ -1,9 +1,10 @@
-import axios from "axios";
+import axios from 'axios';
 
-import { memoizedRefreshToken } from "./refreshToken";
-import errorHandler from "../../utilities/errorHandler";
+import errorHandler from '../../utilities/errorHandler';
 
-export const axiosInstance = axios.create({
+import memoizedRefreshToken from './refreshToken';
+
+const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL
 });
 
@@ -12,7 +13,8 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const config = error?.config;
 
-    if (!!config?.headers?.authorization && (error?.response?.status === 401 || error?.response?.status === 403)) {
+    if (!!config?.headers?.authorization
+      && (error?.response?.status === 401 || error?.response?.status === 403)) {
       if (!config?.sent) {
         config.sent = true;
 
@@ -26,10 +28,11 @@ axiosInstance.interceptors.response.use(
         }
 
         return axiosInstance(config);
-      } else {
-        throw new Error(errorHandler(error, true));
       }
+      throw new Error(errorHandler(error, true));
     }
     return Promise.reject(error);
   }
 );
+
+export default axiosInstance;

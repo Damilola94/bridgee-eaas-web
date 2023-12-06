@@ -1,18 +1,20 @@
 import React from 'react';
-import Modal from './Modal';
+
 import Button from '../inputs/Button';
 
-type ConfirmPrompt = {
+import Modal from './Modal';
+
+type ConfirmPromptProps = {
   isOpen: boolean
   title: string
-  message: string
+  message?: string
   handleYes: () => void
   onClose: () => void
 };
 
 function ConfirmPrompt({
-  message, title, handleYes, isOpen, onClose
-}: ConfirmPrompt) {
+  message = '', title, handleYes, isOpen, onClose
+}: ConfirmPromptProps) {
   return (
     <Modal
       isOpen={isOpen}
@@ -39,13 +41,5 @@ function ConfirmPrompt({
     </Modal>
   );
 }
-
-ConfirmPrompt.defaultProps = {
-  isOpen: false,
-  title: 'Confirm Prompt',
-  message: '',
-  handleYes: () => { },
-  onClose: () => { }
-};
 
 export default ConfirmPrompt;

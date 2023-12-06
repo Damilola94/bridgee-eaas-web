@@ -82,7 +82,7 @@ function AddAccount({ onClose }: Props) {
   const { isLoading } = businessMutation;
 
   return (
-    <Modal isOpen onClose={onClose} isCenter maxWidth='max-w-[400px]'>
+    <Modal isOpen onClose={onClose} isCenter maxWidth="max-w-[400px]">
       {isLoading && <Loading />}
 
       <form className="w-full py-5" onSubmit={handleAddBusiness}>

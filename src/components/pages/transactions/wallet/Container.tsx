@@ -1,6 +1,7 @@
 import React from 'react';
 
 import ListStatusTabs from '../../../common/ListStatusTabs';
+
 import TransactionList from './List';
 
 const options = [

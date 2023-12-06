@@ -13,7 +13,8 @@ export default function MenuOptions({ options = [], position = 'top' }: Props) {
           <>
             <Menu.Button className="focus:outline-none">
               <HiEllipsisVertical className={`${open ? 'shadow' : ''
-              } h-auto w-8 p-1 text-black rounded hover:shadow`} />
+              } h-auto w-8 p-1 text-black rounded hover:shadow`}
+              />
             </Menu.Button>
             <Transition
               as={Fragment}
@@ -25,7 +26,8 @@ export default function MenuOptions({ options = [], position = 'top' }: Props) {
               leaveTo="opacity-0 translate-y-1"
             >
               <Menu.Items className={`absolute ${position === 'top' ? 'top-0' : 'bottom-2'
-              } right-9 z-10 bg-white border w-32 shadow-md`}>
+              } right-9 z-10 bg-white border w-32 shadow-md`}
+              >
                 {options?.map((item: OptionProps) => (
                   <Menu.Item key={item?.title}>
                     <button

@@ -15,11 +15,13 @@ import Loading from '../../../common/Loading';
 import MenuOptions from '../../../common/MenuOptions';
 import NoData from '../../../common/NoData';
 import TransactionStatus from '../../../common/TransactionStatus';
-import TransactionFilter from './Filter';
+
 import SearchInput from '../../../inputs/Search';
 import Pagination from '../../../common/Pagination';
 
 import { PAGE_SIZE } from '../../../../data/constants';
+
+import TransactionFilter from './Filter';
 
 function InvoiceList({ isDashboard = false }) {
   const [filter, setFilter] = useState<any>(null);
@@ -59,7 +61,7 @@ function InvoiceList({ isDashboard = false }) {
           {isDashboard ? (
             <Link href="/transactions">
               <span className="text-primary text-sm flex items-center hover:underline">
-              See All
+                See All
                 <RxChevronRight className="w-5 h-auto mb-1" />
               </span>
             </Link>
@@ -102,8 +104,7 @@ function InvoiceList({ isDashboard = false }) {
                             <span className={`w-8 h-8 ${item?.isIncoming ? 'bg-error/10' : 'bg-success/10'} p-2 rounded-full`}>
                               {item?.isIncoming
                                 ? <InflowArrow className="w-4 h-4" color="#EB4336" />
-                                : <OutflowArrow className="w-4 h-4" color="#03543F" />
-                              }
+                                : <OutflowArrow className="w-4 h-4" color="#03543F" />}
                             </span>
                             <span className="capitalize">{item?.title}</span>
                           </div>

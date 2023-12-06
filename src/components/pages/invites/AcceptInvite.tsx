@@ -65,7 +65,7 @@ function AcceptInvite({ onClose }: Props) {
   const { isLoading } = acceptanceMutation;
 
   return (
-    <Modal isOpen onClose={onClose} maxWidth='max-w-[400px]'>
+    <Modal isOpen onClose={onClose} maxWidth="max-w-[400px]">
       {isLoading && <Loading />}
 
       {formIndex === 0 && (

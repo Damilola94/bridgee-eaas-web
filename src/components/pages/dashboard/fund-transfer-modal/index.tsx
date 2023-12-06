@@ -12,6 +12,7 @@ import Loading from '../../../common/Loading';
 
 import Modal from '../../../common/Modal';
 import Button from '../../../inputs/Button';
+
 import AccountEnquiryForm from './AccountEnquiryForm';
 import AmountDetails from './AmountDetails';
 import PINValidation from './PINValidation';
@@ -105,7 +106,7 @@ function Index({ onClose }: Props) {
   };
 
   const processAccountEnquiry = () => {
-    let error = undefined;
+    let error;
     if (!form?.bankCode?.value) error = 'Please, select a bank';
     if (!form?.accountNumber) error = 'Please, enter a valid account number';
     if (!form?.accountName) error = 'Please, enter a valid account number';
@@ -118,7 +119,7 @@ function Index({ onClose }: Props) {
   };
 
   const processAmountDetails = () => {
-    let error = undefined;
+    let error;
     if (!form?.amount) error = 'Please, enter the amount you want to transfer';
     if ((Number(form?.amount) + (form?.processFee || 0)) > defaultWallets?.[0]?.balance) {
       error = 'The sum of the amount and process fee must not be greater than your wallet balance';
@@ -166,7 +167,7 @@ function Index({ onClose }: Props) {
       {enquiryStatus === 'loading' && <Loading message="Verifying account..." />}
       {isLoading && <Loading message="Processing transfer..." />}
 
-      <Modal isOpen onClose={onClose} maxWidth='max-w-[400px]'>
+      <Modal isOpen onClose={onClose} maxWidth="max-w-[400px]">
         {formIndex === 0 && (
           <AccountEnquiryForm
             form={form}

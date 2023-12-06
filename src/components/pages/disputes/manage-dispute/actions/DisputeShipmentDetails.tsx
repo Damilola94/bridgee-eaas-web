@@ -84,7 +84,11 @@ function DisputeShipmentDetails({
                         colSpan={2}
                         className="py-1 pr-5"
                       >
-                        <b>Inspection Period:</b> {data?.data?.inspectionDuration} hour(s)
+                        <b>Inspection Period:</b>
+                        {' '}
+                        {data?.data?.inspectionDuration}
+                        {' '}
+                        hour(s)
                       </td>
                     </tr>
                   </tbody>

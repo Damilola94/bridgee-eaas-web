@@ -7,6 +7,7 @@ import EditIcon from '../../../assets/svgs/edit.svg';
 import TrashIcon from '../../../assets/svgs/trash.svg';
 
 import Button from '../../inputs/Button';
+
 import AddAccount from './AddAccount';
 
 function BankAccounts() {

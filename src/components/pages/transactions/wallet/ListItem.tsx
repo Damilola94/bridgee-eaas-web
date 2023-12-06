@@ -8,8 +8,10 @@ import { useAccountsContext } from '../../../../context/Accounts';
 import TransactionStatus from '../../../common/TransactionStatus';
 import { formatChannel, formatCurrency } from '../../../../utilities/general';
 import { formatDateTime } from '../../../../utilities/dateTime';
-import TransactionDetails from './TransactionDetails';
+
 import { TransactionProps } from '../../../../types/transaction';
+
+import TransactionDetails from './TransactionDetails';
 
 function ListItem({ data, index }: { data: TransactionProps, index: number }) {
   const { accounts } = useAccountsContext();
@@ -23,8 +25,7 @@ function ListItem({ data, index }: { data: TransactionProps, index: number }) {
           <span className={`w-8 h-8 ${data?.type === 'credit' ? 'bg-success/10' : 'bg-error/10'} p-2 rounded-full`}>
             {data?.type === 'credit'
               ? <InflowArrow className="w-4 h-4" color="#03543F" />
-              : <OutflowArrow className="w-4 h-4" color="#EB4336" />
-            }
+              : <OutflowArrow className="w-4 h-4" color="#EB4336" />}
           </span>
           <span className="capitalize">{data?.type}</span>
         </div>

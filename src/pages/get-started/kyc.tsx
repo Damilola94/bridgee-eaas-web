@@ -39,7 +39,6 @@ const KYC: NextPageWithLayout = () => {
           <KycContainer />
         </KycContextProvider>
       </div>
-
     </>
   );
 };

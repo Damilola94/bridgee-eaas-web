@@ -12,7 +12,7 @@ type ButtonProps = {
   paddingY: string,
   paddingX: string,
   border: boolean,
-  type: "button" | "submit" | "reset" | undefined
+  type: 'button' | 'submit' | 'reset' | undefined
 };
 
 function Button({

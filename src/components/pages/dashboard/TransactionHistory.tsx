@@ -48,8 +48,7 @@ function TransactionHistory() {
                   <span className={`w-8 h-8 ${item?.type === 'credit' ? 'bg-success/10' : 'bg-error/10'} p-2 rounded-full`}>
                     {item?.type === 'credit'
                       ? <InflowArrow className="w-4 h-4" color="#03543F" />
-                      : <OutflowArrow className="w-4 h-4" color="#EB4336" />
-                    }
+                      : <OutflowArrow className="w-4 h-4" color="#EB4336" />}
                   </span>
                   <div>
                     <p className="text-base font-bold">{formatChannel(item?.channel)}</p>

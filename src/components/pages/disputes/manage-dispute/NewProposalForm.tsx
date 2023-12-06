@@ -52,7 +52,7 @@ function NewProposalForm({ onClose }: { onClose: () => void }) {
     uploadField?.click();
     uploadField.onchange = async () => {
       if (!uploadField?.files?.[0]) return;
-      const { type, size } = uploadField?.files[0];
+      const { type, size } = uploadField?.files[0] || {};
 
       const supportedTypes = [
         'jpeg', 'png', 'gif', 'pdf',
@@ -159,7 +159,7 @@ function NewProposalForm({ onClose }: { onClose: () => void }) {
       />
 
       <SelectInput
-        label='New Proposal'
+        label="New Proposal"
         className="mb-7"
         value={proposal}
         onChange={(val: any) => setProposal(val)}
@@ -197,7 +197,12 @@ function NewProposalForm({ onClose }: { onClose: () => void }) {
         <Button paddingY="py-2" className="" onClick={handleSubmit}>Send Proposal</Button>
         <Button
           onClick={onClose}
-          paddingY="py-2" className="" border borderColor="border-error" textColor="text-error" bgColor="bg-white"
+          paddingY="py-2"
+          className=""
+          border
+          borderColor="border-error"
+          textColor="text-error"
+          bgColor="bg-white"
         >
           Cancel
         </Button>

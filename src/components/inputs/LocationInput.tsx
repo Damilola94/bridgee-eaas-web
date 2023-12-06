@@ -26,7 +26,7 @@ function LocationInput({
           onChange,
           placeholder,
           isClearable: true,
-          classNamePrefix: "react-select",
+          classNamePrefix: 'react-select',
           components: { DropdownIndicator: null },
           noOptionsMessage: () => 'Enter a valid address',
           classNames: {

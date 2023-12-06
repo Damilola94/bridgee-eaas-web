@@ -141,7 +141,7 @@ function PersonalInfoForm() {
             />
             <TextInput
               type="date"
-              name='dateOfBirth'
+              name="dateOfBirth"
               disabled={isCompleted}
               onChange={handleChange}
               value={form?.dateOfBirth || ''}

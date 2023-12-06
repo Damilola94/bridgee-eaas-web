@@ -5,25 +5,25 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMutation, useQueryClient } from 'react-query';
-
 import { Menu, Transition, Popover } from '@headlessui/react';
 import {
   BsPerson, BsChevronRight, BsPlus, BsPersonAdd
 } from 'react-icons/bs';
 import { FiSettings, FiRefreshCcw } from 'react-icons/fi';
 import { HiOutlineLogout } from 'react-icons/hi';
-import { MdOutlineSecurity } from 'react-icons/md';
 import { IoIosArrowDown } from 'react-icons/io';
+import { MdOutlineSecurity } from 'react-icons/md';
 
-import ProfilePix from '../../assets/svgs/personal-avatar.svg';
 import BusinessPix from '../../assets/svgs/business-avatar.svg';
+import ProfilePix from '../../assets/svgs/personal-avatar.svg';
 
 import { logout } from '../../services/auth';
 import { formatFileUrl } from '../../utilities/general';
-import AddBusiness from './AddBusiness';
 import { useAccountsContext } from '../../context/Accounts';
 import handleFetch from '../../services/api/handleFetch';
 import notification from '../../utilities/notification';
+
+import AddBusiness from './AddBusiness';
 import Loading from './Loading';
 import SendInvite from './SendInvite';
 
@@ -143,7 +143,7 @@ export default function ProfileDropdown({ className }: { className: string }) {
             leaveTo="transform opacity-0 scale-95"
           >
             <Menu.Items className="flex flex-col absolute right-0 -mt-1.5 w-[170px] origin-top-right rounded-b-lg overflow-visible bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-              <div className='border-b'>
+              <div className="border-b">
                 {options(accounts?.defaultMerchant?.id ? 'Business' : 'Personal')?.map((item) => (
                   <Menu.Item key={item.title}>
                     {({ active, close }) => (
@@ -204,16 +204,18 @@ export default function ProfileDropdown({ className }: { className: string }) {
                             </button>
                           ) : null}
                           {accounts?.merchants?.map((item: any) => (
-                            item?.id !== accounts?.defaultMerchant?.id ?
-                              <button
-                                key={item?.id}
-                                type="button"
-                                onClick={() => handleSwitch('merchant', item?.id)}
-                                disabled={item?.id === accounts?.defaultMerchant?.id}
-                                className="w-full flex px-4 py-3 hover:bg-gray-50 disabled:bg-gray-50"
-                              >
-                                {item?.name}
-                              </button>
+                            item?.id !== accounts?.defaultMerchant?.id
+                              ? (
+                                <button
+                                  key={item?.id}
+                                  type="button"
+                                  onClick={() => handleSwitch('merchant', item?.id)}
+                                  disabled={item?.id === accounts?.defaultMerchant?.id}
+                                  className="w-full flex px-4 py-3 hover:bg-gray-50 disabled:bg-gray-50"
+                                >
+                                  {item?.name}
+                                </button>
+                              )
                               : null
                           ))}
                         </div>

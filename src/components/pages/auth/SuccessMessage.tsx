@@ -5,18 +5,17 @@ import { useRouter } from 'next/router';
 
 import Kite from '../../../assets/images/success-kite.gif';
 
-import ClickableLogo from './ClickableLogo';
 import Button from '../../inputs/Button';
 
 import { ResetPasswordProps } from '../../../types/auth';
+
+import ClickableLogo from './ClickableLogo';
 
 function SuccessMessage({ message = '' }: ResetPasswordProps) {
   const router = useRouter();
   const [,, removeCookie] = useCookies(['form']);
 
-  useEffect(() => {
-    return () => removeCookie('form');
-  }, [removeCookie]);
+  useEffect(() => () => removeCookie('form'), [removeCookie]);
 
   return (
     <div className="flex w-full h-full items-center">

@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
 import ListStatusTabs from '../../common/ListStatusTabs';
+
 import InviteList from './List';
 
 const options = [

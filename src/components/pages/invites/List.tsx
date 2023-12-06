@@ -87,8 +87,7 @@ function InviteList() {
                             <span className={`w-8 h-8 ${item?.invitationDirection === 'incoming' ? 'bg-error/10' : 'bg-success/10'} p-2 rounded-full`}>
                               {item?.invitationDirection === 'incoming'
                                 ? <InflowArrow className="w-4 h-4" color="#EB4336" />
-                                : <OutflowArrow className="w-4 h-4" color="#03543F" />
-                              }
+                                : <OutflowArrow className="w-4 h-4" color="#03543F" />}
                             </span>
                             <span className="capitalize">{item?.title}</span>
                           </div>

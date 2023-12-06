@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useState
 } from 'react';
+
 import Loading from '../components/common/Loading';
 import useGetQuery from '../hooks/useGetQuery';
 
@@ -34,7 +35,7 @@ function AccountsContextProvider({ children }: Props) {
   }, [status, data]);
 
   if (status === 'loading' || isFetching) {
-    return <Loading message='Setting up account...' />;
+    return <Loading message="Setting up account..." />;
   }
 
   return (

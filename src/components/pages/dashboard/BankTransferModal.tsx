@@ -17,7 +17,7 @@ function BankTransferModal({ onClose }: Props) {
   const [copiedAccountNo, setCopiedAccountNo] = useState(false);
 
   return (
-    <Modal isOpen onClose={onClose} maxWidth='max-w-[400px]'>
+    <Modal isOpen onClose={onClose} maxWidth="max-w-[400px]">
       <div className="w-full py-5">
         <div className="mb-7">
           <h1 className="w-full text-textColor ff-bold text-xl mb-2">Make Transfer</h1>
