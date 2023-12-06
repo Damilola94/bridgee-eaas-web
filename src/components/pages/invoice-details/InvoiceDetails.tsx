@@ -7,14 +7,12 @@ import DefaultLogo from '../../../assets/images/business-logo.png';
 
 import Button from '../../inputs/Button';
 import { formatCurrency, formatDisbursementType } from '../../../utilities/general';
-
 import { formatDate } from '../../../utilities/dateTime';
 import handleFetch from '../../../services/api/handleFetch';
 import notification from '../../../utilities/notification';
 import Loading from '../../common/Loading';
 import TransactionStatus from '../../common/TransactionStatus';
 import AcceptInvite from '../invites/AcceptInvite';
-
 import ConfirmPrompt from '../../common/ConfirmPrompt';
 
 import PaymentModal from './PaymentModal';
