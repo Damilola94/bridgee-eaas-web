@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { RiFileCopyLine } from 'react-icons/ri';
-import { BiDownload } from 'react-icons/bi';
+import { GiProcessor } from "react-icons/gi";
 
 import InflowArrow from '../../../../assets/svg-tsx/InflowArrow';
 import OutflowArrow from '../../../../assets/svg-tsx/OutflowArrow';
@@ -16,9 +16,12 @@ import Modal from '../../../common/Modal';
 import TransactionStatus from '../../../common/TransactionStatus';
 import Button from '../../../inputs/Button';
 
+import GenerateReceipt from './GenerateReceipt';
+
 function TransactionDetails({ data, onClose }: { data: TransactionProps, onClose: () => void }) {
   const { accounts } = useAccountsContext();
   const [copiedAccountNo, setCopiedAccountNo] = useState(false);
+  const [showReceipt, setShowReceipt] = useState(false);
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -97,15 +100,18 @@ function TransactionDetails({ data, onClose }: { data: TransactionProps, onClose
         <div className="w-full mt-5 flex justify-center">
           <Button
             border
+            onClick={() => setShowReceipt(true)}
             borderColor="border-success"
             bgColor="bg-white"
             textColor="text-success"
           >
-            <BiDownload className="mr-2" />
-            Download Receipt
+            <GiProcessor className="mr-2 w-6 h-6" />
+            Generate Receipt
           </Button>
         </div>
       </div>
+
+      {showReceipt && <GenerateReceipt data={data} onClose={() => setShowReceipt(false)} />}
     </Modal>
   );
 }
