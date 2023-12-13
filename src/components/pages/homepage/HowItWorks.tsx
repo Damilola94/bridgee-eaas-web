@@ -48,7 +48,7 @@ function HowItWorks() {
                   key={item?.text}
                   src={item?.image}
                   alt={item?.text}
-                  className={`w-full transition-all ${index === i ? 'h-auto' : 'h-0'}`}
+                  className={`transition-all ${index === i ? 'w-full h-auto' : 'w-0 h-0'}`}
                 />
               ))}
             </div>
