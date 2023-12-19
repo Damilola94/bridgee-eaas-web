@@ -6,6 +6,7 @@ import ValidateOTP from '../components/pages/auth/ValidateOTP';
 import ValidateEmail from '../components/pages/auth/ValidateEmail';
 import SetNewPassword from '../components/pages/auth/SetNewPassword';
 import SuccessMessage from '../components/pages/auth/SuccessMessage';
+import ValidatePIN from '../components/pages/auth/ValidatePIN';
 
 const ResetPassword: NextPage = () => {
   const [formIndex, setFormIndex] = useState(0);
@@ -21,12 +22,22 @@ const ResetPassword: NextPage = () => {
         />
       )}
       {formIndex === 2 && (
-        <SetNewPassword
+        <ValidatePIN
           gotoPrevForm={() => setFormIndex(1)}
           gotoNextForm={() => setFormIndex(3)}
         />
       )}
-      {formIndex === 3 && <SuccessMessage gotoNextForm={() => {}} message="Password reset successful" />}
+      {formIndex === 3 && (
+        <SetNewPassword
+          gotoPrevForm={() => setFormIndex(2)}
+          gotoNextForm={() => setFormIndex(4)}
+        />
+      )}
+      {formIndex === 4 && (
+        <SuccessMessage
+          message="Password reset successful"
+        />
+      )}
     </AuthWrapper>
   );
 };

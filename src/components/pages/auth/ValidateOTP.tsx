@@ -19,7 +19,7 @@ type Props = {
 };
 
 function ValidateOTP({ endpointExtra = '', gotoPrevForm = () => {}, gotoNextForm = () => {} }: Props) {
-  const [cookie, setcookie] = useCookies(['form', 'data']);
+  const [cookie, setCookie] = useCookies(['form', 'data']);
   const [otp, setOtp] = useState('');
 
   const activationMutation = useMutation(handleFetch, {
@@ -29,7 +29,7 @@ function ValidateOTP({ endpointExtra = '', gotoPrevForm = () => {}, gotoNextForm
         type: 'success'
       });
       if (endpointExtra === 'validate-reset-password-otp') {
-        setcookie('form', res?.data);
+        setCookie('form', res?.data);
       }
       gotoNextForm();
     },

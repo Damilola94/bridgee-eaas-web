@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import { useCookies } from 'react-cookie';
+import { HiArrowLeft } from 'react-icons/hi';
 
 import TextInput from '../../inputs/Text';
 import Button from '../../inputs/Button';
@@ -12,7 +13,7 @@ import { ResetPasswordProps } from '../../../types/auth';
 
 import ClickableLogo from './ClickableLogo';
 
-function SetNewPassword({ gotoNextForm = () => {} }: ResetPasswordProps) {
+function SetNewPassword({ gotoPrevForm = () => {}, gotoNextForm = () => {} }: ResetPasswordProps) {
   const [cookie] = useCookies(['form']);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -20,7 +21,7 @@ function SetNewPassword({ gotoNextForm = () => {} }: ResetPasswordProps) {
   const loginMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
       notification({
-        message: res?.data?.message || 'New password set successfully.',
+        message: res?.message || 'New password set successfully.',
         type: 'success'
       });
       gotoNextForm();
@@ -60,6 +61,7 @@ function SetNewPassword({ gotoNextForm = () => {} }: ResetPasswordProps) {
     const body = {
       email: cookie?.form?.user,
       otp: cookie?.form?.token,
+      pin: cookie?.form?.pin,
       password,
       confirmPassword
     };
@@ -79,6 +81,14 @@ function SetNewPassword({ gotoNextForm = () => {} }: ResetPasswordProps) {
         <ClickableLogo className="mb-10" />
 
         <div className="mb-7">
+          <button
+            type="button"
+            onClick={gotoPrevForm}
+            className="text-primary text-sm border border-primary flex items-center mb-3 rounded pt-2 pb-1 px-3"
+          >
+            <HiArrowLeft className="mr-2 mb-1" />
+            <span>Back</span>
+          </button>
           <h1 className="w-full text-textColor ff-bold text-xl mb-2">Set new Password</h1>
           <p className="text-sm text-lightText">Enter your new password</p>
         </div>

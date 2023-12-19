@@ -16,12 +16,16 @@ import ClickableLogo from './ClickableLogo';
 
 function ValidateEmail({ gotoNextForm = () => {} }: ResetPasswordProps) {
   const router = useRouter();
-  const [cookie, setCookie] = useCookies(['form']);
+  const [cookie, setCookie, removeCookie] = useCookies(['form']);
   const [email, setEmail] = useState('');
 
   useEffect(() => {
-    setEmail(cookie?.form?.email);
-  }, [cookie]);
+    if (cookie?.form?.email) {
+      setEmail(cookie?.form?.email);
+    } else {
+      removeCookie('form');
+    }
+  }, [cookie, removeCookie]);
 
   const resetMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
