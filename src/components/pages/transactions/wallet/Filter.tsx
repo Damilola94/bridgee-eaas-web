@@ -26,6 +26,7 @@ const transactionChannels = [
   { label: 'All', value: '' },
   { label: 'Escrow', value: 'escrow' },
   { label: 'Transfer', value: 'transfer' },
+  { label: 'Interbank', value: 'interbank' },
   { label: 'Virtual Account', value: 'virtualAccount' }
 ];
 

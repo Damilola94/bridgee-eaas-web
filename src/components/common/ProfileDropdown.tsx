@@ -231,18 +231,20 @@ export default function ProfileDropdown({ className }: { className: string }) {
                     </Popover>
                   )}
                 </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      type="button"
-                      onClick={() => setShowInviteModal(true)}
-                      className={`${active ? 'bg-primary bg-opacity-5' : 'bg-white'} w-full flex items-center px-4 py-2`}
-                    >
-                      <BsPersonAdd className="w-5 h-auto mr-2" />
-                      <span className="mt-1.5 font-bold">Send Invite</span>
-                    </button>
-                  )}
-                </Menu.Item>
+                {process.env.NEXT_PUBLIC_SEND_INVITE === 'true' && (
+                  <Menu.Item>
+                    {({ active }) => (
+                      <button
+                        type="button"
+                        onClick={() => setShowInviteModal(true)}
+                        className={`${active ? 'bg-primary bg-opacity-5' : 'bg-white'} w-full flex items-center px-4 py-2`}
+                      >
+                        <BsPersonAdd className="w-5 h-auto mr-2" />
+                        <span className="mt-1.5 font-bold">Send Invite</span>
+                      </button>
+                    )}
+                  </Menu.Item>
+                )}
                 <Menu.Item>
                   {({ active }) => (
                     <button

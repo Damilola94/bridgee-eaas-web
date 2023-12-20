@@ -81,6 +81,7 @@ export const formatChannel = (channel: string) => {
   case 'transfer': return 'Transfer';
   case 'virtualaccount': return 'Virtual Account';
   case 'escrow': return 'Escrow';
+  case 'interbank': return 'Interbank';
   default: return channel;
   }
 };
