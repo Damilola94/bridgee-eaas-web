@@ -14,10 +14,11 @@ import Loading from '../../common/Loading';
 
 type Props = {
   onClose: () => void;
-  escrowId?: string
+  escrowId?: string;
+  rateId?: string
 };
 
-function PaymentModal({ onClose, escrowId }: Props) {
+function PaymentModal({ onClose, escrowId, rateId }: Props) {
   const [formIndex, setFormIndex] = useState(0);
   const [otp, setOtp] = useState('');
 
@@ -28,12 +29,12 @@ function PaymentModal({ onClose, escrowId }: Props) {
       setFormIndex(1);
     },
     onError: (err) => {
-      if (String(err) === 'Error: Insuficient fund') {
+      if (String(err) === 'Error: Insufficient fund') {
         setFormIndex(2);
       } else {
         notification({
           title: 'Error',
-          message: String(err) || 'An error occured while requesting for payment OTP',
+          message: String(err) || 'An error occurred while requesting for payment OTP',
           type: 'danger'
         });
       }
@@ -50,7 +51,7 @@ function PaymentModal({ onClose, escrowId }: Props) {
       return;
     }
 
-    const body = { escrowId, otp };
+    const body = { escrowId, rateId, otp };
 
     paymentMutation.mutate({
       endpoint: 'escrow', extra: 'complete-escrow-funding', method: 'POST', body, auth: true
@@ -135,7 +136,7 @@ function PaymentModal({ onClose, escrowId }: Props) {
         {formIndex === 2 && (
           <div className="w-full py-5">
             <div className="mb-7">
-              <h1 className="w-full pr-10 text-textColor ff-bold text-xl">Insuficient Fund</h1>
+              <h1 className="w-full pr-10 text-textColor ff-bold text-xl">Insufficient Fund</h1>
               <p className="text-sm text-lightText">The fund in your wallet is not sufficient for this transaction.</p>
               <p className="text-sm text-lightText">Kindly fund your wallet and try again.</p>
             </div>

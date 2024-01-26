@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useMutation, useQueryClient } from 'react-query';
@@ -14,23 +14,33 @@ import Loading from '../../common/Loading';
 import TransactionStatus from '../../common/TransactionStatus';
 import AcceptInvite from '../invites/AcceptInvite';
 import ConfirmPrompt from '../../common/ConfirmPrompt';
+import ToggleInput from '../../inputs/Toggle';
 
 import PaymentModal from './PaymentModal';
 import ConfirmDelivery from './ConfirmDelivery';
 import ViewAgreement from './ViewAgreement';
+import GetDeliveryRates from './GetDeliveryRates';
 
 function InvoiceDetails({ data = {} }: { data: any }) {
   const router = useRouter();
-  const [showAgreementModal, setShowAgreementModal] = useState(false);
   const [showAcceptModal, setShowAcceptModal] = useState(false);
   const [showDeclineModal, setShowDeclineModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [showDeliveryConfirmationModal, setShowDeliveryConfirmationModal] = useState(false);
+  const [showAgreementModal, setShowAgreementModal] = useState(false);
   const [confirmStatusUpdate, setConfirmStatusUpdate] = useState(false);
+  const [showDeliveryConfirmationModal, setShowDeliveryConfirmationModal] = useState(false);
+
+  const [useDeliveryToggle, setDeliveryToggle] = useState(false);
+  const [showGetDeliveryRateModal, setShowGetDeliveryRateModal] = useState(false);
+  const [deliveryRate, setDeliveryRate] = useState<{ rateId?: string, amount?: number}>({});
 
   const deliveryPrompt = useRef<{ status?: string, message?: string }>({});
 
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    setDeliveryRate({});
+  }, [useDeliveryToggle]);
 
   const acceptanceMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
@@ -50,20 +60,28 @@ function InvoiceDetails({ data = {} }: { data: any }) {
     }
   });
 
+  const handleActionAfterOTPRequest = () => {
+    if (data?.deliveryStatus === 'Delivered') {
+      setShowDeliveryConfirmationModal(true);
+    } else {
+      setShowPaymentModal(true);
+    }
+  };
+
   const requestOtpMutation = useMutation(handleFetch, {
     onSuccess: () => {
-      if (data?.deliveryStatus === 'Delivered') {
-        setShowDeliveryConfirmationModal(true);
-      } else {
-        setShowPaymentModal(true);
-      }
+      handleActionAfterOTPRequest();
     },
     onError: (err) => {
-      notification({
-        title: 'Error',
-        message: String(err) || 'An error occurred while requesting for payment OTP',
-        type: 'danger'
-      });
+      if (String(err).includes('Error: OTP already sent')) {
+        handleActionAfterOTPRequest();
+      } else {
+        notification({
+          title: 'Error',
+          message: String(err) || 'An error occurred while requesting for payment OTP',
+          type: 'danger'
+        });
+      }
     }
   });
 
@@ -98,6 +116,11 @@ function InvoiceDetails({ data = {} }: { data: any }) {
       method: 'PUT',
       auth: true
     });
+  };
+
+  const handleRateSelection = (rateId?: string, amount?: number) => {
+    setDeliveryRate({ rateId, amount });
+    setShowGetDeliveryRateModal(false);
   };
 
   const handleDeliveryPrompt = (escrowDeliveryStatus: string) => {
@@ -251,11 +274,11 @@ function InvoiceDetails({ data = {} }: { data: any }) {
               </div>
               <div className="w-full flex justify-between mb-3">
                 <p className="">Delivery Fee</p>
-                <p className="font-bold ff-bold">{formatCurrency(data?.deliveryFee)}</p>
+                <p className="font-bold ff-bold">{formatCurrency(deliveryRate?.amount || data?.deliveryFee)}</p>
               </div>
               <div className="w-full flex justify-between mb-3 text-lg">
                 <p className="">TOTAL</p>
-                <p className="font-bold ff-bold">{formatCurrency(data?.totalAmount + data?.fee)}</p>
+                <p className="font-bold ff-bold">{formatCurrency(data?.totalAmount + data?.fee + (deliveryRate?.amount || data?.deliveryFee))}</p>
               </div>
             </div>
           </div>
@@ -302,9 +325,31 @@ function InvoiceDetails({ data = {} }: { data: any }) {
                   <Button onClick={() => setShowAcceptModal(true)}>Accept</Button>
                 </div>
               )}
+
               {data?.status === 'awaitingpayment' && (
-                <div className="w-full flex justify-end">
-                  <Button onClick={() => handleOtpGeneration('EscrowDeposit')}>Make Payment</Button>
+                <div className="w-full flex flex-wrap justify-between">
+                  <div className="flex items-center space-x-2 pb-5">
+                    <ToggleInput
+                      label="Delivery"
+                      value={useDeliveryToggle}
+                      onChange={(val) => setDeliveryToggle(val)}
+                    />
+                    <span className="text-[#E08700] font-bold">Powered by SHIIP</span>
+                  </div>
+                  <div>
+                    <div className="flex flex-wrap -ml-2">
+                      {useDeliveryToggle && (
+                        <Button className="ml-2 mb-2" onClick={() => setShowGetDeliveryRateModal(true)}>
+                          {deliveryRate.amount ? 'Change Delivery Rates' : 'Get Delivery Rates'}
+                        </Button>
+                      )}
+                      {(!useDeliveryToggle || (useDeliveryToggle && deliveryRate.amount)) && (
+                        <Button className="ml-2 mb-2" onClick={() => handleOtpGeneration('EscrowDeposit')}>
+                          Make Payment
+                        </Button>
+                      )}
+                    </div>
+                  </div>
                 </div>
               )}
               {data?.status === 'paymentcompleted' && data?.deliveryStatus === 'Delivered' && (
@@ -342,10 +387,18 @@ function InvoiceDetails({ data = {} }: { data: any }) {
           onClose={() => setShowDeclineModal(false)}
         />
 
+        {showGetDeliveryRateModal && (
+          <GetDeliveryRates
+            onClose={() => setShowGetDeliveryRateModal(false)}
+            onSelection={handleRateSelection}
+          />
+        )}
+
         {showPaymentModal && (
           <PaymentModal
             onClose={() => setShowPaymentModal(false)}
             escrowId={data?.escrowId}
+            rateId={useDeliveryToggle ? deliveryRate?.rateId : undefined}
           />
         )}
 
