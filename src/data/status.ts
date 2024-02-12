@@ -4,6 +4,7 @@ export const statusColors = {
   'in-progress': '#42389D',
   'awaiting-confirmation': '#111928', // to be changed
   awaitingpayment: '#5521B5',
+  bookedshipmentcompleted: '#03543F',
   declined: '#9B1C1C',
   dispute: '#99154B',
   draft: '#111928',
@@ -43,6 +44,7 @@ export const statusTitle = {
   'in-progress': 'In Progress',
   'awaiting-confirmation': 'Awaiting Confirmation',
   awaitingpayment: 'Awaiting Payment',
+  bookedshipmentcompleted: 'Shipment Completed',
   declined: 'Declined',
   dispute: 'Dispute',
   draft: 'Draft',

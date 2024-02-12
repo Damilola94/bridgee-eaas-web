@@ -1,14 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import TextInput from '../../inputs/Text';
-import ToggleInput from '../../inputs/Toggle';
+// import ToggleInput from '../../inputs/Toggle';
 // import LocationInput from '../../inputs/LocationInput';
 import Button from '../../inputs/Button';
 import { useCreateInvoiceContext } from '../../../context/CreateInvoice';
 import notification from '../../../utilities/notification';
+import useGetQuery from '../../../hooks/useGetQuery';
+import Loading from '../../common/Loading';
 
 function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const { form, setForm } = useCreateInvoiceContext();
+  const [debouncedAddress, setDebouncedAddress] = useState('');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -61,96 +64,118 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
     onNext();
   };
 
-  return (
-    <div className="w-full bg-white px-10 py-8 rounded-lg shadow-md">
-      <div className="w-full mb-10">
-        <h3 className="font-bold text-xl ff-bold mb-2">Recipient&apos;s Details</h3>
-        <p className="text-lightText">
-          Fill the form below to create an invoice for the product/service you are willing to sell
-        </p>
-      </div>
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setDebouncedAddress(form?.recipientDetails?.address);
+    }, 1000);
 
-      <div className="w-full mb-5">
-        <div className="w-full">
-          <div className="flex flex-wrap -mx-2">
-            <div className="w-full sm:w-1/2 px-2">
-              <TextInput
-                name="recipientName"
-                value={form?.recipientDetails?.recipientName || ''}
-                onChange={(e) => handleChange(e, 'recipient')}
-                label="Full Name"
-                className="w-full mb-4"
-                placeholder="Recipient’s Name"
-              />
-            </div>
-            <div className="w-full sm:w-1/2 px-2">
-              <TextInput
-                name="email"
-                value={form?.recipientDetails?.email || ''}
-                onChange={(e) => handleChange(e, 'recipient')}
-                className="w-full mb-4"
-                label="Email"
-                type="email"
-                placeholder="Recipient’s Email"
-              />
+    return () => clearTimeout(timeoutId);
+  }, [form?.recipientDetails?.address]);
+
+  const { status, isLoading } = useGetQuery({
+    endpoint: 'logistic',
+    extra: `address/validation`,
+    param: debouncedAddress,
+    queryKey: ['validate-address'],
+    enabled: !!debouncedAddress
+  });
+
+  const disabledBtn = status === "success" ? false : true;
+  const errorMsg = status == "success" ? "" : "Address is Invalid";
+
+  return (
+    <>
+      {isLoading && <Loading message="Validating Address"/>}
+      <div className="w-full bg-white px-10 py-8 rounded-lg shadow-md">
+        <div className="w-full mb-10">
+          <h3 className="font-bold text-xl ff-bold mb-2">Recipient&apos;s Details</h3>
+          <p className="text-lightText">
+          Fill the form below to create an invoice for the product/service you are willing to sell
+          </p>
+        </div>
+
+        <div className="w-full mb-5">
+          <div className="w-full">
+            <div className="flex flex-wrap -mx-2">
+              <div className="w-full sm:w-1/2 px-2">
+                <TextInput
+                  name="recipientName"
+                  value={form?.recipientDetails?.recipientName || ''}
+                  onChange={(e) => handleChange(e, 'recipient')}
+                  label="Full Name"
+                  className="w-full mb-4"
+                  placeholder="Recipient’s Name"
+                />
+              </div>
+              <div className="w-full sm:w-1/2 px-2">
+                <TextInput
+                  name="email"
+                  value={form?.recipientDetails?.email || ''}
+                  onChange={(e) => handleChange(e, 'recipient')}
+                  className="w-full mb-4"
+                  label="Email"
+                  type="email"
+                  placeholder="Recipient’s Email"
+                />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="w-full">
-          <div className="flex flex-wrap -mx-2">
-            <div className="w-full sm:w-1/2 px-2">
-              <TextInput
-                name="phoneNumber"
-                value={form?.recipientDetails?.phoneNumber || ''}
-                onChange={(e) => /^\d{0,12}$/g.test(e.target.value) && handleChange(e, 'recipient')}
-                type="tel"
-                label="Phone Number"
-                className="w-full mb-4"
-                placeholder="Recipient's Phone Number"
-              />
-            </div>
-            <div className="w-full sm:w-1/2 px-2">
-              <TextInput
-                name="inspectionDuration"
-                value={form?.inspectionDuration || ''}
-                onChange={handleChange}
-                className="w-full mb-4"
-                label="Inspection Duration (Hours)"
-                type="number"
-                placeholder="Inspection Duration"
-              />
+          <div className="w-full">
+            <div className="flex flex-wrap -mx-2">
+              <div className="w-full sm:w-1/2 px-2">
+                <TextInput
+                  name="phoneNumber"
+                  value={form?.recipientDetails?.phoneNumber || ''}
+                  onChange={(e) => /^\d{0,12}$/g.test(e.target.value) && handleChange(e, 'recipient')}
+                  type="tel"
+                  label="Phone Number"
+                  className="w-full mb-4"
+                  placeholder="Recipient's Phone Number"
+                />
+              </div>
+              <div className="w-full sm:w-1/2 px-2">
+                <TextInput
+                  name="inspectionDuration"
+                  value={form?.inspectionDuration || ''}
+                  onChange={handleChange}
+                  className="w-full mb-4"
+                  label="Inspection Duration (Hours)"
+                  type="number"
+                  placeholder="Inspection Duration"
+                />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="w-full">
-          <TextInput
-            name="address"
-            value={form?.recipientDetails?.address || ''}
-            onChange={(e) => handleChange(e, 'recipient')}
-            label="Address"
-            className="w-full mb-4"
-            placeholder="Recipient's Address"
-          />
-          {/* <LocationInput
+          <div className="w-full">
+            <TextInput
+              name="address"
+              value={form?.recipientDetails?.address || ''}
+              onChange={(e) => handleChange(e, 'recipient')}
+              label="Address"
+              className="w-full mb-4"
+              placeholder="Recipient's Address"
+            />
+            <p className="text-red-600 ml-1 text-xs">{errorMsg}</p>
+            {/* <LocationInput
             value={form?.recipientDetails?.address || ''}
             onChange={(val) => handleChange(val, 'recipient', 'address')}
             label="Recipient Address"
           /> */}
+          </div>
         </div>
-      </div>
 
-      <div className="w-full mb-5">
-        <div className="flex items-center space-x-2 pb-5">
+        <div className="w-full mb-5">
+          {/* <div className="flex items-center space-x-2 pb-5">
           <ToggleInput
             label="Delivery"
             value={form?.isDeliveryOnUs}
             onChange={(val) => handleChange(val, 'toggle', 'isDeliveryOnUs')}
           />
           <span className="text-[#E08700] font-bold">Powered by Terminal</span>
-        </div>
+        </div> */}
 
-        {form?.isDeliveryOnUs && (
-          <div className="w-full">
+          {/* {form?.isDeliveryOnUs && ( */}
+          <div className="w-full, mt-3">
             <div className="w-full">
               <div className="mb-5">
                 {/* <LocationInput
@@ -169,13 +194,14 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
               </div>
             </div>
           </div>
-        )}
-      </div>
+          {/* )} */}
+        </div>
 
-      <div className="w-full mb-3">
-        <Button paddingY="py-3" className="w-full" onClick={handleNext}>Continue</Button>
+        <div className="w-full mb-3">
+          <Button paddingY="py-3" className="w-full" onClick={handleNext} disabled={disabledBtn}>Continue</Button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

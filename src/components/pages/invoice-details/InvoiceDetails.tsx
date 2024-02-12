@@ -1,40 +1,51 @@
-import React, { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { useMutation, useQueryClient } from 'react-query';
+import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { useMutation, useQueryClient } from "react-query";
 
-import DefaultLogo from '../../../assets/images/business-logo.png';
+import DefaultLogo from "../../../assets/images/business-logo.png";
 
-import Button from '../../inputs/Button';
-import { formatCurrency, formatDisbursementType } from '../../../utilities/general';
-import { formatDate } from '../../../utilities/dateTime';
-import handleFetch from '../../../services/api/handleFetch';
-import notification from '../../../utilities/notification';
-import Loading from '../../common/Loading';
-import TransactionStatus from '../../common/TransactionStatus';
-import AcceptInvite from '../invites/AcceptInvite';
-import ConfirmPrompt from '../../common/ConfirmPrompt';
-import ToggleInput from '../../inputs/Toggle';
+import Button from "../../inputs/Button";
+import {
+  formatCurrency,
+  formatDisbursementType
+} from "../../../utilities/general";
+import { formatDate } from "../../../utilities/dateTime";
+import handleFetch from "../../../services/api/handleFetch";
+import notification from "../../../utilities/notification";
+import Loading from "../../common/Loading";
+import TransactionStatus from "../../common/TransactionStatus";
+import AcceptInvite from "../invites/AcceptInvite";
+import ConfirmPrompt from "../../common/ConfirmPrompt";
+import ToggleInput from "../../inputs/Toggle";
 
-import PaymentModal from './PaymentModal';
-import ConfirmDelivery from './ConfirmDelivery';
-import ViewAgreement from './ViewAgreement';
-import GetDeliveryRates from './GetDeliveryRates';
+import PaymentModal from "./PaymentModal";
+import ConfirmDelivery from "./ConfirmDelivery";
+import ViewAgreement from "./ViewAgreement";
+import GetDeliveryRates from "./GetDeliveryRates";
+import UpdateAddressModal from "./UpdateAddressModal";
 
 function InvoiceDetails({ data = {} }: { data: any }) {
   const router = useRouter();
   const [showAcceptModal, setShowAcceptModal] = useState(false);
   const [showDeclineModal, setShowDeclineModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showUpdateAddModal, setShowUpdateAddModal] = useState(false);
   const [showAgreementModal, setShowAgreementModal] = useState(false);
   const [confirmStatusUpdate, setConfirmStatusUpdate] = useState(false);
-  const [showDeliveryConfirmationModal, setShowDeliveryConfirmationModal] = useState(false);
+  const [showDeliveryConfirmationModal, setShowDeliveryConfirmationModal] =
+    useState(false);
 
   const [useDeliveryToggle, setDeliveryToggle] = useState(false);
-  const [showGetDeliveryRateModal, setShowGetDeliveryRateModal] = useState(false);
-  const [deliveryRate, setDeliveryRate] = useState<{ rateId?: string, amount?: number}>({});
+  const [showGetDeliveryRateModal, setShowGetDeliveryRateModal] =
+    useState(false);
+  const [deliveryRateList, setDeliveryRateList] = useState<any[]>([]);
+  const [deliveryRate, setDeliveryRate] = useState<{
+    rateId?: string;
+    amount?: number;
+  }>({});
 
-  const deliveryPrompt = useRef<{ status?: string, message?: string }>({});
+  const deliveryPrompt = useRef<{ status?: string; message?: string }>({});
 
   const queryClient = useQueryClient();
 
@@ -45,23 +56,23 @@ function InvoiceDetails({ data = {} }: { data: any }) {
   const acceptanceMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
       setShowDeclineModal(false);
-      queryClient.invalidateQueries(['escrow', data?.escrowId]);
+      queryClient.invalidateQueries(["escrow", data?.escrowId]);
       notification({
-        message: res?.message || 'You have successfully rejected an invoice',
-        type: 'success'
+        message: res?.message || "You have successfully rejected an invoice",
+        type: "success"
       });
     },
     onError: (err: any) => {
       notification({
-        title: 'Error',
-        message: err?.toString() || 'Something went wrong.',
-        type: 'danger'
+        title: "Error",
+        message: err?.toString() || "Something went wrong.",
+        type: "danger"
       });
     }
   });
 
   const handleActionAfterOTPRequest = () => {
-    if (data?.deliveryStatus === 'Delivered') {
+    if (data?.deliveryStatus === "Delivered") {
       setShowDeliveryConfirmationModal(true);
     } else {
       setShowPaymentModal(true);
@@ -73,13 +84,14 @@ function InvoiceDetails({ data = {} }: { data: any }) {
       handleActionAfterOTPRequest();
     },
     onError: (err) => {
-      if (String(err).includes('Error: OTP already sent')) {
+      if (String(err).includes("Error: OTP already sent")) {
         handleActionAfterOTPRequest();
       } else {
         notification({
-          title: 'Error',
-          message: String(err) || 'An error occurred while requesting for payment OTP',
-          type: 'danger'
+          title: "Error",
+          message:
+            String(err) || "An error occurred while requesting for payment OTP",
+          type: "danger"
         });
       }
     }
@@ -88,32 +100,36 @@ function InvoiceDetails({ data = {} }: { data: any }) {
   const deliveryStatusMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
       setConfirmStatusUpdate(false);
-      queryClient.invalidateQueries(['escrow', data?.escrowId]);
+      queryClient.invalidateQueries(["escrow", data?.escrowId]);
       notification({
-        message: res?.message || 'You have successfully rejected an invoice',
-        type: 'success'
+        message: res?.message || "You have successfully rejected an invoice",
+        type: "success"
       });
     },
     onError: (err: any) => {
       notification({
-        title: 'Error',
-        message: err?.toString() || 'Something went wrong.',
-        type: 'danger'
+        title: "Error",
+        message: err?.toString() || "Something went wrong.",
+        type: "danger"
       });
     }
   });
 
   const handleOtpGeneration = (otpPurpose: string) => {
     requestOtpMutation.mutate({
-      endpoint: 'auth', extra: 'generate-otp', pQuery: { otpPurpose }, method: 'POST', auth: true
+      endpoint: "auth",
+      extra: "generate-otp",
+      pQuery: { otpPurpose },
+      method: "POST",
+      auth: true
     });
   };
 
   const handleDecline = () => {
     acceptanceMutation.mutate({
-      endpoint: 'invitation',
+      endpoint: "invitation",
       extra: `reject-invitation?referenceNumber=${router?.query?.reference}`,
-      method: 'PUT',
+      method: "PUT",
       auth: true
     });
   };
@@ -124,26 +140,27 @@ function InvoiceDetails({ data = {} }: { data: any }) {
   };
 
   const handleDeliveryPrompt = (escrowDeliveryStatus: string) => {
-    let message = '';
+    let message = "";
     switch (escrowDeliveryStatus) {
-    case 'Processing': {
-      message = 'Are you sure you want to start processing this order?';
+    case "Processing": {
+      message = "Are you sure you want to start processing this order?";
       break;
     }
-    case 'OutForDelivery': {
-      message = 'Are you sure the order item(s) have been sent out for delivery?';
+    case "OutForDelivery": {
+      message =
+          "Are you sure the order item(s) have been sent out for delivery?";
       break;
     }
-    case 'Delivered': {
-      message = 'Are you sure the item(s) have been delivered?';
+    case "Delivered": {
+      message = "Are you sure the item(s) have been delivered?";
       break;
     }
-    case 'Returned': {
-      message = '';
+    case "Returned": {
+      message = "";
       break;
     }
-    case 'Cancelled': {
-      message = 'Are you sure you want to cancel this order?';
+    case "Cancelled": {
+      message = "Are you sure you want to cancel this order?";
       break;
     }
     default: {
@@ -156,11 +173,33 @@ function InvoiceDetails({ data = {} }: { data: any }) {
 
   const handleDeliveryStatusUpdate = () => {
     deliveryStatusMutation.mutate({
-      endpoint: 'escrow',
-      extra: 'set-escroworder-deliverystatus',
+      endpoint: "escrow",
+      extra: "set-escroworder-deliverystatus",
       body: { escrowId: data?.escrowId },
       pQuery: { escrowDeliveryStatus: deliveryPrompt.current?.status },
-      method: 'PUT',
+      method: "PUT",
+      auth: true
+    });
+  };
+
+  const deliveryRateMutation = useMutation(handleFetch, {
+    onSuccess: (res: any) => {
+      setDeliveryRateList(res?.data?.rates);
+    },
+    onError: (err: any) => {
+      notification({
+        title: "Error",
+        message: err?.toString() || "Something went wrong.",
+        type: "danger"
+      });
+    }
+  });
+
+  const handleDeliveryRate = () => {
+    deliveryRateMutation.mutate({
+      endpoint: "logistic",
+      extra: `shipment/rate/${data?.invoiceNumber}`,
+      method: "POST",
       auth: true
     });
   };
@@ -168,13 +207,34 @@ function InvoiceDetails({ data = {} }: { data: any }) {
   const { isLoading } = acceptanceMutation;
   const { isLoading: otpLoading } = requestOtpMutation;
   const { isLoading: deliveryLoading } = deliveryStatusMutation;
+  const { isLoading: deliveryRateLoading, status } = deliveryRateMutation;
+
+  const deliveryRateHandler = async () => {
+    handleDeliveryRate();
+  };
+
+  const updateAddHandler = () => {
+    setShowGetDeliveryRateModal(false);
+    setShowUpdateAddModal(true);
+  };
+
+  const clodeUpdateAddHandler = () => {
+    setShowGetDeliveryRateModal(true);
+    setShowUpdateAddModal(false);
+  };
+
+  useEffect(() => {
+    if (status === "success") {
+      setShowGetDeliveryRateModal(true);
+    }
+  }, [status]);
 
   if (data?.escrowId) {
     return (
       <>
         {(isLoading || deliveryLoading) && <Loading message="Processing..." />}
         {otpLoading && <Loading message="Sending OTP..." />}
-
+        {deliveryRateLoading && <Loading message="Loading Rate..." />}
         <div className="w-full bg-white px-5 sm:px-10 py-8 rounded-lg shadow-md">
           <div className="w-full mb-5">
             <div className="flex flex-wrap flex-col-reverse sm:flex-row w-full justify-between mb-5">
@@ -196,13 +256,21 @@ function InvoiceDetails({ data = {} }: { data: any }) {
               </div>
               <div className="text-right">
                 <h2 className="ff-bold font-bold text-2xl">{`Invoice #${data?.invoiceNumber}`}</h2>
-                <TransactionStatus status={data?.status === 'paymentcompleted' ? data?.deliveryStatus : data?.status} />
+                <TransactionStatus
+                  status={
+                    data?.status === "paymentcompleted"
+                      ? data?.deliveryStatus
+                      : data?.status
+                  }
+                />
               </div>
             </div>
 
             <div className="sm:flex w-full justify-between">
               <div className="text-left">
-                <h3 className="font-bold ff-bold text-lg mb-2">Recipient Details</h3>
+                <h3 className="font-bold ff-bold text-lg mb-2">
+                  Recipient Details
+                </h3>
                 <p className="mb-1">{data?.recipientDetails?.name}</p>
                 <div className="w-full text-lightText">
                   <p className="mb-1">{data?.recipientDetails?.email}</p>
@@ -212,21 +280,27 @@ function InvoiceDetails({ data = {} }: { data: any }) {
               </div>
 
               <div className="text-right">
-                <h3 className="font-bold ff-bold text-lg mb-2">Order Details</h3>
+                <h3 className="font-bold ff-bold text-lg mb-2">
+                  Order Details
+                </h3>
                 <div className="w-full">
                   <p className="mb-1">
-                    <span className="text-lightText">Disbursement Type:&nbsp;</span>
+                    <span className="text-lightText">
+                      Disbursement Type:&nbsp;
+                    </span>
                     {formatDisbursementType(data?.disbursementType)}
                   </p>
                   <p className="mb-1">
-                    <span className="text-lightText">Dispute Manager:&nbsp;</span>
+                    <span className="text-lightText">
+                      Dispute Manager:&nbsp;
+                    </span>
                     Bridge by ALAT
                   </p>
                   <p className="mb-1">
                     <span className="text-lightText">Inspection:&nbsp;</span>
                     {`${data?.inspectionDay} Hours(s)`}
                   </p>
-                  {data?.disbursementType === 'installment' && (
+                  {data?.disbursementType === "installment" && (
                     <p className="mb-1">
                       <span className="text-lightText">Due Date:&nbsp;</span>
                       {formatDate(data?.dueDate)}
@@ -254,8 +328,12 @@ function InvoiceDetails({ data = {} }: { data: any }) {
                     <td className="px-3 py-3">{item?.name}</td>
                     <td className="px-3 py-3 text-center">{item?.quantity}</td>
                     <td className="px-3 py-3 text-center">{`${item?.weight}kg`}</td>
-                    <td className="px-3 py-3">{formatCurrency(item?.unitPrice)}</td>
-                    <td className="px-3 py-3 font-bold ff-bold text-right">{formatCurrency(item?.totalAmount)}</td>
+                    <td className="px-3 py-3">
+                      {formatCurrency(item?.unitPrice)}
+                    </td>
+                    <td className="px-3 py-3 font-bold ff-bold text-right">
+                      {formatCurrency(item?.totalAmount)}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -266,7 +344,9 @@ function InvoiceDetails({ data = {} }: { data: any }) {
             <div className="w-full max-w-[280px]">
               <div className="w-full flex justify-between mb-3">
                 <p className="">SUBTOTAL</p>
-                <p className="font-bold ff-bold">{formatCurrency(data?.totalAmount)}</p>
+                <p className="font-bold ff-bold">
+                  {formatCurrency(data?.totalAmount)}
+                </p>
               </div>
               <div className="w-full flex justify-between mb-3">
                 <p className="">Escrow fee</p>
@@ -274,11 +354,19 @@ function InvoiceDetails({ data = {} }: { data: any }) {
               </div>
               <div className="w-full flex justify-between mb-3">
                 <p className="">Delivery Fee</p>
-                <p className="font-bold ff-bold">{formatCurrency(deliveryRate?.amount || data?.deliveryFee)}</p>
+                <p className="font-bold ff-bold">
+                  {formatCurrency(deliveryRate?.amount || data?.deliveryFee)}
+                </p>
               </div>
               <div className="w-full flex justify-between mb-3 text-lg">
                 <p className="">TOTAL</p>
-                <p className="font-bold ff-bold">{formatCurrency(data?.totalAmount + data?.fee + (deliveryRate?.amount || data?.deliveryFee))}</p>
+                <p className="font-bold ff-bold">
+                  {formatCurrency(
+                    data?.totalAmount +
+                      data?.fee +
+                      (deliveryRate?.amount || data?.deliveryFee)
+                  )}
+                </p>
               </div>
             </div>
           </div>
@@ -294,24 +382,49 @@ function InvoiceDetails({ data = {} }: { data: any }) {
 
           {data?.isSeller ? (
             <>
-              {data?.status === 'paymentcompleted' && (
+              {data?.status === "paymentcompleted" && (
                 <>
-                  {data?.deliveryStatus === 'Pending' && (
+                  {data?.deliveryStatus === "Pending" && (
                     <div className="w-full flex justify-end space-x-3">
-                      <Button bgColor="bg-error" onClick={() => handleDeliveryPrompt('Cancelled')}>Cancel</Button>
-                      <Button onClick={() => handleDeliveryPrompt('Processing')}>Process Order</Button>
+                      <Button
+                        bgColor="bg-error"
+                        onClick={() => handleDeliveryPrompt("Cancelled")}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={() => handleDeliveryPrompt("Processing")}
+                      >
+                        Process Order
+                      </Button>
                     </div>
                   )}
-                  {data?.deliveryStatus === 'Processing' && (
+                  {data?.deliveryStatus === "Processing" && (
                     <div className="w-full flex justify-end space-x-3">
-                      <Button bgColor="bg-error" onClick={() => handleDeliveryPrompt('Cancelled')}>Cancel</Button>
-                      <Button onClick={() => handleDeliveryPrompt('OutForDelivery')}>Out for Delivery</Button>
+                      <Button
+                        bgColor="bg-error"
+                        onClick={() => handleDeliveryPrompt("Cancelled")}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={() => handleDeliveryPrompt("OutForDelivery")}
+                      >
+                        Out for Delivery
+                      </Button>
                     </div>
                   )}
-                  {data?.deliveryStatus === 'OutForDelivery' && (
+                  {data?.deliveryStatus === "OutForDelivery" && (
                     <div className="w-full flex justify-end space-x-3">
-                      <Button bgColor="bg-error" onClick={() => handleDeliveryPrompt('Cancelled')}>Cancel</Button>
-                      <Button onClick={() => handleDeliveryPrompt('Delivered')}>Delivered</Button>
+                      <Button
+                        bgColor="bg-error"
+                        onClick={() => handleDeliveryPrompt("Cancelled")}
+                      >
+                        Cancel
+                      </Button>
+                      <Button onClick={() => handleDeliveryPrompt("Delivered")}>
+                        Delivered
+                      </Button>
                     </div>
                   )}
                 </>
@@ -319,14 +432,21 @@ function InvoiceDetails({ data = {} }: { data: any }) {
             </>
           ) : (
             <>
-              {data?.status === 'pending' && (
+              {data?.status === "pending" && (
                 <div className="w-full flex justify-end space-x-3">
-                  <Button bgColor="bg-error" onClick={() => setShowDeclineModal(true)}>Decline</Button>
-                  <Button onClick={() => setShowAcceptModal(true)}>Accept</Button>
+                  <Button
+                    bgColor="bg-error"
+                    onClick={() => setShowDeclineModal(true)}
+                  >
+                    Decline
+                  </Button>
+                  <Button onClick={() => setShowAcceptModal(true)}>
+                    Accept
+                  </Button>
                 </div>
               )}
 
-              {data?.status === 'awaitingpayment' && (
+              {data?.status === "awaitingpayment" && (
                 <div className="w-full flex flex-wrap justify-between">
                   <div className="flex items-center space-x-2 pb-5">
                     <ToggleInput
@@ -334,17 +454,28 @@ function InvoiceDetails({ data = {} }: { data: any }) {
                       value={useDeliveryToggle}
                       onChange={(val) => setDeliveryToggle(val)}
                     />
-                    <span className="text-[#E08700] font-bold">Powered by SHIIP</span>
+                    <span className="text-[#E08700] font-bold">
+                      Powered by SHIIP
+                    </span>
                   </div>
                   <div>
                     <div className="flex flex-wrap -ml-2">
                       {useDeliveryToggle && (
-                        <Button className="ml-2 mb-2" onClick={() => setShowGetDeliveryRateModal(true)}>
-                          {deliveryRate.amount ? 'Change Delivery Rates' : 'Get Delivery Rates'}
+                        <Button
+                          className="ml-2 mb-2"
+                          onClick={() => deliveryRateHandler()}
+                        >
+                          {deliveryRate.amount
+                            ? "Change Delivery Rates"
+                            : "Get Delivery Rates"}
                         </Button>
                       )}
-                      {(!useDeliveryToggle || (useDeliveryToggle && deliveryRate.amount)) && (
-                        <Button className="ml-2 mb-2" onClick={() => handleOtpGeneration('EscrowDeposit')}>
+                      {(!useDeliveryToggle ||
+                        (useDeliveryToggle && deliveryRate.amount)) && (
+                        <Button
+                          className="ml-2 mb-2"
+                          onClick={() => handleOtpGeneration("EscrowDeposit")}
+                        >
                           Make Payment
                         </Button>
                       )}
@@ -352,15 +483,26 @@ function InvoiceDetails({ data = {} }: { data: any }) {
                   </div>
                 </div>
               )}
-              {data?.status === 'paymentcompleted' && data?.deliveryStatus === 'Delivered' && (
+              {data?.status === "paymentcompleted" &&
+                data?.deliveryStatus === "Delivered" && (
                 <div className="w-full flex justify-end space-x-3">
                   <Button
                     bgColor="bg-error"
-                    onClick={() => router.push({ pathname: `/disputes/manage-dispute/${data?.escrowId}` })}
+                    onClick={() =>
+                      router.push({
+                        pathname: `/disputes/manage-dispute/${data?.escrowId}`
+                      })
+                    }
                   >
-                    Raise Dispute
+                      Raise Dispute
                   </Button>
-                  <Button onClick={() => handleOtpGeneration('EscrowOrderCompleted')}>Confirm Delivery</Button>
+                  <Button
+                    onClick={() =>
+                      handleOtpGeneration("EscrowOrderCompleted")
+                    }
+                  >
+                      Confirm Delivery
+                  </Button>
                 </div>
               )}
             </>
@@ -391,6 +533,18 @@ function InvoiceDetails({ data = {} }: { data: any }) {
           <GetDeliveryRates
             onClose={() => setShowGetDeliveryRateModal(false)}
             onSelection={handleRateSelection}
+            deliveryRateList={deliveryRateList || []}
+            onUpdateAdd={updateAddHandler}
+            data={data}
+          />
+        )}
+
+        {showUpdateAddModal && (
+          <UpdateAddressModal
+            onClose={clodeUpdateAddHandler}
+            invoiceId={data?.invoiceNumber}
+            recipientDetails={data?.recipientDetails}
+            escrowId={data?.escrowId}
           />
         )}
 
@@ -399,6 +553,7 @@ function InvoiceDetails({ data = {} }: { data: any }) {
             onClose={() => setShowPaymentModal(false)}
             escrowId={data?.escrowId}
             rateId={useDeliveryToggle ? deliveryRate?.rateId : undefined}
+            useDeliveryToggle={useDeliveryToggle}
           />
         )}
 

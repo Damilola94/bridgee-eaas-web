@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' next dev",
+    "dev": "next dev",
     "start": "next start",
     "dev-custom": "node server.js",
     "start-custom": "NODE_ENV=production node server.js",
