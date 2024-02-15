@@ -73,15 +73,11 @@ function UpdateAddressModal({
     });
   };
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setDebouncedAddress(newAddress);
-    }, 1000);
+  const handleUpdateAddBlur = () => {
+    setDebouncedAddress(newAddress);
+  };
 
-    return () => clearTimeout(timeoutId);
-  }, [newAddress]);
-
-  const { status } = useGetQuery({
+  const { status, isLoading: validateLoading } = useGetQuery({
     endpoint: 'logistic',
     extra: `address/validation`,
     param: debouncedAddress,
@@ -90,13 +86,22 @@ function UpdateAddressModal({
   });
 
   const disabledBtn = status === "success" ? false : true;
-  const errorMsg = status !== "success" ? "" : "Address is Invalid";
+  const errorMsg = status === "error" ? "Address is Invalid" : "";
+
+  useEffect(() => {
+    if (status === "error"){
+      setDebouncedAddress("");
+    } else if (status === "success"){
+      setDebouncedAddress("");
+    }
+  }, [status]);
 
   const { isLoading } = addUpdateMutation;
 
   return (
     <>
       {isLoading && <Loading message="Updating Recipient Address"/>}
+      {validateLoading && <Loading message="Validating Address"/>}
       <Modal isOpen onClose={onClose} maxWidth="max-w-[400px]">
         <div className="w-full py-5">
           <div className="mb-7">
@@ -108,6 +113,7 @@ function UpdateAddressModal({
           <div className="w-full mb-10">
             <TextInput
               onChange={(e) => setNewAddress(e?.target?.value)}
+              onBlur={handleUpdateAddBlur}
               className="w-full mb-5"
               value={newAddress || ""}
               name="email"

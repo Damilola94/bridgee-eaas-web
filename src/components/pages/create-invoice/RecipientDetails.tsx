@@ -11,7 +11,9 @@ import Loading from '../../common/Loading';
 
 function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const { form, setForm } = useCreateInvoiceContext();
-  const [debouncedAddress, setDebouncedAddress] = useState('');
+  const [debouncedDeliveryAddress, setDebouncedDeliveryAddress] = useState('');
+  const [debouncedPickUpAddress, setDebouncedPickUpAddress] = useState('');
+  const [buttonDisabled, setButtonDisabled] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -49,7 +51,7 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
     if (!form?.inspectionDuration) return 'Inspection duration is required';
     if (!form?.recipientDetails?.address) return 'Recipient address is required';
 
-    if (form?.isDeliveryOnUs && !form?.pickUpAddress) {
+    if (!form?.pickUpAddress) {
       return 'Pickup address is required';
     }
     return null;
@@ -64,28 +66,54 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
     onNext();
   };
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setDebouncedAddress(form?.recipientDetails?.address);
-    }, 1000);
+  const handleUpdateDeliveryAddBlur = () => {
+    setDebouncedDeliveryAddress(form?.recipientDetails?.address);
+  };
 
-    return () => clearTimeout(timeoutId);
-  }, [form?.recipientDetails?.address]);
+  const handleUpdatePickAddBlur = () => {
+    setDebouncedPickUpAddress(form?.pickUpAddress || "");
+  };
 
   const { status, isLoading } = useGetQuery({
     endpoint: 'logistic',
     extra: `address/validation`,
-    param: debouncedAddress,
+    param: debouncedDeliveryAddress,
     queryKey: ['validate-address'],
-    enabled: !!debouncedAddress
+    enabled: !!debouncedDeliveryAddress
   });
 
-  const disabledBtn = status === "success" ? false : true;
-  const errorMsg = status == "success" ? "" : "Address is Invalid";
+  const { status: pickUpStatus, isLoading: pickUpLoading } = useGetQuery({
+    endpoint: 'logistic',
+    extra: `address/validation`,
+    param: debouncedPickUpAddress,
+    queryKey: ['validate-address'],
+    enabled: !!debouncedPickUpAddress
+  });
+
+  const disabledDeliveryBtn = status === "success" ? false : true;
+  const errorDeliveryMsg = status === "error" ? "Address is Invalid" : "";
+
+  const disabledPickUpBtn = pickUpStatus === "success" ? false : true;
+  const errorPickupMsg = status === "error" ? "Address is Invalid" : "";
+
+  useEffect(() => {
+    if (status === "error"){
+      setDebouncedDeliveryAddress("");
+    } else if (status === "success"){
+      setDebouncedDeliveryAddress("");
+    }
+    if (pickUpStatus === "error"){
+      setDebouncedDeliveryAddress("");
+    } else if (pickUpStatus === "success"){
+      setDebouncedDeliveryAddress("");
+    }
+    setButtonDisabled((disabledDeliveryBtn && disabledPickUpBtn));
+  }, [status, pickUpStatus, disabledDeliveryBtn, disabledPickUpBtn]);
 
   return (
     <>
       {isLoading && <Loading message="Validating Address"/>}
+      {pickUpLoading && <Loading message="Validating Address"/>}
       <div className="w-full bg-white px-10 py-8 rounded-lg shadow-md">
         <div className="w-full mb-10">
           <h3 className="font-bold text-xl ff-bold mb-2">Recipient&apos;s Details</h3>
@@ -150,12 +178,13 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
             <TextInput
               name="address"
               value={form?.recipientDetails?.address || ''}
+              onBlur={handleUpdateDeliveryAddBlur}
               onChange={(e) => handleChange(e, 'recipient')}
               label="Address"
               className="w-full mb-4"
               placeholder="Recipient's Address"
             />
-            <p className="text-red-600 ml-1 text-xs">{errorMsg}</p>
+            <p className="text-red-600 ml-1 text-xs">{errorDeliveryMsg}</p>
             {/* <LocationInput
             value={form?.recipientDetails?.address || ''}
             onChange={(val) => handleChange(val, 'recipient', 'address')}
@@ -187,10 +216,12 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
                   name="pickUpAddress"
                   value={form?.pickUpAddress || ''}
                   onChange={handleChange}
+                  onBlur={handleUpdatePickAddBlur}
                   label="Pickup Address"
                   className="w-full"
                   placeholder="Enter location"
                 />
+                <p className="text-red-600 ml-1 text-xs">{errorPickupMsg}</p>
               </div>
             </div>
           </div>
@@ -198,7 +229,7 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
         </div>
 
         <div className="w-full mb-3">
-          <Button paddingY="py-3" className="w-full" onClick={handleNext} disabled={disabledBtn}>Continue</Button>
+          <Button paddingY="py-3" className="w-full" onClick={handleNext} disabled={buttonDisabled}>Continue</Button>
         </div>
       </div>
     </>

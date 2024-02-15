@@ -116,13 +116,14 @@ function InvoiceDetails({ data = {} }: { data: any }) {
   });
 
   const handleOtpGeneration = (otpPurpose: string) => {
-    requestOtpMutation.mutate({
-      endpoint: "auth",
-      extra: "generate-otp",
-      pQuery: { otpPurpose },
-      method: "POST",
-      auth: true
-    });
+    // requestOtpMutation.mutate({
+    //   endpoint: "auth",
+    //   extra: "generate-otp",
+    //   pQuery: { otpPurpose },
+    //   method: "POST",
+    //   auth: true
+    // });
+    handleActionAfterOTPRequest();
   };
 
   const handleDecline = () => {

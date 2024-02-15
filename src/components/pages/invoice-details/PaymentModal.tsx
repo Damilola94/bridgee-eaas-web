@@ -23,7 +23,8 @@ function PaymentModal({
   onClose, escrowId, rateId, useDeliveryToggle
 }: Props) {
   const [formIndex, setFormIndex] = useState(0);
-  const [otp, setOtp] = useState("");
+  // const [otp, setOtp] = useState("");
+  const [pin, setPin] = useState("");
 
   const queryClient = useQueryClient();
   const paymentMutation = useMutation(handleFetch, {
@@ -38,7 +39,7 @@ function PaymentModal({
         notification({
           title: "Error",
           message:
-            String(err) || "An error occurred while requesting for payment OTP",
+            String(err) || "An error occurred while validating payment PIN",
           type: "danger"
         });
       }
@@ -46,18 +47,18 @@ function PaymentModal({
   });
 
   const authenticateTransaction = () => {
-    if (otp?.length < 6) {
+    if (pin?.length < 4) {
       notification({
         title: "Form Error",
-        message: "Please, enter a valid OTP",
+        message: "Please, enter a valid PIN",
         type: "danger"
       });
       return;
     }
 
     const body = !useDeliveryToggle
-      ? { escrowId, otp }
-      : { otp, escrowId, courierId: rateId };
+      ? { escrowId, pin }
+      : { pin, escrowId, courierId: rateId };
 
     paymentMutation.mutate({
       endpoint: "escrow",
@@ -82,19 +83,20 @@ function PaymentModal({
                 Authenticate Payment
               </h1>
               <p className="text-sm text-lightText">
-                An OTP has been sent to your email address
+                {/* An OTP has been sent to your email address */}
+                Please enter your account pin
               </p>
             </div>
 
             <div className="w-full mb-10">
-              <p className="text-sm font-bold mb-1">Enter OTP</p>
+              <p className="text-sm font-bold mb-1">Enter PIN</p>
               <AuthCode
-                length={6}
+                length={4}
                 isPassword
                 allowedCharacters="numeric"
                 containerClassName="w-full flex justify-between mb-2"
                 inputClassName="w-[15%] rounded-lg h-[60px] border border-[#777] outline-none text-center text-xl"
-                onChange={(val: string) => setOtp(val)}
+                onChange={(val: string) => setPin(val)}
               />
             </div>
 
