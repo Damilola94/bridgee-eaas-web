@@ -33,4 +33,5 @@ export type IdFormProps = {
   back?: File;
   frontPath?: string;
   backPath?: string;
+  ninDetails: string;
 };

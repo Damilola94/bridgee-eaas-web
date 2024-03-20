@@ -96,3 +96,19 @@ export const formatDisbursementType = (type: string) => {
 
 export const formatIDTypeLabel = (value: string) => idTypes
   .find((item) => item.value === value)?.label;
+
+// export const base64ToFile = (base64String: string, fileName: string) => {
+//   const base64Parts = base64String?.split(';base64,');
+//   const contentType = base64Parts[0]?.split(':')[1];
+//   const raw = window?.atob(base64Parts[1]);
+//   const rawLength = raw?.length;
+//   const uint8Array = new Uint8Array(rawLength);
+
+//   for (let i = 0; i < rawLength; ++i) {
+//     uint8Array[i] = raw?.charCodeAt(i);
+//   }
+
+//   const blob = new Blob([uint8Array], { type: contentType });
+
+//   return new File([blob], fileName, { type: contentType });
+// };

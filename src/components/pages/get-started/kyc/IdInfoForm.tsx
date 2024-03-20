@@ -1,42 +1,62 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { useMutation, useQueryClient } from 'react-query';
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { useMutation, useQueryClient } from "react-query";
 
-import { IdFormProps } from '../../../../types/kyc';
-import Button from '../../../inputs/Button';
+import { IdFormProps } from "../../../../types/kyc";
+import Button from "../../../inputs/Button";
 
-import TextInput from '../../../inputs/Text';
-import SelectInput from '../../../inputs/Select';
-import { idTypes } from '../../../../data/kyc';
-import { useKycContext } from '../../../../context/Kyc';
-import handleFetch from '../../../../services/api/handleFetch';
-import notification from '../../../../utilities/notification';
-import Loading from '../../../common/Loading';
-import FileInput from '../../../inputs/File';
-import { formatFileUrl, formatIDTypeLabel } from '../../../../utilities/general';
+// import TextInput from '../../../inputs/Text';
+// import SelectInput from '../../../inputs/Select';
+// import { idTypes } from '../../../../data/kyc';
+import { useKycContext } from "../../../../context/Kyc";
+import handleFetch from "../../../../services/api/handleFetch";
+import notification from "../../../../utilities/notification";
+import Loading from "../../../common/Loading";
+// import FileInput from '../../../inputs/File';
+// import { formatFileUrl, formatIDTypeLabel } from '../../../../utilities/general';
+import { formatIDTypeLabel } from "../../../../utilities/general";
 
-import useFormStage from '../../../../hooks/useFormStage';
+import useFormStage from "../../../../hooks/useFormStage";
 
-import SuccessMessage from './SuccessMessage';
+import TextInput from "../../../inputs/Text";
+
+import SuccessMessage from "./SuccessMessage";
+
+const initialFormState: IdFormProps = {
+  ninDetails: "",
+  personalAccountDocumentType: undefined,
+  identificationNumber: "",
+  front: undefined,
+  back: undefined,
+  frontPath: "",
+  backPath: ""
+};
 
 function IdInfoForm() {
   const router = useRouter();
   const { kycData } = useKycContext();
   const formStage = useFormStage();
-  const [form, setForm] = useState<IdFormProps>({});
+  const [form, setForm] = useState<IdFormProps>(initialFormState);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-
   const { idCardInformation } = kycData || {};
+
+  useEffect(() => {
+    setForm({ ninDetails: idCardInformation?.bvn });
+  }, [idCardInformation]);
 
   useEffect(() => {
     setForm((prev) => ({
       ...prev,
       ...idCardInformation,
-      personalAccountDocumentType: idCardInformation?.personalAccountDocumentType
-        ? {
-          label: formatIDTypeLabel(idCardInformation?.personalAccountDocumentType),
-          value: idCardInformation?.personalAccountDocumentType
-        } : undefined
+      personalAccountDocumentType:
+        idCardInformation?.personalAccountDocumentType
+          ? {
+            label: formatIDTypeLabel(
+              idCardInformation?.personalAccountDocumentType
+            ),
+            value: idCardInformation?.personalAccountDocumentType
+          }
+          : undefined
     }));
   }, [idCardInformation]);
 
@@ -45,67 +65,88 @@ function IdInfoForm() {
     onSuccess: (res: any) => {
       setShowSuccessMessage(true);
       notification({
-        message: res?.message || 'You have successfully created an invoice',
-        type: 'success'
+        message: res?.message || "You have successfully created an invoice",
+        type: "success"
       });
     },
     onError: (err: any) => {
       notification({
-        title: 'Error',
-        message: err?.toString() || 'Something went wrong.',
-        type: 'danger'
+        title: "Error",
+        message: err?.toString() || "Something went wrong.",
+        type: "danger"
       });
     }
   });
 
-  const handleChange = (val: any, inputType = 'input', inputName = '') => {
-    if (inputType === 'input') {
-      const {
-        value, name, type, files
-      } = val.target;
-      if (type === 'file') {
-        setForm((state) => ({ ...state, [name]: files?.[0] }));
-      } else {
-        setForm((state) => ({ ...state, [name]: value }));
-      }
+  // const handleChange = (val: any, inputType = 'input', inputName = '') => {
+  //   if (inputType === 'input') {
+  //     const {
+  //       value, name, type, files
+  //     } = val.target;
+  //     if (type === 'file') {
+  //       setForm((state) => ({ ...state, [name]: files?.[0] }));
+  //     } else {
+  //       setForm((state) => ({ ...state, [name]: value }));
+  //     }
+  //   } else {
+  //     setForm((prev) => ({ ...prev, [inputName]: val }));
+  //   }
+  // };
+
+  const handleChange = (val: any, type = "input", inputName = "") => {
+    if (type === "input") {
+      const { value, name } = val.target;
+      setForm((prev) => ({ ...prev, [name]: value }));
     } else {
       setForm((prev) => ({ ...prev, [inputName]: val }));
     }
   };
 
   const validateForm = () => {
-    if (!form?.personalAccountDocumentType?.value) return 'Please, select your identification type';
-    if (!form?.identificationNumber) return 'Please, enter your identification number.';
-    if (!form?.front) return 'Please, upload the front of your identification document';
-    if (!form?.back) return 'Please, upload the back of your identification document';
+    if (!form?.personalAccountDocumentType?.value)
+      return "Please, select your identification type";
+    if (!form?.identificationNumber)
+      return "Please, enter your identification number.";
+    if (!form?.front)
+      return "Please, upload the front of your identification document";
+    if (!form?.back)
+      return "Please, upload the back of your identification document";
     return null;
   };
 
   const handleSubmit = () => {
     const error = validateForm();
     if (error) {
-      notification({ title: 'Form Error', message: error, type: 'danger' });
+      notification({ title: "Form Error", message: error, type: "danger" });
       return;
     }
 
     const body = new FormData();
-    body.append('personalAccountDocumentType', String(form?.personalAccountDocumentType?.value));
-    body.append('identificationNumber', form.identificationNumber!);
-    body.append('front', form.front!);
-    body.append('back', form.back!);
+    body.append(
+      "personalAccountDocumentType",
+      String(form?.personalAccountDocumentType?.value)
+    );
+    body.append("identificationNumber", form.identificationNumber!);
+    body.append("front", form.front!);
+    body.append("back", form.back!);
 
     idMutation.mutate({
-      endpoint: 'user', extra: 'add-user-identification-card', method: 'POST', body, auth: true, multipart: true
+      endpoint: "user",
+      extra: "add-user-identification-card",
+      method: "POST",
+      body,
+      auth: true,
+      multipart: true
     });
   };
 
   const handleCloseSuccessMsg = () => {
     setShowSuccessMessage(false);
-    queryClient.invalidateQueries(['user-information']);
-    router.push('/get-started/kyc?step=kyc-completed');
+    queryClient.invalidateQueries(["user-information"]);
+    router.push("/get-started/kyc?step=kyc-completed");
   };
 
-  const isCompleted = formStage?.kycStatus === 'Completed';
+  const isCompleted = formStage?.kycStatus === "Completed";
   const { isLoading } = idMutation;
 
   return (
@@ -114,14 +155,31 @@ function IdInfoForm() {
       <div className="w-full bg-white rounded-xl px-8 py-7 shadow">
         <div className="w-full">
           <div className="mb-5">
-            <h2 className="font-bold text-xl mb-2">ID Card Details</h2>
-            <p className="text-lightText text-sm">
+            {/* <h2 className="font-bold text-xl mb-2">ID Card Details</h2> */}
+            <h2 className="font-bold text-xl mb-2">NIN Details</h2>
+            {/* <p className="text-lightText text-sm">
               Please upload any of the following means of identification:
               National Identification, international passport, Voter’s card, Driver’s License.
+            </p> */}
+            <p className="text-lightText text-sm">
+              Please input your NIN number to proceed
             </p>
+            <p className="text-sm font-extrabold">Dial *346# on your phone to get the number.</p>
           </div>
 
           <div className="w-full">
+            <TextInput
+              name="bvn"
+              disabled={isCompleted}
+              onChange={(e) =>
+                /^\d{0,12}$/g.test(e.target.value) && handleChange(e)
+              }
+              value={form?.ninDetails || ""}
+              className="w-full mb-1"
+              label="NIN number*"
+            />
+          </div>
+          {/* <div className="w-full">
             <SelectInput
               label="Identification Type"
               className="mb-4"
@@ -170,7 +228,7 @@ function IdInfoForm() {
                 </picture>
               </div>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -183,12 +241,14 @@ function IdInfoForm() {
             textColor="text-black"
             className="w-full"
             paddingY="py-3"
-            onClick={() => router.push('/get-started/kyc?step=residential-info')}
+            onClick={() =>
+              router.push("/get-started/kyc?step=residential-info")
+            }
           >
             Back
           </Button>
         </div>
-        {(isCompleted || formStage?.kycStatus === 'Pending') && (
+        {(isCompleted || formStage?.kycStatus === "Pending") && (
           <div className="w-1/2 px-2">
             <Button
               border
@@ -197,7 +257,7 @@ function IdInfoForm() {
               textColor="text-black"
               className="w-full"
               paddingY="py-3"
-              onClick={() => router.push('/get-started/kyc?step=kyc-completed')}
+              onClick={() => router.push("/get-started/kyc?step=kyc-completed")}
             >
               Next
             </Button>

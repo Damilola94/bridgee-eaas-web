@@ -63,7 +63,7 @@ function ResidentialInfoForm() {
   const residentialMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
       queryClient.invalidateQueries(['user-information']);
-      router.push('/get-started/kyc?step=id-details');
+      router.push('/get-started/kyc?step=nin-details');
       notification({
         message: res?.message || 'You have successfully created an invoice',
         type: 'success'
@@ -230,7 +230,7 @@ function ResidentialInfoForm() {
             textColor="text-black"
             className="w-full"
             paddingY="py-3"
-            onClick={() => router.push('/get-started/kyc?step=bvn-validation')}
+            onClick={() => router.push('/get-started/kyc?step=personal-info')}
           >
             Back
           </Button>
@@ -244,7 +244,7 @@ function ResidentialInfoForm() {
               textColor="text-black"
               className="w-full"
               paddingY="py-3"
-              onClick={() => router.push('/get-started/kyc?step=id-details')}
+              onClick={() => router.push('/get-started/kyc?step=nin-details')}
             >
               Next
             </Button>

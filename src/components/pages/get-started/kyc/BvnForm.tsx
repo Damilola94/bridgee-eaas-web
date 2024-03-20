@@ -12,12 +12,14 @@ import Loading from '../../../common/Loading';
 import handleFetch from '../../../../services/api/handleFetch';
 import useFormStage from '../../../../hooks/useFormStage';
 
-function BvnForm() {
+import FaceCaptureModal from './FaceCaptureModal';
+
+function BvnForm({ setBvn }: any) {
   const router = useRouter();
   const { kycData } = useKycContext();
   const formStage = useFormStage();
   const [form, setForm] = useState<PersonalInfoProps>({});
-
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const { personalInformation } = kycData || {};
 
   useEffect(() => {
@@ -27,12 +29,8 @@ function BvnForm() {
   const queryClient = useQueryClient();
   const personalMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
-      queryClient.invalidateQueries(['user-information']);
-      router.push('/get-started/kyc?step=residential-info');
-      notification({
-        message: res?.message || 'You have successfully created an invoice',
-        type: 'success'
-      });
+      setShowSuccessMessage(!showSuccessMessage);
+      setBvn(form?.bvn);
     },
     onError: (err: any) => {
       notification({
@@ -72,18 +70,24 @@ function BvnForm() {
     });
   };
 
+  const handleOpenFaceCapturing = () => {
+    router.push('/get-started/kyc?step=take-a-selfie');
+    queryClient.invalidateQueries(['user-information']);
+  };
+
   const isCompleted = formStage?.kycStatus === 'Completed';
   const { isLoading } = personalMutation;
 
   return (
     <div className="w-full max-w-md mx-auto">
       {isLoading && <Loading />}
+
+      {showSuccessMessage && <FaceCaptureModal onClose={handleOpenFaceCapturing} />}
       <div className="w-full bg-white rounded-xl px-8 py-7 shadow">
         <div className="w-full">
           <div className="flex justify-between items-start">
             <h2 className="font-bold text-xl mb-5">BVN Validation</h2>
           </div>
-
           <div className="w-full">
             <TextInput
               name="bvn"
@@ -102,17 +106,7 @@ function BvnForm() {
 
       <div className="flex mt-5 -mx-2">
         <div className="w-1/2 px-2">
-          <Button
-            border
-            borderColor="border-gray-300"
-            bgColor="bg-white"
-            textColor="text-black"
-            className="w-full"
-            paddingY="py-3"
-            onClick={() => router.push('/get-started/kyc?step=personal-info')}
-          >
-            Back
-          </Button>
+
         </div>
         {isCompleted ? (
           <div className="w-1/2 px-2">
@@ -123,7 +117,7 @@ function BvnForm() {
               textColor="text-black"
               className="w-full"
               paddingY="py-3"
-              onClick={() => router.push('/get-started/kyc?step=residential-info')}
+              onClick={() => router.push('/get-started/kyc?step=take-a-selfie')}
             >
               Next
             </Button>

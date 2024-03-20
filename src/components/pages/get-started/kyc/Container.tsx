@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import Loading from '../../../common/Loading';
@@ -17,11 +17,13 @@ import BvnForm from './BvnForm';
 import ResidentialInfoForm from './ResidentialInfoForm';
 import IdInfoForm from './IdInfoForm';
 import Completion from './Completion';
+import SelfieForm from './SelfieForm';
 
 function KycContainer() {
   const { setKycData } = useKycContext();
   const router = useRouter();
   const { step } = router?.query || {};
+  const [bvn, setBvn] = useState("");
 
   const { data, status, isFetching } = useGetQuery({
     endpoint: 'user', extra: 'user-information', queryKey: ['user-information']
@@ -58,14 +60,15 @@ function KycContainer() {
   }
 
   return (
-    <div className="w-full flex justify-center">
+    <div className="w-full flex justify-center relative">
       <KycSteps steps={steps} />
       <div>
         {step !== 'kyc-completed' && <SmallKycSteps steps={steps} />}
+        {step === 'bvn-validation' && <BvnForm setBvn={setBvn}/>}
+        {step === 'take-a-selfie' && <SelfieForm bvn={bvn}/>}
         {step === 'personal-info' && <PersonalInfoForm />}
-        {step === 'bvn-validation' && <BvnForm />}
         {step === 'residential-info' && <ResidentialInfoForm />}
-        {step === 'id-details' && <IdInfoForm />}
+        {step === 'nin-details' && <IdInfoForm />}
         {step === 'kyc-completed' && <Completion />}
       </div>
     </div>

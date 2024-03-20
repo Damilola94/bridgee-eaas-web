@@ -15,6 +15,6 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "data/monthsAbbr.js", "jest.setup.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "data/monthsAbbr.js", "jest.setup.js",  "public/Daon.FaceCapture.min.js"],
   "exclude": ["node_modules"]
 }

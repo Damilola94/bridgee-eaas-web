@@ -37,7 +37,7 @@ function PersonalInfoForm() {
   const personalMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
       queryClient.invalidateQueries(['user-information']);
-      router.push('/get-started/kyc?step=bvn-validation');
+      router.push('/get-started/kyc?step=residential-info');
       notification({
         message: res?.message || 'You have successfully created an invoice',
         type: 'success'
@@ -170,7 +170,7 @@ function PersonalInfoForm() {
               textColor="text-black"
               className="w-full"
               paddingY="py-3"
-              onClick={() => router.push('/get-started/kyc?step=bvn-validation')}
+              onClick={() => router.push('/get-started/kyc?step=residential-info')}
             >
               Next
             </Button>
