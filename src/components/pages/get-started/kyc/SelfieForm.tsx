@@ -17,9 +17,8 @@ function SelfieForm({ bvn }: any) {
   const router = useRouter();
   const formStage = useFormStage();
   const [showCapModal, setShowCapModal] = useState(true);
-  const selfieRef = useRef(null);
   const [base64Url, setBase64Url] = useState("");
-  const [captureImage, setCaptureImage] = useState("");
+  const selfieRef = useRef(null);
 
   const queryClient = useQueryClient();
   const personalMutation = useMutation(handleFetch, {
@@ -41,8 +40,6 @@ function SelfieForm({ bvn }: any) {
   });
 
   let base64ImageString = base64Url.split(',')[1];
-
-  console.log(base64ImageString, "base64ImageString");
 
   const handleSubmit = () => {
 
@@ -67,16 +64,12 @@ function SelfieForm({ bvn }: any) {
   const isCompleted = formStage?.kycStatus === "Completed";
   const { isLoading } = personalMutation;
 
-  const getCaptureImage = (image:any) => {
-    setCaptureImage(image);
-  };
-
   useEffect(() => {
-    if (captureImage !== "") {
+    if (base64Url !== "") {
       handleCaptureModal();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [captureImage]);
+  }, [base64Url]);
 
   return (
     <div className="w-full max-w-md mx-auto">
@@ -90,12 +83,17 @@ function SelfieForm({ bvn }: any) {
         <div className='flex justify-center items-center mt-0s'>
           <FaceCameraBox
             ref={selfieRef}
-            // eslint-disable-next-line no-console
-            onFile = {(file: any) => console.log(file)}
-            shape = "rect"
             setBase64Url = { setBase64Url }
-            handleCaptureModal = { handleCaptureModal }
-            getCaptureImage = {getCaptureImage}
+            label=""
+            holderShape= ""
+            accept=""
+            name=""
+            disabled
+            hasError
+            shape="rect"
+            onFile={() => {}}
+            removeImage={() => {}}
+            handleCaptureModal={handleCaptureModal}
           />
         </div>
       </Modal>
@@ -125,12 +123,12 @@ function SelfieForm({ bvn }: any) {
           </div>
           <div className="w-full">
             <div className="max-w-xl rounded-lg h-96 w-full bg-gray-300 border-gray-300 border-4">
-              {captureImage ? <Image
+              {base64Url ? <Image
                 priority
                 className="mx-auto w-full h-[338px] rounded-lg "
                 width={120}
                 height={45}
-                src={captureImage}
+                src={base64Url}
                 alt="Selfie Preview"
               /> : ""}
             </div>

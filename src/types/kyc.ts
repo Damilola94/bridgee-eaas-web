@@ -35,3 +35,23 @@ export type IdFormProps = {
   backPath?: string;
   ninDetails: string;
 };
+
+export type FaceCameraBoxProps = {
+  ref: object
+  accept: string,
+  disabled: Boolean,
+  setBase64Url?: (arg0: any) => void,
+  hasError: Boolean,
+  holderShape: string,
+  shape: string,
+  label: string,
+  name: string,
+  onFile?: (arg0: any) => void,
+  removeImage?: (arg0: any) => void,
+  handleCaptureModal?: () => void,
+};
+
+export type FaceCaptureProps = {
+  setPicture?: (arg0: any) => void,
+  toggleCam?: () => void,
+};

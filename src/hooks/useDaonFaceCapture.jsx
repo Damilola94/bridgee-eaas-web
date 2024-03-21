@@ -15,7 +15,7 @@ if (typeof window !== 'undefined') {
 
 export const useDaonFaceCapture = () => {
   // Ref
-  const videoRef = useRef();
+  const videoRef = useRef(null);
   // Variwble
   const errorTop = isMobile(navigator.userAgent) ? 28 : -5;
   const cameraResolution = "1280x720";

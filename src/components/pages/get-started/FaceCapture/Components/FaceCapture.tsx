@@ -1,14 +1,12 @@
 import React, { useEffect } from "react";
-import PropTypes from "prop-types";
 import Image from "next/image";
 
 import { useDaonFaceCapture } from "../../../../../hooks/useDaonFaceCapture";
 import Loading from "../../../../common/Loading";
 import Button from "../../../../inputs/Button";
+import { FaceCaptureProps } from "../../../../../types/kyc";
 
-// import "./FaceCapture.css";
-
-const FaceCapture = ({ setPicture, toggleCam, getCaptureImage }) => {
+const FaceCapture = ({ setPicture = () => {}, toggleCam = () => {} }:FaceCaptureProps) => {
   const {
     cameraStarted,
     capturedImage,
@@ -37,9 +35,8 @@ const FaceCapture = ({ setPicture, toggleCam, getCaptureImage }) => {
   }
 
   useEffect(() => {
-    getCaptureImage(capturedImage);
     setPicture(capturedImage);
-  }, [capturedImage, getCaptureImage, setPicture]);
+  }, [capturedImage, setPicture]);
 
   return (
     // eslint-disable-next-line react/jsx-filename-extension
@@ -124,18 +121,11 @@ const FaceCapture = ({ setPicture, toggleCam, getCaptureImage }) => {
             message={errorMessageFaceCapture}
             type="error"
           /> */}
-          <Button onClick={startCamera} type="primary" text="Open Camera" />
+          <Button onClick={startCamera} type="button" />
         </div>
       )}
     </>
   );
-};
-
-FaceCapture.propTypes = {
-  // history: PropTypes.oneOfType([PropTypes.object]),
-  setPicture: PropTypes.string,
-  // title: PropTypes.string,
-  toggleCam: PropTypes.func
 };
 
 export default FaceCapture;

@@ -17,3 +17,4 @@ export type BusinessProps = {
   twitter?: string;
   website?: string;
 };
+

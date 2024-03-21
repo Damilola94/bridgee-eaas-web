@@ -2,28 +2,27 @@ import React, {
   forwardRef, useRef, useState, useEffect
 } from "react";
 
-import PropTypes from "prop-types";
-
 import { useFaceContext } from "../../../../context/faceCapture";
 
 import useToggle from "../../../../hooks/useToggle";
 
-import FaceCapture from "../FaceCapture/Components/FaceCapture";
+import Modal from "../../../common/Modal";
 
-import Modal from "../../../../components/common/Modal";
+import { FaceCameraBoxProps } from "../../../../types/kyc";
 
 import Button from "../../../inputs/Button";
+
+import FaceCapture from "./Components/FaceCapture";
 
 import { calculateOvalStyle } from "./logic/Oval";
 
 /* eslint-disable */
-let Daon;
+let Daon: { FaceCapture: new (arg0: { height: number; width: number }) => any };
 if (typeof window !== "undefined") {
   Daon = global?.window.Daon;
 }
-/* eslint-disable */
 
-const FaceCameraBox = forwardRef(
+const FaceCameraBox = forwardRef<HTMLDivElement, FaceCameraBoxProps>(
   (
     {
       // aspectRatio,
@@ -31,21 +30,21 @@ const FaceCameraBox = forwardRef(
       onFile = () => {},
       holderShape = null,
       disabled = false,
-      //   maxSize = 500,
+      // maxSize = 500,
       label,
       hasError,
       name,
-      //   loading = false,
+      // loading = false,
       removeImage = () => {},
-      setBase64Url,
-      handleCaptureModal,
-      getCaptureImage,
-      ref
+      setBase64Url = () => {},
+      handleCaptureModal = () => {},
     },
+    ref
   ) => {
-    const videoRef = useRef();
-    const { gyroscopeChecked, cameraResolution } = useFaceContext();
+    const videoRef = useRef(null);
+    const { gyroscopeChecked, cameraResolution }: any = useFaceContext();
     const [feedbackMessage, setFeedbackMessage] = useState("");
+    const [capturedImage, setCapturedImage] = useState("");
     const [loading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState("");
     const [faceState, setFaceState] = useState("");
@@ -65,9 +64,9 @@ const FaceCameraBox = forwardRef(
       })
     );
 
-    let findFaceTimeout;
+    let findFaceTimeout: string | number | NodeJS.Timeout | undefined;
 
-    const setFaceStatus = (code) => {
+    const setFaceStatus = (code: number) => {
       if (code === 900) {
         setFaceState("face-passed");
       } else if (code === 901) {
@@ -79,7 +78,7 @@ const FaceCameraBox = forwardRef(
 
     const loadDFQModule = () => {
       fc.loadDFQModule({
-        onFaceModuleLoaded: ({ isLoaded, error }) => {
+        onFaceModuleLoaded: ({ isLoaded, error }: any) => {
           setWasmLoaded(isLoaded);
           if (error) {
             setTimeout(() => {
@@ -94,10 +93,14 @@ const FaceCameraBox = forwardRef(
 
     const startFaceDetector = () => {
       fc.startFaceDetector({
-        onFaceDetectorError: (err) => {
+        onFaceDetectorError: (err: any) => {
           console.log("error", err);
         },
-        onFaceDetectorFeedback: (detectorFeedbackObject) => {
+        onFaceDetectorFeedback: (detectorFeedbackObject: {
+          result: string;
+          faceImage: any;
+          feedback: { code: any; message: React.SetStateAction<string> };
+        }) => {
           if (detectorFeedbackObject.result === "PASS") {
             setCapturedImage(detectorFeedbackObject?.faceImage);
           } else {
@@ -176,12 +179,12 @@ const FaceCameraBox = forwardRef(
     }, [showCamModal, cameraStarted]);
 
     useEffect(() => {
-      if(picture){
+      if (picture) {
         fc.stopCamera();
         fc.destroy();
       }
-    }, [picture])
-    
+    }, [picture]);
+
     useEffect(() => {
       if (cameraStarted && isWasmLoaded && videoLoaded) {
         startFaceDetector();
@@ -212,55 +215,55 @@ const FaceCameraBox = forwardRef(
 
     // const [closeCaptureModal, setCloseCaptureModal] = useState(false)
 
+    console.log("I got here", picture,showCamModal, "picture");
+
     const handleTakePicture = () => {
       toggleShowCamModal();
-      // setCloseCaptureModal(true)
-      // handleCaptureModal();
     };
 
-    const handleClick = (event) => {
+    // useEffect(() => {
+    //   if (showCamModal) {
+    //     handleCaptureModal();
+    //   }
+    // }, [showCamModal]);
+
+    const handleClick = (
+      event: React.MouseEvent<HTMLInputElement, MouseEvent>
+    ) => {
       // eslint-disable-next-line no-param-reassign
-      event.target.value = "";
+      const target = event.target as HTMLButtonElement;
+      if (target) {
+        target.value = "";
+      }
     };
 
     return (
       <>
         {<p className="text-red-600 -mt-4 ml-1 text-xs">{label}</p>}
-        <div
+        {!showCamModal && <div
           ref={ref}
-          className={`uploadBox border-solid border-transparent mx-auto ${
-            hasError ? "border-alat-red" : ""
-          } ${holderShape} ${disabled ? "pointer-events-none" : ""}`}
-          style={{
-            backgroundImage: `url(${loading ? "" : picture})`,
-            borderWidth: 1,
-          }}
         >
-        <Button
-          paddingY="py-3"
-          className="w-full"
-          onClick={picture ? () => handleRemove() : () => handleTakePicture()}
-        >
-          {picture ? "Remove" : "Take a selfie"}
-        </Button>
+          <Button
+            paddingY="py-3"
+            className="w-full"
+            onClick={picture ? handleRemove : handleTakePicture}
+          >
+            {picture ? "Remove" : "Take a selfie"}
+          </Button>
           <input
             ref={videoRef}
             onChange={handleFileSelectionChange}
-            onClick={handleClick}
+            onClick={(event) => handleClick(event)}
             type="image"
             className="hidden"
             accept={accept}
           />
-        </div>
-        <Modal
-          isOpen={showCamModal}
-          onClose={toggleShowCamModal}
-        >
+        </div>}
+        <Modal isOpen={showCamModal} onClose={() => toggleShowCamModal}>
           <div className="flex-row justify-center">
             <FaceCapture
               setPicture={setPicture}
-              toggleCam={toggleShowCamModal}
-              getCaptureImage={getCaptureImage}
+              toggleCam={() => toggleShowCamModal}
             />
           </div>
         </Modal>
@@ -268,18 +271,5 @@ const FaceCameraBox = forwardRef(
     );
   }
 );
-
-FaceCameraBox.propTypes = {
-  ref: PropTypes.any,
-  accept: PropTypes.string,
-  disabled: PropTypes.bool,
-  hasError: PropTypes.bool,
-  holderShape: PropTypes.string,
-  shape: PropTypes.string,
-  label: PropTypes.string,
-  name: PropTypes.string,
-  onFile: PropTypes.func.isRequired,
-  removeImage: PropTypes.func,
-};
 
 export default FaceCameraBox;
