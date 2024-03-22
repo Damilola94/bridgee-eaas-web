@@ -6,7 +6,7 @@ import { useFaceContext } from "../../../../context/faceCapture";
 
 import useToggle from "../../../../hooks/useToggle";
 
-import Modal from "../../../common/Modal";
+// import Modal from "../../../common/Modal";
 
 import { FaceCameraBoxProps } from "../../../../types/kyc";
 
@@ -37,7 +37,7 @@ const FaceCameraBox = forwardRef<HTMLDivElement, FaceCameraBoxProps>(
       // loading = false,
       removeImage = () => {},
       setBase64Url = () => {},
-      handleCaptureModal = () => {},
+      // handleCaptureModal = () => {},
     },
     ref
   ) => {
@@ -215,17 +215,11 @@ const FaceCameraBox = forwardRef<HTMLDivElement, FaceCameraBoxProps>(
 
     // const [closeCaptureModal, setCloseCaptureModal] = useState(false)
 
-    console.log("I got here", picture,showCamModal, "picture");
+    console.log("I got here", picture, showCamModal, "picture");
 
     const handleTakePicture = () => {
       toggleShowCamModal();
     };
-
-    // useEffect(() => {
-    //   if (showCamModal) {
-    //     handleCaptureModal();
-    //   }
-    // }, [showCamModal]);
 
     const handleClick = (
       event: React.MouseEvent<HTMLInputElement, MouseEvent>
@@ -240,33 +234,35 @@ const FaceCameraBox = forwardRef<HTMLDivElement, FaceCameraBoxProps>(
     return (
       <>
         {<p className="text-red-600 -mt-4 ml-1 text-xs">{label}</p>}
-        {!showCamModal && <div
-          ref={ref}
-        >
-          <Button
-            paddingY="py-3"
-            className="w-full"
-            onClick={picture ? handleRemove : handleTakePicture}
-          >
-            {picture ? "Remove" : "Take a selfie"}
-          </Button>
-          <input
-            ref={videoRef}
-            onChange={handleFileSelectionChange}
-            onClick={(event) => handleClick(event)}
-            type="image"
-            className="hidden"
-            accept={accept}
-          />
-        </div>}
-        <Modal isOpen={showCamModal} onClose={() => toggleShowCamModal}>
-          <div className="flex-row justify-center">
+        {!showCamModal ? (
+          <div ref={ref}>
+            <Button
+              paddingY="py-3"
+              className="w-full"
+              onClick={picture ? handleRemove : handleTakePicture}
+            >
+              {picture ? "Remove" : "Take a selfie"}
+            </Button>
+            <input
+              ref={videoRef}
+              onChange={handleFileSelectionChange}
+              onClick={(event) => handleClick(event)}
+              type="image"
+              className="hidden"
+              accept={accept}
+            />
+          </div>
+        ) : (
+          <div className="flex-row justify-center w-full">
             <FaceCapture
               setPicture={setPicture}
               toggleCam={() => toggleShowCamModal}
             />
           </div>
-        </Modal>
+        )}
+        {/* <Modal isOpen={showCamModal} onClose={() => toggleShowCamModal}>
+          
+        </Modal> */}
       </>
     );
   }

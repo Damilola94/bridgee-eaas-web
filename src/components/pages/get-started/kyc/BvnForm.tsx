@@ -14,7 +14,7 @@ import useFormStage from '../../../../hooks/useFormStage';
 
 import FaceCaptureModal from './FaceCaptureModal';
 
-function BvnForm({ setBvn }: any) {
+function BvnForm({ setBvn, showCapModal, setShowCapModal }: any) {
   const router = useRouter();
   const { kycData } = useKycContext();
   const formStage = useFormStage();
@@ -71,6 +71,7 @@ function BvnForm({ setBvn }: any) {
   };
 
   const handleOpenFaceCapturing = () => {
+    setShowCapModal(!showCapModal);
     router.push('/get-started/kyc?step=take-a-selfie');
     queryClient.invalidateQueries(['user-information']);
   };
@@ -81,7 +82,6 @@ function BvnForm({ setBvn }: any) {
   return (
     <div className="w-full max-w-md mx-auto">
       {isLoading && <Loading />}
-
       {showSuccessMessage && <FaceCaptureModal onClose={handleOpenFaceCapturing} />}
       <div className="w-full bg-white rounded-xl px-8 py-7 shadow">
         <div className="w-full">

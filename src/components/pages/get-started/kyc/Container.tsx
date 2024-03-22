@@ -24,10 +24,13 @@ function KycContainer() {
   const router = useRouter();
   const { step } = router?.query || {};
   const [bvn, setBvn] = useState("");
+  const [showCapModal, setShowCapModal] = useState(false);
 
   const { data, status, isFetching } = useGetQuery({
     endpoint: 'user', extra: 'user-information', queryKey: ['user-information']
   });
+
+  console.log(data);
 
   useEffect(() => {
     if (status === 'success') {
@@ -64,8 +67,8 @@ function KycContainer() {
       <KycSteps steps={steps} />
       <div>
         {step !== 'kyc-completed' && <SmallKycSteps steps={steps} />}
-        {step === 'bvn-validation' && <BvnForm setBvn={setBvn}/>}
-        {step === 'take-a-selfie' && <SelfieForm bvn={bvn}/>}
+        {step === 'bvn-validation' && <BvnForm setBvn={setBvn} showCapModal={showCapModal} setShowCapModal={setShowCapModal}/>}
+        {step === 'take-a-selfie' && <SelfieForm bvn={bvn} showCapModal={showCapModal} setShowCapModal={setShowCapModal}/>}
         {step === 'personal-info' && <PersonalInfoForm />}
         {step === 'residential-info' && <ResidentialInfoForm />}
         {step === 'nin-details' && <IdInfoForm />}

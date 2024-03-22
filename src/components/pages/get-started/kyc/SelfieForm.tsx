@@ -13,10 +13,10 @@ import useFormStage from "../../../../hooks/useFormStage";
 import Modal from "../../../common/Modal";
 import FaceCameraBox from "../FaceCapture/FaceCameraBox";
 
-function SelfieForm({ bvn }: any) {
+function SelfieForm({ bvn, showCapModal, setShowCapModal }: any) {
   const router = useRouter();
   const formStage = useFormStage();
-  const [showCapModal, setShowCapModal] = useState(true);
+  // const [showCapModal, setShowCapModal] = useState(true);
   const [base64Url, setBase64Url] = useState("");
   const selfieRef = useRef(null);
 
@@ -26,7 +26,7 @@ function SelfieForm({ bvn }: any) {
       queryClient.invalidateQueries(["user-information"]);
       router.push("/get-started/kyc?step=personal-info");
       notification({
-        message: res?.message || "You have successfully created an invoice",
+        message: res?.message || "You have successfully updated your kyc",
         type: "success"
       });
     },
@@ -77,7 +77,7 @@ function SelfieForm({ bvn }: any) {
       <Modal
         isOpen={showCapModal}
         onClose={handleCaptureModal}
-        maxWidth="max-w-[300px]"
+        // maxWidth="max-w-[300px]"
         isShowCloseIcon={false}
       >
         <div className='flex justify-center items-center mt-0s'>

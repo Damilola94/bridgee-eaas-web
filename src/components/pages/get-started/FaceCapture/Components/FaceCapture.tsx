@@ -19,7 +19,7 @@ const FaceCapture = ({ setPicture = () => {}, toggleCam = () => {} }:FaceCapture
     loadingFaceCapture,
     // loadDFQModule,
     ovalStyle,
-    setCapturedImage,
+    // setCapturedImage,
     startCamera,
     videoRef
   } = useDaonFaceCapture();
@@ -85,7 +85,7 @@ const FaceCapture = ({ setPicture = () => {}, toggleCam = () => {} }:FaceCapture
         </div>
       )}
 
-      {capturedImage && (
+      {/* {capturedImage && (
         <div className="flex gap-5 justify-center mt-5">
           <Button
             paddingY="py-3"
@@ -110,7 +110,7 @@ const FaceCapture = ({ setPicture = () => {}, toggleCam = () => {} }:FaceCapture
             Continue
           </Button>
         </div>
-      )}
+      )} */}
 
       {loadingFaceCapture && <Loading message="Loading Face Capturing" />}
 
