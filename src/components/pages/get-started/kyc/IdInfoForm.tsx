@@ -42,7 +42,7 @@ function IdInfoForm({ setBvn, showCapModal, setShowCapModal }: any) {
   const { idCardInformation } = kycData || {};
 
   useEffect(() => {
-    setForm({ ninDetails: idCardInformation });
+    // setForm({ ninDetails: idCardInformation });
   }, [idCardInformation]);
 
   const queryClient = useQueryClient();
