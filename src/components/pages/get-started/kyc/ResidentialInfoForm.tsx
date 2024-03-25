@@ -15,6 +15,8 @@ import handleFetch from '../../../../services/api/handleFetch';
 import Loading from '../../../common/Loading';
 import useFormStage from '../../../../hooks/useFormStage';
 
+import SuccessMessage from './SuccessMessage';
+
 function ResidentialInfoForm() {
   const router = useRouter();
   const { kycData } = useKycContext();
@@ -22,7 +24,7 @@ function ResidentialInfoForm() {
   const [form, setForm] = useState<ResidentialInfoProps>();
   const [states, setStates] = useState<SelectOptionType[]>();
   const [lgas, setLgas] = useState<SelectOptionType[]>();
-
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const initialLoad = useRef(false);
 
   const { residentialAddress } = kycData || {};
@@ -63,7 +65,7 @@ function ResidentialInfoForm() {
   const residentialMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
       queryClient.invalidateQueries(['user-information']);
-      router.push('/get-started/kyc?step=nin-details');
+      setShowSuccessMessage(!showSuccessMessage);
       notification({
         message: res?.message || 'You have successfully created an invoice',
         type: 'success'
@@ -115,6 +117,12 @@ function ResidentialInfoForm() {
     residentialMutation.mutate({
       endpoint: 'user', extra: 'add-user-residential-address', method: 'POST', body, auth: true
     });
+  };
+
+  const handleCloseSuccessMsg = () => {
+    setShowSuccessMessage(!showSuccessMessage);
+    queryClient.invalidateQueries(["user-information"]);
+    router.push("/get-started/kyc?step=kyc-completed");
   };
 
   const isCompleted = formStage?.kycStatus === 'Completed';
@@ -262,6 +270,7 @@ function ResidentialInfoForm() {
           </div>
         )}
       </div>
+      {showSuccessMessage && <SuccessMessage onClose={handleCloseSuccessMsg} />}
     </div>
   );
 }

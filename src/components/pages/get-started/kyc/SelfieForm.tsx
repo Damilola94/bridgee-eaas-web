@@ -14,22 +14,20 @@ import Modal from "../../../common/Modal";
 
 import FaceCameraBox from "../FaceCapture/FaceCameraBox";
 
-import SuccessMessage from "./SuccessMessage";
-
 function SelfieForm({ bvn, showCapModal, setShowCapModal }: any) {
   const router = useRouter();
   const { step } = router?.query || {};
   const formStage = useFormStage();
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [base64Url, setBase64Url] = useState("");
   const selfieRef = useRef(null);
 
+  const route = step === 'take-a-selfie-nin' ? "residential-info" : "personal-info";
+
   const queryClient = useQueryClient();
-  const personalMutation = useMutation(handleFetch, {
+  const selfMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
-      setShowSuccessMessage(!showSuccessMessage);
       queryClient.invalidateQueries(["user-information"]);
-      router.push("/get-started/kyc?step=personal-info");
+      router.push(`/get-started/kyc?step=${route}`);
       notification({
         message: res?.message || "You have successfully updated your kyc",
         type: "success"
@@ -60,7 +58,7 @@ function SelfieForm({ bvn, showCapModal, setShowCapModal }: any) {
 
     const extra = step === 'take-a-selfie-nin' ? "evaluate-nin-selfie" : "evaluate-bvn-selfie";
 
-    personalMutation.mutate({
+    selfMutation.mutate({
       endpoint: "user",
       extra,
       method: "POST",
@@ -73,14 +71,8 @@ function SelfieForm({ bvn, showCapModal, setShowCapModal }: any) {
     setShowCapModal(!showCapModal);
   };
 
-  const handleCloseSuccessMsg = () => {
-    setShowSuccessMessage(!showSuccessMessage);
-    queryClient.invalidateQueries(["user-information"]);
-    router.push("/get-started/kyc?step=take-a-kyc-completed");
-  };
-
   const isCompleted = formStage?.kycStatus === "Completed";
-  const { isLoading } = personalMutation;
+  const { isLoading } = selfMutation;
 
   useEffect(() => {
     if (base64Url !== "") {
@@ -96,6 +88,7 @@ function SelfieForm({ bvn, showCapModal, setShowCapModal }: any) {
         isOpen={showCapModal}
         onClose={handleCaptureModal}
         // maxWidth="max-w-[300px]"
+        noBg
         isShowCloseIcon={false}
       >
         <div className='flex justify-center items-center mt-0s'>
@@ -193,7 +186,6 @@ function SelfieForm({ bvn, showCapModal, setShowCapModal }: any) {
           </div>
         )}
       </div>
-      {showSuccessMessage && <SuccessMessage onClose={handleCloseSuccessMsg} />}
     </div>
   );
 }

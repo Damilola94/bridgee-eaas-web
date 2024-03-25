@@ -68,9 +68,9 @@ function KycContainer() {
         {step === 'bvn-validation' && <BvnForm setBvn={setBvn} showCapModal={showCapModal} setShowCapModal={setShowCapModal}/>}
         {step === 'take-a-selfie' && <SelfieForm bvn={bvn} showCapModal={showCapModal} setShowCapModal={setShowCapModal}/>}
         {step === 'personal-info' && <PersonalInfoForm />}
-        {step === 'residential-info' && <ResidentialInfoForm />}
         {step === 'nin-details' && <IdInfoForm showCapModal={showCapModal} setShowCapModal={setShowCapModal}/>}
         {step === 'take-a-selfie-nin' && <SelfieForm bvn={bvn} showCapModal={showCapModal} setShowCapModal={setShowCapModal}/>}
+        {step === 'residential-info' && <ResidentialInfoForm />}
         {step === 'kyc-completed' && <Completion />}
       </div>
     </div>

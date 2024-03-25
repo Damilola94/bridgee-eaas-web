@@ -2,9 +2,9 @@ export const steps = [
   { title: 'BVN Validation', step: 'bvn-validation', stage: 'BvnValidation' },
   { title: 'Take a Selfie  for BVN', step: 'take-a-selfie', stage: 'BvnValidation' },
   { title: 'Personal Information', step: 'personal-info', stage: 'PersonalInformation' },
-  { title: 'Residential Information', step: 'residential-info', stage: 'ResidentialInformation' },
-  { title: 'NIN Details', step: 'nin-details', stage: 'NINDetails' },
-  { title: 'Take a Selfie for NIN', step: 'take-a-selfie-nin', stage: 'NINDetails' }
+  { title: 'NIN Details', step: 'nin-details', stage: 'NinValidation' },
+  { title: 'Take a Selfie for NIN', step: 'take-a-selfie-nin', stage: 'NinValidation' },
+  { title: 'Residential Information', step: 'residential-info', stage: 'ResidentialInformation' }
 ];
 
 export const stepsByStep = {
@@ -12,8 +12,8 @@ export const stepsByStep = {
   'take-a-selfie': 'BvnValidation',
   'personal-info': 'PersonalInformation',
   'residential-info': 'ResidentialInformation',
-  'nin-details': 'NINDetails',
-  'take-a-selfie-nin': 'NINDetails'
+  'nin-details': 'NinValidation',
+  'take-a-selfie-nin': 'NinValidation'
 };
 
 export const idTypes = [

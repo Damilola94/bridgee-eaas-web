@@ -11,6 +11,8 @@ function KycSteps({ steps }: { steps: { title: string, step: string, stage: stri
   const { kycStages } = kycData || {};
   const { step } = router?.query || {};
 
+  console.log(kycStages, "kycStages");
+
   return (
     <div className="max-w-[250px] hidden sm:flex mr-1 mb-[63px]">
       <div className="w-full bg-white rounded-xl px-8 py-7 shadow">

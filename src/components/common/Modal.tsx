@@ -13,12 +13,13 @@ type ModalProps = {
 	onClose?: () => void;
   maxWidth?: string;
   isFullHeight?: boolean;
+  noBg?: boolean;
   zIndex?: string;
 }
 
 function Modal({
   children, isOpen, onClose = () => {}, maxWidth, isShowCloseIcon,
-  isCenter, isFullHeight, isCloseOnOverlayClick, zIndex
+  isCenter, isFullHeight, isCloseOnOverlayClick, zIndex, noBg
 }: ModalProps) {
   return (
     <Dialog
@@ -34,7 +35,7 @@ function Modal({
         }
       )}
     >
-      <Dialog.Panel className={clsx('bg-white w-full rounded-xl relative p-5 mx-auto', maxWidth, isFullHeight ? 'h-[90%]' : '')}>
+      <Dialog.Panel className={clsx(`${!noBg && "bg-white" }  w-full rounded-xl relative p-5 mx-auto`, maxWidth, isFullHeight ? 'h-[90%]' : '')}>
         {isShowCloseIcon && (
           <button onClick={onClose} className="absolute z-20 top-3 right-3 outline-none">
             <CgClose className="w-8 h-8 p-1 hover:bg-gray-300/50 rounded-lg" />
