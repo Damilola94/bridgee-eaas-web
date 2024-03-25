@@ -6,17 +6,16 @@ import CheckMark from '../../../../assets/svgs/check-star.svg';
 import Modal from '../../../common/Modal';
 import Button from '../../../inputs/Button';
 
-function FaceCaptureModal({ onClose }: { onClose: () => void }) {
+function FaceCaptureModal({ onClose, title, subTitle }: any) {
   return (
     <Modal isOpen isShowCloseIcon={false} isCenter maxWidth="max-w-[400px]">
       <div className="text-center py-5">
         <Image src={CheckMark} alt="Check mark" className="inline-block mb-10 text-[#CE18DF]" />
-
         <p className="text-lg text-lightText font-bold">
-        BVN validated successfully.
+          {title}
         </p>
         <p className="text-lg text-lightText font-bold mb-6">
-        Start Liveliness Check.
+          {subTitle}
         </p>
 
         <Button

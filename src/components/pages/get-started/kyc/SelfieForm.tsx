@@ -11,18 +11,23 @@ import Loading from "../../../common/Loading";
 import handleFetch from "../../../../services/api/handleFetch";
 import useFormStage from "../../../../hooks/useFormStage";
 import Modal from "../../../common/Modal";
+
 import FaceCameraBox from "../FaceCapture/FaceCameraBox";
+
+import SuccessMessage from "./SuccessMessage";
 
 function SelfieForm({ bvn, showCapModal, setShowCapModal }: any) {
   const router = useRouter();
+  const { step } = router?.query || {};
   const formStage = useFormStage();
-  // const [showCapModal, setShowCapModal] = useState(true);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [base64Url, setBase64Url] = useState("");
   const selfieRef = useRef(null);
 
   const queryClient = useQueryClient();
   const personalMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
+      setShowSuccessMessage(!showSuccessMessage);
       queryClient.invalidateQueries(["user-information"]);
       router.push("/get-started/kyc?step=personal-info");
       notification({
@@ -42,15 +47,22 @@ function SelfieForm({ bvn, showCapModal, setShowCapModal }: any) {
   let base64ImageString = base64Url.split(',')[1];
 
   const handleSubmit = () => {
+    let body;
 
-    const body = {
-      bvn,
-      base64ImageString
-    };
+    if (step === 'take-a-selfie-nin') {
+      body = { base64ImageString };
+    } else {
+      body = {
+        bvn,
+        base64ImageString
+      };
+    }
+
+    const extra = step === 'take-a-selfie-nin' ? "evaluate-nin-selfie" : "evaluate-bvn-selfie";
 
     personalMutation.mutate({
       endpoint: "user",
-      extra: "evaluate-bvn-selfie",
+      extra,
       method: "POST",
       body,
       auth: true
@@ -59,6 +71,12 @@ function SelfieForm({ bvn, showCapModal, setShowCapModal }: any) {
 
   const handleCaptureModal = () => {
     setShowCapModal(!showCapModal);
+  };
+
+  const handleCloseSuccessMsg = () => {
+    setShowSuccessMessage(!showSuccessMessage);
+    queryClient.invalidateQueries(["user-information"]);
+    router.push("/get-started/kyc?step=take-a-kyc-completed");
   };
 
   const isCompleted = formStage?.kycStatus === "Completed";
@@ -175,6 +193,7 @@ function SelfieForm({ bvn, showCapModal, setShowCapModal }: any) {
           </div>
         )}
       </div>
+      {showSuccessMessage && <SuccessMessage onClose={handleCloseSuccessMsg} />}
     </div>
   );
 }

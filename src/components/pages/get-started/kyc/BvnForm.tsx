@@ -82,7 +82,7 @@ function BvnForm({ setBvn, showCapModal, setShowCapModal }: any) {
   return (
     <div className="w-full max-w-md mx-auto">
       {isLoading && <Loading />}
-      {showSuccessMessage && <FaceCaptureModal onClose={handleOpenFaceCapturing} />}
+      {showSuccessMessage && <FaceCaptureModal onClose={handleOpenFaceCapturing} title=" BVN validated successfully." subTitle=" Start Liveliness Check."/>}
       <div className="w-full bg-white rounded-xl px-8 py-7 shadow">
         <div className="w-full">
           <div className="flex justify-between items-start">
@@ -103,10 +103,8 @@ function BvnForm({ setBvn, showCapModal, setShowCapModal }: any) {
           </div>
         </div>
       </div>
-
       <div className="flex mt-5 -mx-2">
         <div className="w-1/2 px-2">
-
         </div>
         {isCompleted ? (
           <div className="w-1/2 px-2">

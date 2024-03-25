@@ -14,13 +14,14 @@ import notification from "../../../../utilities/notification";
 import Loading from "../../../common/Loading";
 // import FileInput from '../../../inputs/File';
 // import { formatFileUrl, formatIDTypeLabel } from '../../../../utilities/general';
-import { formatIDTypeLabel } from "../../../../utilities/general";
+// import { formatIDTypeLabel } from "../../../../utilities/general";
 
 import useFormStage from "../../../../hooks/useFormStage";
 
 import TextInput from "../../../inputs/Text";
 
-import SuccessMessage from "./SuccessMessage";
+// import SuccessMessage from "./SuccessMessage";
+import FaceCaptureModal from "./FaceCaptureModal";
 
 const initialFormState: IdFormProps = {
   ninDetails: "",
@@ -32,7 +33,7 @@ const initialFormState: IdFormProps = {
   backPath: ""
 };
 
-function IdInfoForm() {
+function IdInfoForm({ setBvn, showCapModal, setShowCapModal }: any) {
   const router = useRouter();
   const { kycData } = useKycContext();
   const formStage = useFormStage();
@@ -41,33 +42,17 @@ function IdInfoForm() {
   const { idCardInformation } = kycData || {};
 
   useEffect(() => {
-    setForm({ ninDetails: idCardInformation?.bvn });
-  }, [idCardInformation]);
-
-  useEffect(() => {
-    setForm((prev) => ({
-      ...prev,
-      ...idCardInformation,
-      personalAccountDocumentType:
-        idCardInformation?.personalAccountDocumentType
-          ? {
-            label: formatIDTypeLabel(
-              idCardInformation?.personalAccountDocumentType
-            ),
-            value: idCardInformation?.personalAccountDocumentType
-          }
-          : undefined
-    }));
+    setForm({ ninDetails: idCardInformation });
   }, [idCardInformation]);
 
   const queryClient = useQueryClient();
   const idMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
-      setShowSuccessMessage(true);
-      notification({
-        message: res?.message || "You have successfully created an invoice",
-        type: "success"
-      });
+      setShowSuccessMessage(!showSuccessMessage);
+      // notification({
+      //   message: res?.message || "You have successfully updated your KYC",
+      //   type: "success"
+      // });
     },
     onError: (err: any) => {
       notification({
@@ -77,21 +62,6 @@ function IdInfoForm() {
       });
     }
   });
-
-  // const handleChange = (val: any, inputType = 'input', inputName = '') => {
-  //   if (inputType === 'input') {
-  //     const {
-  //       value, name, type, files
-  //     } = val.target;
-  //     if (type === 'file') {
-  //       setForm((state) => ({ ...state, [name]: files?.[0] }));
-  //     } else {
-  //       setForm((state) => ({ ...state, [name]: value }));
-  //     }
-  //   } else {
-  //     setForm((prev) => ({ ...prev, [inputName]: val }));
-  //   }
-  // };
 
   const handleChange = (val: any, type = "input", inputName = "") => {
     if (type === "input") {
@@ -103,14 +73,8 @@ function IdInfoForm() {
   };
 
   const validateForm = () => {
-    if (!form?.personalAccountDocumentType?.value)
-      return "Please, select your identification type";
-    if (!form?.identificationNumber)
-      return "Please, enter your identification number.";
-    if (!form?.front)
-      return "Please, upload the front of your identification document";
-    if (!form?.back)
-      return "Please, upload the back of your identification document";
+    if (!form?.ninDetails) return 'Please, enter your NIN.';
+    if (form?.ninDetails?.length !== 11) return 'Please, enter a valid NIN.';
     return null;
   };
 
@@ -120,30 +84,21 @@ function IdInfoForm() {
       notification({ title: "Form Error", message: error, type: "danger" });
       return;
     }
-
-    const body = new FormData();
-    body.append(
-      "personalAccountDocumentType",
-      String(form?.personalAccountDocumentType?.value)
-    );
-    body.append("identificationNumber", form.identificationNumber!);
-    body.append("front", form.front!);
-    body.append("back", form.back!);
-
+    const body = { nin: form?.ninDetails };
     idMutation.mutate({
       endpoint: "user",
-      extra: "add-user-identification-card",
+      extra: "add-and-validate-nin",
       method: "POST",
       body,
-      auth: true,
-      multipart: true
+      auth: true
     });
   };
 
-  const handleCloseSuccessMsg = () => {
-    setShowSuccessMessage(false);
+  const handleOpenFaceCapturing = () => {
+    setShowSuccessMessage(!showSuccessMessage);
+    setShowCapModal(!showCapModal);
     queryClient.invalidateQueries(["user-information"]);
-    router.push("/get-started/kyc?step=kyc-completed");
+    router.push("/get-started/kyc?step=take-a-selfie-nin");
   };
 
   const isCompleted = formStage?.kycStatus === "Completed";
@@ -152,6 +107,7 @@ function IdInfoForm() {
   return (
     <div className="w-full max-w-md mx-auto">
       {isLoading && <Loading />}
+      {showSuccessMessage && <FaceCaptureModal onClose={handleOpenFaceCapturing} title="NIN validated successfully." subTitle=" Start Liveliness Check."/>}
       <div className="w-full bg-white rounded-xl px-8 py-7 shadow">
         <div className="w-full">
           <div className="mb-5">
@@ -166,13 +122,12 @@ function IdInfoForm() {
             </p>
             <p className="text-sm font-extrabold">Dial *346# on your phone to get the number.</p>
           </div>
-
           <div className="w-full">
             <TextInput
-              name="bvn"
+              name="ninDetails"
               disabled={isCompleted}
               onChange={(e) =>
-                /^\d{0,12}$/g.test(e.target.value) && handleChange(e)
+                /^\d{0,11}$/g.test(e.target.value) && handleChange(e)
               }
               value={form?.ninDetails || ""}
               className="w-full mb-1"
@@ -276,7 +231,7 @@ function IdInfoForm() {
         )}
       </div>
 
-      {showSuccessMessage && <SuccessMessage onClose={handleCloseSuccessMsg} />}
+      {/* {showSuccessMessage && <SuccessMessage onClose={handleCloseSuccessMsg} />} */}
     </div>
   );
 }

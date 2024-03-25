@@ -12,6 +12,8 @@ function useFormStage() {
 
   const formStage = kycStages?.find((stage: any) => stage?.kycStage === stepsByStep?.[step as keyof typeof stepsByStep]);
 
+  console.log(kycData, "kycData", stepsByStep, "stepsByStep");
+
   return formStage;
 }
 
