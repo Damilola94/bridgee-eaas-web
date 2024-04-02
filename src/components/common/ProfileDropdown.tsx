@@ -5,11 +5,17 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMutation, useQueryClient } from 'react-query';
-import { Menu, Transition, Popover } from '@headlessui/react';
+import { Menu, Transition } from '@headlessui/react';
 import {
-  BsPerson, BsChevronRight, BsPlus, BsPersonAdd
+  BsPerson, BsPersonAdd
 } from 'react-icons/bs';
-import { FiSettings, FiRefreshCcw } from 'react-icons/fi';
+import { FiSettings } from 'react-icons/fi';
+
+// import { Menu, Transition, Popover } from '@headlessui/react';
+// import {
+//   BsPerson, BsChevronRight, BsPlus, BsPersonAdd
+// } from 'react-icons/bs';
+// import { FiSettings, FiRefreshCcw } from 'react-icons/fi';
 import { HiOutlineLogout } from 'react-icons/hi';
 import { IoIosArrowDown } from 'react-icons/io';
 import { MdOutlineSecurity } from 'react-icons/md';
@@ -91,16 +97,16 @@ export default function ProfileDropdown({ className }: { className: string }) {
     });
   };
 
-  const handleSwitch = (switchType = 'personal', merchantId = null) => {
-    businessMutation.mutate({
-      endpoint: 'user',
-      extra: 'switch-account',
-      method: 'POST',
-      body: { merchantId },
-      auth: true,
-      pQuery: { switchType }
-    });
-  };
+  // const handleSwitch = (switchType = 'personal', merchantId = null) => {
+  //   businessMutation.mutate({
+  //     endpoint: 'user',
+  //     extra: 'switch-account',
+  //     method: 'POST',
+  //     body: { merchantId },
+  //     auth: true,
+  //     pQuery: { switchType }
+  //   });
+  // };
 
   const { isLoading } = businessMutation;
   const { isLoading: isLoggingOut, isSuccess } = logoutMutation;
@@ -167,7 +173,7 @@ export default function ProfileDropdown({ className }: { className: string }) {
                 ))}
               </div>
               <div>
-                <Menu.Item>
+                {/* <Menu.Item>
                   {({ active }) => (
                     <Popover className="relative">
                       <Popover.Button className={`${active ? 'bg-primary/5' : 'bg-white'} w-full text-black flex justify-between items-center px-4 py-2`}>
@@ -230,7 +236,7 @@ export default function ProfileDropdown({ className }: { className: string }) {
                       </Popover.Panel>
                     </Popover>
                   )}
-                </Menu.Item>
+                </Menu.Item> */}
                 {process.env.NEXT_PUBLIC_SEND_INVITE === 'true' && (
                   <Menu.Item>
                     {({ active }) => (

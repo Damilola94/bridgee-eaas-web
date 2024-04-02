@@ -122,13 +122,13 @@ function Signup({ gotoNextForm }: any) {
           </p>
 
           <div className="flex space-x-6">
-            <RadioInput
+            {/* <RadioInput
               name="isBusiness"
               label="Business"
               value="true"
               onChange={handleChange}
               checked={form?.isBusiness === 'true'}
-            />
+            /> */}
             <RadioInput
               name="isBusiness"
               label="Personal"

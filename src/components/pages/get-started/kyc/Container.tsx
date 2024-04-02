@@ -61,7 +61,8 @@ function KycContainer() {
   }
 
   return (
-    <div className="w-full flex justify-center relative">
+    <div className="w-full flex justify-center relative space-x-4
+    ">
       <KycSteps steps={steps} />
       <div>
         {step !== 'kyc-completed' && <SmallKycSteps steps={steps} />}
