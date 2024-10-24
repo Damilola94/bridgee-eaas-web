@@ -12,7 +12,7 @@ const Settings: NextPageWithLayout = () => (
       <title>Bridge by ALAT - Settings</title>
     </Head>
 
-    <div className="w-full">
+    <div className="w-full bo">
       <h2 className="font-bold ff-bold text-2xl mb-3">Settings</h2>
 
       <div className="w-full max-w-7xl mt-10">

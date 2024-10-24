@@ -44,7 +44,7 @@ function Header() {
         <div className="header-content flex items-center w-full h-full text-textColor">
           <div className="w-full flex items-center justify-between">
             <div className="">
-              <Link href="/#top" onClick={handleScroll}>
+              <Link href="/">
                 <Image
                   src={Logo}
                   alt="Bridge by ALAT logo"
@@ -62,7 +62,7 @@ function Header() {
                 <Link href="/aboutus">
                   <li className="">About us</li>
                 </Link>
-                <Link href="/blog">
+                <Link href="/blog" onClick={handleScroll}>
                   <li className="">Blog</li>
                 </Link>
               </ul>

@@ -116,7 +116,7 @@ function SelfieForm({ bvn, showCapModal, setShowCapModal }: any) {
           <div className="flex justify-between items-start">
             <ol className="list-disc text-lightText text-sm ml-4 space-y-1 mb-4">
               <li className="">
-                Make sure you are in a well -lit area
+                Make sure you are in a well-lit area
               </li>
               <li className="">
                 Make sure you are in a front of a plain backgroun

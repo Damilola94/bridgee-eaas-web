@@ -5,7 +5,7 @@ import DeliveryImage from '../../../assets/images/invoice-creation.png';
 
 function Intro() {
   return (
-    <section className="w-full pt-20 sm:pt-40 md:pt-56">
+    <section className="w-full ">
       <div className="w-full index-content pt-28 pb-32">
         <div className="w-full flex flex-wrap">
           <div className="w-full mdx2:w-7/12 flex items-center max-w-[530px] mx-auto mb-12 mdx2:mb-0">

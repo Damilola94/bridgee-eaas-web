@@ -40,11 +40,11 @@ function Header() {
 
   return (
     <>
-      <header className="fixed z-20 w-full h-24 border-b bg-[#FAE9FC]">
+      <header className="fixed z-20 w-full h-24 border-b bg-white">
         <div className="header-content flex items-center w-full h-full text-textColor">
           <div className="w-full flex items-center justify-between">
             <div className="">
-              <Link href="/#top" onClick={handleScroll}>
+              <Link href="/">
                 <Image
                   src={Logo}
                   alt="Bridge by ALAT logo"
@@ -59,10 +59,10 @@ function Header() {
                 <Link href="/">
                   <li className="">Home</li>
                 </Link>
-                <Link href="/aboutus">
+                <Link href="/aboutus" >
                   <li className="">About us</li>
                 </Link>
-                <Link href="/blog">
+                <Link href="/blog" >
                   <li className="">Blog</li>
                 </Link>
               </ul>
@@ -139,17 +139,29 @@ function Header() {
               </div>
             </div>
             <div className="w-full px-10 py-8">
-              <ul className="w-full text-sm text-center">
-                <Link href="/">
-                  <li className="">Home</li>
+              <ul className="w-full text-sm">
+                <Link href="#top" onClick={handleScroll}>
+                  <li
+                    className={`${
+                      location.hash === "#top" ? "bg-primary bg-opacity-20" : ""
+                    } header-side-link`}
+                  >
+                    Home
+                  </li>
                 </Link>
-                <Link href="/aboutus">
-                  <li className="">About us</li>
-                </Link>
-                <Link href="/blog">
-                  <li className="">Blog</li>
+                <Link href="#why-us" onClick={handleScroll}>
+                  <li
+                    className={`${
+                      location.hash === "#why-us"
+                        ? "bg-primary bg-opacity-20"
+                        : ""
+                    } header-side-link`}
+                  >
+                    Why us
+                  </li>
                 </Link>
               </ul>
+
               <div className="w-full border-t py-10 mt-5">
                 <div className="flex justify-center space-x-2">
                   {homepageData?.isWaitlist ? (

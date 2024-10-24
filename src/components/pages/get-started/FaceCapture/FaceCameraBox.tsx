@@ -18,9 +18,13 @@ import { calculateOvalStyle } from "./logic/Oval";
 
 /* eslint-disable */
 let Daon: { FaceCapture: new (arg0: { height: number; width: number }) => any };
+
 if (typeof window !== "undefined") {
   Daon = global?.window.Daon;
 }
+
+console.log(global?.window);
+
 
 const FaceCameraBox = forwardRef<HTMLDivElement, FaceCameraBoxProps>(
   (
