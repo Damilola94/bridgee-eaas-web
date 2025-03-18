@@ -33,19 +33,19 @@ function IntroSlides() {
             <h2 className="w-full text-center text-3xl tracking-widest font-semibold">
               Easy to use solution for social commerce
             </h2>
-            <p className="text-base mt-5">Bridge by Alat provides a secure channel for transactions to take place</p>
+            <p className="text-base mt-5">UseBridge Escrow provides a secure channel for transactions to take place</p>
           </Slide>
           <Slide index={1} className="w-full">
             <h2 className="w-full text-center text-3xl tracking-widest font-semibold">
               Easy to use solution for social commerce
             </h2>
-            <p className="text-base mt-5">Bridge by Alat provides a secure channel for transactions to take place</p>
+            <p className="text-base mt-5">UseBridge Escrow provides a secure channel for transactions to take place</p>
           </Slide>
           <Slide index={2} className="w-full">
             <h2 className="w-full text-center text-3xl tracking-widest font-semibold">
               Easy to use solution for social commerce
             </h2>
-            <p className="text-base mt-5">Bridge by Alat provides a secure channel for transactions to take place</p>
+            <p className="text-base mt-5">UseBridge Escrow provides a secure channel for transactions to take place</p>
           </Slide>
         </Slider>
         <DotGroup className="space-x-2" renderDots={Dots} />

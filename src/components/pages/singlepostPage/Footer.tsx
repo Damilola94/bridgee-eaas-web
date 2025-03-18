@@ -16,7 +16,7 @@ function Footer() {
               <div className="">
                 <Image
                   src={Logo}
-                  alt="Bridge by ALAT logo"
+                  alt="UseBridge Escrow logo"
                   priority
                   width={134}
                   height={49}

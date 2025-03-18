@@ -31,7 +31,7 @@ const CreateInvoice: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Bridge by ALAT - Create Invoice</title>
+        <title>UseBridge Escrow - Create Invoice</title>
       </Head>
 
       <div className="w-full mb-3">

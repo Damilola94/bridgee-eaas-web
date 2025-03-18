@@ -27,7 +27,7 @@ function Loading({ message }: LoadingProps) {
             className="mx-auto"
             width={120}
             height={45}
-            alt="Bridge by ALAT logo"
+            alt="UseBridge Escrow logo"
           />
         </div>
         <p className="text-base">{message}</p>

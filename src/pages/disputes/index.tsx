@@ -9,7 +9,7 @@ import DisputesContainer from '../../components/pages/disputes/list/Container';
 const Disputes: NextPageWithLayout = () => (
   <>
     <Head>
-      <title>Bridge by ALAT - Disputes</title>
+      <title>UseBridge Escrow - Disputes</title>
     </Head>
 
     <div className="w-full">

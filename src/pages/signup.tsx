@@ -18,7 +18,7 @@ const Signup: NextPage = () => {
   }, [router]);
 
   return (
-    <AuthWrapper title="Bridge by ALAT - Signup">
+    <AuthWrapper title="UseBridge Escrow - Signup">
       {formIndex === 0 && <SignupForm gotoNextForm={() => setFormIndex(1)} />}
       {formIndex === 1 && (
         <ValidateOTP

@@ -38,7 +38,7 @@ function Benefits() {
           </h1>
           <p className="text-xl leading-relaxed">
             Bridge is designed with your needs in mind, ensuring that you enjoy a secure,
-            efficient, and transparent experience. Explore the benefits of using Bridge by Alat below:
+            efficient, and transparent experience. Explore the benefits of using UseBridge Escrow below:
           </p>
         </div>
 

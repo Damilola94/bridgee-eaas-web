@@ -9,7 +9,7 @@ import GetStartedContainer from '../../components/pages/get-started/main/Contain
 const GetStarted: NextPageWithLayout = () => (
   <>
     <Head>
-      <title>Bridge by ALAT - Get Started</title>
+      <title>UseBridge Escrow - Get Started</title>
     </Head>
 
     <div className="w-full mt-10">

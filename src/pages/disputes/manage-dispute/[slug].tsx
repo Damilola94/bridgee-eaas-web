@@ -11,7 +11,7 @@ import DisputeContextProvider from '../../../context/Dispute';
 const ManageDispute: NextPageWithLayout = () => (
   <>
     <Head>
-      <title>Bridge by ALAT - Manage Dispute</title>
+      <title>UseBridge Escrow - Manage Dispute</title>
     </Head>
 
     <DisputeContextProvider>

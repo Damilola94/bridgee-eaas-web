@@ -17,7 +17,7 @@ const KYC: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Bridge by ALAT - KYC</title>
+        <title>UseBridge Escrow - KYC</title>
       </Head>
 
       <div className="w-full mb-3">

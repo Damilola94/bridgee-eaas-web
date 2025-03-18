@@ -17,7 +17,7 @@ const Login: NextPage = () => {
   }, [cookie, removeCookie]);
 
   return (
-    <AuthWrapper title="Bridge by ALAT - Login">
+    <AuthWrapper title="UseBridge Escrow - Login">
       <LoginForm />
     </AuthWrapper>
   );

@@ -6,7 +6,7 @@ import Container from '../components/pages/aboutpage/Container';
 const AboutUs: NextPage = () => (
   <>
     <Head>
-      <title>Bridge by ALAT</title>
+      <title>UseBridge Escrow</title>
     </Head>
 
     <Container />

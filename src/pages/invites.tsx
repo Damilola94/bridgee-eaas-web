@@ -9,7 +9,7 @@ import type { NextPageWithLayout } from './_app';
 const Invites: NextPageWithLayout = () => (
   <>
     <Head>
-      <title>Bridge by ALAT - Invites</title>
+      <title>UseBridge Escrow - Invites</title>
     </Head>
 
     <div className="w-full">

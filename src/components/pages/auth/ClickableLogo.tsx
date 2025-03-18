@@ -9,7 +9,7 @@ function ClickableLogo({ className = '' }: { className?: string }) {
     <div className={`cursor-pointer inline-block ${className}`}>
       <Link href="/">
         <div className="">
-          <Image src={Logo} alt="Bridge by ALAT logo" width={175} height={67} />
+          <Image src={Logo} alt="UseBridge Escrow logo" width={175} height={67} />
         </div>
       </Link>
     </div>

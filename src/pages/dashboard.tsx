@@ -9,7 +9,7 @@ import type { NextPageWithLayout } from './_app';
 const Home: NextPageWithLayout = () => (
   <>
     <Head>
-      <title>Bridge by ALAT - Dashboard</title>
+      <title>UseBridge Escrow - Dashboard</title>
     </Head>
 
     <DashboardContainer />

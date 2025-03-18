@@ -47,7 +47,7 @@ function Header() {
               <Link href="/#top" onClick={handleScroll}>
                 <Image
                   src={Logo}
-                  alt="Bridge by ALAT logo"
+                  alt="UseBridge Escrow logo"
                   priority
                   width={120}
                   height={45}
@@ -124,7 +124,7 @@ function Header() {
                     priority
                     width={120}
                     height={45}
-                    alt="Bridge by Bridge by ALAT logo"
+                    alt="Bridge by UseBridge Escrow logo"
                   />
                 </Link>
               </div>
