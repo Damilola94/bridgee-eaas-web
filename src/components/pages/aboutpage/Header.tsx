@@ -47,7 +47,7 @@ function Header() {
               <Link href="/">
                 <Image
                   src={Logo}
-                  alt="UseBridge Escrow logo"
+                  alt="UseBridge Inc. logo"
                   priority
                   width={120}
                   height={45}
@@ -124,7 +124,7 @@ function Header() {
                     priority
                     width={120}
                     height={45}
-                    alt="Bridge by UseBridge Escrow logo"
+                    alt="Bridge by UseBridge Inc. logo"
                   />
                 </Link>
               </div>

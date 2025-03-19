@@ -11,7 +11,7 @@ const Index: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>UseBridge Escrow - Invoice Details</title>
+        <title>UseBridge Inc. - Invoice Details</title>
       </Head>
 
       <Container />

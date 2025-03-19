@@ -295,7 +295,7 @@ function InvoiceDetails({ data = {} }: { data: any }) {
                     <span className="text-lightText">
                       Dispute Manager:&nbsp;
                     </span>
-                    UseBridge Escrow
+                    UseBridge Inc.
                   </p>
                   <p className="mb-1">
                     <span className="text-lightText">Inspection:&nbsp;</span>

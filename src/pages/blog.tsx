@@ -6,7 +6,7 @@ import Container from '../components/pages/blogpage/Container';
 const Blog: NextPage = () => (
   <>
     <Head>
-      <title>UseBridge Escrow</title>
+      <title>UseBridge Inc.</title>
     </Head>
 
     <Container />

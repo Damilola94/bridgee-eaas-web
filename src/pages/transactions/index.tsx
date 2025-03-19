@@ -22,7 +22,7 @@ const Transactions: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>UseBridge Escrow - Transactions</title>
+        <title>UseBridge Inc. - Transactions</title>
       </Head>
 
       <div className="w-full">

@@ -17,7 +17,7 @@ const Login: NextPage = () => {
   }, [cookie, removeCookie]);
 
   return (
-    <AuthWrapper title="UseBridge Escrow - Login">
+    <AuthWrapper title="UseBridge Inc. - Login">
       <LoginForm />
     </AuthWrapper>
   );

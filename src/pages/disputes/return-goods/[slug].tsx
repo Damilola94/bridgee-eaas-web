@@ -12,7 +12,7 @@ import ReturnGoodsContextProvider from '../../../context/ReturnGoods';
 const ReturnGoods: NextPageWithLayout = () => (
   <>
     <Head>
-      <title>UseBridge Escrow - Return goods</title>
+      <title>UseBridge Inc. - Return goods</title>
     </Head>
 
     <ReturnGoodsContextProvider>

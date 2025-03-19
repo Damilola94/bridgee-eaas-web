@@ -75,7 +75,7 @@ function Sidebar() {
         </div>
         <div className="sidebar-menu text-white text-sm flex flex-col justify-between h-side-menu px-5 pb-10">
           <div className="px-6 py-5 h-20">
-            <Image src={Logo} alt="UseBridge Escrow logo" priority width={120} height={45} />
+            <Image src={Logo} alt="UseBridge Inc. logo" priority width={120} height={45} />
           </div>
 
           <ul className="menu-items pt-5">

@@ -9,7 +9,7 @@ const Signup: NextPage = () => {
   const [formIndex, setFormIndex] = useState(0);
 
   return (
-    <AuthWrapper title="UseBridge Escrow - Signup">
+    <AuthWrapper title="UseBridge Inc. - Signup">
       {formIndex === 0 && <Register gotoNextForm={() => setFormIndex(1)} />}
       {formIndex === 1 && <SuccessMessage />}
     </AuthWrapper>

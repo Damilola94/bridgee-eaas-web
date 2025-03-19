@@ -12,7 +12,7 @@ const ResetPassword: NextPage = () => {
   const [formIndex, setFormIndex] = useState(0);
 
   return (
-    <AuthWrapper title="UseBridge Escrow - Reset Password">
+    <AuthWrapper title="UseBridge Inc. - Reset Password">
       {formIndex === 0 && <ValidateEmail gotoNextForm={() => setFormIndex(1)} />}
       {formIndex === 1 && (
         <ValidateOTP
