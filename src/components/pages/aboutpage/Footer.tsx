@@ -1,8 +1,7 @@
 import React from "react";
 import Image from "next/image";
 
-import { ImFacebook, ImTwitter, ImLinkedin2 } from "react-icons/im";
-import { TbBrandInstagram } from "react-icons/tb";
+import { TbBrandYoutube } from "react-icons/tb";
 
 import Logo from "../../../assets/svgs/logos/blue-full.svg";
 
@@ -11,9 +10,7 @@ function Footer() {
     <footer className="bg-white py-12 rounded-xl">
       <div className="container mx-auto px-4">
         <div className="w-full border-b border-w pb-7">
-          {/* Responsive Flex/Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-6 md:gap-8">
-            {/* Logo Section */}
+          <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-6 md:gap-8">
             <div className="flex sm:justify-center md:justify-start">
               <Image
                 src={Logo}
@@ -23,86 +20,56 @@ function Footer() {
                 height={49}
               />
             </div>
-            {/* Company Section */}
             <div className="sm:text-center md:text-left">
-              <h4 className="font-semibold text-lg mb-2">Company</h4>
-              <ul>
+              <h4 className="font-semibold text-lg mb-4">Legal</h4>
+              <ul className="space-y-2">
                 <li>
-                  <a href="#" className="text-gray-600 hover:text-gray-800">
-                    ALAT By Wema
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-600 hover:text-gray-800">
-                    Wema Bank
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-600 hover:text-gray-800">
-                    Support
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* Legal Section */}
-            <div className="sm:text-center md:text-left">
-              <h4 className="font-semibold text-lg mb-2">Legal</h4>
-              <ul>
-                <li>
-                  <a href="#" className="text-gray-600 hover:text-gray-800">
+                  <a
+                    href="#"
+                    className="text-gray-600 hover:text-gray-800 transition-colors"
+                  >
                     Terms
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-600 hover:text-gray-800">
+                  <a
+                    href="#"
+                    className="text-gray-600 hover:text-gray-800 transition-colors"
+                  >
                     Privacy
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-600 hover:text-gray-800">
+                  <a
+                    href="#"
+                    className="text-gray-600 hover:text-gray-800 transition-colors"
+                  >
                     Security
                   </a>
                 </li>
               </ul>
             </div>
-
-            {/* Contact Section */}
-            <div className="sm:text-center md:text-right">
-              <p className="text-gray-600 mb-2">54 Marina Rd, Lagos, Nigeria</p>
-              <p className="text-gray-600 mb-2">contact@bridge.com</p>
-              <p className="text-gray-600 mb-4">+2347037373284</p>
-
-              <div className="flex justify-center md:justify-end space-x-4">
+            <div className="sm:text-center md:text-left">
+              <div className="flex space-x-4 sm:justify-center md:justify-start">
                 <a
-                  href="https://www.facebook.com/Alatng"
+                  href="#"
                   target="_blank"
                   rel="noreferrer"
+                  className="text-gray-600 hover:text-red-700 transition-colors"
+                  aria-label="YouTube"
                 >
-                  <ImFacebook className="w-4 h-auto" />
-                </a>
-                <a
-                  href="https://twitter.com/alat_ng"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <ImTwitter className="w-4 h-auto" />
-                </a>
-                <a
-                  href="https://www.instagram.com/alat_ng/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <TbBrandInstagram className="w-4 h-auto" />
-                </a>
-                <a
-                  href="https://www.linkedin.com/company/alatbywema/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <ImLinkedin2 className="w-4 h-auto" />
+                  <TbBrandYoutube className="w-8 h-8 text-[#D61F69]" />
                 </a>
               </div>
+              <br />
+              <span className="text-gray-600 mb-2">
+                48b, Town Planning Way, Opposite SPAR, Illupeju, Lagos
+              </span>
+              <br />
+
+              <span className="text-gray-600 mb-2">info@usebridge.com</span>
+              <br />
+              <span className="text-gray-600 mb-4">+234 703 116 7741</span>
             </div>
           </div>
         </div>

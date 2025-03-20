@@ -5,12 +5,13 @@ import HomepageContextProvider from '../../../context/Homepage';
 import Header from './Header';
 import Hero from './Hero';
 import Benefits from './Benefits';
-import TrackRecord from './TrackRecord';
+// import TrackRecord from './TrackRecord';
 import HowItWorks from './HowItWorks';
 import GetStarted from './GetStarted';
 import Footer from './Footer';
 
 import Intro from './Intro';
+import MdSpeech from './MdSpeech';
 
 function Container() {
   return (
@@ -20,7 +21,8 @@ function Container() {
 
         <main id="top" className="w-full pt-24">
           <Hero />
-          <TrackRecord/>
+          {/* <TrackRecord/> */}
+          <MdSpeech />
           <Intro />
           <HowItWorks />
           <Benefits />

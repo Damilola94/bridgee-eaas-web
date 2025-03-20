@@ -7,7 +7,7 @@ import Hero from "./Hero";
 import GetStarted from "./GetStarted";
 import Footer from "./Footer";
 
-import Intro from "./Intro";
+import TeamSection from "./TeamSection";
 
 function Container() {
   return (
@@ -17,7 +17,7 @@ function Container() {
 
         <main id="top" className="w-full pt-24  bg-[#FAE9FC]">
           <Hero />
-          <Intro />
+          <TeamSection />
           <GetStarted />
         </main>
         <div className="px-14 pb-10">

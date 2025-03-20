@@ -16,7 +16,8 @@ module.exports = {
         success: '#CE18DF',
         purple: '#8C5FF8',
         transparentPurple: "rgba(206, 24, 223, 0.05)",
-        error: '#EB4336'
+        error: '#EB4336',
+        blue: '#5E32C9'
       },
       boxShadow: {
         box: '5px 15px 35px rgba(0, 0, 0, 0.15)'

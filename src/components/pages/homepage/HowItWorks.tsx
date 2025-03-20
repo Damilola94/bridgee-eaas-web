@@ -38,7 +38,7 @@ function HowItWorks() {
       <Image src={PinkLogo} alt="Pink 3D logo" className="absolute w-[210px] h-auto top-[400px] -left-20 hidden lg:block" />
 
       <div className="w-full index-content">
-        <h1 className="index-title text-center">How it works in 5 steps</h1>
+        <h1 className="index-title text-center">How it works</h1>
 
         <div className="w-full min-h-[600px] h-full hidden mdx2:flex pt-16">
           <div className="w-1/2 pr-12">
