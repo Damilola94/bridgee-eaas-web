@@ -84,9 +84,9 @@ function Hero() {
               <Image
                 src={WemaBankLogo}
                 alt="WemaBankLogo"
-                className="w-14 sm:w-48  h-auto"
+                className="w-14 sm:w-36  h-auto"
               />
-              <Image src={IdeaxLab} alt="IdeaxLab" className="w-14 sm:w-48 h-auto" />
+              <Image src={IdeaxLab} alt="IdeaxLab" className="w-14 sm:w-40 h-auto" />
             </div>
           </div>
           <div className="absolute left-1/2 -bottom-0 sm:-bottom-0 md:-bottom-0 w-full max-w-4xl mx-auto -translate-x-1/2 px-10">

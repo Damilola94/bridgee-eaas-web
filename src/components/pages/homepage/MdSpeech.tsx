@@ -5,7 +5,7 @@ import MDSpeech from "../../../assets/images/md-speech.png";
 
 function Intro() {
   return (
-    <section className="max-w-screen-2xl mx-auto rounded-2xl mt-96 bg-[#FEF2FF]">
+    <section className="max-w-7xl mx-auto rounded-2xl mt-96 bg-[#FEF2FF]">
       <div className="w-full  pt-28 pb-32">
         <div className="w-full flex flex-wrap">
           <div className="w-full mdx2:w-5/12 max-w-xl mx-auto mb-12">
