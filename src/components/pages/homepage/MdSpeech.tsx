@@ -40,7 +40,7 @@ function Intro() {
                 our users, paving the way for a more secure and seamless online
                 transaction experience across Nigeria’s digital market.
               </p>
-              <h1 className="text-3xl font-bold mt-6">Jerry Peters</h1>
+              <h1 className="text-3xl font-bold mt-6">Jerry Peter</h1>
               <p className="text-xl leading-relaxed">
               CEO, Bridge
               </p>

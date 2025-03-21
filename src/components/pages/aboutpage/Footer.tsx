@@ -1,7 +1,8 @@
 import React from "react";
 import Image from "next/image";
 
-import { TbBrandYoutube } from "react-icons/tb";
+import { ImFacebook, ImLinkedin2, ImTwitter } from "react-icons/im";
+import { FaInstagram } from "react-icons/fa";
 
 import Logo from "../../../assets/svgs/logos/blue-full.svg";
 
@@ -50,26 +51,50 @@ function Footer() {
               </ul>
             </div>
             <div className="sm:text-center md:text-left">
-              <div className="flex space-x-4 sm:justify-center md:justify-start">
+              <h4 className="font-semibold text-lg mb-4">Contact Us</h4>
+              <div className="flex space-x-4 sm:justify-center md:justify-start mb-4">
                 <a
-                  href="#"
+                  href="https://www.instagram.com/p/DHLgi3_oZcR/?igsh=Z3h3MG5mOHRtcG01"
                   target="_blank"
                   rel="noreferrer"
-                  className="text-gray-600 hover:text-red-700 transition-colors"
-                  aria-label="YouTube"
+                  className="text-gray-600 hover:text-pink-600 transition-colors"
+                  aria-label="Instagram"
                 >
-                  <TbBrandYoutube className="w-8 h-8 text-[#D61F69]" />
+                  <FaInstagram className="w-5 h-5" />
+                </a>
+                <a
+                  href="https://twitter.com/BRIDGE_NG_/status/1900528630620385787?t=AvwKDBvDuijGgo_kqCdyag&s=08"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-gray-600 hover:text-blue transition-colors"
+                  aria-label="Twitter"
+                >
+                  <ImTwitter className="w-5 h-5" />
+                </a>
+                <a
+                  href="https://www.linkedin.com/posts/bridge-ng_comingsoon-activity-7302287027310329856-9Lff?utm_source=share&utm_medium=member_android&rcm=ACoAAA2yyHIBaSDdZrC1psIxJjeLMbdgjkCZvAA"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-gray-600 hover:text-sky-800 transition-colors"
+                  aria-label="LinkedIn"
+                >
+                  <ImLinkedin2 className="w-5 h-5" />
+                </a>
+                <a
+                  href="https://www.facebook.com/share/1ABHq1ppvY/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-gray-600 hover:text-sky-800 transition-colors"
+                  aria-label="Facebook"
+                >
+                  <ImFacebook className="w-5 h-5" />
                 </a>
               </div>
-              <br />
-              <span className="text-gray-600 mb-2">
-                48b, Town Planning Way, Opposite SPAR, Illupeju, Lagos
-              </span>
-              <br />
-
-              <span className="text-gray-600 mb-2">info@usebridge.com</span>
-              <br />
-              <span className="text-gray-600 mb-4">+234 703 116 7741</span>
+              <p className="text-gray-600 mb-2">
+                            48b, Town Planning Way, Opposite SPAR, Illupeju, Lagos
+              </p>
+              <p className="text-gray-600 mb-2">info@usebridge.com</p>
+              <p className="text-gray-600 mb-4">+234 703 116 7741</p>
             </div>
           </div>
         </div>
