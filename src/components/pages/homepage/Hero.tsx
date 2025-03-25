@@ -102,7 +102,7 @@ function Hero() {
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent className="sm:max-w-[900px] p-0 h-[80vh]">
           <iframe
-            src="https://forms.office.com/r/SsSvq3UbKz"
+            src="https://forms.gle/dof4p6j48c7YdyhJA"
             width="100%"
             height="100%"
             frameBorder="0"
