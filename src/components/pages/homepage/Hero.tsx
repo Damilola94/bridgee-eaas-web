@@ -18,7 +18,7 @@ import { useHomepageContext } from "../../../context/Homepage";
 
 function Hero() {
   const { homepageData } = useHomepageContext();
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(true);
 
   const handleWaitlistClick = () => {
     setIsFormOpen(true);
