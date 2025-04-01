@@ -18,10 +18,18 @@ import { useHomepageContext } from "../../../context/Homepage";
 
 function Hero() {
   const { homepageData } = useHomepageContext();
-  const [isFormOpen, setIsFormOpen] = useState(true);
+  // const [isFormOpen, setIsFormOpen] = useState(true);
+
+  // const handleWaitlistClick = () => {
+  //   setIsFormOpen(true);
+  // };
+
+  const [isInfoOpen, setIsInfoOpen] = useState(true); // First modal
+  const [isFormOpen, setIsFormOpen] = useState(false); // Second modal
 
   const handleWaitlistClick = () => {
-    setIsFormOpen(true);
+    setIsInfoOpen(false); // Close the first modal
+    setIsFormOpen(true); // Open the second modal
   };
 
   return (
@@ -86,7 +94,11 @@ function Hero() {
                 alt="WemaBankLogo"
                 className="w-14 sm:w-36  h-auto"
               />
-              <Image src={IdeaxLab} alt="IdeaxLab" className="w-14 sm:w-40 h-auto" />
+              <Image
+                src={IdeaxLab}
+                alt="IdeaxLab"
+                className="w-14 sm:w-40 h-auto"
+              />
             </div>
           </div>
           <div className="absolute left-1/2 -bottom-0 sm:-bottom-0 md:-bottom-0 w-full max-w-4xl mx-auto -translate-x-1/2 px-10">
@@ -98,6 +110,23 @@ function Hero() {
           </div>
         </div>
       </section>
+
+      <Dialog open={isInfoOpen} onOpenChange={setIsInfoOpen}>
+        <DialogContent className="sm:max-w-[500px] p-6 text-center bg-white">
+          <h1 className="text-bold ff-bold text-3xl sm:text-3xl md:text-4xl m-4 mb-6">
+            Be Among the First to Experience Bridge!
+          </h1>
+
+          <Button
+            onClick={handleWaitlistClick}
+            paddingX="px-10"
+            paddingY="py-4"
+            fontSize="text-lg"
+          >
+            Join the waiting list
+          </Button>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent className="sm:max-w-[900px] p-0 h-[80vh]">
