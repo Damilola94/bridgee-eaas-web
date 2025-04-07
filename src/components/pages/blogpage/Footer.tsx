@@ -94,7 +94,7 @@ function Footer() {
               <p className="text-gray-600 mb-2">
                 48b, Town Planning Way, Opposite SPAR, Illupeju, Lagos
               </p>
-              <p className="text-gray-600 mb-2">info@usebridge.com</p>
+              <p className="text-gray-600 mb-2">info@usebridgee.com</p>
               <p className="text-gray-600 mb-4">+234 703 116 7741</p>
             </div>
           </div>
