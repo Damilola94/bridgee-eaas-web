@@ -52,7 +52,7 @@ function Hero() {
               Get Empowered to Transact
             </h1>
             <h4 className="text-xl leading-relaxed mb-10">
-              With Bridge, you&apos;re in  control, and you can trust us to
+              With Bridge, you&apos;re in control, and you can trust us to
               safeguard your transactions every step of the way.
             </h4>
             <div className="flex justify-center">
@@ -123,7 +123,7 @@ function Hero() {
             paddingY="py-4"
             fontSize="text-lg"
           >
-            Join the waiting list
+            Join the Waitlist
           </Button>
         </DialogContent>
       </Dialog>
