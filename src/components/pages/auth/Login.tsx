@@ -62,7 +62,6 @@ function Login() {
       endpoint: 'auth', extra: 'login', method: 'POST', body: { email, password }
     });
   };
-  console.log("here");
   const { isLoading, isSuccess } = loginMutation;
 
   return (
