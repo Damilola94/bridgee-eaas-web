@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import { useCookies } from 'react-cookie';
@@ -61,7 +62,7 @@ function Login() {
       endpoint: 'auth', extra: 'login', method: 'POST', body: { email, password }
     });
   };
-
+  console.log("here");
   const { isLoading, isSuccess } = loginMutation;
 
   return (
