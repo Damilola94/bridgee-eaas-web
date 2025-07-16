@@ -1,25 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import type { NextPage } from 'next';
-import { useRouter } from 'next/router';
 
-import AuthWrapper from '../components/wrappers/Auth';
-import SignupForm from '../components/pages/auth/Signup';
-import ValidateOTP from '../components/pages/auth/ValidateOTP';
-import SuccessMessage from '../components/pages/auth/SuccessMessage';
+import React, { useEffect, useState } from "react";
+import type { NextPage } from "next";
+import { useRouter } from "next/router";
+
+// import AuthWrapper from "../components/wrappers/Auth";
+import AuthWrapper from "../components/wrappers/AuthWrapper";
+import SignupForm from "../components/pages/auth/signup/index";
+import ValidateOTP from "../components/pages/auth/ValidateOTP";
+import SuccessMessage from "../components/pages/auth/SuccessMessage";
 
 const Signup: NextPage = () => {
   const router = useRouter();
   const [formIndex, setFormIndex] = useState(0);
 
   useEffect(() => {
-    if (router?.query?.stage === 'validateOtp') {
+    if (router?.query?.stage === "validateOtp") {
       setFormIndex(1);
     }
   }, [router]);
 
   return (
     <AuthWrapper title="UseBridge Inc. - Signup">
-      {formIndex === 0 && <SignupForm gotoNextForm={() => setFormIndex(1)} />}
+      {/* {formIndex === 0 && <SignupForm gotoNextForm={() => setFormIndex(1)} />} */}
+      {formIndex === 0 && <SignupForm />}
       {formIndex === 1 && (
         <ValidateOTP
           endpointExtra="validate-otp"
@@ -27,7 +30,9 @@ const Signup: NextPage = () => {
           gotoNextForm={() => setFormIndex(2)}
         />
       )}
-      {formIndex === 2 && <SuccessMessage gotoNextForm={() => {}} message="Account Verified" />}
+      {formIndex === 2 && (
+        <SuccessMessage gotoNextForm={() => {}} message="Account Verified" />
+      )}
     </AuthWrapper>
   );
 };
