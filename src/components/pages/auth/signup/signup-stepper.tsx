@@ -311,7 +311,7 @@
 import { useState } from "react";
 import { CheckCircle } from "lucide-react";
 
-import ClickableLogo from "../ClickLogo";
+import ClickableLogo from "../ClickableLogo";
 
 import EmailStep from "./steps/email-step";
 import AccountTypeStep from "./steps/account-type-step";
