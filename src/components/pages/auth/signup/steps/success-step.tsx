@@ -1,82 +1,40 @@
-import type React from "react";
-
-import Link from "next/link";
+"use client";
 import { useCookies } from "react-cookie";
+import React, { useEffect } from "react";
+import { useRouter } from "next/router";
+
+import Image from "next/image";
 
 import Button from "../../../../inputs/Button";
+import Kite from '../../../../../assets/images/success-kite.gif';
 
 const SuccessStep: React.FC = () => {
-  const [, setCookie] = useCookies(["data"]);
+  const router = useRouter();
+  const [, , removeCookie] = useCookies(["form"]);
 
-  const handleProceedToDashboard = () => {
-    const mockUserData = {
-      accessToken: "mock-jwt-token-" + Math.random().toString(36).substring(2, 15),
-      user: {
-        id: "user_123",
-        email: "new.user@example.com",
-        firstName: "Moyinoluwa",
-        lastName: "Akindele",
-        isVerified: true
-      },
-      defaultWallets: [
-        {
-          id: "wallet_001",
-          currency: {
-            code: "NGN",
-            symbol: "₦",
-            name: "Nigerian Naira"
-          },
-          balance: 100000000000,
-          virtualAccount: "0234567890"
-        }
-      ]
-    };
+  useEffect(() => () => removeCookie("form"), [removeCookie]);
 
-    setCookie("data", mockUserData, { secure: true, sameSite: true });
-
-    sessionStorage.setItem("accounts_data", JSON.stringify(mockUserData));
-  };
   return (
     <div className="w-full text-center">
-      <h1 className="text-2xl font-bold mb-6">Account created successfully</h1>
-
-      <div className="flex justify-center mb-8">
-        <div className="w-24 h-24">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-full"
-          >
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#4CAF50" />
-
-            <path
-              d="M2 17L12 22L22 17"
-              stroke="#4CAF50"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-
-            <path
-              d="M2 12L12 17L22 12"
-              stroke="#4CAF50"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+      <div className="flex justify-center mb-6">
+        <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center">
+          <Image src={Kite} alt="Flying kite" width={250} height={250} className="inline-block w-[250px] h-[250px]" />
         </div>
       </div>
 
-      <Link href="/dashboard" onClick={handleProceedToDashboard}>
-        <Button
-          className="w-full text-lg ff-bold !rounded-md mdx2:!rounded-xl bg-[#D31FFF] hover:bg-[#B818DE]"
-          paddingY="p-3.5"
-        >
-          Proceed to dashboard
-        </Button>
-      </Link>
+      <h1 className="text-2xl font-bold mb-4">Account created successfully!</h1>
+      <p className="text-gray-600 mb-8">
+        Welcome! Your account has been created and verified. You can now access
+        your dashboard.
+      </p>
+
+      <Button
+        className="w-full text-lg ff-bold !rounded-md mdx2:!rounded-xl mt-5"
+        onClick={() => router.push("/login")}
+        paddingY="p-3.5"
+      >
+        Login
+      </Button>
     </div>
   );
 };

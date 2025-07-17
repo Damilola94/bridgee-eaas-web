@@ -30,6 +30,7 @@ function PaymentModal({
   const paymentMutation = useMutation(handleFetch, {
     onSuccess: () => {
       queryClient.invalidateQueries(["escrow", escrowId]);
+      queryClient.invalidateQueries(["accounts-context"]);
       setFormIndex(1);
     },
     onError: (err) => {

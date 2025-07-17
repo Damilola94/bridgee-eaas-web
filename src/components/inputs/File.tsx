@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
-import TextInput from './Text';
+import { AiOutlineClose } from "react-icons/ai";
+
+import TextInput from "./Text";
 
 type Props = {
   className?: string;
@@ -14,9 +16,17 @@ type Props = {
 };
 
 function FileInput({
-  value, onChange, name, disabled, readOnly, label, className = '', preview
+  value,
+  onChange,
+  name,
+  disabled,
+  readOnly,
+  label,
+  className = "",
+  preview
 }: Props) {
-  const [filePreview, setFilePreview] = useState('');
+  const [filePreview, setFilePreview] = useState("");
+  const [removed, setRemoved] = useState(false);
 
   useEffect(() => {
     if (preview && value) {
@@ -25,8 +35,17 @@ function FileInput({
   }, [preview, value]);
 
   const onClick = () => {
-    document.getElementById(name || '')?.click();
+    document.getElementById(name || "")?.click();
   };
+
+  const removeFile = () => {
+    setRemoved(true);
+    setFilePreview("");
+  };
+
+  useEffect(() => {
+    if (value) setRemoved(false);
+  }, [value]);
 
   return (
     <div className={`${className}`}>
@@ -41,13 +60,23 @@ function FileInput({
           label={label}
           className="file-input"
         />
-        {value?.name && (
-          <p
-            onClick={onClick}
-            className="absolute bottom-1 w-[calc(100%-110px)] left-[105px] py-2.5 bg-inputBg h-10 line-clamp-1 whitespace-nowrap cursor-default"
-          >
-            {value?.name}
-          </p>
+        {!removed && value?.name && (
+          <div className="absolute bottom-1 w-[calc(100%-110px)] left-[105px] flex items-center">
+            <p
+              onClick={onClick}
+              className="flex-1 py-2.5 bg-inputBg h-10 line-clamp-1 whitespace-nowrap cursor-default pr-8"
+            >
+              {value?.name}
+            </p>
+            <button
+              type="button"
+              onClick={removeFile}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 hover:bg-gray-200 rounded-full transition-colors"
+              title="Remove file"
+            >
+              <AiOutlineClose className="w-4 h-4 text-gray-500 hover:text-gray-700" />
+            </button>
+          </div>
         )}
       </div>
       {preview && value && (

@@ -231,7 +231,7 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
                   value={form?.pickUpAddress || ""}
                   onChange={handleChange}
                   // onBlur={handleUpdatePickAddBlur}
-                  label="Pickup Addrdddess"
+                  label="Pickup Address"
                   className="w-full"
                   placeholder="Enter location"
                 />

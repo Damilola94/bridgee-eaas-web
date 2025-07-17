@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { AiOutlineEyeInvisible } from 'react-icons/ai';
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 import WalletIcon from '../../../assets/svgs/wallet.svg';
 
@@ -14,7 +14,7 @@ import FundTransferModal from './fund-transfer-modal';
 function WalletCard() {
   const [showBankTransfer, setShowBankTransfer] = useState(false);
   const [showWithdrawal, setShowWithdrawal] = useState(false);
-
+  const [showBalance, setShowBalance] = useState(true);
   const { accounts } = useAccountsContext();
   const { defaultWallets: wallets } = accounts || {};
 
@@ -33,12 +33,18 @@ function WalletCard() {
             <div className="">
               <p className="flex items-center text-base mb-1">
                 Wallet Balance&nbsp;
-                <AiOutlineEyeInvisible className="" />
+                <button onClick={() => setShowBalance(!showBalance)} className="ml-1">
+                  {showBalance ? (
+                    <AiOutlineEye className="text-gray-600" />
+                  ) : (
+                    <AiOutlineEyeInvisible className="text-gray-600" />
+                  )}
+                </button>
               </p>
               <h1 className="text-3xl">
                 <span className="text-success">{wallets?.[0]?.currency?.code || 'N/A'}</span>
                 {' '}
-                <span className="font-bold ff-heavy">{formatCurrency(wallets?.[0]?.balance, false) || 'N/A'}</span>
+                <span className="font-bold ff-heavy"> {showBalance ? formatCurrency(wallets?.[0]?.balance, false) || "N/A" : "••••"}</span>
               </h1>
             </div>
           </div>

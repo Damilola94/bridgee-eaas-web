@@ -48,6 +48,7 @@ function TextInput({
         onKeyDown={onKeyDown}
         min={minValue}
         max={maxValue}
+        maxLength={maxValue}
       />
 
       {error ? <p className="error-msg" data-testid="error-msg">{error}</p> : null}

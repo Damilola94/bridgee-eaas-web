@@ -6,7 +6,7 @@ import type React from "react";
 import Image from "next/image";
 
 import Button from "../../../../inputs/Button";
-import Business from "../../../../../assets/svgs/business.svg";
+// import Business from "../../../../../assets/svgs/business.svg";
 import Personal from "../../../../../assets/svgs/personal.svg";
 
 interface AccountTypeStepProps {
@@ -52,7 +52,7 @@ const AccountTypeStep: React.FC<AccountTypeStepProps> = ({
           </p>
         </div>
 
-        <div
+        {/* <div
           className={`border rounded-lg p-6 cursor-pointer ${
             form?.isBusiness === "true" ? "border-[#D31FFF]" : "border-gray-200"
           }`}
@@ -70,7 +70,7 @@ const AccountTypeStep: React.FC<AccountTypeStepProps> = ({
           <p className="text-left text-sm text-gray-500">
             For Business escrow purpose
           </p>
-        </div>
+        </div> */}
       </div>
 
       <Button
