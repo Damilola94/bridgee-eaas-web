@@ -89,7 +89,7 @@ export default function VerificationCodeStep({ phoneNumber, handleSubmit }: Veri
 
   return (
     <div className="w-full">
-      <h1 className="text-center text-2xl font-bold mb-2">Enter verification code</h1>
+      <h1 className="w-full text-center text-textColor ff-bold text-3xl mb-20">Enter verification code</h1>
       <p className="text-center text-gray-500 mb-8">
         {`Proceed to your email (${cookie.form?.email || "your email"}) to get code`}
       </p>

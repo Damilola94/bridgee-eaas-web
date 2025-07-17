@@ -28,7 +28,7 @@ const VerificationStep: React.FC<VerificationStepProps> = ({
 
   return (
     <div className="w-full">
-      <h1 className="text-center text-2xl font-bold mb-6">Phone Verification</h1>
+      <h1 className="w-full text-center text-textColor ff-bold text-3xl mb-20">Phone Verification</h1>
 
       <div className="mb-6">
         <label className="block text-sm font-medium mb-2">Phone number</label>

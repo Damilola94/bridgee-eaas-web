@@ -14,8 +14,7 @@ interface EmailStepProps {
 const EmailStep: React.FC<EmailStepProps> = ({ form, handleChange, handleContinue }) => {
   return (
     <div className="w-full">
-      <h1 className="w-full justify-center text-center text-textColor ff-bold text-xl mb-5">Create an account</h1>
-
+      <h1 className="w-full text-center text-textColor ff-bold text-3xl mb-20">Create an account</h1>
       <TextInput
         className="w-full mb-7"
         onChange={handleChange}

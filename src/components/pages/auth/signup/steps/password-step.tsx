@@ -17,7 +17,7 @@ export default function PasswordStep({
     <div className="w-full">
       {isLoading && <Loading />}
 
-      <h1 className="w-full text-textColor ff-bold text-xl mb-5">Create Password</h1>
+      <h1 className="w-full text-center text-textColor ff-bold text-3xl mb-20">Create Password</h1>
 
       <TextInput
         className="w-full mb-3"

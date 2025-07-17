@@ -22,7 +22,7 @@ const AccountTypeStep: React.FC<AccountTypeStepProps> = ({
 }) => {
   return (
     <div className="w-full">
-      <h1 className="text-center text-2xl font-bold mb-6">
+      <h1 className="text-center text-textColor ff-bold text-3xl mb-20">
         What kind of account would you like to open today?
       </h1>
       <p className="text-center text-gray-500 mb-8">

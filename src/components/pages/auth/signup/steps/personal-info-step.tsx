@@ -13,7 +13,7 @@ interface PersonalInfoStepProps {
 const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({ form, handleChange, handleContinue }) => {
   return (
     <div className="w-full">
-      <h1 className="w-full text-textColor ff-bold text-xl mb-5">Personal Information</h1>
+      <h1 className="w-full text-center text-textColor ff-bold text-3xl mb-20">Personal Information</h1>
 
       <div className="w-full">
         <div className="flex flex-wrap -mx-2">
