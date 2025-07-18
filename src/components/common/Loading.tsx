@@ -19,13 +19,13 @@ function Loading({ message }: LoadingProps) {
       onClose={() => {}}
       maxWidth="max-w-[200px]"
     >
-      <div className="px-3 pb-5 rounded bg-white text-center">
-        <div className="my-8">
+      <div className="rounded bg-white text-center">
+        <div className="">
           <Image
             priority
             src={Logo}
             className="mx-auto"
-            width={120}
+            width={200}
             height={45}
             alt="UseBridge Inc. logo"
           />
