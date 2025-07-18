@@ -30,7 +30,7 @@ function Loading({ message }: LoadingProps) {
             alt="UseBridge Inc. logo"
           />
         </div>
-        <p className="text-base">{message}</p>
+        <p className="-mt-10 text-base">{message}</p>
       </div>
     </Modal>
   );
