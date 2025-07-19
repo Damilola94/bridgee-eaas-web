@@ -97,8 +97,12 @@ function InvoiceSummary() {
             <h3 className="font-bold text-xl">
               {accounts?.defaultMerchant?.name || `${accounts?.user?.firstName} ${accounts?.user?.lastName}`}
             </h3>
-            <p className="mb-1">{accounts?.user?.residentialAddress?.fullAddress || form?.pickUpAddress || 'N/A'}</p>
-            <p className="text-lightText">{new Date().toDateString()}</p>
+            <div className="w-full text-lightText">
+              <p className="mb-1">{accounts?.user?.email}</p>
+              <p className="mb-1">{form?.recipientDetails?.phoneNumber}</p>
+              <p className="mb-1">{accounts?.user?.residentialAddress?.fullAddress || form?.pickUpAddress || 'N/A'}</p>
+              <p className="text-lightText">{new Date().toDateString()}</p>
+            </div>
           </div>
           <div className="text-left">
             <h3 className="font-bold ff-bold text-lg mb-2">Recipient Details</h3>

@@ -34,7 +34,7 @@ function InvoiceList({ isDashboard = false }) {
     endpoint: 'escrow',
     queryKey: ['escrow-list', router?.query?.status, pageNumber, search, filter],
     pQuery: {
-      escrowSatus: router?.query?.status === 'all' ? null : router?.query?.status,
+      escrowStatus: router?.query?.status === 'all' ? null : router?.query?.status,
       start: formatApiDate(filter?.startDate),
       end: formatApiDate(filter?.endDate),
       pageSize: isDashboard ? 5 : PAGE_SIZE,
