@@ -134,7 +134,7 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
             value={form?.isDeliveryOnUs}
             onChange={(val) => handleChange(val, 'toggle', 'isDeliveryOnUs')}
           />
-          <span className="text-[#E08700] font-bold">Powered by Terminal</span>
+          <span className="text-[#E08700] font-bold">Powered by Dellyman</span>
         </div>
 
         {form?.isDeliveryOnUs && (

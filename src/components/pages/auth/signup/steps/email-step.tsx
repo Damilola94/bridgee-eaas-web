@@ -56,9 +56,8 @@ const EmailStep: React.FC<EmailStepProps> = ({
         paddingY="p-3.5"
         onClick={handleContinue}
       >
-        Create Account
+        Continue
       </Button>
-
       <p className="mt-5 text-center">
         Already have an account?&nbsp;
         <Link href="/login">

@@ -456,7 +456,7 @@ function InvoiceDetails({ data = {} }: { data: any }) {
                       onChange={(val) => setDeliveryToggle(val)}
                     />
                     <span className="text-[#E08700] font-bold">
-                      Powered by SHIIP
+                      Powered by Dellyman
                     </span>
                   </div>
                   <div>
