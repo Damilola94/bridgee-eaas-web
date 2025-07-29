@@ -24,6 +24,25 @@ import ConfirmDelivery from "./ConfirmDelivery";
 import ViewAgreement from "./ViewAgreement";
 import GetDeliveryRates from "./GetDeliveryRates";
 import UpdateAddressModal from "./UpdateAddressModal";
+// import PickupAddress from "./CustomerAddress";
+
+type DeliveryOption = {
+  id: string;
+  amount: number;
+  estimatedDeliveryTime: string;
+  courier?: {
+    name: string;
+    icon?: string;
+  };
+};
+
+type DeliveryRateData = {
+  quoteId: string;
+  amount: number;
+  currency: string;
+  estimatedDeliveryTime: string;
+  deliveryOptions: DeliveryOption[];
+};
 
 function InvoiceDetails({ data = {} }: { data: any }) {
   const router = useRouter();
@@ -39,7 +58,8 @@ function InvoiceDetails({ data = {} }: { data: any }) {
   const [useDeliveryToggle, setDeliveryToggle] = useState(false);
   const [showGetDeliveryRateModal, setShowGetDeliveryRateModal] =
     useState(false);
-  const [deliveryRateList, setDeliveryRateList] = useState<any[]>([]);
+  const [deliveryRateList, setDeliveryRateList] = useState<DeliveryRateData | null>(null);
+
   const [deliveryRate, setDeliveryRate] = useState<{
     rateId?: string;
     amount?: number;
@@ -185,7 +205,7 @@ function InvoiceDetails({ data = {} }: { data: any }) {
 
   const deliveryRateMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
-      setDeliveryRateList(res?.data?.rates);
+      setDeliveryRateList(res?.data);
     },
     onError: (err: any) => {
       notification({
@@ -530,16 +550,20 @@ function InvoiceDetails({ data = {} }: { data: any }) {
           onClose={() => setShowDeclineModal(false)}
         />
 
-        {showGetDeliveryRateModal && (
+        {showGetDeliveryRateModal && deliveryRateList && (
           <GetDeliveryRates
             onClose={() => setShowGetDeliveryRateModal(false)}
             onSelection={handleRateSelection}
-            deliveryRateList={deliveryRateList || []}
+            deliveryRateList={deliveryRateList}
             onUpdateAdd={updateAddHandler}
             data={data}
           />
         )}
-
+        {/* {showGetDeliveryRateModal && (
+          <PickupAddress
+            onClose={() => setShowGetDeliveryRateModal(false)}
+          />
+        )} */}
         {showUpdateAddModal && (
           <UpdateAddressModal
             onClose={clodeUpdateAddHandler}

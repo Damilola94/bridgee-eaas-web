@@ -20,6 +20,7 @@ function Container() {
     param: router?.query?.slug,
     enabled: !!router?.query?.slug
   });
+
   return (
     <div>
       {status === 'loading' && <Loading />}

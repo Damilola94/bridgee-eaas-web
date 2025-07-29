@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-nested-ternary */
 "use client";
+
 import { useState } from "react";
 import { useMutation } from "react-query";
 import { useCookies } from "react-cookie";
@@ -8,30 +9,30 @@ import { CheckCircle } from "lucide-react";
 import moment from "moment-timezone";
 
 import ClickableLogo from "../ClickableLogo";
-
 import notification from "../../../../utilities/notification";
-
 import handleFetch from "../../../../services/api/handleFetch";
-
 import { MIN_AGE } from "../../../../data/constants";
 
+import BvnStep from "./steps/bvn-step";
 import EmailStep from "./steps/email-step";
 import PersonalInfoStep from "./steps/personal-info-step";
 import VerificationStep from "./steps/verification-step";
 import VerificationCodeStep from "./steps/verification-code-step";
 import PasswordStep from "./steps/password-step";
 import SuccessStep from "./steps/success-step";
-
 import AccountTypeStep from "./steps/account-type-step";
 
 interface SignupFormProps {
+  bvn?: string;
   email?: string;
   isBusiness?: string;
   businessName?: string;
   businessType?: { value: string; label: string };
   firstName?: string;
   lastName?: string;
+  middleName?: string;
   dateOfBirth?: string;
+  gender?: string;
   phoneNumber?: string;
   password?: string;
   termsAccepted?: string;
@@ -42,8 +43,10 @@ export default function SignupStepper() {
   const [form, setForm] = useState<SignupFormProps>({ isBusiness: "false" });
   const [currentStep, setCurrentStep] = useState(0);
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [bvnData, setBvnData] = useState<any>(null);
 
   const steps = [
+    { id: "bvn", label: "BVN" },
     { id: "email", label: "Email" },
     { id: "accountType", label: "Account Type" },
     { id: "personal", label: "Personal Info" },
@@ -104,14 +107,21 @@ export default function SignupStepper() {
 
   const validatePersonalInfoStep = () => {
     const errors = [];
-    if (!form?.firstName) errors.push("First name is required");
-    if (!form?.lastName) errors.push("Last name is required");
-    if (!form?.dateOfBirth) errors.push("Date of birth is required");
-    if (
-      form?.dateOfBirth &&
-      moment().diff(moment(form?.dateOfBirth), "years") < MIN_AGE
-    ) {
-      errors.push("Date of birth must not be less than 18 years");
+    const firstName = bvnData?.firstName || form?.firstName;
+    const lastName = bvnData?.lastName || form?.lastName;
+    const dateOfBirth = bvnData?.dateOfBirth || form?.dateOfBirth;
+
+    if (!firstName) errors.push("First name is required");
+    if (!lastName) errors.push("Last name is required");
+    if (!dateOfBirth) errors.push("Date of birth is required");
+
+    if (dateOfBirth) {
+      const dobToCheck = bvnData?.dateOfBirth
+        ? new Date(bvnData.dateOfBirth)
+        : new Date(dateOfBirth);
+      if (moment().diff(moment(dobToCheck), "years") < MIN_AGE) {
+        errors.push("Date of birth must not be less than 18 years");
+      }
     }
     return errors;
   };
@@ -142,14 +152,16 @@ export default function SignupStepper() {
   const validateCurrentStep = () => {
     switch (currentStep) {
     case 0:
-      return validateEmailStep();
+      return [];
     case 1:
-      return validateAccountTypeStep();
+      return validateEmailStep();
     case 2:
-      return validatePersonalInfoStep();
+      return validateAccountTypeStep();
     case 3:
-      return validateVerificationStep();
+      return validatePersonalInfoStep();
     case 4:
+      return validateVerificationStep();
+    case 5:
       return validatePasswordStep();
     default:
       return [];
@@ -168,7 +180,21 @@ export default function SignupStepper() {
     }
   };
 
-  const handleContinue = async () => {
+  const handleContinue = async (bvnValidationData?: any) => {
+    if (currentStep === 0 && bvnValidationData) {
+      setBvnData(bvnValidationData);
+      setForm((prev) => ({
+        ...prev,
+        bvn: bvnValidationData.bvn,
+        firstName: bvnValidationData.firstName,
+        lastName: bvnValidationData.lastName,
+        dateOfBirth: bvnValidationData.dateOfBirth,
+        gender: bvnValidationData.gender
+      }));
+      goToNextStep();
+      return;
+    }
+
     const errors = validateCurrentStep();
     if (errors.length) {
       errors.forEach((item) =>
@@ -177,14 +203,22 @@ export default function SignupStepper() {
       return;
     }
 
-    if (currentStep === 4) {
+    if (currentStep === 5) {
+      const inputDate = bvnData?.dateOfBirth;
+      const formattedDate = moment(inputDate, "DD-MMM-YYYY").format(
+        "YYYY-MM-DD"
+      );
       const body = {
         ...form,
+        bvn: bvnData?.bvn || form?.bvn,
+        firstName: bvnData?.firstName || form?.firstName,
+        lastName: bvnData?.lastName || form?.lastName,
+        dateOfBirth: formattedDate || form?.dateOfBirth,
+        gender: bvnData?.gender || form?.gender,
         isBusiness: form?.isBusiness === "true",
         businessType: form?.businessType?.value,
         termsAccepted: form?.termsAccepted === "true"
       };
-
       signupMutation.mutate({
         endpoint: "auth",
         extra: "register",
@@ -204,7 +238,7 @@ export default function SignupStepper() {
     switch (currentStep) {
     case 0:
       return (
-        <EmailStep
+        <BvnStep
           form={form}
           handleChange={handleChange}
           handleContinue={handleContinue}
@@ -212,7 +246,7 @@ export default function SignupStepper() {
       );
     case 1:
       return (
-        <AccountTypeStep
+        <EmailStep
           form={form}
           handleChange={handleChange}
           handleContinue={handleContinue}
@@ -220,13 +254,22 @@ export default function SignupStepper() {
       );
     case 2:
       return (
-        <PersonalInfoStep
+        <AccountTypeStep
           form={form}
           handleChange={handleChange}
           handleContinue={handleContinue}
         />
       );
     case 3:
+      return (
+        <PersonalInfoStep
+          form={form}
+          handleChange={handleChange}
+          handleContinue={handleContinue}
+          bvnData={bvnData}
+        />
+      );
+    case 4:
       return (
         <VerificationStep
           form={form}
@@ -235,7 +278,7 @@ export default function SignupStepper() {
           setPhoneNumber={setPhoneNumber}
         />
       );
-    case 4:
+    case 5:
       return (
         <PasswordStep
           form={form}
@@ -244,14 +287,14 @@ export default function SignupStepper() {
           isLoading={signupMutation.isLoading}
         />
       );
-    case 5:
+    case 6:
       return (
         <VerificationCodeStep
           phoneNumber={phoneNumber}
           handleSubmit={handleVerificationCodeSubmit}
         />
       );
-    case 6:
+    case 7:
       return <SuccessStep />;
     default:
       return null;
@@ -300,8 +343,7 @@ export default function SignupStepper() {
           </div>
         </div>
       </div>
-
-      {currentStep > 0 && currentStep < 6 && (
+      {currentStep > 0 && currentStep < 7 && (
         <div className="border flex items-center p-3 w-fit mx-4 sm:mx-8 my-4 rounded-xl border-blue-600">
           <button
             onClick={goToPreviousStep}
@@ -326,7 +368,6 @@ export default function SignupStepper() {
           </button>
         </div>
       )}
-
       <div className="flex-1 flex items-center justify-center px-4 sm:px-0">
         <div className="w-full max-w-2xl px-4 py-10">{renderStep()}</div>
       </div>
