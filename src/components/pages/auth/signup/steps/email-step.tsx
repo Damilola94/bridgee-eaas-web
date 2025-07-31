@@ -46,9 +46,17 @@ const EmailStep: React.FC<EmailStepProps> = ({
           style={{ accentColor: "#683AB7" }}
           className="w-5 h-5"
         />
-        <span>I accept the  <Link href="/terms-and-condition">
-          <span className="text-success cursor-pointer">Terms and condition</span>
-        </Link></span>
+        <span>
+          I accept the&nbsp;
+          <a
+            href="/terms-and-condition"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-success cursor-pointer"
+          >
+            Terms and condition
+          </a>
+        </span>
       </label>
 
       <Button

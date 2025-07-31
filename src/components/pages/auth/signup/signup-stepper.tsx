@@ -304,15 +304,16 @@ export default function SignupStepper() {
   return (
     <div className="flex flex-col w-full min-h-screen bg-white">
       <div className="w-full border-b px-4 sm:px-8 py-4">
-        <div className="container mx-auto flex flex-wrap justify-between items-center">
+        <div className="container mx-auto flex flex-col sm:flex-row sm:justify-between sm:items-center lg:gap-80 gap-10">
           <ClickableLogo />
-          <div className="flex flex-wrap justify-center items-center w-full sm:w-auto mt-4 sm:mt-0">
+
+          <div className="grid gap-4 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 flex-1">
             {steps.map((step, index) => (
               <div key={step.id} className="flex items-center">
                 <div
                   className={`flex items-center justify-center w-6 h-6 rounded-full ${
                     index < currentStep
-                      ? "bg-purple-600 text-white"
+                      ? "border-[#D31FFF] text-[#D31FFF]"
                       : index === currentStep
                         ? "border-2 border-purple-600 text-purple-600"
                         : "border-2 border-gray-300 text-gray-300"
@@ -326,23 +327,17 @@ export default function SignupStepper() {
                 </div>
                 <span
                   className={`ml-2 text-sm ${
-                    index <= currentStep ? "text-purple-600" : "text-gray-400"
+                    index <= currentStep ? "text-[#D31FFF]" : "text-gray-400"
                   }`}
                 >
                   {step.label}
                 </span>
-                {index < steps.length - 1 && (
-                  <div
-                    className={`w-8 sm:w-16 h-[1px] mx-2 ${
-                      index < currentStep ? "bg-purple-600" : "bg-gray-300"
-                    }`}
-                  />
-                )}
               </div>
             ))}
           </div>
         </div>
       </div>
+
       {currentStep > 0 && currentStep < 7 && (
         <div className="border flex items-center p-3 w-fit mx-4 sm:mx-8 my-4 rounded-xl border-blue-600">
           <button
@@ -368,6 +363,7 @@ export default function SignupStepper() {
           </button>
         </div>
       )}
+
       <div className="flex-1 flex items-center justify-center px-4 sm:px-0">
         <div className="w-full max-w-2xl px-4 py-10">{renderStep()}</div>
       </div>

@@ -26,6 +26,14 @@ const VerificationStep: React.FC<VerificationStepProps> = ({
     }
   };
 
+  const handlePhoneBlur = () => {
+    if (form?.phoneNumber && !form.phoneNumber.startsWith("0")) {
+      const updated = "0" + form.phoneNumber;
+      setPhoneNumber(updated);
+      handleChange({ target: { name: "phoneNumber", value: updated } });
+    }
+  };
+
   return (
     <div className="w-full">
       <h1 className="w-full text-center text-textColor ff-bold text-3xl mb-20">Phone Verification</h1>
@@ -47,11 +55,12 @@ const VerificationStep: React.FC<VerificationStepProps> = ({
           <TextInput
             className="w-full rounded-l-none"
             onChange={handlePhoneChange}
+            onBlur={handlePhoneBlur}
             value={form?.phoneNumber || ""}
             name="phoneNumber"
             type="tel"
-            maxValue={11}
-            placeholder="Enter phone number"
+            maxValue={10}
+            placeholder="Enter phone number (7012345678)"
           />
         </div>
       </div>

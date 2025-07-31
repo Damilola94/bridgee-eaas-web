@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-
+import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 
 import TextInput from "./Text";
@@ -27,20 +26,38 @@ function FileInput({
 }: Props) {
   const [filePreview, setFilePreview] = useState("");
   const [removed, setRemoved] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (preview && value) {
-      setFilePreview(URL.createObjectURL(value));
+      const url = URL.createObjectURL(value);
+      setFilePreview(url);
     }
   }, [preview, value]);
 
   const onClick = () => {
-    document.getElementById(name || "")?.click();
+    inputRef.current?.click();
   };
 
   const removeFile = () => {
     setRemoved(true);
     setFilePreview("");
+
+    if (onChange) {
+      const emptyEvent = {
+        target: {
+          name,
+          value: null,
+          files: null
+        }
+      } as unknown as React.ChangeEvent<HTMLInputElement>;
+
+      onChange(emptyEvent);
+    }
+
+    if (inputRef.current) {
+      inputRef.current.value = ""; // clear file input so same file can be selected again
+    }
   };
 
   useEffect(() => {
@@ -48,11 +65,12 @@ function FileInput({
   }, [value]);
 
   return (
-    <div className={`${className}`}>
+    <div className={className}>
       <div className="w-full relative">
         <TextInput
+          ref={inputRef}
           type="file"
-          accept="image/png, image/jpeg"
+          accept="application/pdf"
           name={name}
           onChange={onChange}
           disabled={disabled}
@@ -79,11 +97,16 @@ function FileInput({
           </div>
         )}
       </div>
-      {preview && value && (
+
+      {preview && value && !removed && (
         <div className="mt-2 px-10">
-          <picture>
-            <img src={filePreview} alt="" className="w-full h-auto" />
-          </picture>
+          <button
+            type="button"
+            className="text-blue-600 underline text-sm"
+            onClick={() => window.open(filePreview, "_blank")}
+          >
+            View uploaded PDF
+          </button>
         </div>
       )}
     </div>
