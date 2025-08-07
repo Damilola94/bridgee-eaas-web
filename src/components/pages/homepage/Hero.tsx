@@ -16,23 +16,13 @@ import WemaBankLogo from "../../../assets/images/wemabanklogo.png";
 import IdeaxLab from "../../../assets/images/ideaxlab.png";
 
 import Button from "../../inputs/Button";
-// import { useHomepageContext } from "../../../context/Homepage";
 
 function Hero() {
   const router = useRouter();
-
-  // const { homepageData } = useHomepageContext();
-  // const [isFormOpen, setIsFormOpen] = useState(true);
-
-  // const handleWaitlistClick = () => {
-  //   setIsFormOpen(true);
-  // };
-
-  const [isFormOpen, setIsFormOpen] = useState(false); // Second modal
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   const handleWaitlistClick = () => {
-    // setIsInfoOpen(false);
-    setIsFormOpen(true);
+    window.open("https://chat.whatsapp.com/BeDo7zGcwm58N69zC05YIP", "_blank");
   };
 
   return (
@@ -69,6 +59,7 @@ function Hero() {
               >
                 Create Account
               </Button>
+
               <Button
                 icon={<FaWhatsapp size={20} />}
                 border
