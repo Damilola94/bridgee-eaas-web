@@ -8,13 +8,14 @@ type Props = {
   name?: string,
   label?: string,
   placeholder?: string,
-  height?: string
-  accept?: string
+  height?: string,
+  accept?: string,
   readOnly?: boolean,
   disabled?: boolean,
   minValue?: number,
   maxValue?: number,
-  error?: string
+  error?: string,
+  ref?: React.Ref<HTMLInputElement>,
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
   onBlur?: (e: React.ChangeEvent<HTMLInputElement>) => void,
   onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void,
@@ -23,7 +24,7 @@ type Props = {
 
 function TextInput({
   className, value, name, readOnly, onBlur, disabled, onKeyPress, onKeyDown,
-  minValue, maxValue, type, onChange, label, placeholder, error, height, accept
+  minValue, maxValue, ref, type, onChange, label, placeholder, error, height, accept
 }: Props) {
   const [inputType, setInputType] = useState(type);
 
@@ -32,6 +33,7 @@ function TextInput({
       {label && <label htmlFor={name} className="flex mb-1">{label}</label>}
 
       <input
+        ref={ref}
         className={`${error ? 'error-field' : ''} ${height
         } bg-inputBg px-5 outline-none w-full rounded-[10px] border border-borderColor disabled:bg-gray-200`}
         type={inputType}

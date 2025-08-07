@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-// import { useRouter } from "next/router";
+import { useRouter } from "next/router";
 
 import { Dialog, DialogContent } from "../../common/UI";
 
@@ -12,12 +12,15 @@ import BlurLogo from "../../../assets/images/logos/blur-3d.png";
 import BlueLogo from "../../../assets/images/logos/blue-3d.png";
 import WemaBankLogo from "../../../assets/images/wemabanklogo.png";
 import IdeaxLab from "../../../assets/images/ideaxlab.png";
+import { FaWhatsapp } from 'react-icons/fa';
 
 import Button from "../../inputs/Button";
-import { useHomepageContext } from "../../../context/Homepage";
+// import { useHomepageContext } from "../../../context/Homepage";
 
 function Hero() {
-  const { homepageData } = useHomepageContext();
+  const router = useRouter();
+
+  // const { homepageData } = useHomepageContext();
   // const [isFormOpen, setIsFormOpen] = useState(true);
 
   // const handleWaitlistClick = () => {
@@ -28,8 +31,8 @@ function Hero() {
   const [isFormOpen, setIsFormOpen] = useState(false); // Second modal
 
   const handleWaitlistClick = () => {
-    setIsInfoOpen(false); // Close the first modal
-    setIsFormOpen(true); // Open the second modal
+    setIsInfoOpen(false);
+    setIsFormOpen(true);
   };
 
   return (
@@ -49,32 +52,35 @@ function Hero() {
         <div className="w-full relative overflow-visible">
           <div className="w-full max-w-3xl mx-auto text-center pt-14">
             <h1 className="text-bold ff-bold text-5xl sm:text-6xl md:text-8xl mb-4">
-              Get Empowered to Transact
+              Get Empsssowered to Transact
             </h1>
             <h4 className="text-xl leading-relaxed mb-10">
               With Bridge, you&apos;re in control, and you can trust us to
               safeguard your transactions every step of the way.
             </h4>
-            <div className="flex justify-center">
-              {homepageData?.isWaitlist ? (
-                <Button
-                  onClick={handleWaitlistClick}
-                  paddingX="px-10"
-                  paddingY="py-4"
-                  fontSize="text-lg"
-                >
-                  Join the waiting list
-                </Button>
-              ) : (
-                <Button
-                  onClick={handleWaitlistClick}
-                  paddingX="px-10"
-                  paddingY="py-4"
-                  fontSize="text-lg"
-                >
-                  Join the Waitlist
-                </Button>
-              )}
+            <div className="flex justify-center space-x-4">
+              <Button
+                iconPosition="left"
+                onClick={() => router.push("/signup")}
+
+                paddingX="px-10"
+                paddingY="py-4"
+                fontSize="text-lg"
+              >
+                Create Account
+              </Button>
+              <Button
+                icon={<FaWhatsapp size={20}  />}
+                border
+                onClick={handleWaitlistClick}
+                borderColor="border-success"
+                bgColor="bg-transparent"
+                textColor="text-success"
+                paddingX="px-8"
+                paddingY="py-3"
+              >
+                Join our Community
+              </Button>
             </div>
           </div>
           <div className="w-full max-w-4xl mx-auto">
@@ -111,7 +117,7 @@ function Hero() {
         </div>
       </section>
 
-      <Dialog open={isInfoOpen} onOpenChange={setIsInfoOpen}>
+      {/* <Dialog open={isInfoOpen} onOpenChange={setIsInfoOpen}>
         <DialogContent className="sm:max-w-[500px] p-6 text-center bg-white">
           <h1 className="text-bold ff-bold text-3xl sm:text-3xl md:text-4xl m-4 mb-6">
             Be Among the First to Experience Bridge!
@@ -126,7 +132,7 @@ function Hero() {
             Join the Waitlist
           </Button>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
 
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent className="sm:max-w-[900px] p-0 h-[80vh]">
