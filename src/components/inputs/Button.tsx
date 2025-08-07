@@ -14,12 +14,12 @@ type ButtonProps = {
   border: boolean,
   type: 'button' | 'submit' | 'reset' | undefined
   icon?: React.ReactNode;
-  iconPosition?: 'left' | 'right'; 
+  iconPosition?: 'left' | 'right';
 };
 
 function Button({
   children, className, type, onClick, border, borderColor,
-  disabled, fontSize, bgColor, textColor, paddingY, paddingX, icon, iconPosition = 'left', 
+  disabled, fontSize, bgColor, textColor, paddingY, paddingX, icon, iconPosition = 'left'
 }: ButtonProps) {
   return (
     <button
@@ -31,7 +31,7 @@ function Button({
       disabled={disabled}
       onClick={onClick}
     >
-     {icon && iconPosition === 'left' && <span className='mr-2'>{icon}</span>}
+      {icon && iconPosition === 'left' && <span className='mr-2'>{icon}</span>}
       <span>{children}</span>
       {icon && iconPosition === 'right' && <span>{icon}</span>}
     </button>
