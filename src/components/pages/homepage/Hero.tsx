@@ -52,7 +52,7 @@ function Hero() {
         <div className="w-full relative overflow-visible">
           <div className="w-full max-w-3xl mx-auto text-center pt-14">
             <h1 className="text-bold ff-bold text-5xl sm:text-6xl md:text-8xl mb-4">
-              Get Empsssowered to Transact
+              Get Empowered to Transact
             </h1>
             <h4 className="text-xl leading-relaxed mb-10">
               With Bridge, you&apos;re in control, and you can trust us to
