@@ -4,6 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
+import { FaWhatsapp } from 'react-icons/fa';
+
 import { Dialog, DialogContent } from "../../common/UI";
 
 import HalfCircles from "../../../assets/images/half-circles.png";
@@ -12,27 +14,15 @@ import BlurLogo from "../../../assets/images/logos/blur-3d.png";
 import BlueLogo from "../../../assets/images/logos/blue-3d.png";
 import WemaBankLogo from "../../../assets/images/wemabanklogo.png";
 import IdeaxLab from "../../../assets/images/ideaxlab.png";
-import { FaWhatsapp } from 'react-icons/fa';
 
 import Button from "../../inputs/Button";
-// import { useHomepageContext } from "../../../context/Homepage";
 
 function Hero() {
   const router = useRouter();
-
-  // const { homepageData } = useHomepageContext();
-  // const [isFormOpen, setIsFormOpen] = useState(true);
-
-  // const handleWaitlistClick = () => {
-  //   setIsFormOpen(true);
-  // };
-
-  const [isInfoOpen, setIsInfoOpen] = useState(true); // First modal
-  const [isFormOpen, setIsFormOpen] = useState(false); // Second modal
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   const handleWaitlistClick = () => {
-    setIsInfoOpen(false);
-    setIsFormOpen(true);
+    window.open("https://chat.whatsapp.com/BeDo7zGcwm58N69zC05YIP", "_blank");
   };
 
   return (
@@ -69,8 +59,9 @@ function Hero() {
               >
                 Create Account
               </Button>
+
               <Button
-                icon={<FaWhatsapp size={20}  />}
+                icon={<FaWhatsapp size={20} />}
                 border
                 onClick={handleWaitlistClick}
                 borderColor="border-success"
