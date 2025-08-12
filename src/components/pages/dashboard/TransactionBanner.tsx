@@ -18,10 +18,18 @@ function TransactionBanner() {
           <p className="text-base leading-relaxed mb-10">
             Start a transaction by creating an invoice and inviting the other party to fulfil it. Anyone can start a transaction.
           </p>
-          <Button paddingY="py-3" onClick={() => router.push('/create-invoice')}>
-            Create an Invoice
-            <FiArrowRight className="ml-2" />
-          </Button>
+          <div className='flex'>
+            <Button
+              className="w-fit flex items-center justify-center"
+              paddingY="py-3"
+              onClick={() => router.push('/create-invoice')}
+              iconPosition="right"
+              icon={<FiArrowRight className="ml-2" />}
+            >
+              Create an Invoice
+            </Button>
+          </div>
+
         </div>
         <div className="hidden sm:block">
           <span className="rounded-full bg-white/20 flex p-7">

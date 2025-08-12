@@ -56,8 +56,11 @@ function ReturnGoodsContainer() {
           textColor="text-primary"
           bgColor="bg-transparent"
           paddingX="px-3"
+          iconPosition="left"
+          icon={
+            <HiOutlineArrowLeft className="mr-2 mb-0.5" />
+          }
         >
-          <HiOutlineArrowLeft className="mr-2 mb-0.5" />
           Back
         </Button>
       </div>
