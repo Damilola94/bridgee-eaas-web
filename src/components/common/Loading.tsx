@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 
 import Logo from '../../assets/images/loading.gif';
+
 import Modal from './Modal';
 
 type LoadingProps = {
