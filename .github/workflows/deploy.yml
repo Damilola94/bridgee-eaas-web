@@ -38,7 +38,7 @@ jobs:
           ssh-keyscan -H "$REMOTE_HOST" >> ~/.ssh/known_hosts
           
           # Copy .next folder, public folder, and node_modules to the server
-          scp -r next_and_node_modules.tar.gz "$REMOTE_USER@$REMOTE_HOST:/home/ayodele/bridge-api"
+          scp -r next_and_node_modules.tar.gz "$REMOTE_USER@$REMOTE_HOST:/home/ayodele/bridge-web-app"
 
       # Step 6: SSH into the server, pull latest code, and run docker-compose
       - name: SSH into the server, pull latest code, and run Docker Compose
@@ -55,7 +55,7 @@ jobs:
           # SSH into the server, pull the latest code, and run docker-compose
           ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$REMOTE_HOST" << 'EOF'
             # Navigate to the project directory
-            cd /home/ayodele/bridge-api || exit
+            cd /home/ayodele/bridge-web-app || exit
             # Pull latest code from the repo
             rm package-lock.json yarn.lock
             git pull origin main || exit
