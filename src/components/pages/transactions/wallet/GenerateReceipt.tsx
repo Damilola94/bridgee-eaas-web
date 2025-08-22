@@ -103,3 +103,4 @@ function GenerateReceipt({ data, onClose }: { data: TransactionProps, onClose: (
 }
 
 export default GenerateReceipt;
+

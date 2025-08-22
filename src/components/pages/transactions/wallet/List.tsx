@@ -3,7 +3,7 @@ import React, { useState, useMemo, ChangeEventHandler } from 'react';
 import { useRouter } from 'next/router';
 import { debounce } from 'lodash';
 
-import useGetQuery from '../../../../hooks/useGetQuery';
+// import useGetQuery from '../../../../hooks/useGetQuery';
 import { useAccountsContext } from '../../../../context/Accounts';
 import { formatApiDate } from '../../../../utilities/dateTime';
 
@@ -17,6 +17,7 @@ import { PAGE_SIZE } from '../../../../data/constants';
 import Filter from './Filter';
 
 import ListItem from './ListItem';
+import useGetQuery from './useQuery';
 
 function TransactionList() {
   const { accounts } = useAccountsContext();
@@ -81,7 +82,7 @@ function TransactionList() {
                 <th className="px-3 py-5">Transaction</th>
                 <th className="px-3 py-5">Reference Number</th>
                 <th className="px-3 py-5">Amount</th>
-                <th className="px-3 py-5">Channel</th>
+                <th className="px-3 py-5">Source</th>
                 <th className="px-3 py-5">Status</th>
                 <th className="px-3 py-5">Date</th>
                 <th className="pr-5 sm:pr-10 pl-3 py-5">ACTION</th>

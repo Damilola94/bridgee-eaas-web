@@ -1,0 +1,188 @@
+import React, { useState } from "react";
+import Image from "next/image";
+import AuthCode from "react-auth-code-input";
+import { useMutation, useQueryClient } from "react-query";
+import { BiError } from "react-icons/bi";
+
+import SuccessSvg from "../../../assets/svgs/success-tick.svg";
+import notification from "../../../utilities/notification";
+
+import Modal from "../../common/Modal";
+import Button from "../../inputs/Button";
+import handleFetch from "../../../services/api/handleFetch";
+import Loading from "../../common/Loading";
+
+type Props = {
+  onClose: () => void;
+  escrowId?: string;
+  rateId?: string;
+  useDeliveryToggle: Boolean;
+};
+
+function PaymentModal({
+  onClose, escrowId, rateId, useDeliveryToggle
+}: Props) {
+  const [formIndex, setFormIndex] = useState(0);
+  // const [otp, setOtp] = useState("");
+  const [pin, setPin] = useState("");
+
+  const queryClient = useQueryClient();
+  const paymentMutation = useMutation(handleFetch, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["escrow", escrowId]);
+      queryClient.invalidateQueries(["accounts-context"]);
+      setFormIndex(1);
+    },
+    onError: (err) => {
+      if (String(err) === "Error: Insufficient fund") {
+        setFormIndex(2);
+      } else {
+        notification({
+          title: "Error",
+          message:
+            String(err) || "An error occurred while validating payment PIN",
+          type: "danger"
+        });
+      }
+    }
+  });
+
+  const authenticateTransaction = () => {
+    if (pin?.length < 4) {
+      notification({
+        title: "Form Error",
+        message: "Please, enter a valid PIN",
+        type: "danger"
+      });
+      return;
+    }
+
+    const body = !useDeliveryToggle
+      ? { escrowId, pin }
+      : { pin, escrowId, courierId: rateId };
+
+    paymentMutation.mutate({
+      endpoint: "escrow",
+      extra: "complete-escrow-funding",
+      method: "POST",
+      body,
+      auth: true
+    });
+  };
+
+  const { isLoading, isSuccess } = paymentMutation;
+
+  return (
+    <>
+      {isLoading && <Loading />}
+
+      <Modal isOpen onClose={onClose} maxWidth="max-w-[400px]">
+        {formIndex === 0 && (
+          <div className="w-full py-5">
+            <div className="mb-7">
+              <h1 className="w-full text-textColor ff-bold text-xl">
+                Authenticate Payment
+              </h1>
+              <p className="text-sm text-lightText">
+                {/* An OTP has been sent to your email address */}
+                Please enter your account pin
+              </p>
+            </div>
+
+            <div className="w-full mb-10">
+              <p className="text-sm font-bold mb-1">Enter PIN</p>
+              <AuthCode
+                length={4}
+                isPassword
+                allowedCharacters="numeric"
+                containerClassName="w-full flex justify-between mb-2"
+                inputClassName="w-[15%] rounded-lg h-[60px] border border-[#777] outline-none text-center text-xl"
+                onChange={(val: string) => setPin(val)}
+              />
+            </div>
+
+            <div className="flex -mx-2">
+              <div className="w-1/2 px-2">
+                <Button
+                  onClick={onClose}
+                  border
+                  paddingX="px-10"
+                  bgColor="bg-white"
+                  textColor="text-success"
+                  className="w-full text-lg ff-bold !rounded-md mdx2:!rounded-xl"
+                  paddingY="p-2.5"
+                >
+                  Cancel
+                </Button>
+              </div>
+              <div className="w-1/2 px-2">
+                <Button
+                  onClick={authenticateTransaction}
+                  paddingX="px-10"
+                  className="w-full text-lg ff-bold !rounded-md mdx2:!rounded-xl"
+                  paddingY="p-2.5"
+                >
+                  Continue
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {formIndex === 1 && isSuccess && (
+          <div className="w-full py-5">
+            <div className="mb-7">
+              <h1 className="w-full pr-10 text-textColor ff-bold text-xl">
+                Invoice payment is successful
+              </h1>
+            </div>
+
+            <div className="w-full mb-10">
+              <Image src={SuccessSvg} alt="" className="mx-auto" />
+            </div>
+
+            <Button
+              onClick={onClose}
+              paddingX="px-10"
+              className="w-full text-lg ff-bold !rounded-md mdx2:!rounded-xl"
+              paddingY="p-2.5"
+            >
+              Close
+            </Button>
+          </div>
+        )}
+
+        {formIndex === 2 && (
+          <div className="w-full py-5">
+            <div className="mb-7">
+              <h1 className="w-full pr-10 text-textColor ff-bold text-xl">
+                Insufficient Fund
+              </h1>
+              <p className="text-sm text-lightText">
+                The fund in your wallet is not sufficient for this transaction.
+              </p>
+              <p className="text-sm text-lightText">
+                Kindly fund your wallet and try again.
+              </p>
+            </div>
+
+            <div className="w-full mb-10">
+              <BiError className="w-28 h-28 text-error mx-auto" />
+            </div>
+
+            <Button
+              onClick={onClose}
+              paddingX="px-10"
+              className="w-full text-lg ff-bold !rounded-md mdx2:!rounded-xl"
+              paddingY="p-2.5"
+            >
+              Close
+            </Button>
+          </div>
+        )}
+      </Modal>
+    </>
+  );
+}
+
+export default PaymentModal;

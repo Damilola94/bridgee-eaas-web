@@ -14,8 +14,9 @@ type Props = {
   onClose: () => void,
 };
 
-function AddInvoiceItem({ data, onAdd = () => {}, onClose = () => {} }: Props) {
+function AddInvoiceItem({ data, onAdd = () => { }, onClose = () => { } }: Props) {
   const [form, setForm] = useState<OrderListItemProps>({});
+  const escrowTotal = form?.amount && form?.quantity ? Number(form?.amount) * Number(form?.quantity) : 0;
 
   useEffect(() => {
     if (data?.id) setForm({ ...data });
@@ -52,12 +53,12 @@ function AddInvoiceItem({ data, onAdd = () => {}, onClose = () => {} }: Props) {
   };
 
   return (
-    <Modal isOpen onClose={onClose}>
+    <Modal isOpen onClose={onClose} maxWidth="max-w-[400px]">
       <div className="w-full">
-        <h2 className="font-bold text-lg mb-5">Add New Item</h2>
+        <h2 className="font-bold text-lg mb-5">Order Details</h2>
         <div className="w-full">
-          <div className="flex flex-wrap -mx-2">
-            <div className="w-full sm:w-1/2 px-2">
+          <div className="flex flex-wrap w-full">
+            <div className="w-full px-2 ">
               <TextInput
                 name="name"
                 value={form?.name || ''}
@@ -67,7 +68,9 @@ function AddInvoiceItem({ data, onAdd = () => {}, onClose = () => {} }: Props) {
                 placeholder="Item Name"
               />
             </div>
-            <div className="w-full sm:w-1/2 px-2">
+          </div>
+          <div className="flex flex-wrap justify-center">
+            <div className="w-full px-2">
               <TextInput
                 name="quantity"
                 value={form?.quantity || ''}
@@ -82,8 +85,8 @@ function AddInvoiceItem({ data, onAdd = () => {}, onClose = () => {} }: Props) {
           </div>
         </div>
         <div className="w-full">
-          <div className="flex flex-wrap -mx-2">
-            <div className="w-full sm:w-1/2 px-2">
+          <div className="flex flex-wrap justify-center" >
+            <div className="w-full px-2">
               <TextInput
                 name="amount"
                 value={form?.amount || ''}
@@ -95,7 +98,12 @@ function AddInvoiceItem({ data, onAdd = () => {}, onClose = () => {} }: Props) {
                 placeholder="Price per unit"
               />
             </div>
-            <div className="w-full sm:w-1/2 px-2">
+
+          </div>
+        </div>
+        <div className="w-full">
+          <div className="flex flex-wrap justify-center">
+            <div className="w-full px-2">
               <TextInput
                 name="size"
                 value={form?.size || ''}
@@ -109,8 +117,25 @@ function AddInvoiceItem({ data, onAdd = () => {}, onClose = () => {} }: Props) {
             </div>
           </div>
         </div>
-        <div className="w-full flex justify-end">
-          <Button paddingX="px-10" onClick={handleAddItem}>
+        <div className="w-full">
+          <div className="flex flex-wrap justify-center">
+            <div className="w-full px-2">
+              <TextInput
+                name="size"
+                value={escrowTotal}
+                onChange={handleChange}
+                disabled
+                className="w-full mb-4"
+                label="Total Amount (NGN)"
+                type="number"
+                minValue={0}
+                placeholder="Weight per unit"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="w-full flex justify-center">
+          <Button className="w-full" paddingX="px-10" paddingY="py-3" onClick={handleAddItem}>
             {data?.id ? 'Update Item' : 'Add Item'}
           </Button>
         </div>
