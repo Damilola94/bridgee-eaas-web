@@ -5,8 +5,10 @@ import { BulletList } from 'react-content-loader';
 
 import { formatDate } from '../../../utilities/dateTime';
 import TransactionStatus from '../../common/TransactionStatus';
-import useGetQuery from '../../../hooks/useGetQuery';
+// import useGetQuery from '../../../hooks/useGetQuery';
 import NoData from '../../common/NoData';
+
+import useGetQuery from './useGetQuery';
 
 function DisputeHistory() {
   const [currentTab, setCurrentTab] = useState(0);
@@ -72,8 +74,8 @@ function DisputeHistory() {
                     <p className="text-base font-bold">{item?.invoiceTitle}</p>
                   </div>
                   <div className="mt-5">
-                    <p className="text-xs text-lightText">Invoice Number</p>
-                    <p className="text-base font-bold">{`#${item?.invoiceNumber}`}</p>
+                    <p className="text-xs text-lightText">Inspection Period</p>
+                    <p className="text-base font-bold">{item?.invoicePeriod}</p>
                   </div>
                 </div>
 

@@ -73,7 +73,7 @@ function InvoiceSummary() {
     }
     if (form?.inspectionDuration) body.append('inspectionDuration', form.inspectionDuration);
     if (form?.disbursementType) body.append('disbursementType', form.disbursementType);
-    if (form?.pickUpAddress) body.append('pickUpAddress', form.pickUpAddress);
+    if (form?.pickUpAddress) body.append('pickUpAddress', form.pickUpAddress?.value);
     if (form?.writtenTerms) body.append('writtenTerms', form.writtenTerms);
     if (form?.contract) body.append('contract', form?.contract);
 
@@ -100,7 +100,7 @@ function InvoiceSummary() {
             <div className="w-full text-lightText">
               <p className="mb-1">{accounts?.user?.email}</p>
               <p className="mb-1">{form?.recipientDetails?.phoneNumber}</p>
-              <p className="mb-1">{accounts?.user?.residentialAddress?.fullAddress || form?.pickUpAddress || 'N/A'}</p>
+              <p className="mb-1">{accounts?.user?.residentialAddress?.fullAddress || form?.pickUpAddress?.label || 'N/A'}</p>
               <p className="text-lightText">{new Date().toDateString()}</p>
             </div>
           </div>
@@ -167,7 +167,7 @@ function InvoiceSummary() {
           </div>
         </div>
 
-        <div className="w-full flex justify-end space-x-3">
+        <div className="w-full space-x-3">
           {/* <Button
             border
             bgColor="bg-transparent"
@@ -176,10 +176,11 @@ function InvoiceSummary() {
             Save Draft
           </Button> */}
           <Button
+            className='w-full'
             onClick={handleSubmit}
             disabled={status === 'loading'}
           >
-            Send
+            Share Payment Link
           </Button>
         </div>
       </div>

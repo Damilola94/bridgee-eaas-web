@@ -22,8 +22,8 @@ function ListItem({ data, index }: { data: TransactionProps, index: number }) {
       <td className="pl-5 sm:pl-10 pr-3 py-5">{index + 1}</td>
       <td className="px-3 py-5">
         <div className="flex items-center space-x-3">
-          <span className={`w-8 h-8 ${data?.type === 'credit' ? 'bg-success/10' : 'bg-error/10'} p-2 rounded-full`}>
-            {data?.type === 'credit'
+          <span className={`w-8 h-8 ${data?.type === 'Inflow' ? 'bg-success/10' : 'bg-error/10'} p-2 rounded-full`}>
+            {data?.type === 'Inflow'
               ? <InflowArrow className="w-4 h-4" color="#03543F" />
               : <OutflowArrow className="w-4 h-4" color="#EB4336" />}
           </span>
@@ -45,7 +45,8 @@ function ListItem({ data, index }: { data: TransactionProps, index: number }) {
         >
           View
         </button>
-        {showDetails && <TransactionDetails data={data} onClose={() => setShowDetails(false)} />}
+        {/* {showDetails && <TransactionDetails data={data} onClose={() => setShowDetails(false)} />} */}
+        {showDetails && <TransactionDetails onClose={() => setShowDetails(false)} />}
       </td>
     </tr>
   );

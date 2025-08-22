@@ -1,13 +1,13 @@
-import React from 'react';
-import AuthCode from 'react-auth-code-input';
+"use client";
+import AuthCode from "react-auth-code-input";
 
-import Button from '../../../inputs/Button';
+import Button from "../../../inputs/Button";
 
 type Props = {
   onSubmit: () => void
   onPrev: () => void
   onChange: (val: any, type?: string, inputName?: string) => void
-};
+}
 
 function PINValidation({ onPrev, onSubmit, onChange }: Props) {
   return (
@@ -24,7 +24,7 @@ function PINValidation({ onPrev, onSubmit, onChange }: Props) {
           allowedCharacters="numeric"
           containerClassName="w-full flex justify-between mb-2"
           inputClassName="w-[22%] rounded-lg h-[60px] border border-[#777] outline-none text-center text-xl"
-          onChange={(val: string) => onChange(val, 'pin', 'pin')}
+          onChange={(val: string) => onChange(val, "pin", "pin")}
         />
       </div>
 

@@ -6,7 +6,7 @@ import type { NextPageWithLayout } from '../_app';
 
 import Layout from '../../components/wrappers/Layout';
 import TransactionsTabs from '../../components/pages/transactions/TransactionsTabs';
-import InvoiceContainer from '../../components/pages/transactions/invoice/Container';
+import InvoiceContainer from '../../components/pages/transactions/sales/Container';
 import WalletContainer from '../../components/pages/transactions/wallet/Container';
 
 const Transactions: NextPageWithLayout = () => {
@@ -15,7 +15,7 @@ const Transactions: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (!tab) {
-      router.push({ pathname: '/transactions', query: { tab: 'invoice', status: 'all' } });
+      router.push({ pathname: '/transactions', query: { tab: 'sales', status: 'all' } });
     }
   }, [router, tab]);
 
@@ -30,7 +30,7 @@ const Transactions: NextPageWithLayout = () => {
         <TransactionsTabs />
 
         <div className="w-full max-w-7xl mt-3">
-          {tab === 'invoice' && <InvoiceContainer />}
+          {tab === 'sales' && <InvoiceContainer />}
           {tab === 'wallet' && <WalletContainer />}
         </div>
       </div>

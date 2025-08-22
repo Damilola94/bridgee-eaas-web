@@ -11,7 +11,7 @@ import Tabs from './Tabs';
 const options = [
   { title: 'Personal Details', tab: 'personal-details' },
   { title: 'Business Details', tab: 'business-details' },
-  { title: 'Bank Accounts', tab: 'bank-accounts' },
+  // { title: 'Bank Accounts', tab: 'bank-accounts' },
   { title: 'Security Settings', tab: 'security-settings' }
 ];
 

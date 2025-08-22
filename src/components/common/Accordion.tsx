@@ -3,8 +3,8 @@ import { Disclosure } from '@headlessui/react';
 import { CgChevronUp } from 'react-icons/cg';
 
 type Props = {
-  header: React.ReactNode,
-  className?: string,
+  header: string,
+  className?: React.ReactNode,
   children: React.ReactNode,
 }
 

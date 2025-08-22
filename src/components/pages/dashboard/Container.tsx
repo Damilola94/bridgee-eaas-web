@@ -2,14 +2,15 @@ import React from 'react';
 
 import useGetQuery from '../../../hooks/useGetQuery';
 
+import { useAccountsContext } from '../../../context/Accounts';
+
 import WalletCard from './WalletCard';
-import TransactionStats from './TransactionStats';
 import TransactionBanner from './TransactionBanner';
-import TransactionHistory from './TransactionHistory';
 import DisputeHistory from './DisputeHistory';
-import InvoiceHistory from './InvoiceHistory';
-import IncompleteKycNotifier from './IncompleteKycNotifier';
+import SalesHistory from './SalesHistory';
+import WalletHistory from './WalletHistory';
 import EscrowInviteReminder from './EscrowInviteReminder';
+import EscrowCard from './EscrowCard';
 
 function DashboardContainer() {
   const { data, status, error } = useGetQuery({
@@ -18,32 +19,35 @@ function DashboardContainer() {
     queryKey: ['recent-invoices-and-summary']
   });
 
+  const { accounts } = useAccountsContext();
+
   return (
     <>
       <EscrowInviteReminder />
+      <h3 className="text-lg mb-5">
+          Hello&nbsp;
+        <span className="font-bold">{accounts?.defaultMerchant?.name || accounts?.user?.firstName || ''}</span>
+      </h3>
       <div className="flex w-[calc(100%+36px)] -m-5">
         <div className="w-full xl:w-[calc(100%-400px)] px-3 pt-3 pb-5">
-          <IncompleteKycNotifier />
-          <div className="w-full mb-3">
+          <div className="w-full mb-3 sm:flex sm:space-x-3 space-y-3 sm:space-y-0">
             <WalletCard />
-          </div>
-          <div className="w-full mb-3">
-            <TransactionStats data={data?.data?.invoiceTransactionSummary} />
+            <EscrowCard />
           </div>
           <div className="w-full mb-3">
             <TransactionBanner />
           </div>
+          <div className="w-full mb-3">
+            <WalletHistory data={data?.data?.recentInvoice} status={status} error={error} />
+          </div>
           <div className="w-full">
-            <InvoiceHistory data={data?.data?.recentInvoice} status={status} error={error} />
+            <SalesHistory data={data?.data?.recentInvoice} status={status} error={error} />
           </div>
         </div>
 
         <div className="hidden xl:block fixed right-0 top-0 h-screen w-[400px] border-l pt-20">
           <div className="h-full flex flex-col">
-            <div className="h-1/2">
-              <TransactionHistory />
-            </div>
-            <div className="h-1/2">
+            <div className="">
               <DisputeHistory />
             </div>
           </div>
