@@ -14,7 +14,7 @@ function Tabs({ options = [], pathname = '' }: { options: TabProps[], pathname: 
     <div className="w-full overflow-auto bg-white hide-scroll mb-5 border-b rounded-t-lg">
       <ul className="inline-flex min-w-max">
         {options.map((item) => {
-          if (!accounts?.defaultMerchant && item?.tab === 'business-details') return null;
+          // if (!accounts?.defaultMerchant && item?.tab === 'business-details') return null;
           return (
             <li className="" key={item?.title}>
               <button

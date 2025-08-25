@@ -1,5 +1,3 @@
-// src/pages/seller/create-account/index.tsx
-
 import { useState } from "react";
 import BvnValidation from "../../../components/pages/seller/create-account/BvnValidation";
 import StaticLayout from "../../../components/pages/seller/create-account/StaticLayout";
@@ -12,17 +10,7 @@ import LivenessCheck from "../../../components/pages/seller/create-account/Liven
 import PersonalInfo from "../../../components/pages/seller/create-account/PersonalInfo";
 import LinkBankAccount from "../../../components/pages/seller/create-account/LinkBankAccount";
 import Success from "../../../components/pages/seller/create-account/Success";
-// import { Button } from "@/components/ui/button";
 
-// Import all step components
-// import BvnValidation from "@/components/pages/seller/create-account/BvnValidation";
-// import LivenessCheck from "@/components/pages/seller/create-account/LivenessCheck";
-// import PersonalInfo from "@/components/pages/seller/create-account/PersonalInfo";
-// import LinkBankAccount from "@/components/pages/seller/create-account/LinkBankAccount";
-// import StaticDesign from "@/components/pages/seller/create-account/StaticDesign";
-// import Success from "@/components/pages/seller/create-account/Success";
-
-// ... (Keep your StepData interface here)
 export interface StepData {
   bvn: string;
   livenessSelfie: File | null; // Use File type for image uploads
@@ -40,9 +28,7 @@ export interface StepData {
   };
 }
 
-// ====================================================================
-// THE SINGLE SOURCE OF TRUTH for the multi-step form
-// ====================================================================
+
 const stepsConfig = [
   {
     id: "bvnValidation",
@@ -72,9 +58,9 @@ const stepsConfig = [
 ];
 
 export default function CreateAccountPage() {
-  // State now tracks the INDEX of the current step, not a magic number
-  const [currentStepIndex, setCurrentStepIndex] = useState(4);
-  const [isCompleted, setIsCompleted] = useState(false); // State to track completion
+  
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [isCompleted, setIsCompleted] = useState(false);
 
   const [formData, setFormData] = useState<StepData>({
     bvn: "",
@@ -100,13 +86,13 @@ export default function CreateAccountPage() {
 
   // --- NAVIGATION LOGIC (Readable and dynamic) ---
   const handleNext = () => {
-    if (isLastStep) {
-      // Logic for final submission
-      console.log("Submitting form data:", formData);
-      setIsCompleted(true);
-    } else {
       setCurrentStepIndex((prevIndex) => prevIndex + 1);
-    }
+    // if (isLastStep) {
+    //   console.log("Submitting form data:", formData);
+    //   setIsCompleted(true);
+    // } else {
+    //   setCurrentStepIndex((prevIndex) => prevIndex + 1);
+    // }
   };
 
   const handleBack = () => {
