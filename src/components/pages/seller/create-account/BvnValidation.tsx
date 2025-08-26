@@ -6,10 +6,10 @@ import TextInput from "../../../inputs/Text";
 //   setFormData: (data: StepData) => void;
 // }
 
-interface Props {
-  formData: StepData;
-  setFormData: (data: StepData) => void;
-}
+// interface Props {
+//   formData: StepData;
+//   setFormData: (data: StepData) => void;
+// }
 
 export default function BvnValidation() {
   return (

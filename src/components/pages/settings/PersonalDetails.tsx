@@ -1,15 +1,10 @@
-import React from 'react';
 
 import TextInput from '../../inputs/Text';
-import InfoCircleIcon from "../../../assets/svgs/info-circle.svg"
+import InfoCircleIcon from "../../../assets/svgs/info-circle.svg";
 
-import { useAccountsContext } from '../../../context/Accounts';
 import Image from 'next/image';
 
 function PersonalDetails() {
-  const { accounts } = useAccountsContext();
-  const { user } = accounts || {};
-
  return (
     <div className="">
       <div className="flex justify-between items-start">

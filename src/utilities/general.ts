@@ -2,17 +2,20 @@ import moment from "moment-timezone";
 
 import { idTypes } from "../data/kyc";
 
-export const formatCurrency = (value: any) => {
-  if (value === null || value === undefined || value === "") return undefined;
-
+export const formatCurrency = (value: any, showCurrency: boolean = true, currency: string = 'NGN') => {
+  if (value === null || value === undefined || value === '') return undefined;
+  
   const numValue = parseFloat(value);
   if (isNaN(numValue)) return undefined;
-
-  return numValue.toLocaleString("en-NG", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+  
+  const formatted = numValue.toLocaleString('en-NG', { 
+    minimumFractionDigits: 2, 
+    maximumFractionDigits: 2 
   });
+  
+  return showCurrency ? `${currency} ${formatted}` : formatted;
 };
+
 
 export const capitalize = (text: string) => {
   const val = decodeURIComponent(text);

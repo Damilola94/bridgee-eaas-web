@@ -158,7 +158,7 @@ export default function CreateAccountPage() {
 
           {/* Dynamic Step Content - Renders the component from our config */}
           <div className="mb-9">
-            <StepComponent formData={formData} setFormData={setFormData} />
+            <StepComponent />
           </div>
 
           {/* Navigation buttons - DYNAMIC */}
