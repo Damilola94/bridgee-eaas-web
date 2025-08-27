@@ -1,12 +1,8 @@
 import { useRouter } from 'next/router';
-import React from 'react';
-
-import { useAccountsContext } from '../../../context/Accounts';
 
 type TabProps = { title: string, tab: string };
 
 function Tabs({ options = [], pathname = '' }: { options: TabProps[], pathname: string }) {
-  const { accounts } = useAccountsContext();
   const router = useRouter();
   const { tab } = router.query || {};
 
