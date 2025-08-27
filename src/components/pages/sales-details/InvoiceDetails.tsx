@@ -392,18 +392,18 @@ function InvoiceDetails({ data = {} }: { data: any }) {
             </div>
           </div>
 
-          <div className="w-full flex justify-end mb-5">
+          {/* <div className="w-full flex justify-end mb-5">
             <button
               onClick={() => setShowAgreementModal(true)}
               className="text-primary underline hover:no-underline"
             >
               View Escrow Agreement
             </button>
-          </div>
+          </div> */}
 
           {data?.isSeller ? (
             <>
-              {data?.status === "paymentcompleted" && (
+              {data?.status === "paymentcsompleted" && (
                 <>
                   {data?.deliveryStatus === "Pending" && (
                     <div className="w-full flex justify-end space-x-3">

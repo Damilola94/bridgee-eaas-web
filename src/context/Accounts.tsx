@@ -25,7 +25,7 @@ function AccountsContextProvider({ children }: Props) {
   const accountsMemo = useMemo(() => ({ accounts, setAccounts }), [accounts]);
 
   const { data, status, isFetching } = useGetQuery({
-    endpoint: 'dashboard', extra: 'comprehensive-user-details', queryKey: ['accounts-context']
+    endpoint: 'wallet-service/api/v1/wallets', extra: 'mine', queryKey: ['accounts-context']
   });
 
   useEffect(() => {

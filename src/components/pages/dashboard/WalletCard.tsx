@@ -13,6 +13,8 @@ function WalletCard() {
   const { accounts } = useAccountsContext();
   const { defaultWallets: wallets } = accounts || {};
 
+  console.log(accounts, "accounts");
+
   return (
     <>
       <div className="bg-white w-full px-4 py-4 rounded-lg shadow">

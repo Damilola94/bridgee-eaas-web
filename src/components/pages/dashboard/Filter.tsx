@@ -1,7 +1,9 @@
 /* eslint-disable no-duplicate-imports */
 import React, { useState, useEffect } from 'react';
 
-import { X, Filter, ChevronDown } from 'lucide-react';
+import { X, ChevronDown } from 'lucide-react';
+
+import Image from 'next/image';
 
 import Modal from '../../common/Modal';
 import Accordion from '../../common/Accordion';
@@ -10,6 +12,7 @@ import Button from '../../inputs/Button';
 import Checkbox from '../../common/CheckBox';
 import SearchInput from '../../inputs/Search';
 import TextInput from '../../inputs/Text';
+import FilterIcon from '../../../assets/svgs/filter-filled.svg';
 
 type AmountInputProps = {
   placeholder?: string;
@@ -78,27 +81,27 @@ function FilterDropdown({ filter, onChange }: valueProps) {
   return (
     <div className="relative">
       <div
-        className="bg-white max-w-min flex items-center space-x-2 p-1.5 border-2 rounded-md cursor-pointer hover:border-blue-300 transition-colors"
+        className="bg-white max-w-min flex items-center space-x-2 p-1.5 border-2 rounded-[10px] cursor-pointer justify-center hover:border-blue-300 transition-colors"
         onClick={() => setOpen(!open)}
         role="presentation"
       >
         {filter
           ? <X onClick={handleClear} className="cursor-pointer ml-2 w-6 h-6 p-1 rounded hover:bg-blue-500 hover:text-white" />
-          : <Filter className="w-5 h-5 text-gray-500" />}
-        <p className="text-sm font-bold mt-1">Filters</p>
-        <ChevronDown className="w-5 h-5" />
+          : <Image src={FilterIcon} alt="Icon" className={'w-10 h-auto'} />}
+        <p className="text-sm font-bold">Filters</p>
+        <ChevronDown className="" />
       </div>
 
-      <Modal isOpen={open} onClose={() => setOpen(false)} maxWidth="max-w-[400px]">
+      <Modal isOpen={open} onClose={() => setOpen(false)} maxWidth="max-w-[400px]" filterTitle>
         <div className="relative w-full">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-bold">Filters</h3>
-            <div className="flex space-x-2">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-bold"></h3>
+            <div className="flex space-x-2 mt-4">
               <Button
                 paddingY="py-1.5"
                 paddingX="px-1"
                 bgColor="bg-transparent"
-                textColor="text-gray-400 ff-bold"
+                textColor="text-primary"
                 onClick={handleApply}
               >
 
@@ -108,7 +111,7 @@ function FilterDropdown({ filter, onChange }: valueProps) {
                 paddingY="py-1.5"
                 paddingX="px-1"
                 bgColor="bg-transparent"
-                textColor="text-gray-400 ff-bold"
+                textColor="text-primary"
                 onClick={handleClear}
               >
                 Clear all

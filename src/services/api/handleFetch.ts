@@ -1,22 +1,29 @@
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
-import { logger } from '../../utilities/general';
-import errorHandler from '../../utilities/errorHandler';
+import { logger } from "../../utilities/general";
+import errorHandler from "../../utilities/errorHandler";
 
-import endpoints from './endpoints';
+import endpoints from "./endpoints";
 
-import axiosInstance from '.';
+import axiosInstance from ".";
 
 const handleFetch = async ({
-  endpoint = '', extra = null, method = 'GET', auth = false,
-  body = null, pQuery = null, param = null, multipart = false,
+  service = "",
+  endpoint = "",
+  extra = null,
+  method = "GET",
+  auth = false,
+  body = null,
+  pQuery = null,
+  param = null,
+  multipart = false,
   responseType = null
-}:any = {}) => {
+}: any = {}) => {
   const headers: any = {
-    'Content-Type': multipart ? 'multipart/form-data' : 'application/json',
-    'X-API-KEY': process.env.NEXT_PUBLIC_API_KEY
+    "Content-Type": multipart ? "multipart/form-data" : "application/json",
+    "X-API-KEY": process.env.NEXT_PUBLIC_API_KEY
   };
-  let url = endpoints[endpoint] || endpoint;
+  let url = `${service}${endpoints[endpoint] || endpoint}`;
 
   if (extra) {
     url += `/${extra}`;
@@ -27,21 +34,26 @@ const handleFetch = async ({
   }
 
   if (pQuery) {
-    let paramsArray = Object.keys(pQuery)
-      .map((key) => pQuery[key] && `${encodeURIComponent(key)}=${encodeURIComponent(pQuery[key])}`);
+    let paramsArray = Object.keys(pQuery).map(
+      (key) =>
+        pQuery[key] &&
+        `${encodeURIComponent(key)}=${encodeURIComponent(pQuery[key])}`
+    );
 
     paramsArray = paramsArray.filter((item) => item);
-    url += `?${paramsArray.join('&')}`;
+    url += `?${paramsArray.join("&")}`;
   }
 
   if (auth) {
-    const storedData = Cookies.get('data');
+    const storedData = Cookies.get("data");
     const data = storedData && JSON.parse(storedData);
     headers.authorization = `bearer ${data?.accessToken}`;
   }
 
   const options: any = {
-    url, method, headers
+    url,
+    method,
+    headers
   };
 
   if (responseType) {
@@ -54,9 +66,11 @@ const handleFetch = async ({
 
   logger(options);
   return axiosInstance(options)
-    .then((response) => (responseType === 'blob'
-      ? response
-      : ({ ...response.data, method, status: response.status })))
+    .then((response) =>
+      responseType === "blob"
+        ? response
+        : { ...response.data, method, status: response.status }
+    )
     .catch((error) => {
       throw new Error(errorHandler(error, auth));
     });

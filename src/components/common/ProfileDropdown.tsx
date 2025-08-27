@@ -129,7 +129,8 @@ export default function ProfileDropdown({ className }: { className: string }) {
                 className="rounded-full mr-1 w-auto h-auto"
               />
               <span className="text-primary font-bold px-2 py-0.5 rounded bg-primary/10">
-                {accounts?.defaultMerchant?.name || accounts?.user?.firstName || '---'}
+                {/* {accounts?.defaultMerchant?.name || accounts?.user?.firstName || '---'} */}
+                Verified Seller
               </span>
             </div>
             <Menu.Button className="text-sm font-medium text-black">
