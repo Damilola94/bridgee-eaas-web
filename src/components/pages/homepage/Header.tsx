@@ -90,7 +90,7 @@ function Header() {
                     Login
                   </Button>
                   <Button
-                    onClick={() => router.push("/signup")}
+                    onClick={() => router.push("/seller/create-account")}
                     paddingX="px-8"
                     paddingY="py-3"
                   >
