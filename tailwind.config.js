@@ -18,6 +18,10 @@ module.exports = {
         transparentPurple: "rgba(206, 24, 223, 0.05)",
         error: '#EB4336',
         blue: '#5E32C9',
+        grey: '#808080',
+        greyDark: '#4B5563',
+        grey2: "#6B7280",
+        textGreen: '#03543F',
         green: '#057A55',
         lightGreen: '#DEF7EC'
       },

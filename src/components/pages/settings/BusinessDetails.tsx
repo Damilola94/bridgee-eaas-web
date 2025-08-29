@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import Image from 'next/image';
 
-import { RiErrorWarningLine } from 'react-icons/ri';
-
-import EditIcon from '../../../assets/svgs/edit.svg';
+import InfoCircleIcon from '../../../assets/svgs/info-circle.svg';
 import AlatLogo from '../../../assets/images/alat-logo.png';
 
 import Button from '../../inputs/Button';
@@ -86,101 +84,99 @@ function BusinessDetails() {
     <>
       {isLoading && <Loading />}
 
-      <div className="w-full max-w-3xl bg-white rounded-xl px-10 py-7 shadow">
-        <div className="w-full">
-          <div className="flex justify-between items-start">
-            <h2 className="font-bold text-xl mb-5">Business Details</h2>
-            <button className="flex items-end font-bold text-success" onClick={() => setIsEditable(!isEditable)}>
+       <div>
+      <div className="w-full">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="font-bold text-xl">Business Details</h2>
+
+          <Button className="border border-success text-success bg-transparent">
+            Upgrade Account
+          </Button>
+          {/* <button className="flex items-end font-bold text-success" onClick={() => setIsEditable(!isEditable)}>
               <Image src={EditIcon} alt="icon" className="w-6 h-6 mr-1" />
               {isEditable ? 'Cancel Edit' : 'Edit'}
-            </button>
-          </div>
+            </button> */}
+        </div>
 
-          <div className="w-full">
-            <div className="flex flex-wrap items-end -mx-2">
-              <div className="w-full sm:w-1/2 px-2">
-                <div className="mb-7">
-                  <Image
-                    src={AlatLogo}
-                    alt="business logo"
-                    className="w-[100px] h-[100px] bg-gray-300 rounded-full object-cover object-center"
-                  />
-                  <input hidden type="file" id="logo-file" />
-                  <div className="flex items-end mt-3">
-                    Business Logo
-                    <button
-                      type="button"
-                      className="ml-2"
+        <div className="w-full">
+          <div className="flex flex-wrap items-end -mx-2">
+            <div className="w-full px-2">
+              <div className="mb-10">
+                <Image
+                  src={AlatLogo}
+                  alt="business logo"
+                  className="w-[100px] h-[100px] bg-gray-300 rounded-full object-cover object-center"
+                />
+                <input hidden type="file" id="logo-file" />
+                <div className="flex items-end mt-3">
+                  Business Logo
+                  <button type="button" className="ml-2">
+                    {/* <Image src={EditIcon} alt="icon" className="w-6 h-6" /> */}
+
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 25 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      <Image src={EditIcon} alt="icon" className="w-6 h-6" />
-                    </button>
-                  </div>
-                </div>
-
-                <TextInput
-                  name="name"
-                  readOnly
-                  value={form?.name || ''}
-                  className="w-full mb-5"
-                  label="Business name"
-                  placeholder="Business name"
-                />
-                <TextInput
-                  name="phoneNumber"
-                  value={form?.phoneNumber || ''}
-                  readOnly={!isEditable}
-                  onChange={handleChange}
-                  className="w-full mb-5"
-                  label="Phone Number"
-                  placeholder="Phone Number"
-                />
-                <TextInput
-                  name="email"
-                  value={form?.businessEmail || ''}
-                  readOnly={!isEditable}
-                  onChange={handleChange}
-                  className="w-full mb-5"
-                  label="Business email"
-                  placeholder="Business email"
-                />
-              </div>
-
-              <div className="w-full sm:w-1/2 px-2 pt-10">
-                <div className="w-full">
-                  <h3 className="font-black text-lg mb-5">Social Media Details</h3>
-                  <TextInput
-                    name="instagram"
-                    value={form?.instagram || ''}
-                    readOnly={!isEditable}
-                    onChange={handleChange}
-                    className="w-full mb-5"
-                    label="Instagram"
-                    placeholder="Instagram"
-                  />
-                  <TextInput
-                    name="facebook"
-                    value={form?.facebook || ''}
-                    readOnly={!isEditable}
-                    onChange={handleChange}
-                    className="w-full mb-5"
-                    label="Facebook"
-                    placeholder="Facebook"
-                  />
-                  <TextInput
-                    name="whatsapp"
-                    value={form?.whatsapp || ''}
-                    readOnly={!isEditable}
-                    onChange={handleChange}
-                    className="w-full mb-5"
-                    label="Whatsapp number"
-                    placeholder="Whatsapp number"
-                  />
+                      <path
+                        d="M21.1902 22H3.19019C2.78019 22 2.44019 21.66 2.44019 21.25C2.44019 20.84 2.78019 20.5 3.19019 20.5H21.1902C21.6002 20.5 21.9402 20.84 21.9402 21.25C21.9402 21.66 21.6002 22 21.1902 22Z"
+                        fill="#CE18DF"
+                      />
+                      <path
+                        d="M19.2103 3.48C17.2703 1.54 15.3703 1.49 13.3803 3.48L12.1703 4.69C12.0703 4.79 12.0303 4.95 12.0703 5.09C12.8303 7.74 14.9503 9.86 17.6003 10.62C17.6403 10.63 17.6803 10.64 17.7203 10.64C17.8303 10.64 17.9303 10.6 18.0103 10.52L19.2103 9.31C20.2003 8.33 20.6803 7.38 20.6803 6.42C20.6903 5.43 20.2103 4.47 19.2103 3.48Z"
+                        fill="#CE18DF"
+                      />
+                      <path
+                        d="M15.8003 11.53C15.5103 11.39 15.2303 11.25 14.9603 11.09C14.7403 10.96 14.5303 10.82 14.3203 10.67C14.1503 10.56 13.9503 10.4 13.7603 10.24C13.7403 10.23 13.6703 10.17 13.5903 10.09C13.2603 9.81 12.8903 9.45 12.5603 9.05C12.5303 9.03 12.4803 8.96 12.4103 8.87C12.3103 8.75 12.1403 8.55 11.9903 8.32C11.8703 8.17 11.7303 7.95 11.6003 7.73C11.4403 7.46 11.3003 7.19 11.1603 6.91C11.1391 6.86461 11.1186 6.81944 11.0987 6.77454C10.9511 6.44122 10.5165 6.34378 10.2587 6.60153L4.53026 12.33C4.40026 12.46 4.28026 12.71 4.25026 12.88L3.71026 16.71C3.61026 17.39 3.80026 18.03 4.22026 18.46C4.58026 18.81 5.08026 19 5.62026 19C5.74026 19 5.86026 18.99 5.98026 18.97L9.82026 18.43C10.0003 18.4 10.2503 18.28 10.3703 18.15L16.0916 12.4287C16.3511 12.1691 16.2532 11.7237 15.9156 11.5796C15.8776 11.5634 15.8392 11.5469 15.8003 11.53Z"
+                        fill="#CE18DF"
+                      />
+                    </svg>
+                  </button>
                 </div>
               </div>
+
+              <TextInput
+                name="name"
+                readOnly
+                value={""}
+                className="w-full mb-5"
+                label="Business name"
+                placeholder="Business name"
+              />
+              <TextInput
+                name="phoneNumber"
+                value={""}
+                // readOnly={!isEditable}
+                // onChange={handleChange}
+                className="w-full mb-5"
+                label="Phone Number"
+                placeholder="Phone Number"
+              />
+              <TextInput
+                name="email"
+                value={""}
+                readOnly
+                // onChange={handleChange}
+                className="w-full mb-5"
+                label="Business email"
+                placeholder="Business email"
+              />
             </div>
           </div>
+        </div>
 
-          {isEditable && (
+        <div className="flex items-start space-x-2 p-3 rounded-md">
+        <Image src={InfoCircleIcon} alt="Information" />
+        <p className="text-sm text-textColor/50">
+          Kindly note the information above is not editable except for your business logo, this is because it’s the information tied to your BVN
+        </p>
+      </div>
+
+      <Button className="bg-success w-full mt-12">Save</Button>
+
+        {/* {isEditable && (
             <div className="w-full mt-5">
               <Button paddingX="px-10" paddingY="py-3" onClick={handleUpdate}>Save</Button>
               <p className="text-lightText mt-3">
@@ -188,9 +184,9 @@ function BusinessDetails() {
                 Kindly ensure the information you provide is accurate and precise
               </p>
             </div>
-          )}
-        </div>
+          )} */}
       </div>
+    </div>
     </>
   );
 }
