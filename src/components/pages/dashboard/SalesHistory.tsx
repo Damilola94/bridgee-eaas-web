@@ -1,60 +1,81 @@
-import React, { useEffect } from 'react';
-import Link from 'next/link';
-import { RxChevronRight } from 'react-icons/rx';
-import { BulletList } from 'react-content-loader';
+"use client";
 
-import { useRouter } from 'next/router';
+import Link from "next/link";
+import Skeleton from "react-loading-skeleton";
+import { useCookies } from "react-cookie";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
-import { formatCurrency, formatDisbursementType } from '../../../utilities/general';
-import { formatDateTime } from '../../../utilities/dateTime';
+import { FiArrowRight } from "react-icons/fi";
 
-import NoData from '../../common/NoData';
-import TransactionStatus from '../../common/TransactionStatus';
-import ListStatusTabs from '../../common/ListStatusTabs';
+import { formatCurrency } from "../../../utilities/general";
+import { formatDateTime } from "../../../utilities/dateTime";
+import NoData from "../../common/NoData";
+import TransactionStatus from "../../common/TransactionStatus";
+import ListStatusTabsNoScroll from "../../common/ListStatusTabsNoScroll";
+import useGetQuery from "../../../hooks/useGetQuery";
 
-type Props = {
-  data: any;
-  status: string;
-  error: unknown
-};
+import Button from "../../inputs/Button";
+
+import { SalesItem } from "./types";
 
 const options = [
-  { title: 'All', status: 'all' },
-  { title: 'Awaiting Shipment', status: 'awaitingshipment' },
-  { title: 'Intransit', status: 'intransit' },
-  { title: 'Disputed', status: 'disputed' },
-  { title: 'Completed', status: 'completed' },
-  { title: 'Inspection', status: 'inspection' }
+  { title: "All", status: "all" },
+  { title: "Cancelled", status: "Cancelled" },
+  { title: "Completed", status: "Completed" },
+  { title: "Confirmed", status: "Confirmed" },
+  { title: "Delivered", status: "Delivered" },
+  { title: "Disputed", status: "Disputed" },
+  { title: "Dispute Resolved", status: "DisputeResolved" },
+  { title: "Draft", status: "Draft" },
+  { title: "Picked Up", status: "PickedUp" }
 ];
 
-function SalesHistory({ data, status, error }: Props) {
+function SalesHistory() {
+  const [cookie] = useCookies(["data"]);
   const router = useRouter();
   const { tab } = router.query || {};
 
+  const { data, status, error } = useGetQuery({
+    service: "wallet-service/api/v1",
+    endpoint: "escrows",
+    extra: "orders",
+    pQuery: {
+      pageSize: 10, pageNumber: 1, SearchKey: "", Status: router?.query?.status === 'all' ? null : router?.query?.status
+    },
+    queryKey: ["escrows-orders", router?.query?.status],
+    enabled: !!router?.query?.status || !!cookie?.data?.accessToken
+  });
+
   useEffect(() => {
     if (!tab) {
-      router.push({ pathname: '/dashboard', query: { tab: 'sales', status: 'all' } });
+      router.push({ pathname: "/dashboard", query: { tab: "sales", status: undefined } });
     }
   }, [router, tab]);
+
   return (
     <div className="w-full bg-white shadow-md rounded-lg overflow-hidden">
       <div className="flex flex-wrap items-center justify-between px-5 sm:px-10 py-5">
         <div>
           <h3 className="font-bold text-lg mr-5 mb-2">Sales</h3>
-          <p className='text-lightText  mb-2'>This speaks to the funds sent by the buyer </p>
+          <p className="text-lightText  mb-2">This speaks to the funds sent by the buyer </p>
         </div>
-        <Link href="/transactions">
-          <span className="text-primary text-sm flex items-center hover:underline">
-            See All
-            <RxChevronRight className="w-5 h-auto mb-1" />
-          </span>
+        <Link href="/transactions/?tab=sales&status=all">
+          <Button
+            className="w-fit flex items-center justify-center bg-transparent text-primary"
+            paddingY="py-3"
+            iconPosition="right"
+            icon={<FiArrowRight className="ml-2 text-primary" />}
+          >
+            <span className="text-primary">See All</span>
+          </Button>
         </Link>
       </div>
-      <ListStatusTabs options={options} pathname="/dashboard" />
+      <ListStatusTabsNoScroll options={options} pathname="/dashboard" />
       <div className="w-full overflow-auto pb-20">
         <table className="w-full min-w-max table-auto text-left">
           <thead className="bg-secondary">
-            <tr className="">
+            <tr>
               <th className="pl-5 sm:pl-10 pr-3 py-5">#</th>
               <th className="px-3 py-5">Business Name</th>
               <th className="px-3 py-5">Invoice Number</th>
@@ -64,49 +85,67 @@ function SalesHistory({ data, status, error }: Props) {
               <th className="px-3 py-5">Status</th>
             </tr>
           </thead>
-          <tbody className="">
-            {status === 'loading' && (
+          <tbody>
+            {status === "loading" && (
               <tr>
-                <td colSpan={8} className="text-center pt-4">
-                  <div className="px-5">
-                    <BulletList className="relative w-full" />
+                <td colSpan={7} className="text-center pt-4">
+                  <div className="px-5 space-y-2">
+                    {[...Array(5)].map((_, i) => (
+                      <div key={i} className="flex space-x-4 py-2">
+                        <Skeleton width={32} height={16} />
+                        <Skeleton width={128} height={16} />
+                        <Skeleton width={96} height={16} />
+                        <Skeleton width={80} height={16} />
+                        <Skeleton width={112} height={16} />
+                        <Skeleton width={96} height={16} />
+                        <Skeleton width={80} height={16} />
+                      </div>
+                    ))}
                   </div>
                 </td>
               </tr>
             )}
-            {status === 'success' && (
-              data?.length > 0 ? (
+
+            {status === "success" &&
+              (data?.data?.items?.length > 0 ? (
                 <>
-                  {data?.map((item: any, index: number) => (
-                    <tr className="border-t" key={item?.escrowId}>
+                  {data.data.items.map((item: SalesItem, index: number) => (
+                    <tr className="border-t" key={item.id}>
                       <td className="pl-5 sm:pl-10 pr-3 py-5">{index + 1}</td>
                       <td className="px-3 py-5">
                         <div className="flex items-center space-x-3">
-                          <span className="capitalize">{item?.title}</span>
+                          <span className="capitalize">{item.recipientName}</span>
                         </div>
                       </td>
-                      <td className="px-3 py-5">{`#${item?.invoiceNumber}`}</td>
-                      <td className="px-3 py-5">{formatCurrency(item?.amount)}</td>
-                      <td className="px-3 py-5">{formatDateTime(item?.createdAt)}</td>
-                      <td className="px-3 py-5">{formatDisbursementType(item?.disbursementType)}</td>
+                      <td className="px-3 py-5">{`#${item.referenceNumber}`}</td>
+                      <td className="px-3 py-5">{formatCurrency(item.amount)}</td>
+                      <td className="px-3 py-5">{formatDateTime(item.createdDate)}</td>
                       <td className="px-3 py-5">
-                        <TransactionStatus status={item?.status === 'paymentcompleted' ? item?.escrowDeliveryStatus : item?.status} />
+                        {item.paymentLink ? (
+                          <Link href={item.paymentLink} className="text-blue-600 hover:underline">
+                            View Link
+                          </Link>
+                        ) : (
+                          "N/A"
+                        )}
+                      </td>
+                      <td className="px-3 py-5">
+                        <TransactionStatus status={item.status} />
                       </td>
                     </tr>
                   ))}
                 </>
               ) : (
                 <tr>
-                  <td colSpan={8}>
+                  <td colSpan={7}>
                     <NoData py="pt-14" />
                   </td>
                 </tr>
-              )
-            )}
+              ))}
 
-            {status === 'error' && (
+            {status === "error" && (
               <tr>
-                <td colSpan={8} className="text-center pt-10">
+                <td colSpan={7} className="text-center pt-10">
                   {String(error)}
                 </td>
               </tr>

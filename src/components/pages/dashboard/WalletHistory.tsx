@@ -1,8 +1,12 @@
+/* eslint-disable no-empty-pattern */
 /* eslint-disable no-console */
 import React, { useMemo, useState, ChangeEventHandler } from 'react';
 import { debounce } from 'lodash';
 import { BulletList } from 'react-content-loader';
 
+import { useCookies } from 'react-cookie';
+
+import useGetQuery from '../../../hooks/useGetQuery';
 import InflowArrow from '../../../assets/svg-tsx/InflowArrow';
 import OutflowArrow from '../../../assets/svg-tsx/OutflowArrow';
 
@@ -20,18 +24,27 @@ import DisputeFilter from './Filter';
 import TransactionDetailsModal from './TransactionDetailsModal';
 
 type Props = {
-  data: any;
-  status: string;
-  error: unknown
+  data?: any;
+  status?: string;
+  error?: unknown
 };
 
-function InvoiceHistory({ data, status, error }: Props) {
+function InvoiceHistory({ }: Props) {
   const [showBankTransfer, setShowBankTransfer] = useState(false);
   const [filter, setFilter] = useState<any>(null);
   const [searchText, setSearchText] = useState('');
   const [search, setSearch] = useState('');
+  const [cookie] = useCookies(['data']);
+  const { data, status, error } = useGetQuery({
+    service: "wallet-service/api/v1",
+    endpoint: 'escrows',
+    extra: 'orders',
+    pQuery: { pageSize: 10, pageNumber: 1, SearchKey: search },
+    queryKey: ['escrows-orders', search, filter?.value || 'all'],
+    enabled: !!cookie?.data?.accessToken
+  });
 
-  console.log('search', search);
+  console.log(cookie?.data, "data");
 
   const debouncedSearch = useMemo(() => debounce(setSearch, 1000), [setSearch]);
 

@@ -3,7 +3,6 @@ import React, { useState, useMemo, ChangeEventHandler } from 'react';
 import { useRouter } from 'next/router';
 import { debounce } from 'lodash';
 
-// import useGetQuery from '../../../../hooks/useGetQuery';
 import { useAccountsContext } from '../../../../context/Accounts';
 import { formatApiDate } from '../../../../utilities/dateTime';
 
@@ -14,12 +13,13 @@ import SearchInput from '../../../inputs/Search';
 
 import { PAGE_SIZE } from '../../../../data/constants';
 
+import useGetQuery from "../../../../hooks/useGetQuery";
+
 import Filter from './Filter';
 
 import ListItem from './ListItem';
-import useGetQuery from './useQuery';
 
-function TransactionList() {
+function WalletList() {
   const { accounts } = useAccountsContext();
   const [filter, setFilter] = useState<any>(null);
   const [pageNumber, setPageNumber] = useState(0);
@@ -29,8 +29,9 @@ function TransactionList() {
   const router = useRouter();
 
   const { data, status, error } = useGetQuery({
-    endpoint: 'transaction',
-    extra: 'get-wallet-transactions',
+    service: "wallet-service/api/v1",
+    endpoint: 'escrows',
+    extra: 'orders',
     queryKey: ['wallet-transactions', router?.query?.status, accounts, filter, pageNumber, search],
     pQuery: {
       pageSize: PAGE_SIZE,
@@ -129,4 +130,4 @@ function TransactionList() {
   );
 }
 
-export default TransactionList;
+export default WalletList;

@@ -1,41 +1,44 @@
-import React, { useState, useMemo, ChangeEventHandler } from 'react';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
-import { RxChevronRight } from 'react-icons/rx';
-import { debounce } from 'lodash';
+"use client";
 
-import useGetQuery from '../../../../hooks/useGetQuery';
-import { formatCurrency, formatDisbursementType } from '../../../../utilities/general';
-import { formatApiDate, formatDateTime } from '../../../../utilities/dateTime';
+import { useState, useMemo, type ChangeEventHandler } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import { RxChevronRight } from "react-icons/rx";
+import { debounce } from "lodash";
+import Skeleton from "react-loading-skeleton";
 
-import Loading from '../../../common/Loading';
-import NoData from '../../../common/NoData';
-import TransactionStatus from '../../../common/TransactionStatus';
+import useGetQuery from "../../../../hooks/useGetQuery";
+import { formatCurrency } from "../../../../utilities/general";
+import { formatApiDate, formatDateTime } from "../../../../utilities/dateTime";
+import NoData from "../../../common/NoData";
+import TransactionStatus from "../../../common/TransactionStatus";
 
-import SearchInput from '../../../inputs/Search';
-import Pagination from '../../../common/Pagination';
+import SearchInput from "../../../inputs/Search";
+import Pagination from "../../../common/Pagination";
 
-import { PAGE_SIZE } from '../../../../data/constants';
+import { PAGE_SIZE } from "../../../../data/constants";
 
-import TransactionFilter from './Filter';
+import TransactionFilter from "./Filter";
 
 function SalesList({ isDashboard = false }) {
   const [filter, setFilter] = useState<any>(null);
   const [pageNumber, setPageNumber] = useState(0);
-  const [searchText, setSearchText] = useState('');
-  const [search, setSearch] = useState('');
+  const [searchText, setSearchText] = useState("");
+  const [search, setSearch] = useState("");
   const router = useRouter();
 
   const { data, status, error } = useGetQuery({
-    endpoint: 'escrow',
-    queryKey: ['escrow-list', router?.query?.status, pageNumber, search, filter],
+    service: "wallet-service/api/v1",
+    endpoint: "escrows",
+    extra: "orders",
+    queryKey: ["escrows-orders", router?.query?.status, pageNumber, search, filter],
     pQuery: {
-      escrowStatus: router?.query?.status === 'all' ? null : router?.query?.status,
+      Status: router?.query?.status === "all" ? null : router?.query?.status,
       start: formatApiDate(filter?.startDate),
       end: formatApiDate(filter?.endDate),
       pageSize: isDashboard ? 5 : PAGE_SIZE,
       pageNumber: pageNumber + 1,
-      search
+      SearchKey: search
     },
     enabled: !!router?.query?.status || isDashboard
   });
@@ -50,7 +53,6 @@ function SalesList({ isDashboard = false }) {
 
   return (
     <>
-      {status === 'loading' && <Loading />}
       <div className="w-full bg-white shadow-md rounded-lg overflow-hidden">
         <div className="flex flex-wrap items-center justify-between px-5 sm:px-10 py-5">
           <h3 className="font-bold text-lg mr-5 mb-2">Sales Transactions</h3>
@@ -64,12 +66,7 @@ function SalesList({ isDashboard = false }) {
           ) : (
             <div className="w-full max-w-[380px] flex space-x-2">
               <TransactionFilter filter={filter} onChange={setFilter} />
-              <SearchInput
-                value={searchText}
-                onChange={handleSearch}
-                className="w-full max-w-xs"
-                height="h-[35.6px]"
-              />
+              <SearchInput value={searchText} onChange={handleSearch} className="w-full max-w-xs" height="h-[35.6px]" />
             </div>
           )}
         </div>
@@ -88,31 +85,63 @@ function SalesList({ isDashboard = false }) {
               </tr>
             </thead>
             <tbody className="">
-              {status === 'success' && (
-                data?.data?.paginatedData?.length > 0 ? (
+              {status === "loading" && (
+                <tr>
+                  <td colSpan={7} className="text-center pt-4">
+                    <div className="px-5 space-y-2">
+                      {[...Array(isDashboard ? 5 : 10)].map((_, i) => (
+                        <div key={i} className="flex space-x-4 py-2">
+                          <Skeleton width={32} height={16} />
+                          <Skeleton width={188} height={16} />
+                          <Skeleton width={206} height={16} />
+                          <Skeleton width={200} height={16} />
+                          <Skeleton width={112} height={16} />
+                          <Skeleton width={96} height={16} />
+                          <Skeleton width={80} height={16} />
+                        </div>
+                      ))}
+                    </div>
+                  </td>
+                </tr>
+              )}
+
+              {status === "success" &&
+                (data?.data?.items?.length > 0 ? (
                   <>
-                    {data?.data?.paginatedData?.map((item: any, index: number) => (
-                      <tr className="border-t cursor-pointer hover:bg-primary/5" key={item?.escrowId} onClick={() => router.push({ pathname: `/transactions/sales-details/${item?.escrowId}` })}>
+                    {data?.data?.items?.map((item: any, index: number) => (
+                      <tr
+                        className="border-t cursor-pointer hover:bg-primary/5"
+                        key={item?.id}
+                        onClick={() => router.push({ pathname: `/transactions/sales-details/${item?.id}` })}
+                      >
                         <td className="pl-5 sm:pl-10 pr-3 py-5">{index + 1}</td>
                         <td className="px-3 py-5">
                           <div className="flex items-center space-x-3">
-                            <span className="capitalize">{item?.title}</span>
+                            <span className="capitalize">{item?.recipientName}</span>
                           </div>
                         </td>
-                        <td className="px-3 py-5">{`#${item?.invoiceNumber}`}</td>
+                        <td className="px-3 py-5">{`#${item?.referenceNumber}`}</td>
                         <td className="px-3 py-5">{formatCurrency(item?.amount)}</td>
-                        <td className="px-3 py-5">{formatDateTime(item?.createdAt)}</td>
-                        <td className="px-3 py-5">{formatDisbursementType(item?.disbursementType)}</td>
+                        <td className="px-3 py-5">{formatDateTime(item?.createdDate)}</td>
                         <td className="px-3 py-5">
-                          <TransactionStatus status={item?.status === 'paymentcompleted' ? item?.escrowDeliveryStatus : item?.status} />
+                          {item.paymentLink ? (
+                            <Link href={item.paymentLink} className="text-blue-600 hover:underline">
+                              View Link
+                            </Link>
+                          ) : (
+                            "N/A"
+                          )}
+                        </td>
+                        <td className="px-3 py-5">
+                          <TransactionStatus status={item?.status} />
                         </td>
                       </tr>
                     ))}
                     {!isDashboard && (
                       <tr>
-                        <td colSpan={8} className="pt-4">
+                        <td colSpan={7} className="pt-4">
                           <Pagination
-                            count={data?.data?.pagination?.totalPages}
+                            count={data?.data?.totalPages}
                             currentPage={pageNumber}
                             onChange={(e) => setPageNumber(e.selected)}
                           />
@@ -122,16 +151,15 @@ function SalesList({ isDashboard = false }) {
                   </>
                 ) : (
                   <tr>
-                    <td colSpan={8}>
+                    <td colSpan={7}>
                       <NoData py="pt-14" />
                     </td>
                   </tr>
-                )
-              )}
+                ))}
 
-              {status === 'error' && (
+              {status === "error" && (
                 <tr>
-                  <td colSpan={8} className="text-center pt-10">
+                  <td colSpan={7} className="text-center pt-10">
                     {String(error)}
                   </td>
                 </tr>

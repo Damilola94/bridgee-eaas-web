@@ -59,13 +59,14 @@ function Login() {
     }
 
     loginMutation.mutate({
-      // service: 'identity-service/api/v1',
+      service: 'identity-service/api/v1',
       endpoint: 'auth',
       extra: 'login',
       method: 'POST',
       body: { email, password }
     });
   };
+
   const { isLoading, isSuccess } = loginMutation;
 
   return (

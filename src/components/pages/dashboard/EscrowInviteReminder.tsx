@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 
+import { useCookies } from 'react-cookie';
+
 import useGetQuery from '../../../hooks/useGetQuery';
 import { formatDate } from '../../../utilities/dateTime';
 import { formatCurrency } from '../../../utilities/general';
@@ -10,12 +12,16 @@ import Button from '../../inputs/Button';
 
 function EscrowInviteReminder() {
   const router = useRouter();
+  const [cookie] = useCookies(['data']);
+
   const [open, setOpen] = useState(true);
 
   const { data } = useGetQuery({
-    endpoint: 'invitation',
-    queryKey: ['invitation'],
-    pQuery: { pageSize: 100, invitationStatus: 'awaiting', invitationType: 'incoming' }
+    endpoint: 'wallet-service/api/v1/escrows',
+    extra: 'orders',
+    queryKey: ['escrows-orders'],
+    enabled: !!cookie?.data?.token
+    // pQuery: { pageSize: 100, invitationStatus: 'awaiting', invitationType: 'incoming' }
   });
 
   return (
