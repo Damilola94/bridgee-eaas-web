@@ -59,7 +59,8 @@ function Login() {
     }
 
     loginMutation.mutate({
-      endpoint: 'auth', extra: 'login', method: 'POST', body: { email, password }
+      service: 'identity-service/',
+      endpoint: 'api/v1/auth/login', extra: '', method: 'POST', body: { email, password }
     });
   };
   const { isLoading, isSuccess } = loginMutation;

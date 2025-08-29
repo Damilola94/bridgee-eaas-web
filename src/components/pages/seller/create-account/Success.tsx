@@ -10,10 +10,10 @@ export default function Success() {
       </div>
       <h2 className="text-2xl font-bold mb-6">Account created successfully</h2>
       <Button
-        onClick={() => (window.location.href = "/dashboard")}
+        onClick={() => (window.location.href = "/login")}
         className="w-full h-12 bg-success text-white rounded-lg"
       >
-        Go to dashboard
+        Login
       </Button>
     </div>
   );
