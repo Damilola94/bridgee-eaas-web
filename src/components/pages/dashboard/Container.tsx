@@ -13,19 +13,20 @@ import WithdrawalPinBanner from './CreateWithdrawalPin';
 
 function DashboardContainer() {
   const { accounts } = useAccountsContext();
+  const { wallet } = accounts || {};
+  const { identity } = accounts || {};
 
   return (
     <>
       {/* <EscrowInviteReminder /> */}
       <h3 className="text-lg mb-5">
         Hello&nbsp;
-        <span className="font-bold">{accounts?.defaultMerchant?.name || accounts?.user?.firstName || 'Toluwalase'}</span>
+        <span className="font-bold">{identity?.businessDetail?.businessName || 'Guest User'}</span>
       </h3>
-
       <div className="flex w-[calc(100%+36px)] -m-5">
         <div className="w-full xl:w-[calc(100%-400px)] px-3 pt-3 pb-5">
           <div className="w-full mb-3">
-            {!accounts?.hasPin && <WithdrawalPinBanner />}
+            {!wallet?.hasPin && <WithdrawalPinBanner />}
           </div>
           <div className="w-full mb-3 sm:flex sm:space-x-3 space-y-3 sm:space-y-0">
             <WalletCard />

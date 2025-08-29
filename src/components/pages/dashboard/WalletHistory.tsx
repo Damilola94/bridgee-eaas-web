@@ -44,8 +44,6 @@ function InvoiceHistory({ }: Props) {
     enabled: !!cookie?.data?.accessToken
   });
 
-  console.log(cookie?.data, "data");
-
   const debouncedSearch = useMemo(() => debounce(setSearch, 1000), [setSearch]);
 
   const handleSearch: ChangeEventHandler<HTMLInputElement> = (e) => {

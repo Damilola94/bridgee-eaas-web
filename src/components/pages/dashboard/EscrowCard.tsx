@@ -7,7 +7,7 @@ import { formatCurrency } from '../../../utilities/general';
 function EscrowCard() {
   const [showBalance, setShowBalance] = useState(true);
   const { accounts } = useAccountsContext();
-  const { wallets: escrowWallets } = accounts || {};
+  const { wallet: escrowWallets } = accounts || {};
 
   return (
     <>
@@ -26,9 +26,9 @@ function EscrowCard() {
                 </button>
               </p>
               <h1 className="text-3xl">
-                <span className="text-success">{escrowWallets?.[0]?.currency || 'N/A'}</span>
+                <span className="text-success">{escrowWallets?.wallets[1]?.currency || 'N/A'}</span>
                 {' '}
-                <span className="font-bold ff-heavy"> {showBalance ? formatCurrency(escrowWallets?.[0]?.balance, false) || "N/A" : "••••"}</span>
+                <span className="font-bold ff-heavy"> {showBalance ? formatCurrency(escrowWallets?.wallets[1]?.balance, false) || "N/A" : "••••"}</span>
               </h1>
             </div>
           </div>

@@ -11,7 +11,7 @@ function WalletCard() {
   const [showWithdrawal, setShowWithdrawal] = useState(false);
   const [showBalance, setShowBalance] = useState(true);
   const { accounts } = useAccountsContext();
-  const { wallets: wallets } = accounts || {};
+  const { wallet } = accounts || {};
 
   return (
     <>
@@ -30,9 +30,9 @@ function WalletCard() {
                 </button>
               </p>
               <h1 className="text-3xl">
-                <span className="text-success">{wallets?.[0]?.currency || 'N/A'}</span>
+                <span className="text-success">{wallet?.wallets[0]?.currency || 'N/A'}</span>
                 {' '}
-                <span className="font-bold ff-heavy"> {showBalance ? formatCurrency(wallets?.[0]?.balance, false) || "N/A" : "••••"}</span>
+                <span className="font-bold ff-heavy"> {showBalance ? formatCurrency(wallet?.wallets[0]?.balance, false) || "N/A" : "••••"}</span>
               </h1>
             </div>
           </div>
