@@ -1,7 +1,6 @@
 import { useState } from "react";
 import BvnValidation from "../../../components/pages/seller/create-account/BvnValidation";
 import StaticLayout from "../../../components/pages/seller/create-account/StaticLayout";
-import Button from "../../../components/inputs/Button";
 import Logo from "../../../assets/svgs/logos/full-pink.svg";
 import WemaLogoSmall from "../../../assets/svgs/wema-logo-small.svg";
 import Image from "next/image";
@@ -12,8 +11,9 @@ import LinkBankAccount from "../../../components/pages/seller/create-account/Lin
 import Success from "../../../components/pages/seller/create-account/Success";
 
 export interface StepData {
+  bvnValidationTicketId?: string;
   bvn: string;
-  livenessSelfie: File | null; // Use File type for image uploads
+  livenessSelfie?: File | null;
   personalInfo: {
     firstName: string;
     lastName: string;
@@ -25,9 +25,10 @@ export interface StepData {
   bankAccount: {
     bank: string;
     accountNumber: string;
+    bankCode?: string;
+    accountName?: string;
   };
 }
-
 
 const stepsConfig = [
   {
@@ -41,14 +42,14 @@ const stepsConfig = [
     Component: LivenessCheck,
   },
   {
-    id: "personalInfo",
-    description: "Personal Information Validation",
-    Component: PersonalInfo,
-  },
-  {
     id: "linkBankAccount",
     description: "Link a Nigerian Bank Account for Payout",
     Component: LinkBankAccount,
+  },
+  {
+    id: "personalInfo",
+    description: "Personal Information Validation",
+    Component: PersonalInfo,
   },
   {
     id: "success",
@@ -58,9 +59,10 @@ const stepsConfig = [
 ];
 
 export default function CreateAccountPage() {
-  
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [isCompleted, setIsCompleted] = useState(false);
+
+  const [isBvnValidated, setIsBvnValidated] = useState(false);
+  const [isTermsAgreed, setIsTermsAgreed] = useState(false);
 
   const [formData, setFormData] = useState<StepData>({
     bvn: "",
@@ -79,20 +81,15 @@ export default function CreateAccountPage() {
     },
   });
 
-  // --- DERIVED VALUES (No magic numbers) ---
+  console.log("📝 Current Form Data:", formData);
+  console.log("✅ Is BVN Validated:", isBvnValidated);
+
   const totalSteps = stepsConfig.length;
   const isLastStep = currentStepIndex === totalSteps - 1;
   const currentStepData = stepsConfig[currentStepIndex];
 
-  // --- NAVIGATION LOGIC (Readable and dynamic) ---
   const handleNext = () => {
-      setCurrentStepIndex((prevIndex) => prevIndex + 1);
-    // if (isLastStep) {
-    //   console.log("Submitting form data:", formData);
-    //   setIsCompleted(true);
-    // } else {
-    //   setCurrentStepIndex((prevIndex) => prevIndex + 1);
-    // }
+    setCurrentStepIndex((prevIndex) => prevIndex + 1);
   };
 
   const handleBack = () => {
@@ -101,20 +98,57 @@ export default function CreateAccountPage() {
     }
   };
 
-  // --- DYNAMIC COMPONENT RENDERING ---
-  const { Component: StepComponent } = currentStepData;
+  const onBvnValidationSuccess = () => {
+    setIsBvnValidated(true);
+  };
 
-  // If the form is completed, show the success message.
-  // if (!isCompleted) {
-  //   return (
-  //     <div className="min-h-screen bg-white lg:flex">
-  //       <div className="w-full lg:w-1/2 flex items-center justify-center p-6">
-  //         <Success />
-  //       </div>
-  //       <StaticLayout />
-  //     </div>
-  //   );
-  // }
+  const onTermsAgreementChange = (agreed: boolean) => {
+    setIsTermsAgreed(agreed);
+  };
+
+  const renderStepComponent = () => {
+    switch (currentStepData.id) {
+      case "bvnValidation":
+        return (
+          <BvnValidation
+            formData={formData}
+            setFormData={setFormData}
+            onSuccess={(bvnData) => {
+              setFormData((prev) => ({ ...prev, ...bvnData }));
+            }}
+            onValidationSuccess={onBvnValidationSuccess}
+            onNavigateNext={handleNext}
+          />
+        );
+      case "livenessCheck":
+        return (
+          <LivenessCheck
+            onNavigateNext={handleNext}
+          />
+        );
+      case "linkBankAccount":
+        return (
+          <LinkBankAccount
+            formData={formData}
+            setFormData={setFormData}
+            onNextStep={handleNext}
+          />
+        );
+      case "personalInfo":
+        return (
+          <PersonalInfo
+            formData={formData}
+            setFormData={setFormData}
+            onTermsChange={onTermsAgreementChange}
+            onRegistrationSuccess={handleNext}
+          />
+        );
+      case "success":
+        return <Success />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white lg:flex">
@@ -132,11 +166,12 @@ export default function CreateAccountPage() {
             />
           </Link>
 
-          <h1 className="text-lg lg:text-2xl font-bold text-textColor mb-9">
-            Create an account
-          </h1>
+          {currentStepData.id !== "success" && (
+            <h1 className="text-lg lg:text-2xl font-bold text-textColor mb-9">
+              Create an account
+            </h1>
+          )}
 
-          {/* Step indicator - DYNAMIC */}
           {currentStepData.id !== "success" && (
             <div className="mb-8">
               <div className="text-sm font-medium text-grey mb-2">
@@ -147,43 +182,20 @@ export default function CreateAccountPage() {
               </div>
               <div className="w-full bg-gray-200 rounded-full h-1">
                 <div
-                  className="bg-purple-600 h-1 rounded-full"
+                  className="bg-success h-1 rounded-full"
                   style={{
-                    width: `${((currentStepIndex + 1) / totalSteps) * 100}%`,
+                    width: `${
+                      currentStepIndex === 0
+                        ? 20
+                        : ((currentStepIndex + 1) / totalSteps) * 100
+                    }%`,
                   }}
                 />
               </div>
             </div>
           )}
 
-          {/* Dynamic Step Content - Renders the component from our config */}
-          <div className="mb-9">
-            <StepComponent />
-          </div>
-
-          {/* Navigation buttons - DYNAMIC */}
-          {currentStepData.id !== "success" && (
-            <div className="lg:flex gap-x-4 space-y-4 lg:space-y-0">
-              {currentStepData.id === "livenessCheck" && (
-                <Button
-                  onClick={handleBack}
-                  className="w-full h-12 bg-transparent border border-grey text-greyDark"
-                >
-                  Try again
-                </Button>
-              )}
-              <Button
-                onClick={handleNext}
-                className="w-full h-12 bg-purple-600 text-white rounded-lg"
-              >
-                {currentStepData.id === "livenessCheck"
-                  ? "Save and Continue"
-                  : isLastStep
-                  ? "Continue"
-                  : "Next"}
-              </Button>
-            </div>
-          )}
+          <div className="mb-9">{renderStepComponent()}</div>
 
           {["bvnValidation", "personalInfo"].includes(currentStepData.id) && (
             <div className="text-center mt-8">
@@ -210,7 +222,7 @@ export default function CreateAccountPage() {
         </div>
       </div>
 
-      {/* Right side - Static Design (Desktop only) */}
+      {/* Right side */}
       <StaticLayout />
     </div>
   );

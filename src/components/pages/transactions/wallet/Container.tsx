@@ -1,11 +1,11 @@
 import React from 'react';
 
-import TransactionList from './List';
+import WalletList from './List';
 
 function WalletContainer() {
   return (
     <div className="w-full">
-      <TransactionList />
+      <WalletList />
     </div>
   );
 }
