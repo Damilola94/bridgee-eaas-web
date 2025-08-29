@@ -20,6 +20,7 @@ function InvoiceSummary() {
   const router = useRouter();
   const { form } = useCreateInvoiceContext();
   const { accounts } = useAccountsContext();
+  const { identity } = accounts || {};
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -54,31 +55,38 @@ function InvoiceSummary() {
   const handleSubmit = () => {
     const body = new FormData();
 
-    if (form?.title) body.append('title', form.title);
-    if (form?.escrowItems?.length) {
-      form.escrowItems.forEach((item) => body.append('escrowItems', JSON.stringify(item)));
-    }
-    if (form?.isDeliveryOnUs) body.append('isDeliveryOnUs', form.isDeliveryOnUs as any);
     if (form?.recipientDetails?.recipientName) {
-      body.append('recipientDetails.recipientName', form.recipientDetails.recipientName);
+      body.append('Recipient.Name', form.recipientDetails.recipientName);
     }
     if (form?.recipientDetails?.phoneNumber) {
-      body.append('recipientDetails.phoneNumber', form.recipientDetails.phoneNumber);
+      body.append('Recipient.PhoneNumber', form.recipientDetails.phoneNumber);
     }
     if (form?.recipientDetails?.address) {
-      body.append('recipientDetails.address', form.recipientDetails.address);
+      body.append('Recipient.Address', form.recipientDetails.address);
     }
     if (form?.recipientDetails?.email) {
-      body.append('recipientDetails.email', form.recipientDetails.email);
+      body.append('Recipient.Email', form.recipientDetails.email);
     }
-    if (form?.inspectionDuration) body.append('inspectionDuration', form.inspectionDuration);
-    if (form?.disbursementType) body.append('disbursementType', form.disbursementType);
-    if (form?.pickUpAddress) body.append('pickUpAddress', form.pickUpAddress?.value);
-    if (form?.writtenTerms) body.append('writtenTerms', form.writtenTerms);
-    if (form?.contract) body.append('contract', form?.contract);
-
+    // if (form?.inspectionDuration) body.append('inspectionDuration', form.inspectionDuration);
+    // if (form?.disbursementType) body.append('disbursementType', form.disbursementType);
+    if (form?.pickUpAddress) body.append('DeliveryZone', form.pickUpAddress?.value);
+    if (form?.pickUpAddress) body.append('PickupZone', form.pickUpAddress?.value);
+    if (form?.pickUpAddress) body.append('PickUpAddress', form.pickUpAddress?.value);
+    if (form?.isDeliveryOnUs) body.append('BuyerPaysEscrowFee', form.isDeliveryOnUs as any);
+    if (form?.isDeliveryOnUs) body.append('Description', "");
+    // if (form?.writtenTerms) body.append('writtenTerms', form.writtenTerms);
+    // if (form?.contract) body.append('contract', form?.contract);
+    if (form?.escrowItems?.length) {
+      form.escrowItems.forEach((item) => body.append('Items', JSON.stringify(item)));
+    }
     escrowMutation.mutate({
-      endpoint: 'escrow', extra: 'create-escrow-seller', method: 'POST', body, auth: true, multipart: true
+      service: 'wallet-service/api/v1',
+      endpoint: 'escrows',
+      extra: 'orders',
+      method: 'POST',
+      body,
+      auth: true,
+      multipart: true
     });
   };
 
@@ -95,7 +103,7 @@ function InvoiceSummary() {
               <Image src={DefaultLogo} alt="" className="w-20 h-20" />
             </div>
             <h3 className="font-bold text-xl">
-              {accounts?.defaultMerchant?.name || `${accounts?.user?.firstName} ${accounts?.user?.lastName}`}
+              {identity?.businessDetail?.businessName || 'Guest User'}
             </h3>
             <div className="w-full text-lightText">
               <p className="mb-1">{accounts?.user?.email}</p>

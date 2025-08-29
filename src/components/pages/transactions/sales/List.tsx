@@ -8,8 +8,7 @@ import { debounce } from "lodash";
 import Skeleton from "react-loading-skeleton";
 
 import useGetQuery from "../../../../hooks/useGetQuery";
-import { formatCurrency } from "../../../../utilities/general";
-import { formatApiDate, formatDateTime } from "../../../../utilities/dateTime";
+import { formatApiDate } from "../../../../utilities/dateTime";
 import NoData from "../../../common/NoData";
 import TransactionStatus from "../../../common/TransactionStatus";
 
@@ -121,8 +120,8 @@ function SalesList({ isDashboard = false }) {
                           </div>
                         </td>
                         <td className="px-3 py-5">{`#${item?.referenceNumber}`}</td>
-                        <td className="px-3 py-5">{formatCurrency(item?.amount)}</td>
-                        <td className="px-3 py-5">{formatDateTime(item?.createdDate)}</td>
+                        <td className="px-3 py-5">{(item?.amount)}</td>
+                        <td className="px-3 py-5">{(item?.createdDate)}</td>
                         <td className="px-3 py-5">
                           {item.paymentLink ? (
                             <Link href={item.paymentLink} className="text-blue-600 hover:underline">

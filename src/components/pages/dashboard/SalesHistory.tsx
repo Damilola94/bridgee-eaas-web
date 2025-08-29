@@ -8,8 +8,6 @@ import { useEffect } from "react";
 
 import { FiArrowRight } from "react-icons/fi";
 
-import { formatCurrency } from "../../../utilities/general";
-import { formatDateTime } from "../../../utilities/dateTime";
 import NoData from "../../common/NoData";
 import TransactionStatus from "../../common/TransactionStatus";
 import ListStatusTabsNoScroll from "../../common/ListStatusTabsNoScroll";
@@ -118,8 +116,8 @@ function SalesHistory() {
                         </div>
                       </td>
                       <td className="px-3 py-5">{`#${item.referenceNumber}`}</td>
-                      <td className="px-3 py-5">{formatCurrency(item.amount)}</td>
-                      <td className="px-3 py-5">{formatDateTime(item.createdDate)}</td>
+                      <td className="px-3 py-5">{item.amount}</td>
+                      <td className="px-3 py-5">{item.createdDate}</td>
                       <td className="px-3 py-5">
                         {item.paymentLink ? (
                           <Link href={item.paymentLink} className="text-blue-600 hover:underline">
