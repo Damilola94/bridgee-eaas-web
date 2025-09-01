@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
 
-import Image1 from '../../../assets/images/how-it-works/step1.png';
-import Image2 from '../../../assets/images/how-it-works/step2.png';
-import Image3 from '../../../assets/images/how-it-works/step3.png';
-import Image4 from '../../../assets/images/how-it-works/step4.png';
-import Image5 from '../../../assets/images/how-it-works/step5.png';
-import PinkLogo from '../../../assets/images/logos/pink-3d.png';
+import Image1 from "../../../assets/images/how-it-works/step1.png";
+import Image2 from "../../../assets/images/how-it-works/step2.png";
+import Image3 from "../../../assets/images/how-it-works/step3.png";
+import Image4 from "../../../assets/images/how-it-works/step4.png";
+import Image5 from "../../../assets/images/how-it-works/step5.png";
 
 const steps = [
-  { image: Image1, text: 'Buyer and Seller agree to terms' },
-  { image: Image2, text: 'Buyer makes payment to Escrow' },
-  { image: Image3, text: 'Seller delivers goods or service to buyer' },
-  { image: Image4, text: 'Buyer approves goods or services' },
-  { image: Image5, text: 'Escrow releases payment to seller' }
+  { image: Image1, text: "Buyer and Seller agree to terms" },
+  { image: Image2, text: "Buyer makes payment to Escrow" },
+  { image: Image3, text: "Seller delivers goods or service to buyer" },
+  { image: Image4, text: "Buyer approves goods or services" },
+  { image: Image5, text: "Escrow releases payment to seller" },
 ];
 
 function HowItWorks() {
@@ -28,14 +27,18 @@ function HowItWorks() {
       }
     }, 2000);
 
-    return function() {
+    return function () {
       clearInterval(intervalId);
     };
   }, [index]);
 
   return (
     <section id="how-it-works" className="relative overflow-hidden pt-24 pb-16">
-      <Image src={PinkLogo} alt="Pink 3D logo" className="absolute w-[210px] h-auto top-[400px] -left-20 hidden lg:block" />
+      {/* <Image
+        src={PinkLogo}
+        alt="Pink 3D logo"
+        className="absolute w-[210px] h-auto top-[400px] -left-20 hidden lg:block"
+      /> */}
 
       <div className="w-full index-content">
         <h1 className="index-title text-center">How it works</h1>
@@ -48,7 +51,9 @@ function HowItWorks() {
                   key={item?.text}
                   src={item?.image}
                   alt={item?.text}
-                  className={`transition-all ${index === i ? 'w-full h-auto' : 'w-0 h-0'}`}
+                  className={`transition-all ${
+                    index === i ? "w-full h-auto" : "w-0 h-0"
+                  }`}
                 />
               ))}
             </div>
@@ -59,12 +64,18 @@ function HowItWorks() {
                 {steps?.map((item, i) => (
                   <li key={item?.text} className="mb-12 last:mb-0">
                     <div className="flex items-center text-2xl mb-5">
-                      <span className={`w-10 h-10 flex justify-center items-center rounded-full ${
-                        index !== i ? 'bg-[#E0E0E0]' : 'bg-purple'} text-white p-1 mr-4`}
+                      <span
+                        className={`w-10 h-10 flex justify-center items-center rounded-full ${
+                          index !== i ? "bg-[#E0E0E0]" : "bg-purple"
+                        } text-white p-1 mr-4`}
                       >
                         {i + 1}
                       </span>
-                      <h4 className={`ff-medium ${index !== i ? 'text-[#E0E0E0]' : ''}`}>
+                      <h4
+                        className={`ff-medium ${
+                          index !== i ? "text-[#E0E0E0]" : ""
+                        }`}
+                      >
                         {item?.text}
                       </h4>
                     </div>
@@ -85,7 +96,11 @@ function HowItWorks() {
                 <h4 className="">{item?.text}</h4>
               </div>
               <div className="w-full">
-                <Image src={item?.image} alt={item?.text} className="w-full h-auto" />
+                <Image
+                  src={item?.image}
+                  alt={item?.text}
+                  className="w-full h-auto"
+                />
               </div>
             </div>
           ))}

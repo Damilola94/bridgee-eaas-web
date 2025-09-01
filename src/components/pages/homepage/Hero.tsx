@@ -4,16 +4,17 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-import { FaWhatsapp } from 'react-icons/fa';
+import { FaWhatsapp } from "react-icons/fa";
 
 import { Dialog, DialogContent } from "../../common/UI";
 
 import HalfCircles from "../../../assets/images/half-circles.png";
-import DashboardImg from "../../../assets/images/business-dashboard.png";
+import DashboardImg from "../../../assets/images/hero1.png";
 import BlurLogo from "../../../assets/images/logos/blur-3d.png";
 import BlueLogo from "../../../assets/images/logos/blue-3d.png";
 import WemaBankLogo from "../../../assets/images/wemabanklogo.png";
 import IdeaxLab from "../../../assets/images/ideaxlab.png";
+import NDIC from "../../../assets/svg-tsx/NDIC";
 
 import Button from "../../inputs/Button";
 
@@ -48,11 +49,10 @@ function Hero() {
               With Bridge, you&apos;re in control, and you can trust us to
               safeguard your transactions every step of the way.
             </h4>
-            <div className="flex justify-center space-x-4">
+            <div className="flex justify-center space-x-4 mb-14 ">
               <Button
                 iconPosition="left"
                 onClick={() => router.push("/signup")}
-
                 paddingX="px-10"
                 paddingY="py-4"
                 fontSize="text-lg"
@@ -72,6 +72,9 @@ function Hero() {
               >
                 Join our Community
               </Button>
+            </div>
+            <div className="mb-20 flex justify-center items-center space-x-2">
+              <p className="text-[#383838] text-xl">Insured by</p> <NDIC />
             </div>
           </div>
           <div className="w-full max-w-4xl mx-auto">
@@ -98,7 +101,7 @@ function Hero() {
               />
             </div>
           </div>
-          <div className="absolute left-1/2 -bottom-0 sm:-bottom-0 md:-bottom-0 w-full max-w-4xl mx-auto -translate-x-1/2 px-10">
+          <div className="absolute z-10 left-1/2 bottom-[-2.7rem] xs:bottom-[-4rem]  sm:bottom-[-5rem] md:bottom-[-6.7rem] w-full max-w-5xl mx-auto -translate-x-1/2 px-10">
             <Image
               src={DashboardImg || "/placeholder.svg"}
               alt="purple circles"
