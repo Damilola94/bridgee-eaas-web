@@ -1,31 +1,29 @@
-import React from 'react';
-import Image from 'next/image';
+import React from "react";
+import Image from "next/image";
 
-import SecurityBadge from '../../../assets/svgs/badges/security.svg';
-import TrustBadge from '../../../assets/svgs/badges/trust.svg';
-import DisputeBadge from '../../../assets/svgs/badges/dispute.svg';
-
-import PurpleLogo from '../../../assets/images/logos/purple-3d.png';
+import SecurityBadge from "../../../assets/svgs/badges/security.svg";
+import TrustBadge from "../../../assets/svgs/badges/trust.svg";
+import DisputeBadge from "../../../assets/svgs/badges/dispute.svg";
 
 const benefits = [
   {
     badge: SecurityBadge,
-    bg: '#EDF9F9',
-    title: 'Security',
-    desc: 'We prevent fraud, misrepresentation, or default by releasing funds only after all transaction terms and conditions are met.'
+    bg: "#EDF9F9",
+    title: "Security",
+    desc: "We prevent fraud, misrepresentation, or default by releasing funds only after all transaction terms and conditions are met.",
   },
   {
     badge: TrustBadge,
-    bg: '#FAE9FC',
-    title: 'Trust',
-    desc: 'We enhance trust by ensuring that both parties are confident in receiving what they expect and fulfilling their obligations.'
+    bg: "#FAE9FC",
+    title: "Trust",
+    desc: "We enhance trust by ensuring that both parties are confident in receiving what they expect and fulfilling their obligations.",
   },
   {
     badge: DisputeBadge,
-    bg: '#E8F6FF',
-    title: 'Dispute resolution',
-    desc: 'We offer neutral third-party assistance to resolve disputes and reach mutually agreeable solutions.'
-  }
+    bg: "#E8F6FF",
+    title: "Dispute resolution",
+    desc: "We offer neutral third-party assistance to resolve disputes and reach mutually agreeable solutions.",
+  },
 ];
 
 function Benefits() {
@@ -37,8 +35,9 @@ function Benefits() {
             Here&apos;s what you stand to gain
           </h1>
           <p className="text-xl leading-relaxed">
-            Bridge is designed with your needs in mind, ensuring that you enjoy a secure,
-            efficient, and transparent experience. Explore the benefits of using UseBridge Inc. below:
+            Bridge is designed with your needs in mind, ensuring that you enjoy
+            a secure, efficient, and transparent experience. Explore the
+            benefits of using UseBridge Inc. below:
           </p>
         </div>
 
@@ -50,7 +49,13 @@ function Benefits() {
                   style={{ backgroundColor: item?.bg }}
                   className="w-full h-full max-w-xl mdx2:max-w-[350px] mx-auto p-5 rounded-2xl"
                 >
-                  <Image src={item.badge} alt="Badge" width={80} height={80} className="inline-block mb-10" />
+                  <Image
+                    src={item.badge}
+                    alt="Badge"
+                    width={80}
+                    height={80}
+                    className="inline-block mb-10"
+                  />
                   <h3 className="text-3xl ff-medium mb-4">{item.title}</h3>
                   <p className="text-xl leading-relaxed">{item.desc}</p>
                 </div>
@@ -59,7 +64,7 @@ function Benefits() {
           </div>
         </div>
       </div>
-      <Image src={PurpleLogo} alt="Purple 3D logo" className="absolute w-[190px] h-auto -bottom-20 right-20 hidden md:block" />
+      {/* <Image src={PurpleLogo} alt="Purple 3D logo" className="absolute w-[190px] h-auto -bottom-20 right-20 hidden md:block" /> */}
     </section>
   );
 }

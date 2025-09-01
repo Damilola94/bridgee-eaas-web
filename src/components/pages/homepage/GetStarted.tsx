@@ -1,12 +1,12 @@
-import React from 'react';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { BsArrowRight } from 'react-icons/bs';
+import React from "react";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { BsArrowRight } from "react-icons/bs";
 
-import HappyCustomer from '../../../assets/images/happy-customer.png';
+import HappyCustomer from "../../../assets/images/happy-customer.png";
 
-import Button from '../../inputs/Button';
-import { useHomepageContext } from '../../../context/Homepage';
+import Button from "../../inputs/Button";
+import { useHomepageContext } from "../../../context/Homepage";
 
 function GetStarted() {
   const router = useRouter();
@@ -24,7 +24,7 @@ function GetStarted() {
               <div className="inline-block mb-10">
                 {homepageData?.isWaitlist ? (
                   <Button
-                    onClick={() => router.push('/waitlist')}
+                    onClick={() => router.push("/waitlist")}
                     className="!rounded-full"
                     fontSize="text-xl"
                     bgColor="bg-[#B80074]"
@@ -36,15 +36,17 @@ function GetStarted() {
                   </Button>
                 ) : (
                   <Button
-                    onClick={() => router.push('/login')}
+                    onClick={() => router.push("/login")}
                     className="!rounded-full"
                     fontSize="text-xl"
                     bgColor="bg-[#B80074]"
                     paddingX="px-6"
                     paddingY="py-5"
                   >
-                    Get started now
-                    <BsArrowRight className="ml-3 w-6 h-auto" />
+                    <div className="flex items-center">
+                      Create Account
+                      <BsArrowRight className="ml-3 w-6 h-auto" />
+                    </div>
                   </Button>
                 )}
               </div>
@@ -52,7 +54,11 @@ function GetStarted() {
           </div>
           <div className="w-full mdx2:w-2/5 max-w-xl mx-auto">
             <div className="w-full h-full flex items-center pt-5 mdx2:pt-0">
-              <Image src={HappyCustomer} alt="Delivery image" className="w-full h-auto" />
+              <Image
+                src={HappyCustomer}
+                alt="Delivery image"
+                className="w-full h-auto"
+              />
             </div>
           </div>
         </div>
