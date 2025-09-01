@@ -1,17 +1,17 @@
-import React from 'react';
+import React from "react";
 
-import HomepageContextProvider from '../../../context/Homepage';
+import HomepageContextProvider from "../../../context/Homepage";
 
-import Header from './Header';
-import Hero from './Hero';
-import Benefits from './Benefits';
-// import TrackRecord from './TrackRecord';
-import HowItWorks from './HowItWorks';
-import GetStarted from './GetStarted';
-import Footer from './Footer';
+import Header from "./Header";
+import Hero from "./Hero";
+import Benefits from "./Benefits";
+// import TrackRecord from "./TrackRecord";
+import HowItWorks from "./HowItWorks";
+import GetStarted from "./GetStarted";
+import Footer from "./Footer";
 
-import Intro from './Intro';
-import MdSpeech from './MdSpeech';
+import Intro from "./Intro";
+import Announcement from "./Announcement";
 
 function Container() {
   return (
@@ -21,11 +21,11 @@ function Container() {
 
         <main id="top" className="w-full pt-24">
           <Hero />
-          {/* <TrackRecord/> */}
-          <MdSpeech />
+          {/* <MdSpeech /> */}
           <Intro />
           <HowItWorks />
           <Benefits />
+          <Announcement />
           <GetStarted />
         </main>
 
