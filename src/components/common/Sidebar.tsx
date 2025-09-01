@@ -47,7 +47,11 @@ function Sidebar() {
 
   const handleLogout = () => {
     logoutMutation.mutate({
-      endpoint: 'auth', extra: 'logout', method: 'POST', auth: true
+      service: "identity-service/api/v1",
+      endpoint: 'auth',
+      extra: 'logout',
+      method: 'POST',
+      auth: true
     });
   };
 

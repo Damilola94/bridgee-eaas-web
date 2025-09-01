@@ -1,158 +1,111 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { useMutation } from "react-query";
+import { useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
 
 import CheckCircle from "../../../../assets/svgs/check-circle.svg";
-// import { useAccountsContext } from "../../../../context/Accounts";
-import useGetQuery from "../../../../hooks/useGetQuery";
 import handleFetch from "../../../../services/api/handleFetch";
-import type { FundTransferProps } from "../../../../types/transaction";
 import notification from "../../../../utilities/notification";
 import Loading from "../../../common/Loading";
-
 import Modal from "../../../common/Modal";
 import Button from "../../../inputs/Button";
+import { encryptWithPublicKey } from "../../../../utilities/encryptionLogic";
 
 import PINValidation from "./PINValidation";
 
 type Props = {
-  onClose: () => void
-}
+  onClose: () => void;
+};
 
 function Index({ onClose }: Props) {
-  // const { accounts } = useAccountsContext();
   const [formIndex, setFormIndex] = useState(0);
-  const [form, setForm] = useState<FundTransferProps>({});
+  const [pin, setPin] = useState("");
+  const queryClient = useQueryClient();
 
-  const [accountNoToBeVerified, setAccountNoToBeVerified] = useState<string | undefined>(undefined);
-  const accountNoIsVerified = useRef(false);
+  const [confirmPin, setConfirmPin] = useState("");
 
-  // const { defaultWallets } = accounts || {};
-
-  const { status: categoryStatus } = useGetQuery({
-    endpoint: "category",
-    queryKey: ["get-transaction-categories"]
-  });
-  const { data: accountDetails, status: enquiryStatus } = useGetQuery({
-    endpoint: "transaction",
-    extra: "account-name-enquiry",
-    pQuery: {
-      myDestinationBankCode: form?.bankCode?.value,
-      myDestinationAccountNumber: accountNoToBeVerified
-    },
-    queryKey: ["account-name-enquiry", form?.bankCode?.value, accountNoToBeVerified],
-    enabled: !!accountNoToBeVerified && !!form?.bankCode?.value
-  });
-
-  useEffect(() => {
-    if (accountNoToBeVerified) {
-      if (enquiryStatus === "success") {
-        setForm((prev) => ({
-          ...prev,
-          accountName: accountDetails?.data?.accountName
-        }));
-        setAccountNoToBeVerified(undefined);
-        accountNoIsVerified.current = true;
-      } else if (enquiryStatus === "error") {
-        setAccountNoToBeVerified(undefined);
-        notification({
-          message: "Account name enquiry failed.",
-          type: "danger"
-        });
-      }
-    }
-  }, [accountDetails, accountNoToBeVerified, enquiryStatus]);
-
-  const transferMutation = useMutation(handleFetch, {
+  const setPinMutation = useMutation(handleFetch, {
     onSuccess: () => {
-      setFormIndex(4);
+      setFormIndex(1);
+      queryClient.invalidateQueries(['wallet-service-accounts']);
     },
     onError: (err: any) => {
       notification({
         title: "Error",
-        message: err?.toString() || "Something went wrong.",
+        message: err?.toString() || "Failed to set PIN. Please try again.",
         type: "danger"
       });
     }
   });
 
-  const handleChange = (val: any, type = "input", inputName = "") => {
-    if (type === "input") {
-      const { value, name } = val.target;
-      setForm((prev) => ({ ...prev, [name]: value }));
-
-      if (name === "accountNumber") {
-        accountNoIsVerified.current = false;
-        setForm((prev) => ({ ...prev, accountName: undefined }));
-        if (value?.length === 10 && !accountNoIsVerified.current) {
-          setAccountNoToBeVerified(value);
-        }
-      }
-    } else {
-      setForm((prev) => ({ ...prev, [inputName]: val }));
+  const handleSubmitPin = async () => {
+    if (!pin || !confirmPin) {
+      return notification({
+        title: "Form Error",
+        message: "Please enter both PIN fields.",
+        type: "danger"
+      });
+    }
+    if (pin !== confirmPin) {
+      return notification({
+        title: "Form Error",
+        message: "PINs do not match.",
+        type: "danger"
+      });
+    }
+    if (pin.length < 4) {
+      return notification({
+        title: "Form Error",
+        message: "PIN must be at least 4 digits.",
+        type: "danger"
+      });
     }
 
-    if (inputName === "bankCode" && form?.accountNumber?.length === 10 && !accountNoIsVerified.current) {
-      setAccountNoToBeVerified(form?.accountNumber);
+    try {
+      const encryptedPin = encryptWithPublicKey(pin);
+      setPinMutation.mutate({
+        endpoint: "wallet-service/api/v1/walletsecurity/set-pin",
+        body: { encryptedPin },
+        method: "POST",
+        auth: true
+      });
+    } catch {
+      notification({
+        title: "Encryption Error",
+        message: "Failed to encrypt PIN. Please try again.",
+        type: "danger"
+      });
     }
   };
-
-  const authenticateTransaction = () => {
-
-    setFormIndex(1);
-
-    // if (!form?.pin?.length || form?.pin?.length < 4) {
-    //   notification({
-    //     title: "Form Error",
-    //     message: "Please, enter a valid PIN",
-    //     type: "danger"
-    //   });
-    //   return;
-    // }
-
-    // const body = {
-    //   ...form,
-    //   amount: Number(form?.amount),
-    //   bankCode: form?.bankCode?.value,
-    //   categoryId: form?.categoryId?.value
-    // };
-
-    // delete body.processFee;
-    // delete body.accountName;
-
-    // transferMutation.mutate({
-    //   endpoint: "transaction",
-    //   extra: "interbank-fund-transfer",
-    //   body,
-    //   method: "POST",
-    //   auth: true
-    // });
-  };
-
-  const { isLoading } = transferMutation;
 
   return (
     <>
-      {(status === "loading" || categoryStatus === "loading") && <Loading />}
-      {enquiryStatus === "loading" && <Loading message="Verifying account..." />}
-      {isLoading && <Loading message="Processing transfer..." />}
-
+      {setPinMutation.isLoading && <Loading message="Setting up your PIN..." />}
       <Modal isOpen onClose={onClose} maxWidth="max-w-[400px]">
-
         {formIndex === 0 && (
-          <PINValidation onChange={handleChange} onPrev={() => setFormIndex(2)} onSubmit={authenticateTransaction} />
+          <PINValidation
+            onPrev={onClose}
+            onSubmit={handleSubmitPin}
+            onChange={(val: string, field: "pin" | "confirmPin") => {
+              if (field === "pin") setPin(val);
+              if (field === "confirmPin") setConfirmPin(val);
+            }}
+          />
         )}
 
         {formIndex === 1 && (
           <div className="w-full py-5">
             <div className="w-full mb-10">
-              <Image src={CheckCircle} alt="" className="mx-auto" />
+              <Image
+                src={CheckCircle || "/placeholder.svg"}
+                alt=""
+                className="mx-auto"
+              />
             </div>
             <div className="mb-7 mx-auto ">
               <h1 className="w-full text-textColor ff-bold text-2xl text-center">
-              Withdrawal Password Created Successfully
+                Withdrawal Password Created Successfully
               </h1>
             </div>
             <p className="mb-10 text-center text-lightText text-lg">

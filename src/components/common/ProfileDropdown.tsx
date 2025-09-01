@@ -93,7 +93,11 @@ export default function ProfileDropdown({ className }: { className: string }) {
 
   const handleLogout = () => {
     logoutMutation.mutate({
-      endpoint: 'auth', extra: 'logout', method: 'POST', auth: true
+      service: "identity-service/api/v1",
+      endpoint: 'auth',
+      extra: 'logout',
+      method: 'POST',
+      auth: true
     });
   };
 
