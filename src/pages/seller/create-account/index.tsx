@@ -202,9 +202,9 @@ export default function CreateAccountPage() {
               <span className="text-black text-sm font-bold">
                 Already have an account?{" "}
               </span>
-              <a href="/login" className="text-success font-bold text-sm">
-                Login here
-              </a>
+              <Link className="text-success font-bold text-sm" href={"/seller/login"}>
+              Login here
+              </Link>
             </div>
           )}
 
