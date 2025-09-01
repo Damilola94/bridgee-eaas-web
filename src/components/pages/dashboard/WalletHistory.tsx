@@ -1,38 +1,70 @@
-import React from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { RxChevronRight } from 'react-icons/rx';
+/* eslint-disable no-empty-pattern */
+/* eslint-disable no-console */
+import React, { useMemo, useState, ChangeEventHandler } from 'react';
+import { debounce } from 'lodash';
 import { BulletList } from 'react-content-loader';
 
+import { useCookies } from 'react-cookie';
+
+import useGetQuery from '../../../hooks/useGetQuery';
 import InflowArrow from '../../../assets/svg-tsx/InflowArrow';
 import OutflowArrow from '../../../assets/svg-tsx/OutflowArrow';
 
 import { formatCurrency, formatDisbursementType } from '../../../utilities/general';
 import { formatDateTime } from '../../../utilities/dateTime';
 
-import MenuOptions from '../../common/MenuOptions';
 import NoData from '../../common/NoData';
 import TransactionStatus from '../../common/TransactionStatus';
+import Button from '../../inputs/Button';
+
+import SearchInput from '../../inputs/Search';
+
+import DisputeFilter from './Filter';
+
+import TransactionDetailsModal from './TransactionDetailsModal';
 
 type Props = {
-  data: any;
-  status: string;
-  error: unknown
+  data?: any;
+  status?: string;
+  error?: unknown
 };
 
-function InvoiceHistory({ data, status, error }: Props) {
-  const router = useRouter();
+function InvoiceHistory({ }: Props) {
+  const [showBankTransfer, setShowBankTransfer] = useState(false);
+  const [filter, setFilter] = useState<any>(null);
+  const [searchText, setSearchText] = useState('');
+  const [search, setSearch] = useState('');
+  const [cookie] = useCookies(['data']);
+  const { data, status, error } = useGetQuery({
+    service: "wallet-service/api/v1",
+    endpoint: 'escrows',
+    extra: 'orders',
+    pQuery: { pageSize: 10, pageNumber: 1, SearchKey: search },
+    queryKey: ['escrows-orders', search, filter?.value || 'all'],
+    enabled: !!cookie?.data?.accessToken
+  });
+
+  const debouncedSearch = useMemo(() => debounce(setSearch, 1000), [setSearch]);
+
+  const handleSearch: ChangeEventHandler<HTMLInputElement> = (e) => {
+    const { value } = e.target;
+    setSearchText(value);
+    debouncedSearch(value);
+  };
 
   return (
     <div className="w-full bg-white shadow-md rounded-lg overflow-hidden">
       <div className="flex flex-wrap items-center justify-between px-5 sm:px-10 py-5">
-        <h3 className="font-bold text-lg mr-5 mb-2">Invoice Transactions</h3>
-        <Link href="/transactions">
-          <span className="text-primary text-sm flex items-center hover:underline">
-            See All
-            <RxChevronRight className="w-5 h-auto mb-1" />
-          </span>
-        </Link>
+        <h3 className="font-bold text-lg mr-5 mb-2">Wallet</h3>
+        <div className="w-full max-w-[380px] flex space-x-2">
+          <DisputeFilter filter={filter} onChange={setFilter} />
+          <SearchInput
+            value={searchText}
+            onChange={handleSearch}
+            className="w-full max-w-xs"
+            height="h-[35.6px]"
+          />
+        </div>
       </div>
 
       <div className="w-full overflow-auto pb-20">
@@ -40,12 +72,13 @@ function InvoiceHistory({ data, status, error }: Props) {
           <thead className="bg-secondary">
             <tr className="">
               <th className="pl-5 sm:pl-10 pr-3 py-5">#</th>
-              <th className="px-3 py-5">Invoice Title</th>
-              <th className="px-3 py-5">Invoice Number</th>
+              <th className="px-3 py-5">Transaction</th>
+              <th className="px-3 py-5">Reference Number</th>
               <th className="px-3 py-5">Amount</th>
-              <th className="px-3 py-5">Date</th>
-              <th className="px-3 py-5">Disbursement Type</th>
+              <th className="px-3 py-5">Source</th>
               <th className="px-3 py-5">Status</th>
+              <th className="px-3 py-5">Date</th>
+              <th className="px-3 py-5">Action</th>
               <th>{null}</th>
             </tr>
           </thead>
@@ -77,26 +110,24 @@ function InvoiceHistory({ data, status, error }: Props) {
                       </td>
                       <td className="px-3 py-5">{`#${item?.invoiceNumber}`}</td>
                       <td className="px-3 py-5">{formatCurrency(item?.amount)}</td>
-                      <td className="px-3 py-5">{formatDateTime(item?.createdAt)}</td>
                       <td className="px-3 py-5">{formatDisbursementType(item?.disbursementType)}</td>
                       <td className="px-3 py-5">
                         <TransactionStatus status={item?.status === 'paymentcompleted' ? item?.escrowDeliveryStatus : item?.status} />
                       </td>
-                      <td className="pr-5 sm:pr-10 pl-3 py-5">
-                        <MenuOptions
-                          options={[
-                            {
-                              title: 'View',
-                              action: () => router.push({ pathname: `/transactions/invoice-details/${item?.escrowId}` })
-                            },
-                            {
-                              title: 'Open Dispute',
-                              action: () => router.push({ pathname: `/disputes/manage-dispute/${item?.escrowId}` }),
-                              disabled: !(item?.escrowDeliveryStatus === 'Delivered' || item?.status === 'dispute')
-                                  || item?.status === 'completed' || item?.status === 'refunded'
-                            }
-                          ]}
-                        />
+                      <td className="px-3 py-5">{formatDateTime(item?.createdAt)}</td>
+                      <td className="pr-5 sm:pr-10 pl-3 py-5" >
+                        <Button
+                          border
+                          onClick={() => setShowBankTransfer(true)}
+                          paddingX="px-2"
+                          bgColor="bg-white"
+                          borderColor="border-gray-500"
+                          textColor="text-black-500"
+                          className="w-full text-xs  border-2 border-gray-200 !rounded-md mdx2:!rounded-xl hover:bg-success  hover:border-success hover:text-white"
+                          paddingY="py-2"
+                        >
+                          View
+                        </Button>
                       </td>
                     </tr>
                   ))}
@@ -120,6 +151,7 @@ function InvoiceHistory({ data, status, error }: Props) {
           </tbody>
         </table>
       </div>
+      {showBankTransfer && <TransactionDetailsModal onClose={() => setShowBankTransfer(false)} />}
     </div>
   );
 }

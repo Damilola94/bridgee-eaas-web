@@ -1,19 +1,12 @@
 import React, { useEffect } from "react";
 
 import TextInput from "../../inputs/Text";
-// import ToggleInput from '../../inputs/Toggle';
-// import LocationInput from '../../inputs/LocationInput';
 import Button from "../../inputs/Button";
 import { useCreateInvoiceContext } from "../../../context/CreateInvoice";
 import notification from "../../../utilities/notification";
-// import useGetQuery from '../../../hooks/useGetQuery';
-// import Loading from '../../common/Loading';
 
 function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const { form, setForm } = useCreateInvoiceContext();
-  // const [debouncedDeliveryAddress, setDebouncedDeliveryAddress] = useState('');
-  // const [debouncedPickUpAddress, setDebouncedPickUpAddress] = useState('');
-  // const [buttonDisabled, setButtonDisabled] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -54,7 +47,6 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
     ) {
       return "Please enter a valid email for the recipient";
     }
-    if (!form?.inspectionDuration) return "Inspection duration is required";
     if (!form?.recipientDetails?.address)
       return "Recipient address is required";
 
@@ -73,55 +65,8 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
     onNext();
   };
 
-  // const handleUpdateDeliveryAddBlur = () => {
-  //   setDebouncedDeliveryAddress(form?.recipientDetails?.address);
-  // };
-
-  // const handleUpdatePickAddBlur = () => {
-  //   setDebouncedPickUpAddress(form?.pickUpAddress || "");
-  // };
-
-  // const { status, isLoading } = useGetQuery({
-  //   endpoint: 'logistic',
-  //   extra: `address/validation`,
-  //   param: debouncedDeliveryAddress,
-  //   queryKey: ['validate-address'],
-  //   enabled: !!debouncedDeliveryAddress
-  // });
-
-  // const { status: pickUpStatus, isLoading: pickUpLoading } = useGetQuery({
-  //   endpoint: 'logistic',
-  //   extra: `address/validation`,
-  //   param: debouncedPickUpAddress,
-  //   queryKey: ['validate-address'],
-  //   enabled: !!debouncedPickUpAddress
-  // });
-
-  // const disabledDeliveryBtn = status === "success" ? false : true;
-  // const errorDeliveryMsg = status === "error" ? "Address is Invalid" : "";
-
-  // const disabledPickUpBtn = pickUpStatus === "success" ? false : true;
-  // const errorPickupMsg = status === "error" ? "Address is Invalid" : "";
-
-  // useEffect(() => {
-  //   if (status === "error"){
-  //     setDebouncedDeliveryAddress("");
-  //   } else if (status === "success"){
-  //     setDebouncedDeliveryAddress("");
-  //   }
-  //   if (pickUpStatus === "error"){
-  //     setDebouncedDeliveryAddress("");
-  //   } else if (pickUpStatus === "success"){
-  //     setDebouncedDeliveryAddress("");
-  //   }
-  //   setButtonDisabled(true);
-  //   // setButtonDisabled((disabledDeliveryBtn && disabledPickUpBtn));
-  // }, [status, pickUpStatus, disabledDeliveryBtn, disabledPickUpBtn]);
-
   return (
     <>
-      {/* {isLoading && <Loading message="Validating Address"/>} */}
-      {/* {pickUpLoading && <Loading message="Validating Address"/>} */}
       <div className="w-full bg-white px-10 py-8 rounded-lg shadow-md">
         <div className="w-full mb-10">
           <h3 className="font-bold text-xl ff-bold mb-2">
@@ -141,7 +86,7 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
                   name="recipientName"
                   value={form?.recipientDetails?.recipientName || ""}
                   onChange={(e) => handleChange(e, "recipient")}
-                  label="Full Name"
+                  label="Recipient’s Name"
                   className="w-full mb-4"
                   placeholder="Recipient’s Name"
                 />
@@ -152,7 +97,7 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
                   value={form?.recipientDetails?.email || ""}
                   onChange={(e) => handleChange(e, "recipient")}
                   className="w-full mb-4"
-                  label="Email"
+                  label="Recipient’s Email"
                   type="email"
                   placeholder="Recipient’s Email"
                 />
@@ -170,76 +115,23 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
                     handleChange(e, "recipient")
                   }
                   type="tel"
-                  label="Phone Number"
+                  label="Recipient’s Phone Number *"
                   className="w-full mb-4"
                   placeholder="Recipient's Phone Number"
                 />
               </div>
               <div className="w-full sm:w-1/2 px-2">
                 <TextInput
-                  name="inspectionDuration"
-                  value={form?.inspectionDuration || ""}
-                  onChange={handleChange}
+                  name="address"
+                  value={form?.recipientDetails?.address || ""}
+                  onChange={(e) => handleChange(e, "recipient")}
+                  label="Recipient’s Address *"
                   className="w-full mb-4"
-                  label="Inspection Duration (Hours)"
-                  type="number"
-                  placeholder="Inspection Duration"
+                  placeholder="Recipient's Address"
                 />
               </div>
             </div>
           </div>
-          <div className="w-full">
-            <TextInput
-              name="address"
-              value={form?.recipientDetails?.address || ""}
-              // onBlur={handleUpdateDeliveryAddBlur}
-              onChange={(e) => handleChange(e, "recipient")}
-              label="Address"
-              className="w-full mb-4"
-              placeholder="Recipient's Address"
-            />
-            {/* <p className="text-red-600 ml-1 text-xs">{errorDeliveryMsg}</p> */}
-            {/* <LocationInput
-            value={form?.recipientDetails?.address || ''}
-            onChange={(val) => handleChange(val, 'recipient', 'address')}
-            label="Recipient Address"
-          /> */}
-          </div>
-        </div>
-
-        <div className="w-full mb-5">
-          {/* <div className="flex items-center space-x-2 pb-5">
-          <ToggleInput
-            label="Delivery"
-            value={form?.isDeliveryOnUs}
-            onChange={(val) => handleChange(val, 'toggle', 'isDeliveryOnUs')}
-          />
-          <span className="text-[#E08700] font-bold">Powered by Terminal</span>
-        </div> */}
-
-          {/* {form?.isDeliveryOnUs && ( */}
-          <div className="w-full, mt-3">
-            <div className="w-full">
-              <div className="mb-5">
-                {/* <LocationInput
-                  label="Pickup Address".
-                  value={form?.pickUpAddress || "}
-                  onChange={(val) => handleChange(val, "location", "pickUpAddress")}
-                /> */}
-                <TextInput
-                  name="pickUpAddress"
-                  value={form?.pickUpAddress || ""}
-                  onChange={handleChange}
-                  // onBlur={handleUpdatePickAddBlur}
-                  label="Pickup Address"
-                  className="w-full"
-                  placeholder="Enter location"
-                />
-                {/* <p className="text-red-600 ml-1 text-xs">{errorPickupMsg}</p> */}
-              </div>
-            </div>
-          </div>
-          {/* )} */}
         </div>
 
         <div className="w-full mb-3">

@@ -19,18 +19,16 @@ function Loading({ message }: LoadingProps) {
       onClose={() => {}}
       maxWidth="max-w-[200px]"
     >
-      <div className="rounded bg-white text-center">
-        <div className="">
-          <Image
-            priority
-            src={Logo}
-            className="mx-auto"
-            width={200}
-            height={45}
-            alt="UseBridge Inc. logo"
-          />
-        </div>
-        <p className="-mt-10 text-base">{message}</p>
+      <div className="rounded bg-white text-center h-40 flex flex-col items-center justify-center">
+        <Image
+          priority
+          src={Logo}
+          className="mx-auto"
+          width={200}
+          height={45}
+          alt="UseBridge Inc. logo"
+        />
+        <p className="mt-4 text-base">{message}</p>
       </div>
     </Modal>
   );

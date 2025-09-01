@@ -15,11 +15,12 @@ type ModalProps = {
   isFullHeight?: boolean;
   noBg?: boolean;
   zIndex?: string;
+  filterTitle?: boolean;
 }
 
 function Modal({
   children, isOpen, onClose = () => {}, maxWidth, isShowCloseIcon,
-  isCenter, isFullHeight, isCloseOnOverlayClick, zIndex, noBg
+  isCenter, isFullHeight, isCloseOnOverlayClick, zIndex, noBg, filterTitle
 }: ModalProps) {
   return (
     <Dialog
@@ -36,6 +37,7 @@ function Modal({
       )}
     >
       <Dialog.Panel className={clsx(`${!noBg && "bg-white" }  w-full rounded-xl relative p-5 mx-auto`, maxWidth, isFullHeight ? 'h-[90%]' : '')}>
+        {filterTitle && <p className="text-base font-bold mt-1">Filters</p>}
         {isShowCloseIcon && (
           <button onClick={onClose} className="absolute z-20 top-3 right-3 outline-none">
             <CgClose className="w-8 h-8 p-1 hover:bg-gray-300/50 rounded-lg" />

@@ -27,7 +27,7 @@ function Button({
       className={`${fontSize} ${bgColor} ${textColor} ${paddingX
       } ${paddingY} rounded-lg ${border ? `border ${borderColor}` : ''
       } flex justify-center items-center transition-all hover:bg-opacity-70 disabled:border-0 ${className
-      } disabled:cursor-default disabled:bg-opacity-30 disabled:bg-success disabled:text-white`}
+      } disabled:cursor-not-allowed disabled:bg-opacity-30 disabled:bg-success disabled:text-white`}
       disabled={disabled}
       onClick={onClick}
     >

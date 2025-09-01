@@ -71,7 +71,7 @@ function ChangePassword() {
 
       <div className="w-full bg-white rounded-xl px-10 py-7 shadow">
         <div className="w-full">
-          <h2 className="font-bold text-xl mb-5">Update Password</h2>
+          <h2 className="font-bold text-xl mb-9">Update Password</h2>
 
           <div className="w-full">
             <TextInput

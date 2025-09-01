@@ -4,37 +4,67 @@ import React, {
   useEffect,
   useMemo,
   useState
-} from 'react';
+} from "react";
 
-import Loading from '../components/common/Loading';
-import useGetQuery from '../hooks/useGetQuery';
+import Loading from "../components/common/Loading";
+import useGetQuery from "../hooks/useGetQuery";
 
 type Props = {
-  children: React.ReactNode
+  children: React.ReactNode;
 };
 
 export type valueProps = {
-  accounts: any,
-  setAccounts: React.Dispatch<React.SetStateAction<any>>
+  accounts: any;
+  setAccounts: React.Dispatch<React.SetStateAction<any>>;
 };
 
-export const AccountsContext = createContext<valueProps>({ accounts: null, setAccounts: () => {} });
+export const AccountsContext = createContext<valueProps>({
+  accounts: null,
+  setAccounts: () => {}
+});
 
 function AccountsContextProvider({ children }: Props) {
   const [accounts, setAccounts] = useState<any>(null);
+
   const accountsMemo = useMemo(() => ({ accounts, setAccounts }), [accounts]);
 
-  const { data, status, isFetching } = useGetQuery({
-    endpoint: 'dashboard', extra: 'comprehensive-user-details', queryKey: ['accounts-context']
+  const {
+    data: walletData,
+    status: walletStatus,
+    isFetching: walletFetching
+  } = useGetQuery({
+    service: "wallet-service/api/v1",
+    endpoint: "wallets",
+    extra: "mine",
+    queryKey: ["wallet-service-accounts"]
+  });
+
+  const {
+    data: identityData,
+    status: identityStatus,
+    isFetching: identityFetching
+  } = useGetQuery({
+    service: "identity-service/api/v1",
+    endpoint: "users",
+    extra: "me",
+    queryKey: ["identity-service-accounts"]
   });
 
   useEffect(() => {
-    if (status === 'success') {
-      setAccounts(data?.data);
+    if (walletStatus === "success" && identityStatus === "success") {
+      setAccounts({
+        wallet: walletData?.data,
+        identity: identityData?.data
+      });
     }
-  }, [status, data]);
+  }, [walletStatus, identityStatus, walletData, identityData]);
 
-  if (status === 'loading' || isFetching) {
+  if (
+    walletStatus === "loading" ||
+    identityStatus === "loading" ||
+    walletFetching ||
+    identityFetching
+  ) {
     return <Loading message="Setting up account..." />;
   }
 

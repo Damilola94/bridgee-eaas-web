@@ -35,7 +35,7 @@ function TextInput({
       <input
         ref={ref}
         className={`${error ? 'error-field' : ''} ${height
-        } bg-inputBg px-5 outline-none w-full rounded-[10px] border border-borderColor disabled:bg-gray-200`}
+        } ${disabled && 'cursor-not-allowed'} bg-inputBg px-5 outline-none w-full rounded-[10px] border border-borderColor disabled:bg-gray-200`}
         type={inputType}
         accept={accept}
         name={name}
