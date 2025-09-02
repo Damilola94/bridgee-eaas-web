@@ -1,11 +1,30 @@
+/* eslint-disable react/no-unescaped-entities */
+
+import Image from 'next/image';
+
+import { useMemo } from 'react';
 
 import TextInput from '../../inputs/Text';
 import InfoCircleIcon from "../../../assets/svgs/info-circle.svg";
 
-import Image from 'next/image';
+import { useAccountsContext } from '../../../context/Accounts';
+import PhoneNumberInput from '../../inputs/PhoneNumberInput';
 
 function PersonalDetails() {
- return (
+  const { accounts } = useAccountsContext();
+
+  const personalDetail = accounts?.identity?.personalDetail;
+
+  const { countryCode, localNumber } = useMemo(() => {
+    const fullNumber = personalDetail?.phoneNumber || "";
+
+    return {
+      countryCode: "+234",
+      localNumber: fullNumber
+    };
+  }, [personalDetail?.phoneNumber]);
+
+  return (
     <div className="">
       <div className="flex justify-between items-start">
         <h2 className="font-bold text-xl mb-5">Personal Details</h2>
@@ -14,7 +33,7 @@ function PersonalDetails() {
         <TextInput
           name="firstName"
           readOnly
-          value={""}
+          value={personalDetail?.firstName || ""}
           className="w-full mb-4"
           label="First name"
           placeholder="First name"
@@ -22,7 +41,7 @@ function PersonalDetails() {
         <TextInput
           name="lastName"
           readOnly
-          value={""}
+          value={personalDetail?.lastName || ""}
           className="w-full mb-4"
           label="Last name"
           placeholder="Last name"
@@ -31,19 +50,18 @@ function PersonalDetails() {
           type="email"
           name="email"
           readOnly
-          value={""}
+          value={personalDetail?.email || ""}
           className="w-full mb-4"
           label="Email Address"
           placeholder="Email Address"
         />
-        <TextInput
-          type="tel"
-          name="phoneNumber"
-          readOnly
-          value={""}
-          className="w-full mb-4"
+
+        <PhoneNumberInput
           label="Phone number"
-          placeholder="Phone number"
+          className="w-full mb-4"
+          countryCode={countryCode}
+          phoneNumber={localNumber}
+          disabled={true}
         />
       </div>
 
