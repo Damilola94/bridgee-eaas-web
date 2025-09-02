@@ -9,12 +9,12 @@ export default function SecuritySettings() {
   return (
     <div className="space-y-8">
       <div className="">
-        <nav className="flex space-x-8" aria-label="Security Tabs">
+        <nav className="flex flex-col xl:flex-row gap-x-8 gap-y-2" aria-label="Security Tabs">
           {["Password", "Pin"].map((tab) => (
             <button
               key={tab}
               onClick={() => setSecuritySubTab(tab)}
-              className={`py-8 pl-7 pr-40 border-2 rounded-lg bg-white font-medium text-sm whitespace-nowrap ${
+              className={`py-8 pl-7 pr-40 border-2 rounded-lg bg-white font-medium text-sm whitespace-nowrap flex ${
                 securitySubTab === tab
                   ? "border-success text-purple-600"
                   : "border-[#C4C4C4] border-[0.1px] text-gray-500 hover:text-gray-700 hover:border-success hover:border-2"
@@ -23,7 +23,7 @@ export default function SecuritySettings() {
               {tab}
             </button>
           ))}
-        </nav>
+        </nav>  
       </div>
 
       {securitySubTab === "Password" && (
@@ -50,6 +50,7 @@ export default function SecuritySettings() {
                     containerClassName="w-full flex justify-between mb-2"
                     inputClassName="w-[15%] rounded-lg h-[60px] border border-[#777] outline-none text-center text-xl"
                     onChange={() => {}}
+                    autoFocus={false}
                   />
                 </div>
 
@@ -64,6 +65,7 @@ export default function SecuritySettings() {
                     containerClassName="w-full flex justify-between mb-2"
                     inputClassName="w-[15%] rounded-lg h-[60px] border border-[#777] outline-none text-center text-xl"
                     onChange={() => {}}
+                    autoFocus={false}
                   />
                 </div>
               </div>
