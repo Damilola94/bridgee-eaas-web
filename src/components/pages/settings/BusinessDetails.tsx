@@ -43,7 +43,7 @@ function BusinessDetails() {
       setFormData({
         businessName: businessDetail.businessName || '',
         businessEmail: businessDetail.businessEmail || '',
-        businessPhone: removeNigerianCountryCodeAddLeadingZero(phoneNumberString), // Or combine later
+        businessPhone: removeNigerianCountryCodeAddLeadingZero(phoneNumberString), 
         logoFile: null,
       });
 
