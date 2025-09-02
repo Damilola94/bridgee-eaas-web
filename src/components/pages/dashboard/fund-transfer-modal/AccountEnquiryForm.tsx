@@ -1,20 +1,23 @@
 import React from 'react';
-
 import Image from 'next/image';
 
 import { FundTransferProps } from '../../../../types/transaction';
 import Button from '../../../inputs/Button';
 import BankIcon from '../../../../assets/svgs/bank.svg';
+import { useAccountsContext } from '../../../../context/Accounts';
 
 type Props = {
-  onChange: (val: any, type?: string, inputName?: string) => void
-  form: FundTransferProps
-  onNext: () => void
+  onChange: (val: any, type?: string, inputName?: string) => void;
+  form: FundTransferProps;
+  onNext: () => void;
 };
 
-function AccountEnquiryForm({
-  onNext, onChange, form
-}: Props) {
+function AccountEnquiryForm({ onNext, onChange, form }: Props) {
+  const { accounts } = useAccountsContext();
+  const { identity } = accounts || {};
+
+  const primaryAccount = identity?.accountDetails[0];
+
   return (
     <div className="w-full py-5">
       <div className="mb-7">
@@ -22,20 +25,24 @@ function AccountEnquiryForm({
       </div>
 
       <div className="w-full mb-7 space-y-3">
-        <div
-          onClick={() => {}}
-          className="w-full p-4 border rounded-md cursor-pointer flex justify-between items-center transition border-primary bg-primary/10 "
-        >
-
-          <div className='flex space-x-2'>
-            <Image src={BankIcon} alt="Icon" className={ 'w-10 h-auto'} />
-            <div>
-              <p className="font-bold ff-bold">Wema Bank Plc</p>
-              <p className="text-sm text-gray-600">Toluwalase Obasun</p>
+        {primaryAccount && (
+          <div
+            onClick={() => {
+              onChange(primaryAccount.accountNumber, 'input', 'accountNumber');
+              onChange(primaryAccount.bankName, 'input', 'bankName');
+            }}
+            className="w-full p-4 border rounded-md cursor-pointer flex justify-between items-center transition border-primary bg-primary/10"
+          >
+            <div className="flex space-x-2">
+              <Image src={BankIcon} alt="Icon" className="w-10 h-auto" />
+              <div>
+                <p className="font-bold ff-bold">{primaryAccount.bankName}</p>
+                <p className="text-sm text-gray-600">{primaryAccount.accountName}</p>
+              </div>
             </div>
+            <p className="text-sm text-gray-600">{primaryAccount.accountNumber}</p>
           </div>
-          <p className="text-sm ff- text-gray-600">0174632231</p>
-        </div>
+        )}
       </div>
 
       <Button

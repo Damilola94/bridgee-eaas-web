@@ -15,8 +15,19 @@ function Container() {
   const router = useRouter();
 
   const { data, status, error } = useGetQuery({
-    endpoint: 'escrow',
+    service: "wallet-service/api/v1",
+    endpoint: "escrows",
+    extra: "orders",
     queryKey: ['escrow', router?.query?.slug],
+    param: router?.query?.slug,
+    enabled: !!router?.query?.slug
+  });
+
+  const { data: activityData, status: activityStatus, error: activityError } = useGetQuery({
+    service: "wallet-service/api/v1",
+    endpoint: "activitylogs",
+    extra: "order",
+    queryKey: ['activitylogs', router?.query?.slug],
     param: router?.query?.slug,
     enabled: !!router?.query?.slug
   });
@@ -24,6 +35,7 @@ function Container() {
   return (
     <div>
       {status === 'loading' && <Loading />}
+      {activityStatus === 'loading' && <Loading />}
 
       <div className="w-full mb-3">
         <Button
@@ -42,25 +54,32 @@ function Container() {
         </Button>
       </div>
 
-      {status === 'success' && (
-        <div className="w-full">
-          <div className="flex flex-wrap -m-4">
+      <div className="w-full">
+        <div className="flex flex-wrap -m-4">
+          {status === 'success' && (
             <div className="w-full xl:w-7/12 p-4">
               <div className="w-full">
                 <InvoiceDetails data={data?.data} />
               </div>
             </div>
+          )}
 
+          {activityStatus === 'success' && (
             <div className="w-full xl:w-5/12 p-4">
-              <ActivityLog data={data?.data} />
+              <ActivityLog data={activityData?.data} />
             </div>
-          </div>
+          )}
         </div>
-      )}
+      </div>
 
       {status === 'error' && (
         <div className="w-full py-10">
           {String(error)}
+        </div>
+      )}
+      {activityStatus === 'error' && (
+        <div className="w-full py-10">
+          {String(activityError)}
         </div>
       )}
     </div>

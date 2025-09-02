@@ -49,10 +49,6 @@ function RecipientDetails({ onNext = () => {} }: { onNext?: () => void }) {
     }
     if (!form?.recipientDetails?.address)
       return "Recipient address is required";
-
-    if (!form?.pickUpAddress) {
-      return "Pickup address is required";
-    }
     return null;
   };
 

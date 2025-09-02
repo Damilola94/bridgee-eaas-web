@@ -6,6 +6,7 @@ import type { FundTransferProps } from "../../../../types/transaction";
 import { formatCurrency } from "../../../../utilities/general";
 import Button from "../../../inputs/Button";
 import EmptyWalletIcon from '../../../../assets/svgs/empty-wallet.svg';
+import { useAccountsContext } from "../../../../context/Accounts";
 
 type Props = {
   form: FundTransferProps
@@ -23,6 +24,11 @@ function DisplayData({ label = "", value = "" }) {
 }
 
 function TransactionSummary({ onNext, onPrev, form }: Props) {
+  const { accounts } = useAccountsContext();
+  const { identity } = accounts || {};
+
+  const primaryAccount = identity?.accountDetails[0];
+
   return (
     <div className="w-full py-5">
       <div className="mb-7">
@@ -30,11 +36,11 @@ function TransactionSummary({ onNext, onPrev, form }: Props) {
       </div>
 
       <div className="w-full mb-7">
-        <DisplayData label="Processing fee:" value={form?.bankCode?.label} />
-        <DisplayData label="Account Name:" value={form?.accountName} />
-        <DisplayData label="Account Number:" value={form?.accountNumber} />
-        <DisplayData label="Amount:" value={formatCurrency(form?.amount)} />
-        <DisplayData label="Fee:" value={formatCurrency(form?.processFee)} />
+        <DisplayData label="Processing fee:" value={formatCurrency(10)} />
+        <DisplayData label="Account Name:" value={primaryAccount.bankName} />
+        <DisplayData label="Account Number:" value={primaryAccount.accountNumber} />
+        <DisplayData label="Amount:" value={formatCurrency(1000)} />
+        <DisplayData label="Fee:" value={formatCurrency(40000)} />
         <div className="w-full mb-7 space-y-3">
           <div
             onClick={() => { }}
@@ -45,7 +51,7 @@ function TransactionSummary({ onNext, onPrev, form }: Props) {
               <Image src={EmptyWalletIcon} alt="Icon" className={'w-10 h-auto'} />
               <p className="font-bold ff-bold mt-3">Balance</p>
             </div>
-            <p className="ff-bold">0174632231</p>
+            <p className="ff-bold">{formatCurrency(40000)}</p>
           </div>
         </div>
       </div>

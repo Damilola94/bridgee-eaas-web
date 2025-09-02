@@ -6,6 +6,7 @@ const endpoints: any = {
   merchant: `${prefix}/merchant`,
   dashboard: `${prefix}/dashboard`,
   transaction: `${prefix}/transaction`,
+  activitylogs: `${prefix}/activitylogs`,
   category: `${prefix}/category`,
   escrows: `${prefix}/escrows`,
   mine: `${prefix}/mine`,

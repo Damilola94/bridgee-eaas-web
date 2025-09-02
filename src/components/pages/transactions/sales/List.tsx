@@ -105,9 +105,9 @@ function SalesList({ isDashboard = false }) {
               )}
 
               {status === "success" &&
-                (data?.data?.items?.length > 0 ? (
+                (data?.data?.length > 0 ? (
                   <>
-                    {data?.data?.items?.map((item: any, index: number) => (
+                    {data?.data?.map((item: any, index: number) => (
                       <tr
                         className="border-t cursor-pointer hover:bg-primary/5"
                         key={item?.id}
@@ -124,7 +124,10 @@ function SalesList({ isDashboard = false }) {
                         <td className="px-3 py-5">{(item?.createdDate)}</td>
                         <td className="px-3 py-5">
                           {item.paymentLink ? (
-                            <Link href={item.paymentLink} className="text-blue-600 hover:underline">
+                            <Link href={item.paymentLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:underline">
                               View Link
                             </Link>
                           ) : (

@@ -7,10 +7,13 @@ export type InvoiceFormProps = {
   recipientAddress?: string;
   pickUpAddress?: { label: string, value: string }
   deliveryAddress?: { label: string, value: string }
+  deliveryZone?: { label: string, value: string }
+  pickUpZone?: { label: string, value: string }
 
   disbursementType?: string;
   inspectionDuration?: string;
   writtenTerms?: string;
+  description?: string;
   contract?: File;
   recipientDetails?: RecipientDetailsProps;
 };

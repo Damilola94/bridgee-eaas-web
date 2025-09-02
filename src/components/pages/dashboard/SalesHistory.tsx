@@ -105,22 +105,29 @@ function SalesHistory() {
             )}
 
             {status === "success" &&
-              (data?.data?.items?.length > 0 ? (
+              (data?.data?.length > 0 ? (
                 <>
-                  {data.data.items.map((item: SalesItem, index: number) => (
-                    <tr className="border-t" key={item.id}>
+                  {data.data.map((item: SalesItem, index: number) => (
+                    <tr className="border-t cursor-pointer hover:bg-primary/5" key={item.id}
+                      onClick={() => router.push({ pathname: `/transactions/sales-details/${item?.id}` })}
+                    >
                       <td className="pl-5 sm:pl-10 pr-3 py-5">{index + 1}</td>
                       <td className="px-3 py-5">
                         <div className="flex items-center space-x-3">
                           <span className="capitalize">{item.recipientName}</span>
                         </div>
                       </td>
-                      <td className="px-3 py-5">{`#${item.referenceNumber}`}</td>
+                      <td className="px-3 py-5">{`${item.referenceNumber}`}</td>
                       <td className="px-3 py-5">{item.amount}</td>
                       <td className="px-3 py-5">{item.createdDate}</td>
                       <td className="px-3 py-5">
                         {item.paymentLink ? (
-                          <Link href={item.paymentLink} className="text-blue-600 hover:underline">
+                          <Link
+                            href={item.paymentLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
+                          >
                             View Link
                           </Link>
                         ) : (

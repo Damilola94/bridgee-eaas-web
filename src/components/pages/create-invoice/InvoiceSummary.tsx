@@ -55,35 +55,50 @@ function InvoiceSummary() {
   const handleSubmit = () => {
     const body = new FormData();
 
+    // Recipient details
     if (form?.recipientDetails?.recipientName) {
-      body.append('Recipient.Name', form.recipientDetails.recipientName);
+      body.append("Recipient.Name", form.recipientDetails.recipientName);
     }
     if (form?.recipientDetails?.phoneNumber) {
-      body.append('Recipient.PhoneNumber', form.recipientDetails.phoneNumber);
+      body.append("Recipient.PhoneNumber", form.recipientDetails.phoneNumber);
     }
     if (form?.recipientDetails?.address) {
-      body.append('Recipient.Address', form.recipientDetails.address);
+      body.append("Recipient.Address", form.recipientDetails.address);
     }
     if (form?.recipientDetails?.email) {
-      body.append('Recipient.Email', form.recipientDetails.email);
+      body.append("Recipient.Email", form.recipientDetails.email);
     }
-    // if (form?.inspectionDuration) body.append('inspectionDuration', form.inspectionDuration);
-    // if (form?.disbursementType) body.append('disbursementType', form.disbursementType);
-    if (form?.pickUpAddress) body.append('DeliveryZone', form.pickUpAddress?.value);
-    if (form?.pickUpAddress) body.append('PickupZone', form.pickUpAddress?.value);
-    if (form?.pickUpAddress) body.append('PickUpAddress', form.pickUpAddress?.value);
-    if (form?.isDeliveryOnUs) body.append('BuyerPaysEscrowFee', form.isDeliveryOnUs as any);
-    if (form?.isDeliveryOnUs) body.append('Description', "");
-    // if (form?.writtenTerms) body.append('writtenTerms', form.writtenTerms);
-    // if (form?.contract) body.append('contract', form?.contract);
+
+    // Zones and delivery
+    if (form?.deliveryZone) body.append("DeliveryZone", form.deliveryZone?.value);
+    if (form?.pickUpZone) body.append("PickupZone", form.pickUpZone?.value);
+    if (form?.pickUpAddress) body.append("PickUpAddress", form.pickUpAddress?.value);
+    if (form?.isDeliveryOnUs) body.append("BuyerPaysEscrowFee", String(form.isDeliveryOnUs));
+    if (form?.description) body.append("Description", form.description);
+    // if (form?.) body.append("DeliveryFee", String(form.deliveryFee));
+
+    // Escrow Items
     if (form?.escrowItems?.length) {
-      form.escrowItems.forEach((item) => body.append('Items', JSON.stringify(item)));
+      form.escrowItems.forEach((item, index) => {
+        if (item.name) body.append(`Items[${index}].Name`, item.name);
+        if (item.quantity) body.append(`Items[${index}].Quantity`, String(item.quantity));
+        if (item.amount) body.append(`Items[${index}].UnitPrice`, String(item.amount));
+        if (item.weight !== undefined) body.append(`Items[${index}].WeightKg`, String(item.weight));
+      });
     }
+
+    if (form?.contract) {
+      const files = Array.isArray(form.contract) ? form.contract : [form.contract];
+      files.forEach((file) => {
+        body.append("Photos", file);
+      });
+    }
+
     escrowMutation.mutate({
-      service: 'wallet-service/api/v1',
-      endpoint: 'escrows',
-      extra: 'orders',
-      method: 'POST',
+      service: "wallet-service/api/v1",
+      endpoint: "escrows",
+      extra: "orders",
+      method: "POST",
       body,
       auth: true,
       multipart: true
@@ -185,6 +200,7 @@ function InvoiceSummary() {
           </Button> */}
           <Button
             className='w-full'
+            paddingY="py-3"
             onClick={handleSubmit}
             disabled={status === 'loading'}
           >

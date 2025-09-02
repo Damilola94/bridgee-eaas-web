@@ -37,7 +37,6 @@ import AddInvoiceItem from './AddInvoiceItem';
 
 function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
   const { form, setForm } = useCreateInvoiceContext();
-  const [comment, setComment] = useState('');
   const [show, setShow] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<OrderListItemProps>();
 
@@ -50,8 +49,12 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
       const {
         value, name, type, files
       } = val.target;
+
       if (type === 'file') {
-        setForm((state) => ({ ...state, [name]: files?.[0] }));
+        setForm((state) => ({
+          ...state,
+          [name]: files?.length > 1 ? Array.from(files) : files?.[0]
+        }));
       } else {
         setForm((state) => ({ ...state, [name]: value }));
       }
@@ -91,16 +94,20 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
 
   const validateForm = () => {
     if (!form?.escrowItems?.length) return 'Your order list must not be empty';
-    return null;
+    if (!form?.pickUpZone) {
+      return "Pickup Zone is required";
+    }
+    if (!form?.deliveryZone) {
+      return "Delivery Zone is required";
+    }
   };
 
   const handleSubmit = () => {
     const error = validateForm();
     if (error) {
-      notification({ title: 'form Error', message: error, type: 'danger' });
+      notification({ title: 'Form Error', message: error, type: 'danger' });
       return;
     }
-
     onNext();
   };
 
@@ -144,7 +151,7 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
                   <td className="px-3 py-1">{item?.name}</td>
                   <td className="px-3 py-1">{item?.quantity}</td>
                   <td className="px-3 py-1">{formatCurrency(item?.amount)}</td>
-                  <td className="px-3 py-1">{`${item?.size || 0}kg`}</td>
+                  <td className="px-3 py-1">{`${item?.weight || 0}kg`}</td>
                   <td className="px-3 py-1">{formatCurrency(item?.total)}</td>
                   <td className="px-3 py-1 flex justify-end">
                     <MenuOptions
@@ -176,68 +183,12 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
             </tbody>
           </table>
         </div>
-
-        {/* <div className="w-full mb-10">
-          <h3 className="text-base ff-bold font-bold mb-1">How will this payment be disbursed?</h3>
-
-          <div className="w-full">
-            <div className="flex flex-wrap -mx-2">
-              {disbursementTypes.map((item) => (
-                <div className="w-full sm:w-1/2 p-2" key={item?.value}>
-                  <div
-                    role="presentation"
-                    onClick={() => (item?.disabled ? null : handleChange(item?.value, 'options', 'disbursementType'))}
-                    className={`w-full h-full rounded-lg ${form?.disbursementType === item?.value
-                      ? 'border-success border-2' : 'border'} bg-secondary p-5 ${item?.disabled ? '' : 'cursor-pointer'}`}
-                  >
-                    <div className={`w-full relative ${item?.disabled ? 'text-lightText' : ''}`}>
-                      <span
-                        className={`rounded-full inline-block ${form?.disbursementType === item?.value
-                          ? 'bg-primary' : 'bg-gray-400'} p-1 w-5 h-5 absolute right-0`}
-                      >
-                        <FaCheck className="text-white w-3 h-3" />
-                      </span>
-                      <h3 className="text-base ff-bold font-bold mb-2 pr-6">{item?.header}</h3>
-                      <p className="">{item?.desc}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div> */}
-
-        {/* <div className="w-full mb-10">
-          <h3 className="text-base ff-bold font-bold mb-3">Agreement</h3>
-
-          <div className="w-full">
-            <Editor
-              name="writtenTerms"
-              value={form?.writtenTerms}
-              onChange={(val) => handleChange(val, 'editor', 'writtenTerms')}
-              placeholder="Write text here..."
-            />
-          </div>
-          <div className="w-full mt-7 text-center relative">
-            <hr />
-            <p className="font-bold bg-white inline-block px-5 relative -top-2.5">or</p>
-          </div>
-          <div className="w-full">
-            <FileInput
-              name="contract"
-              value={form?.contract}
-              onChange={handleChange}
-              label="Upload file"
-            />
-          </div>
-        </div> */}
-
         {form?.escrowItems && form?.escrowItems?.length > 0 && <div className="w-full mb-10">
           <SelectInput
             className="w-full mb-7"
-            onChange={(val) => handleChange(val, 'select', 'pickUpAddress')}
+            onChange={(val) => handleChange(val, 'select', 'pickUpZone')}
             value={form?.pickUpAddress}
-            label="Pickup Zone"
+            label="Pickup Zone*"
             options={[
               { label: 'Within Ikeja', value: 'WithinIkeja' },
               { label: 'Victoria Island', value: 'VictoriaIsland' }
@@ -246,9 +197,9 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
           />
           <SelectInput
             className="w-full mb-7"
-            onChange={(val) => handleChange(val, 'select', 'deliveryAddress')}
+            onChange={(val) => handleChange(val, 'select', 'deliveryZone')}
             value={form?.deliveryAddress}
-            label="Delivery Zone"
+            label="Delivery Zone*"
             options={[
               { label: 'Within Ikeja', value: 'WithinIkeja' },
               { label: 'Victoria Island', value: 'VictoriaIsland' }
@@ -259,9 +210,10 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
             <p className="text-base mb-1">Add Description</p>
             <TextareaInput
               rows={3}
+              name="description"
               className="mb-5"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
+              value={form?.description}
+              onChange={handleChange}
             />
           </div>
           <div className="w-full">

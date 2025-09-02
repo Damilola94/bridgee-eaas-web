@@ -6,10 +6,6 @@ import { useMutation, useQueryClient } from "react-query";
 import DefaultLogo from "../../../assets/images/business-logo.png";
 
 import Button from "../../inputs/Button";
-import {
-  formatCurrency,
-  formatDisbursementType
-} from "../../../utilities/general";
 import { formatDate } from "../../../utilities/dateTime";
 import handleFetch from "../../../services/api/handleFetch";
 import notification from "../../../utilities/notification";
@@ -250,7 +246,7 @@ function InvoiceDetails({ data = {} }: { data: any }) {
     }
   }, [status]);
 
-  if (data?.escrowId) {
+  if (data?.id) {
     return (
       <>
         {(isLoading || deliveryLoading) && <Loading message="Processing..." />}
@@ -276,7 +272,7 @@ function InvoiceDetails({ data = {} }: { data: any }) {
                 <p className="text-lightText">{formatDate(data?.createAt)}</p>
               </div>
               <div className="text-right">
-                <h2 className="ff-bold font-bold text-2xl">{`Invoice #${data?.invoiceNumber}`}</h2>
+                <h2 className="ff-bold font-bold text-2xl">{`Invoice #${data?.reference}`}</h2>
                 <TransactionStatus
                   status={
                     data?.status === "paymentcompleted"
@@ -292,11 +288,11 @@ function InvoiceDetails({ data = {} }: { data: any }) {
                 <h3 className="font-bold ff-bold text-lg mb-2">
                   Recipient Details
                 </h3>
-                <p className="mb-1">{data?.recipientDetails?.name}</p>
+                <p className="mb-1">{data?.recipientName}</p>
                 <div className="w-full text-lightText">
-                  <p className="mb-1">{data?.recipientDetails?.email}</p>
-                  <p className="mb-1">{data?.recipientDetails?.phoneNumber}</p>
-                  <p className="mb-1">{data?.recipientDetails?.address}</p>
+                  <p className="mb-1">{data?.recipientEmail}</p>
+                  <p className="mb-1">{data?.recipientPhone}</p>
+                  <p className="mb-1">{data?.recipientAddress}</p>
                 </div>
               </div>
 
@@ -307,19 +303,23 @@ function InvoiceDetails({ data = {} }: { data: any }) {
                 <div className="w-full">
                   <p className="mb-1">
                     <span className="text-lightText">
-                      Disbursement Type:&nbsp;
+                      Payment Type:&nbsp;
                     </span>
-                    {formatDisbursementType(data?.disbursementType)}
+                    {(data?.paymentType)}
                   </p>
                   <p className="mb-1">
                     <span className="text-lightText">
                       Dispute Manager:&nbsp;
                     </span>
-                    UseBridge Inc.
+                    {data?.disputeManager}
                   </p>
                   <p className="mb-1">
                     <span className="text-lightText">Inspection:&nbsp;</span>
-                    {`${data?.inspectionDay} Hours(s)`}
+                    {`${data?.inspectionPeriod}`}
+                  </p>
+                  <p className="mb-1">
+                    <span className="text-lightText">Due Date:&nbsp;</span>
+                    {`${data?.dueDate}`}
                   </p>
                   {data?.disbursementType === "installment" && (
                     <p className="mb-1">
@@ -348,12 +348,12 @@ function InvoiceDetails({ data = {} }: { data: any }) {
                   <tr key={item?.id}>
                     <td className="px-3 py-3">{item?.name}</td>
                     <td className="px-3 py-3 text-center">{item?.quantity}</td>
-                    <td className="px-3 py-3 text-center">{`${item?.weight}kg`}</td>
+                    <td className="px-3 py-3 text-center">{`${item?.weightKg}kg`}</td>
                     <td className="px-3 py-3">
-                      {formatCurrency(item?.unitPrice)}
+                      {item?.unitPrice}
                     </td>
                     <td className="px-3 py-3 font-bold ff-bold text-right">
-                      {formatCurrency(item?.totalAmount)}
+                      {(item?.total)}
                     </td>
                   </tr>
                 ))}
@@ -366,26 +366,24 @@ function InvoiceDetails({ data = {} }: { data: any }) {
               <div className="w-full flex justify-between mb-3">
                 <p className="">SUBTOTAL</p>
                 <p className="font-bold ff-bold">
-                  {formatCurrency(data?.totalAmount)}
+                  {`NGN ${data?.subtotal}`}
                 </p>
               </div>
               <div className="w-full flex justify-between mb-3">
                 <p className="">Escrow fee</p>
-                <p className="font-bold ff-bold">{formatCurrency(data?.fee)}</p>
+                <p className="font-bold ff-bold">{(data?.escrowFee)}</p>
               </div>
               <div className="w-full flex justify-between mb-3">
                 <p className="">Delivery Fee</p>
                 <p className="font-bold ff-bold">
-                  {formatCurrency(deliveryRate?.amount || data?.deliveryFee)}
+                  {(deliveryRate?.amount || data?.deliveryFee)}
                 </p>
               </div>
               <div className="w-full flex justify-between mb-3 text-lg">
                 <p className="">TOTAL</p>
                 <p className="font-bold ff-bold">
-                  {formatCurrency(
-                    data?.totalAmount +
-                      data?.fee +
-                      (deliveryRate?.amount || data?.deliveryFee)
+                  {(
+                    data?.total
                   )}
                 </p>
               </div>
@@ -497,7 +495,7 @@ function InvoiceDetails({ data = {} }: { data: any }) {
                           className="ml-2 mb-2"
                           onClick={() => handleOtpGeneration("EscrowDeposit")}
                         >
-                          Make Payment
+                            Make Payment
                         </Button>
                       )}
                     </div>

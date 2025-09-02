@@ -46,7 +46,8 @@ function AddInvoiceItem({ data, onAdd = () => { }, onClose = () => { } }: Props)
       amount: Number(form?.amount),
       quantity: Number(form?.quantity),
       total: Number(form?.amount) * Number(form?.quantity),
-      size: Number(form?.size)
+      size: Number(form?.size),
+      weight: Number(form?.weight)
     });
     setForm({});
     onClose();
@@ -105,8 +106,8 @@ function AddInvoiceItem({ data, onAdd = () => { }, onClose = () => { } }: Props)
           <div className="flex flex-wrap justify-center">
             <div className="w-full px-2">
               <TextInput
-                name="size"
-                value={form?.size || ''}
+                name="weight"
+                value={form?.weight || ''}
                 onChange={handleChange}
                 className="w-full mb-4"
                 label="Weight per unit (KG)"
@@ -121,7 +122,7 @@ function AddInvoiceItem({ data, onAdd = () => { }, onClose = () => { } }: Props)
           <div className="flex flex-wrap justify-center">
             <div className="w-full px-2">
               <TextInput
-                name="size"
+                name="totalAmount"
                 value={escrowTotal}
                 onChange={handleChange}
                 disabled

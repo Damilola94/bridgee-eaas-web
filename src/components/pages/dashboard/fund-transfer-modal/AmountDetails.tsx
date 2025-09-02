@@ -6,7 +6,7 @@ import { debounce } from "lodash";
 import { useAccountsContext } from "../../../../context/Accounts";
 import useGetQuery from "../../../../hooks/useGetQuery";
 import type { FundTransferProps } from "../../../../types/transaction";
-import { formatCurrency } from "../../../../utilities/general";
+// import { formatCurrency } from "../../../../utilities/general";
 import AmountInput from "../../../inputs/Amount";
 import Button from "../../../inputs/Button";
 
@@ -57,7 +57,8 @@ function AmountDetails({
           value={form?.amount}
           onChange={(e) => e?.target?.value <= defaultWallets?.[0]?.balance && handleAmountChange(e)}
           className="w-full mb-1"
-          label={`Amount: (Max: ${formatCurrency(defaultWallets?.[0]?.balance, true, defaultWallets?.[0]?.currency?.code)})`}
+          label="Enter amount"
+          // label={`Amount: (Max: ${formatCurrency(defaultWallets?.[0]?.balance, true, defaultWallets?.[0]?.currency?.code)})`}
           currency={defaultWallets?.[0]?.currency?.code}
           maxValue={defaultWallets?.[0]?.balance}
         />
