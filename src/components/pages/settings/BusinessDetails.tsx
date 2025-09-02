@@ -1,35 +1,121 @@
+import React, { useState, useEffect } from "react";
+import { useMutation, useQueryClient } from "react-query";
 import Image from "next/image";
 
 import AlatLogo from "../../../assets/images/alat-logo.png";
-
 import Button from "../../inputs/Button";
 import TextInput from "../../inputs/Text";
-
+import PhoneNumberInput from "../../inputs/PhoneNumberInput";
 import { useAccountsContext } from "../../../context/Accounts";
 import Loading from "../../common/Loading";
-import PhoneNumberInput from "../../inputs/PhoneNumberInput";
+import { updateBusinessDetails } from "../../../services/api/business";
+import { BusinessDetailsUpdateResponse } from "../../../types/business";
+import notification from "../../../utilities/notification";
+import { removeNigerianCountryCodeAddLeadingZero } from "../../../utilities/general"; // Assuming renamed to this
+import { QUERY_KEYS } from "../../../configs/constants"; // Assuming created
 
 function BusinessDetails() {
   const { accounts } = useAccountsContext();
+  const queryClient = useQueryClient();
 
   const businessDetail = accounts?.identity?.businessDetail || {};
   const isLoading = !accounts;
 
-  const phoneNumberString = businessDetail?.businessPhone || "";
-  const countryCode = phoneNumberString.startsWith("234")
-    ? "NG"
-    : phoneNumberString.slice(0, 3) || "NG";
-  const phoneWithoutCode = phoneNumberString.replace(/^234/, "") || "";
+  const [formData, setFormData] = useState({
+    businessName: '',
+    businessEmail: '',
+    businessPhone: '',
+    logoFile: null as File | null,
+  });
+
+  const [countryCode, setCountryCode] = useState("NG");
+  const [phoneWithoutCode, setPhoneWithoutCode] = useState("");
+
+  // Initialize form and phone states
+  useEffect(() => {
+    if (businessDetail) {
+      const phoneNumberString = businessDetail.businessPhone || "";
+      const initialCountryCode = phoneNumberString.startsWith("234")
+        ? "NG"
+        : phoneNumberString.slice(0, 3) || "NG";
+      const initialPhoneWithoutCode = phoneNumberString.replace(/^234/, "") || "";
+
+      setFormData({
+        businessName: businessDetail.businessName || '',
+        businessEmail: businessDetail.businessEmail || '',
+        businessPhone: removeNigerianCountryCodeAddLeadingZero(phoneNumberString), // Or combine later
+        logoFile: null,
+      });
+
+      setCountryCode(initialCountryCode);
+      setPhoneWithoutCode(initialPhoneWithoutCode);
+    }
+  }, [businessDetail]);
+
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleCountryCodeChange = (newCountryCode: string) => {
+    setCountryCode(newCountryCode);
+  };
+
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  setPhoneWithoutCode(e.target.value);
+};
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFormData({ ...formData, logoFile: e.target.files[0] });
+    }
+  };
+
+  const updateMutation = useMutation(updateBusinessDetails, {
+    onSuccess: (res: BusinessDetailsUpdateResponse) => {
+      if (res.isSuccess) {
+        notification({
+          message: res.message || "Business details updated successfully!",
+          type: "success"
+        });
+        queryClient.invalidateQueries(QUERY_KEYS.IDENTITY_ACCOUNTS);
+      } else {
+        notification({
+          message: res.message || "Update failed",
+          type: "danger"
+        });
+      }
+    },
+    onError: (error: any) => {
+      notification({
+        message: error?.message || "Update failed",
+        type: "danger"
+      });
+    },
+  });
+
+  const handleSave = () => {
+    if (!formData.businessName || !formData.businessEmail || !phoneWithoutCode) {
+      notification({ message: "Please fill in all fields", type: "warning" });
+      return;
+    }
+
+    const fullPhone = countryCode === "NG" ? `234${phoneWithoutCode}` : `${countryCode}${phoneWithoutCode}`;
+    const formattedPhone = removeNigerianCountryCodeAddLeadingZero(fullPhone);
+
+    updateMutation.mutate({
+      ...formData,
+      businessPhone: formattedPhone,
+    });
+  };
 
   return (
     <>
       {isLoading && <Loading />}
-
       <div>
         <div className="w-full">
           <div className="flex justify-between items-center mb-6">
             <h2 className="font-bold text-xl">Business Details</h2>
-
             <Button className="border border-success text-success bg-transparent">
               Upgrade Account
             </Button>
@@ -40,14 +126,23 @@ function BusinessDetails() {
               <div className="w-full px-2">
                 <div className="mb-10">
                   <Image
-                    src={businessDetail?.businessLogoUrl || AlatLogo}
+                    src={formData.logoFile ? URL.createObjectURL(formData.logoFile) : businessDetail?.businessLogoUrl || AlatLogo}
                     alt="business logo"
                     className="w-[100px] h-[100px] bg-gray-300 rounded-full object-cover object-center"
+                    width={100}
+                    height={100}
                   />
-                  <input hidden type="file" id="logo-file" />
+                  <input
+                    type="file"
+                    id="logo-file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
                   <div className="flex items-end mt-3">
                     Business Logo
-                    <button type="button" className="ml-2">
+                    <button type="button" className="ml-2"
+                      onClick={() => document.getElementById('logo-file')?.click()}>
                       <svg
                         width="20"
                         height="20"
@@ -72,38 +167,46 @@ function BusinessDetails() {
                   </div>
                 </div>
 
+                {/* Form Fields */}
                 <TextInput
-                  name="name"
-                  value={businessDetail?.businessName || ""}
+                  name="businessName"
+                  value={formData.businessName}
                   className="w-full mb-5"
                   label="Business name"
                   placeholder="Business name"
-                  onChange={() => {}}
+                  onChange={handleChange}
                 />
 
                 <PhoneNumberInput
                   countryCode={countryCode}
-                  onCountryCodeChange={() => {}}
+                  onCountryCodeChange={handleCountryCodeChange}
                   phoneNumber={phoneWithoutCode}
-                  onPhoneNumberChange={() => {}}
+                  onPhoneNumberChange={handlePhoneNumberChange}
                   className="w-full mb-5"
                   label="Phone Number"
                   placeholder="Phone Number"
                 />
 
                 <TextInput
-                  name="email"
-                  value={businessDetail?.businessEmail || ""}
+                  name="businessEmail"
+                  value={formData.businessEmail}
                   className="w-full mb-5"
                   label="Business email"
                   placeholder="Business email"
-                  onChange={() => {}}
+                  onChange={handleChange}
+                  type="email"
                 />
               </div>
             </div>
           </div>
 
-          <Button className="bg-success py-3 w-full mt-12">Save</Button>
+          <Button
+            className="bg-success py-3 w-full mt-12"
+            onClick={handleSave}
+            disabled={updateMutation.isLoading}
+          >
+            {updateMutation.isLoading ? "Saving..." : "Save"}
+          </Button>
         </div>
       </div>
     </>

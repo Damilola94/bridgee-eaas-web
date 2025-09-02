@@ -8,6 +8,7 @@ import React, {
 
 import Loading from "../components/common/Loading";
 import useGetQuery from "../hooks/useGetQuery";
+import { QUERY_KEYS } from "../configs/constants";
 
 type Props = {
   children: React.ReactNode;
@@ -36,7 +37,7 @@ function AccountsContextProvider({ children }: Props) {
     service: "wallet-service/api/v1",
     endpoint: "wallets",
     extra: "mine",
-    queryKey: ["wallet-service-accounts"]
+    queryKey: [QUERY_KEYS.WALLET_ACCOUNTS]
   });
 
   const {
@@ -47,7 +48,7 @@ function AccountsContextProvider({ children }: Props) {
     service: "identity-service/api/v1",
     endpoint: "users",
     extra: "me",
-    queryKey: ["identity-service-accounts"]
+    queryKey: [QUERY_KEYS.IDENTITY_ACCOUNTS]
   });
 
   useEffect(() => {
