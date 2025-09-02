@@ -76,7 +76,7 @@ export default function PersonalInfo({
       accountDetail: {
         bankCode: formData.bankAccount.bankCode || "",
         accountNumber: formData.bankAccount.accountNumber || "",
-        accountName: formData.bankAccount.bank || "",
+        accountName: formData.bankAccount.accountName || "",
       },
     };
 

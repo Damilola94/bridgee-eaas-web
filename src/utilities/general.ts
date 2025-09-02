@@ -115,6 +115,20 @@ export const formatDisbursementType = (type: string) => {
 export const formatIDTypeLabel = (value: string) =>
   idTypes.find((item) => item.value === value)?.label;
 
+export const removeNigerianCountryCodeAddLeadingZero = (phone: string | undefined): string => {
+  if (!phone) return '';
+
+  let formatted = phone.startsWith('234') ? phone.slice(3) : phone;
+
+  if (formatted.startsWith('0')) {
+    return formatted;
+  } else {
+    return '0' + formatted;
+  }
+};
+
+
+
 // export const base64ToFile = (base64String: string, fileName: string) => {
 //   const base64Parts = base64String?.split(';base64,');
 //   const contentType = base64Parts[0]?.split(':')[1];
