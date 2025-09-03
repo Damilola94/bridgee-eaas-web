@@ -17,3 +17,10 @@ export interface AddLinkedBankData {
   accountName: string;
   isPrimary: boolean;
 }
+
+export interface Account {
+  bankName: string;
+  accountNumber: string;
+  accountName: string;
+  isPrimary: boolean;
+}
