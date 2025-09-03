@@ -13,6 +13,7 @@ import {
   getAccountName,
   getBanksList,
   addLinkedBank,
+  setPrimaryLinkedBank,
 } from "../../../services/api/bank";
 import notification from "../../../utilities/notification";
 import { useAccountsContext } from "../../../context/Accounts";
@@ -21,12 +22,13 @@ import { QUERY_KEYS } from "../../../configs/constants";
 
 export default function AccountDetails() {
   const { accounts } = useAccountsContext();
-  const queryClient = useQueryClient(); 
+  const queryClient = useQueryClient();
 
   const accountDetails: Account[] = accounts?.identity?.accountDetails || [];
   const isSuccess = accounts?.identity;
 
   const [primaryStatuses, setPrimaryStatuses] = useState<boolean[]>([]);
+  const [hasAddedAccount, setHasAddedAccount] = useState(false);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -55,7 +57,7 @@ export default function AccountDetails() {
     })) || [];
 
   const accountNameMutation = useMutation(getAccountName, {
-    onSuccess: (response, variables) => {
+    onSuccess: (response) => {
       if (response.isSuccess) {
         const nameResult = response.data;
         setAccountName(nameResult);
@@ -73,11 +75,11 @@ export default function AccountDetails() {
     },
   });
 
-  
   const addBankMutation = useMutation(addLinkedBank, {
     onSuccess: (response) => {
       if (response.isSuccess) {
         setShowSuccess(true);
+        setHasAddedAccount(true);
       }
     },
     onError: (error: any) => {
@@ -88,6 +90,50 @@ export default function AccountDetails() {
       });
     },
   });
+
+  //set primary bank
+  const setPrimaryMutation = useMutation(setPrimaryLinkedBank, {
+    onSuccess: (response) => {
+      if (response.isSuccess) {
+        notification({
+          title: "Success",
+          message: "Primary account set successfully.",
+          type: "success",
+        });
+
+        queryClient.invalidateQueries([QUERY_KEYS.IDENTITY_ACCOUNTS]);
+        console.log("Primary account set successfully");
+      } else {
+        // Revert UI on failure
+        setPrimaryStatuses((prev) =>
+          prev.map((status, i) =>
+            i === currentToggleIndex ? !isPrimaryToRevert : status
+          )
+        );
+        notification({
+          title: "Set Primary Failed",
+          message: response.message || "Failed to set primary account",
+          type: "danger",
+        });
+      }
+    },
+    onError: (error: any) => {
+      // Revert UI on failure
+      setPrimaryStatuses((prev) =>
+        prev.map((status, i) =>
+          i === currentToggleIndex ? !isPrimaryToRevert : status
+        )
+      );
+      notification({
+        title: "Set Primary Failed",
+        message: error?.message || "Failed to set primary account",
+        type: "danger",
+      });
+    },
+  });
+
+  let currentToggleIndex = -1;
+  let isPrimaryToRevert = false;
 
   const handleAccountNumberChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -124,9 +170,41 @@ export default function AccountDetails() {
     selectedBank && accountNumber && accountName && accountValidated;
 
   const handleTogglePrimary = (index: number, isPrimary: boolean) => {
+    console.log(`Toggling primary for account ${index}: ${isPrimary}`);
+
     setPrimaryStatuses((previousStatuses) =>
-      previousStatuses.map((currentStatus, statusIndex) => (statusIndex === index ? isPrimary : currentStatus))
+      previousStatuses.map((currentStatus, statusIndex) =>
+        statusIndex === index ? isPrimary : currentStatus
+      )
     );
+
+    // If set to primary
+    if (isPrimary) {
+      // Unset all others
+      setPrimaryStatuses((previousStatuses) =>
+        previousStatuses.map((currentStatus, statusIndex) =>
+          statusIndex === index ? true : false
+        )
+      );
+
+      const account = accountDetails[index];
+      
+      if (account && account.linkedBankId) {
+        currentToggleIndex = index; // For revert on failure
+        isPrimaryToRevert = false;
+        setPrimaryMutation.mutate({ linkedBankId: account.linkedBankId });
+      } else {
+        notification({
+          title: "Error",
+          message: "Cannot set primary: No linked bank ID available.",
+          type: "danger",
+        });
+      
+        setPrimaryStatuses((prev) =>
+          prev.map((status, i) => (i === index ? !status : status))
+        );
+      }
+    }
   };
 
   const handleToggle =
@@ -140,11 +218,17 @@ export default function AccountDetails() {
   const closeModal = () => {
     setModalOpen(false);
     setShowSuccess(false);
+
+    if (hasAddedAccount) {
+      queryClient.invalidateQueries([QUERY_KEYS.IDENTITY_ACCOUNTS]);
+      setHasAddedAccount(false);
+    }
+
     setSelectedBank(null);
     setAccountNumber("");
     setAccountName("");
     setAccountValidated(false);
-    queryClient.invalidateQueries([QUERY_KEYS.IDENTITY_ACCOUNTS]);
+
   };
 
   return (
@@ -229,7 +313,7 @@ export default function AccountDetails() {
                         </button>
                       </div>
                     </div>
-            
+
                     <div className="px-4 py-2 border-b border-gray-100">
                       <ToggleInput
                         label="Setup Primary Account"
@@ -268,7 +352,13 @@ export default function AccountDetails() {
         </Button>
       </div>
 
-      <Modal isCenter={true} isShowCloseIcon={false} maxWidth="max-w-[450px]" isOpen={modalOpen} onClose={closeModal}>
+      <Modal
+        isCenter={true}
+        isShowCloseIcon={false}
+        maxWidth="max-w-[450px]"
+        isOpen={modalOpen}
+        onClose={closeModal}
+      >
         {showSuccess ? (
           <div className="text-center pb-10">
             <div className="flex justify-center">
