@@ -15,6 +15,7 @@ export const addLinkedBank = (data: AddLinkedBankData) => {
     endpoint: "/api/v1/users/add-linked-bank",
     method: "POST",
     body: data,
+    auth: true
   });
 };
 

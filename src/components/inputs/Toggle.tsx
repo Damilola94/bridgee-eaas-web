@@ -10,7 +10,7 @@ type Props = {
 function ToggleInput({ label = '', value = false, onChange = () => {} }: Props) {
   return (
     <div className="flex items-center space-x-2">
-      <span className="">{label}</span>
+      <span className="text-sm font-medium text-textColor">{label}</span>
       <Switch
         checked={value}
         onChange={onChange}

@@ -52,7 +52,7 @@ function SettingsContainer() {
       <Tabs options={options} pathname="/settings" />
       <div
         className={`${
-          tab !== "security-settings"
+          (tab !== "security-settings" && tab !== "account-details")
             ? "bg-white rounded-lg p-10 shadow w-full xl:w-[60%] mt-12"
             : ""
         }`}
