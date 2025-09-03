@@ -19,6 +19,7 @@ export interface AddLinkedBankData {
 }
 
 export interface Account {
+  linkedBankId: string;
   bankName: string;
   accountNumber: string;
   accountName: string;

@@ -30,3 +30,13 @@ export const getAccountName = (data: {
     body: data,
   });
 };
+
+export const setPrimaryLinkedBank = (data: { linkedBankId: string }) => {
+  return handleFetch({
+    service: "identity-service",
+    endpoint: "/api/v1/users/set-primary-linked-bank",
+    method: "POST",
+    body: data,
+    auth: true
+  });
+};
