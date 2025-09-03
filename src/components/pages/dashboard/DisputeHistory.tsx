@@ -23,7 +23,7 @@ function DisputeHistory() {
     }
   });
 
-  console.log({ error });
+  console.log({ error, "errorerror": String(error) });
 
   return (
     <div className="w-full h-full">
