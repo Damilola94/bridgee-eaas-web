@@ -5,10 +5,8 @@ import { BulletList } from 'react-content-loader';
 
 import { formatDate } from '../../../utilities/dateTime';
 import TransactionStatus from '../../common/TransactionStatus';
-// import useGetQuery from '../../../hooks/useGetQuery';
+import useGetQuery from '../../../hooks/useGetQuery';
 import NoData from '../../common/NoData';
-
-import useGetQuery from './useGetQuery';
 
 function DisputeHistory() {
   const [currentTab, setCurrentTab] = useState(0);
@@ -24,6 +22,8 @@ function DisputeHistory() {
       status: currentTab === 0 ? 'Open' : 'Resolved'
     }
   });
+
+  console.log({ error });
 
   return (
     <div className="w-full h-full">
@@ -99,7 +99,8 @@ function DisputeHistory() {
           </>
         )}
         {status === 'error' && (
-          <div className="px-5 py-10 text-center">{String(error)}</div>
+          <NoData />
+          // <div className="px-5 py-10 text-center">{String(error)}</div>
         )}
 
       </div>

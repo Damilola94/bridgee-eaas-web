@@ -25,7 +25,7 @@ function BusinessDetails() {
     businessName: '',
     businessEmail: '',
     businessPhone: '',
-    logoFile: null as File | null,
+    logoFile: null as File | null
   });
 
   const [countryCode, setCountryCode] = useState("NG");
@@ -43,15 +43,14 @@ function BusinessDetails() {
       setFormData({
         businessName: businessDetail.businessName || '',
         businessEmail: businessDetail.businessEmail || '',
-        businessPhone: removeNigerianCountryCodeAddLeadingZero(phoneNumberString), 
-        logoFile: null,
+        businessPhone: removeNigerianCountryCodeAddLeadingZero(phoneNumberString),
+        logoFile: null
       });
 
       setCountryCode(initialCountryCode);
       setPhoneWithoutCode(initialPhoneWithoutCode);
     }
   }, [businessDetail]);
-
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -62,8 +61,8 @@ function BusinessDetails() {
   };
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  setPhoneWithoutCode(e.target.value);
-};
+    setPhoneWithoutCode(e.target.value);
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -91,7 +90,7 @@ function BusinessDetails() {
         message: error?.message || "Update failed",
         type: "danger"
       });
-    },
+    }
   });
 
   const handleSave = () => {
@@ -105,7 +104,7 @@ function BusinessDetails() {
 
     updateMutation.mutate({
       ...formData,
-      businessPhone: formattedPhone,
+      businessPhone: formattedPhone
     });
   };
 

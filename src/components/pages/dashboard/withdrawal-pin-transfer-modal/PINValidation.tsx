@@ -21,6 +21,7 @@ function PINValidation({ onPrev, onSubmit, onChange }: Props) {
         <AuthCode
           length={4}
           isPassword
+          autoFocus
           allowedCharacters="numeric"
           containerClassName="w-full flex justify-between mb-2"
           inputClassName="w-[22%] rounded-lg h-[60px] border border-[#777] outline-none text-center text-xl"
@@ -33,6 +34,7 @@ function PINValidation({ onPrev, onSubmit, onChange }: Props) {
         <AuthCode
           length={4}
           isPassword
+          autoFocus={false}
           allowedCharacters="numeric"
           containerClassName="w-full flex justify-between mb-2"
           inputClassName="w-[22%] rounded-lg h-[60px] border border-[#777] outline-none text-center text-xl"

@@ -29,9 +29,9 @@ function WalletList() {
   const router = useRouter();
 
   const { data, status, error } = useGetQuery({
-    service: "wallet-service/api/v1",
-    endpoint: 'escrows',
-    extra: 'orders',
+    service: "wallet-service",
+    endpoint: 'wallet',
+    extra: 'transactions/transaction',
     queryKey: ['wallet-transactions', router?.query?.status, accounts, filter, pageNumber, search],
     pQuery: {
       pageSize: PAGE_SIZE,

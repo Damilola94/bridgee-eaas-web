@@ -127,8 +127,6 @@ export const removeNigerianCountryCodeAddLeadingZero = (phone: string | undefine
   }
 };
 
-
-
 // export const base64ToFile = (base64String: string, fileName: string) => {
 //   const base64Parts = base64String?.split(';base64,');
 //   const contentType = base64Parts[0]?.split(':')[1];

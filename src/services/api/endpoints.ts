@@ -13,6 +13,7 @@ const endpoints: any = {
   users: `${prefix}/users`,
   dispute: `${prefix}/dispute`,
   wallets: `${prefix}/wallets`,
+  wallet: `${prefix}/wallet`,
   invitation: `${prefix}/invitation`
 };
 

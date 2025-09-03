@@ -36,9 +36,9 @@ function InvoiceHistory({ }: Props) {
   const [search, setSearch] = useState('');
   const [cookie] = useCookies(['data']);
   const { data, status, error } = useGetQuery({
-    service: "wallet-service/api/v1",
-    endpoint: 'escrows',
-    extra: 'orders',
+    service: "wallet-service",
+    endpoint: 'wallet',
+    extra: 'transactions/transaction',
     pQuery: { pageSize: 10, pageNumber: 1, SearchKey: search },
     queryKey: ['escrows-orders', search, filter?.value || 'all'],
     enabled: !!cookie?.data?.accessToken
