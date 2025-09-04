@@ -2,15 +2,19 @@ import moment from "moment-timezone";
 
 import { idTypes } from "../data/kyc";
 
-export const formatCurrency = (value: any, showCurrency: boolean = true, currency: string = 'NGN') => {
-  if (value === null || value === undefined || value === '') return undefined;
+export const formatCurrency = (
+  value: any,
+  showCurrency: boolean = true,
+  currency: string = "NGN"
+) => {
+  if (value === null || value === undefined || value === "") return undefined;
 
   const numValue = parseFloat(value);
   if (isNaN(numValue)) return undefined;
 
-  const formatted = numValue.toLocaleString('en-NG', {
+  const formatted = numValue.toLocaleString("en-NG", {
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2
+    maximumFractionDigits: 2,
   });
 
   return showCurrency ? `${currency} ${formatted}` : formatted;
@@ -36,7 +40,7 @@ export const concealValue = (value = "") =>
 export const logger = (...logs: any) =>
   process.env.NODE_ENV === "development"
     ? // eslint-disable-next-line no-console
-    console.log(...logs, `(Log time - ${moment().format("LLL")})`)
+      console.log(...logs, `(Log time - ${moment().format("LLL")})`)
     : undefined;
 
 export const format2Digits = (num: number) => {
@@ -45,7 +49,7 @@ export const format2Digits = (num: number) => {
   return (
     num.toLocaleString("en-US", {
       minimumIntegerDigits: 2,
-      useGrouping: false
+      useGrouping: false,
     }) || 0
   );
 };
@@ -88,43 +92,49 @@ export const convertImgToBase64 = (inputFile: File) => {
 
 export const formatChannel = (channel: string) => {
   switch (channel) {
-  case "transfer":
-    return "Transfer";
-  case "virtualaccount":
-    return "Virtual Account";
-  case "escrow":
-    return "Escrow";
-  case "interbank":
-    return "Interbank";
-  default:
-    return channel;
+    case "transfer":
+      return "Transfer";
+    case "virtualaccount":
+      return "Virtual Account";
+    case "escrow":
+      return "Escrow";
+    case "interbank":
+      return "Interbank";
+    default:
+      return channel;
   }
 };
 
 export const formatDisbursementType = (type: string) => {
   switch (type) {
-  case "onetime":
-    return "One Time";
-  case "installment":
-    return "Installment";
-  default:
-    return type;
+    case "onetime":
+      return "One Time";
+    case "installment":
+      return "Installment";
+    default:
+      return type;
   }
 };
 
 export const formatIDTypeLabel = (value: string) =>
   idTypes.find((item) => item.value === value)?.label;
 
-export const removeNigerianCountryCodeAddLeadingZero = (phone: string | undefined): string => {
-  if (!phone) return '';
+export const removeNigerianCountryCodeAddLeadingZero = (
+  phone: string | undefined
+): string => {
+  if (!phone) return "";
 
-  let formatted = phone.startsWith('234') ? phone.slice(3) : phone;
+  let formatted = phone.startsWith("234") ? phone.slice(3) : phone;
 
-  if (formatted.startsWith('0')) {
+  if (formatted.startsWith("0")) {
     return formatted;
   } else {
-    return '0' + formatted;
+    return "0" + formatted;
   }
+};
+
+export const removeNigerianCountryCode = (phoneNumber: string): string => {
+  return phoneNumber.replace(/^\+?234/, "");
 };
 
 // export const base64ToFile = (base64String: string, fileName: string) => {

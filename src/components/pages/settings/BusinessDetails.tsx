@@ -11,7 +11,7 @@ import Loading from "../../common/Loading";
 import { updateBusinessDetails } from "../../../services/api/business";
 import { BusinessDetailsUpdateResponse } from "../../../types/business";
 import notification from "../../../utilities/notification";
-import { removeNigerianCountryCodeAddLeadingZero } from "../../../utilities/general"; // Assuming renamed to this
+import { removeNigerianCountryCode, removeNigerianCountryCodeAddLeadingZero } from "../../../utilities/general"; // Assuming renamed to this
 import { QUERY_KEYS } from "../../../configs/constants"; // Assuming created
 
 function BusinessDetails() {
@@ -100,7 +100,8 @@ function BusinessDetails() {
     }
 
     const fullPhone = countryCode === "NG" ? `234${phoneWithoutCode}` : `${countryCode}${phoneWithoutCode}`;
-    const formattedPhone = removeNigerianCountryCodeAddLeadingZero(fullPhone);
+    const formattedPhone = removeNigerianCountryCode(fullPhone);
+
 
     updateMutation.mutate({
       ...formData,

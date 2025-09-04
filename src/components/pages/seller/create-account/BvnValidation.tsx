@@ -9,7 +9,7 @@ import notification from "../../../../utilities/notification";
 import handleFetch from "../../../../services/api/handleFetch";
 import { StepData } from "../../../../pages/seller/create-account";
 import Button from "../../../inputs/Button";
-import { removeNigerianCountryCodeAddLeadingZero } from "../../../../utilities/general";
+import { removeNigerianCountryCode } from "../../../../utilities/general";
 
 interface Props {
   formData?: StepData;
@@ -44,7 +44,7 @@ export default function BvnValidation({
             apiData?.firstName || formData?.personalInfo?.firstName || "",
           lastName: apiData?.lastName || formData?.personalInfo?.lastName || "",
           phoneNumber:
-            removeNigerianCountryCodeAddLeadingZero(apiData?.phoneNumber) || formData?.personalInfo?.phoneNumber || "",
+            removeNigerianCountryCode(apiData?.phoneNumber) || formData?.personalInfo?.phoneNumber || "",
           emailAddress: formData?.personalInfo?.emailAddress || "",
           businessName: formData?.personalInfo?.businessName || "",
           password: formData?.personalInfo?.password || "",

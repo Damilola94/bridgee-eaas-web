@@ -313,10 +313,10 @@ export default function AccountDetails() {
                         </button>
                       </div>
                     </div>
-
-                    <div className="px-4 py-2 border-b border-gray-100">
+            
+                    <div className="mt-2 px-4 py-2">
                       <ToggleInput
-                        label="Setup Primary Account"
+                        label="Set as primary account"
                         value={primaryStatuses[index]}
                         onChange={handleToggle(index)}
                       />

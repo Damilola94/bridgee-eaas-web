@@ -29,7 +29,7 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
         onChange={onCountryCodeChange}
         disabled={disabled}
       />
-      <div className="h-6 w-px bg-borderColor"></div>
+      <div className="h-6 bg-borderColor"></div>
     </div>
   );
 
