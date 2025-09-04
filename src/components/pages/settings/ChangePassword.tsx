@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useMutation } from 'react-query';
 
+import Image from 'next/image';
+
 import Button from '../../inputs/Button';
 import TextInput from '../../inputs/Text';
 
@@ -9,8 +11,7 @@ import Loading from '../../common/Loading';
 import { changePassword } from '../../../services/api/password';
 import { ChangePasswordData } from '../../../types/password';
 import Modal from '../../common/Modal';
-import CheckIncompleteCircle from "../../../assets/svgs/check-incomplete-circle.svg"
-import Image from 'next/image';
+import CheckIncompleteCircle from "../../../assets/svgs/check-incomplete-circle.svg";
 
 type FormProps = {
   oldPassword?: string;
@@ -47,7 +48,6 @@ function ChangePassword() {
       });
     }
   });
-
 
   const validateForm = () => {
     if (!body?.oldPassword) return 'Your current password is required';
@@ -133,7 +133,7 @@ function ChangePassword() {
         isCenter={true}
         maxWidth="max-w-md"
         isCloseOnOverlayClick={false}
-        isShowCloseIcon={false} 
+        isShowCloseIcon={false}
       >
         <div className="text-center p-6">
           <div className='flex justify-center'>
@@ -141,7 +141,6 @@ function ChangePassword() {
           </div>
 
           <p className='text-xl font-bold text-textColor py-4'>Password update successful</p>
-
 
           <p className="mb-6 text-grey2">Your password has been updated successfully.</p>
           <Button

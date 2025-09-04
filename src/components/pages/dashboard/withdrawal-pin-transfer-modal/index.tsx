@@ -65,7 +65,9 @@ function Index({ onClose }: Props) {
     try {
       const encryptedPin = encryptWithPublicKey(pin);
       setPinMutation.mutate({
-        endpoint: "wallet-service/api/v1/walletsecurity/set-pin",
+        service: "wallet-service/api/v1",
+        endpoint: "walletsecurity",
+        extra: "set-pin",
         body: { encryptedPin },
         method: "POST",
         auth: true
