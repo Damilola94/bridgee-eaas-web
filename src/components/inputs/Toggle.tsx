@@ -21,7 +21,7 @@ function ToggleInput({ label = '', value = false, onChange = () => {} }: Props) 
         <span
           aria-hidden="true"
           className={`${value ? 'translate-x-6' : 'translate-x-0'}
-            pointer-events-none inline-block h-[22px] w-[22px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
+            pointer-events-none inline-block h-auto w-[22px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
         />
       </Switch>
     </div>

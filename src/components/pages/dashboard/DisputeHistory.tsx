@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { RxChevronRight } from 'react-icons/rx';

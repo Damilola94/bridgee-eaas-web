@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextInput from "../../../inputs/Text";
 import { StepData } from "../../../../pages/seller/create-account";
 import { useMutation } from "react-query";
 import handleFetch from "../../../../services/api/handleFetch";
 import notification from "../../../../utilities/notification";
 import Button from "../../../inputs/Button";
+import PhoneNumberInput from "../../../inputs/PhoneNumberInput";
+import { removeNigerianCountryCode } from "../../../../utilities/general";
 
 interface Props {
   formData: StepData;
@@ -21,7 +23,19 @@ export default function PersonalInfo({
 }: Props) {
   const [termsAgreed, setTermsAgreed] = useState(false);
 
-  console.log(formData, "from personal info")
+  const [countryCode, setCountryCode] = useState("NG");
+  const [phoneWithoutCode, setPhoneWithoutCode] = useState("");
+
+  const personalInfo = formData?.personalInfo || {};
+  const firstName = personalInfo?.firstName || "";
+  const lastName = personalInfo?.lastName || "";
+
+  useEffect(() => {
+    const phoneNumber = personalInfo?.phoneNumber || "";
+    const initialPhoneWithoutCode = removeNigerianCountryCode(phoneNumber);
+
+    setPhoneWithoutCode(initialPhoneWithoutCode);
+  }, [personalInfo?.phoneNumber]);
 
   const registrationMutation = useMutation(handleFetch, {
     onSuccess: (response) => {
@@ -65,6 +79,14 @@ export default function PersonalInfo({
     }
   };
 
+  const handleCountryCodeChange = (newCountryCode: string) => {
+    setCountryCode(newCountryCode);
+  };
+
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPhoneWithoutCode(e.target.value);
+  };
+
   const handleRegistration = () => {
     const registrationData = {
       bvnValidationTicketId: formData.bvnValidationTicketId || "",
@@ -87,11 +109,6 @@ export default function PersonalInfo({
       body: registrationData,
     });
   };
-
-  const personalInfo = formData?.personalInfo || {};
-  const firstName = personalInfo?.firstName || "";
-  const lastName = personalInfo?.lastName || "";
-  const phoneNumber = personalInfo?.phoneNumber || "";
 
   const isFormValid =
     personalInfo.emailAddress?.trim() &&
@@ -131,15 +148,17 @@ export default function PersonalInfo({
         onChange={handleChange}
         className=""
       />
-      <TextInput
+
+      <PhoneNumberInput
+        countryCode={countryCode}
+        onCountryCodeChange={handleCountryCodeChange}
+        phoneNumber={phoneWithoutCode}
+        onPhoneNumberChange={handlePhoneNumberChange}
+        className="w-full mb-5"
         label="Phone Number"
-        name="phoneNumber"
-        type="tel"
         placeholder="Phone Number"
-        value={phoneNumber || ""}
-        onChange={handleChange}
-        className=""
       />
+
       <TextInput
         label="Business Name"
         name="businessName"

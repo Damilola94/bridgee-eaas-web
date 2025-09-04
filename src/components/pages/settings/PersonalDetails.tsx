@@ -9,6 +9,7 @@ import InfoCircleIcon from "../../../assets/svgs/info-circle.svg";
 
 import { useAccountsContext } from '../../../context/Accounts';
 import PhoneNumberInput from '../../inputs/PhoneNumberInput';
+import { removeNigerianCountryCode } from '../../../utilities/general';
 
 function PersonalDetails() {
   const { accounts } = useAccountsContext();
@@ -17,10 +18,11 @@ function PersonalDetails() {
 
   const { countryCode, localNumber } = useMemo(() => {
     const fullNumber = personalDetail?.phoneNumber || "";
+    const cleanedNumber = removeNigerianCountryCode(fullNumber);
 
     return {
       countryCode: "+234",
-      localNumber: fullNumber
+      localNumber: cleanedNumber
     };
   }, [personalDetail?.phoneNumber]);
 
@@ -61,7 +63,7 @@ function PersonalDetails() {
           className="w-full mb-4"
           countryCode={countryCode}
           phoneNumber={localNumber}
-          disabled={true}
+          readOnly
         />
       </div>
 

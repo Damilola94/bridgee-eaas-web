@@ -1,23 +1,33 @@
+/* eslint-disable no-console */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-duplicate-imports */
 import React, { useState, useEffect } from "react";
 
-import ToggleInput from "../../inputs/Toggle";
 import { Dispatch, SetStateAction } from "react";
-import Modal from "../../common/Modal";
+
 import { ChevronDown } from "lucide-react";
+
+import { useMutation, useQuery, useQueryClient } from "react-query";
+
+import Image from "next/image";
+
+import ToggleInput from "../../inputs/Toggle";
+import Modal from "../../common/Modal";
+
 import CheckIncompleteCircle from "../../../assets/svgs/check-incomplete-circle.svg";
 import TextInput from "../../inputs/Text";
 import Button from "../../inputs/Button";
 import { Account, Bank } from "../../../types/bank";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+
 import {
   getAccountName,
   getBanksList,
   addLinkedBank,
-  setPrimaryLinkedBank,
+  setPrimaryLinkedBank
 } from "../../../services/api/bank";
 import notification from "../../../utilities/notification";
 import { useAccountsContext } from "../../../context/Accounts";
-import Image from "next/image";
+
 import { QUERY_KEYS } from "../../../configs/constants";
 
 export default function AccountDetails() {
@@ -53,7 +63,7 @@ export default function AccountDetails() {
   const banks: Bank[] =
     bankResponse?.data.map((apiBank) => ({
       bankCode: apiBank.bankCode,
-      bankName: apiBank.bankName,
+      bankName: apiBank.bankName
     })) || [];
 
   const accountNameMutation = useMutation(getAccountName, {
@@ -70,9 +80,9 @@ export default function AccountDetails() {
       notification({
         title: "Invalid Account",
         message: error?.message || "Account verification failed",
-        type: "danger",
+        type: "danger"
       });
-    },
+    }
   });
 
   const addBankMutation = useMutation(addLinkedBank, {
@@ -86,9 +96,9 @@ export default function AccountDetails() {
       notification({
         title: "Add Account Failed",
         message: error?.message || "Failed to add account",
-        type: "danger",
+        type: "danger"
       });
-    },
+    }
   });
 
   //set primary bank
@@ -98,7 +108,7 @@ export default function AccountDetails() {
         notification({
           title: "Success",
           message: "Primary account set successfully.",
-          type: "success",
+          type: "success"
         });
 
         queryClient.invalidateQueries([QUERY_KEYS.IDENTITY_ACCOUNTS]);
@@ -113,7 +123,7 @@ export default function AccountDetails() {
         notification({
           title: "Set Primary Failed",
           message: response.message || "Failed to set primary account",
-          type: "danger",
+          type: "danger"
         });
       }
     },
@@ -127,9 +137,9 @@ export default function AccountDetails() {
       notification({
         title: "Set Primary Failed",
         message: error?.message || "Failed to set primary account",
-        type: "danger",
+        type: "danger"
       });
-    },
+    }
   });
 
   let currentToggleIndex = -1;
@@ -148,7 +158,7 @@ export default function AccountDetails() {
     if (value.length === 10 && selectedBank) {
       accountNameMutation.mutate({
         accountNumber: value,
-        bankCode: selectedBank.bankCode,
+        bankCode: selectedBank.bankCode
       });
     }
 
@@ -161,7 +171,7 @@ export default function AccountDetails() {
         bankCode: selectedBank!.bankCode,
         accountNumber,
         accountName,
-        isPrimary: false,
+        isPrimary: false
       });
     }
   };
@@ -188,7 +198,7 @@ export default function AccountDetails() {
       );
 
       const account = accountDetails[index];
-      
+
       if (account && account.linkedBankId) {
         currentToggleIndex = index; // For revert on failure
         isPrimaryToRevert = false;
@@ -197,9 +207,9 @@ export default function AccountDetails() {
         notification({
           title: "Error",
           message: "Cannot set primary: No linked bank ID available.",
-          type: "danger",
+          type: "danger"
         });
-      
+
         setPrimaryStatuses((prev) =>
           prev.map((status, i) => (i === index ? !status : status))
         );
@@ -209,11 +219,11 @@ export default function AccountDetails() {
 
   const handleToggle =
     (index: number): Dispatch<SetStateAction<boolean>> =>
-    (val: boolean | SetStateAction<boolean>) => {
-      if (typeof val === "boolean") {
-        handleTogglePrimary(index, val);
-      }
-    };
+      (val: boolean | SetStateAction<boolean>) => {
+        if (typeof val === "boolean") {
+          handleTogglePrimary(index, val);
+        }
+      };
 
   const closeModal = () => {
     setModalOpen(false);
@@ -314,9 +324,9 @@ export default function AccountDetails() {
                       </div>
                     </div>
 
-                    <div className="px-4 py-2 border-b border-gray-100">
+                    <div className="mt-2 px-4 py-2">
                       <ToggleInput
-                        label="Setup Primary Account"
+                        label="Set as primary account"
                         value={primaryStatuses[index]}
                         onChange={handleToggle(index)}
                       />
