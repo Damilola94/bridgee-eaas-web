@@ -6,7 +6,7 @@ import { HiOutlineArrowLeft } from 'react-icons/hi';
 
 import Button from '../../../inputs/Button';
 
-import FormIndicator from '../../create-invoice/FormIndicator';
+import FormIndicator from '../../create-payment-link/FormIndicator';
 
 import useGetQuery from '../../../../hooks/useGetQuery';
 

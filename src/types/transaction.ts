@@ -8,6 +8,9 @@ export type TransactionProps = {
   date: string // "2023-06-16T05:52:37.69"
   status: string // "successful"
   type: string // "debit"
+  transaction: string
+  source: string
+  referenceNumber: string
 };
 
 export type FundTransferProps = {

@@ -10,12 +10,9 @@ import useGetQuery from '../../../hooks/useGetQuery';
 import InflowArrow from '../../../assets/svg-tsx/InflowArrow';
 import OutflowArrow from '../../../assets/svg-tsx/OutflowArrow';
 
-import { formatCurrency, formatDisbursementType } from '../../../utilities/general';
-import { formatDateTime } from '../../../utilities/dateTime';
-
+import { formatCurrency } from '../../../utilities/general';
 import NoData from '../../common/NoData';
 import TransactionStatus from '../../common/TransactionStatus';
-import Button from '../../inputs/Button';
 
 import SearchInput from '../../inputs/Search';
 
@@ -29,8 +26,9 @@ type Props = {
   error?: unknown
 };
 
-function InvoiceHistory({ }: Props) {
-  const [showBankTransfer, setShowBankTransfer] = useState(false);
+function WalletHistory({ }: Props) {
+  const [showDetails, setShowDetails] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
   const [filter, setFilter] = useState<any>(null);
   const [searchText, setSearchText] = useState('');
   const [search, setSearch] = useState('');
@@ -40,10 +38,9 @@ function InvoiceHistory({ }: Props) {
     endpoint: 'wallet',
     extra: 'transactions/transaction',
     pQuery: { pageSize: 10, pageNumber: 1, SearchKey: search },
-    queryKey: ['escrows-orders', search, filter?.value || 'all'],
+    queryKey: ['wallet-transactions-dashboard', search, filter?.value || 'all'],
     enabled: !!cookie?.data?.accessToken
   });
-
   const debouncedSearch = useMemo(() => debounce(setSearch, 1000), [setSearch]);
 
   const handleSearch: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -93,41 +90,39 @@ function InvoiceHistory({ }: Props) {
               </tr>
             )}
             {status === 'success' && (
-              data?.length > 0 ? (
+              data?.data?.length > 0 ? (
                 <>
-                  {data?.map((item: any, index: number) => (
+                  {data?.data?.map((item: any, index: number) => (
                     <tr className="border-t" key={item?.escrowId}>
                       <td className="pl-5 sm:pl-10 pr-3 py-5">{index + 1}</td>
                       <td className="px-3 py-5">
                         <div className="flex items-center space-x-3">
-                          <span className={`w-8 h-8 ${item?.isIncoming ? 'bg-error/10' : 'bg-success/10'} p-2 rounded-full`}>
-                            {item?.isIncoming
-                              ? <InflowArrow className="w-4 h-4" color="#EB4336" />
-                              : <OutflowArrow className="w-4 h-4" color="#03543F" />}
+                          <span className={`w-8 h-8 ${item?.transaction == "Inflow" ? 'bg-error/10' : 'bg-success/10'} p-2 rounded-full`}>
+                            {item?.transaction === "Inflow"
+                              ? <InflowArrow className="w-4 h-4" color="#03543F" />
+                              : <OutflowArrow className="w-4 h-4" color="#EB4336" />}
                           </span>
-                          <span className="capitalize">{item?.title}</span>
+                          <span className="capitalize">{item?.transaction}</span>
                         </div>
                       </td>
-                      <td className="px-3 py-5">{`#${item?.invoiceNumber}`}</td>
+                      <td className="px-3 py-5">{`#${item?.referenceNumber}`}</td>
                       <td className="px-3 py-5">{formatCurrency(item?.amount)}</td>
-                      <td className="px-3 py-5">{formatDisbursementType(item?.disbursementType)}</td>
+                      <td className="px-3 py-5">{item?.source}</td>
                       <td className="px-3 py-5">
                         <TransactionStatus status={item?.status === 'paymentcompleted' ? item?.escrowDeliveryStatus : item?.status} />
                       </td>
-                      <td className="px-3 py-5">{formatDateTime(item?.createdAt)}</td>
+                      <td className="px-3 py-5">{item?.date}</td>
                       <td className="pr-5 sm:pr-10 pl-3 py-5" >
-                        <Button
-                          border
-                          onClick={() => setShowBankTransfer(true)}
-                          paddingX="px-2"
-                          bgColor="bg-white"
-                          borderColor="border-gray-500"
-                          textColor="text-black-500"
-                          className="w-full text-xs  border-2 border-gray-200 !rounded-md mdx2:!rounded-xl hover:bg-success  hover:border-success hover:text-white"
-                          paddingY="py-2"
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedTransaction(data?.id);
+                            setShowDetails(true);
+                          }}
+                          className="border border-black rounded-lg px-3 py-1.5 hover:bg-gray-100"
                         >
-                          View
-                        </Button>
+          View
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -151,9 +146,11 @@ function InvoiceHistory({ }: Props) {
           </tbody>
         </table>
       </div>
-      {showBankTransfer && <TransactionDetailsModal onClose={() => setShowBankTransfer(false)} />}
+      {showDetails && <TransactionDetailsModal onClose={() => setShowDetails(false)}
+        transactionId={selectedTransaction}
+      />}
     </div>
   );
 }
 
-export default InvoiceHistory;
+export default WalletHistory;

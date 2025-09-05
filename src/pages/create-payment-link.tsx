@@ -7,11 +7,11 @@ import { HiOutlineArrowLeft } from 'react-icons/hi';
 import Layout from '../components/wrappers/Layout';
 import Button from '../components/inputs/Button';
 
-import FormIndicator from '../components/pages/create-invoice/FormIndicator';
-import OrderSummary from '../components/pages/create-invoice/OrderSummary';
-import OrderDetails from '../components/pages/create-invoice/OrderDetails';
-import RecipientDetails from '../components/pages/create-invoice/RecipientDetails';
-import InvoiceSummary from '../components/pages/create-invoice/InvoiceSummary';
+import FormIndicator from '../components/pages/create-payment-link/FormIndicator';
+import OrderSummary from '../components/pages/create-payment-link/OrderSummary';
+import OrderDetails from '../components/pages/create-payment-link/OrderDetails';
+import RecipientDetails from '../components/pages/create-payment-link/RecipientDetails';
+import InvoiceSummary from '../components/pages/create-payment-link/InvoiceSummary';
 import CreateInvoiceContextProvider from '../context/CreateInvoice';
 
 import type { NextPageWithLayout } from './_app';

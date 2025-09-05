@@ -22,7 +22,7 @@ function TransactionBanner() {
             <Button
               className="w-fit flex items-center justify-center"
               paddingY="py-3"
-              onClick={() => router.push('/create-invoice')}
+              onClick={() => router.push('/create-payment-link')}
               iconPosition="right"
               icon={<FiArrowRight className="ml-2" />}
             >

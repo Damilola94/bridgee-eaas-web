@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { debounce } from 'lodash';
 
 import { useAccountsContext } from '../../../../context/Accounts';
-import { formatApiDate } from '../../../../utilities/dateTime';
+// import { formatApiDate } from '../../../../utilities/dateTime';
 
 import NoData from '../../../common/NoData';
 import Loading from '../../../common/Loading';
@@ -36,17 +36,16 @@ function WalletList() {
     pQuery: {
       pageSize: PAGE_SIZE,
       pageNumber: pageNumber + 1,
-      walletId: accounts?.defaultWallets?.[0]?.id,
       status: router?.query?.status === 'all' ? null : router?.query?.status,
-      start: formatApiDate(filter?.startDate),
-      end: formatApiDate(filter?.endDate),
-      minAmount: Number(filter?.minAmount),
-      maxAmount: Number(filter?.maxAmount),
-      transactionType: filter?.type,
-      channel: filter?.channel,
+      // start: formatApiDate(filter?.startDate),
+      // end: formatApiDate(filter?.endDate),
+      // minAmount: Number(filter?.minAmount),
+      // maxAmount: Number(filter?.maxAmount),
+      // transactionType: filter?.type,
+      // channel: filter?.channel,
       search
     },
-    enabled: !!accounts?.defaultWallets?.[0]?.id
+    enabled: true
   });
 
   const debouncedSearch = useMemo(() => debounce(setSearch, 1000), [setSearch]);
@@ -91,9 +90,9 @@ function WalletList() {
             </thead>
             <tbody>
               {status === 'success' && (
-                data?.data?.transactions?.length > 0 ? (
+                data?.data?.length > 0 ? (
                   <>
-                    {data?.data?.transactions.map((item: any, index: number) => (
+                    {data?.data?.map((item: any, index: number) => (
                       <ListItem key={item?.id} data={item} index={index} />
                     ))}
                     <tr>

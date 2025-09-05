@@ -6,13 +6,13 @@ import { Copy } from "lucide-react";
 import { BiDownload } from "react-icons/bi";
 import { useCookies } from "react-cookie";
 
-import TransactionStatus from "../../common/TransactionStatus";
-import Modal from "../../common/Modal";
-import Button from "../../inputs/Button";
-import InflowArrow from "../../../assets/svg-tsx/InflowArrow";
+import TransactionStatus from "../../../common/TransactionStatus";
+import Modal from "../../../common/Modal";
+import Button from "../../../inputs/Button";
+import InflowArrow from "../../../../assets/svg-tsx/InflowArrow";
 
-import useGetQuery from '../../../hooks/useGetQuery';
-import { downloadTransactionPDF } from "../../../lib/downloadInvoice";
+import useGetQuery from '../../../../hooks/useGetQuery';
+import { downloadTransactionPDF } from "../../../../lib/downloadInvoice";
 type Props = {
   onClose: () => void;
   transactionId: string;
