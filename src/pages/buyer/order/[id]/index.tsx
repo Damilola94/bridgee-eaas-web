@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 
 import { useState } from "react";
 import Head from "next/head";
@@ -10,7 +10,7 @@ import Image from "next/image";
 import Invoice from "../../../../components/pages/buyer/Invoice";
 import MakePayment from "../../../../components/pages/buyer/MakePayment";
 import { useRouter } from "next/router";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { getOrderStatus } from "../../../../services/api/escrow";
 import notification from "../../../../utilities/notification";
 import OrderIdForm from "../../../../components/pages/buyer/OrderIdForm";
@@ -20,6 +20,7 @@ import { getStatusColor } from "../../../../utilities/color";
 
 export default function BuyerOrder() {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const [orderReference, setOrderReference] = useState("");
   const [showOrderDetails, setShowOrderDetails] = useState(false);
@@ -61,54 +62,56 @@ export default function BuyerOrder() {
     }
   };
 
-  const [orderData] = useState({
-    orderItems: [
-      {
-        id: 1,
-        name: "3 piece suit",
-        price: 32000.0,
-        quantity: 2,
-        total: 64000.0,
-      },
-      {
-        id: 2,
-        name: "Volt Desk & Table",
-        price: 32000.0,
-        quantity: 2,
-        total: 64000.0,
-      },
-      {
-        id: 3,
-        name: "Asus Monitor Screen",
-        price: 32000.0,
-        quantity: 2,
-        total: 64000.0,
-      },
-      {
-        id: 4,
-        name: "Alarm Clock",
-        price: 32000.0,
-        quantity: 2,
-        total: 64000.0,
-      },
-    ],
-    deliveryFee: 2000.0,
-    escrowFee: 2000.0,
-    storeName: "Tolu's Store",
-    storeAddress: "291 N 4th St, Ikoyi, Lagos, Nigeria",
-    invoiceNumber: "0472",
-    invoiceDate: "August 1, 2021, 12:00pm",
-    recipientName: "Oluseola John",
-    recipientEmail: "oluseolajohn@gmail.com",
-    recipientPhone: "+234 808 857 9392",
-    recipientAddress: "54 Marina, Lagos Island, Lagos",
-    paymentType: "Bank Transfer",
-    disputeManager: "Bridgee Escrow",
-    inspectionPeriod: "2 Hours",
-    dueDate: "Jan 12, 2025; 2:00pm",
-    status: orderStatusData?.data?.status || "",
-    statusColor: getStatusColor(orderStatusData?.data?.status || ""),
-  });
+  const orderData = useMemo(() => {
+    return {
+      orderItems: [
+        {
+          id: 1,
+          name: "3 piece suit",
+          price: 32000.0,
+          quantity: 2,
+          total: 64000.0,
+        },
+        {
+          id: 2,
+          name: "Volt Desk & Table",
+          price: 32000.0,
+          quantity: 2,
+          total: 64000.0,
+        },
+        {
+          id: 3,
+          name: "Asus Monitor Screen",
+          price: 32000.0,
+          quantity: 2,
+          total: 64000.0,
+        },
+        {
+          id: 4,
+          name: "Alarm Clock",
+          price: 32000.0,
+          quantity: 2,
+          total: 64000.0,
+        },
+      ],
+      deliveryFee: 2000.0,
+      escrowFee: 2000.0,
+      storeName: "Tolu's Store",
+      storeAddress: "291 N 4th St, Ikoyi, Lagos, Nigeria",
+      invoiceNumber: "0472",
+      invoiceDate: "August 1, 2021, 12:00pm",
+      recipientName: "Oluseola John",
+      recipientEmail: "oluseolajohn@gmail.com",
+      recipientPhone: "+234 808 857 9392",
+      recipientAddress: "54 Marina, Lagos Island, Lagos",
+      paymentType: "Bank Transfer",
+      disputeManager: "Bridgee Escrow",
+      inspectionPeriod: "2 Hours",
+      dueDate: "Jan 12, 2025; 2:00pm",
+      status: orderStatusData?.data?.status || "...",
+      statusColor: getStatusColor(orderStatusData?.data?.status || ""),
+    };
+  }, [orderStatusData]);
 
   const activities = [
     {
@@ -167,6 +170,14 @@ export default function BuyerOrder() {
       completed: true,
     },
   ];
+
+  const handlePaymentSuccess = () => {
+    queryClient.invalidateQueries([QUERY_KEYS.ORDER_STATUS, urlOrderReference]);
+  };
+
+  const handlePaymentPending = () => {
+    queryClient.invalidateQueries([QUERY_KEYS.ORDER_STATUS, urlOrderReference]);
+  };
 
   const shouldShowPayment =
     urlOrderReference &&
@@ -330,6 +341,8 @@ export default function BuyerOrder() {
                 formData={formData}
                 onInputChange={handleInputChange}
                 orderReference={urlOrderReference}
+                onPaymentPending={handlePaymentPending}
+                onPaymentSuccess={handlePaymentSuccess}
               />
             )}
           </div>
