@@ -26,7 +26,6 @@ interface InvoiceProps {
   inspectionPeriod: string;
   dueDate: string;
   status: string;
-  statusColor: { backgroundColor: string; color: string; borderColor: string };
 }
 
 export default function Invoice({
@@ -46,7 +45,6 @@ export default function Invoice({
   inspectionPeriod,
   dueDate,
   status,
-  statusColor,
 }: InvoiceProps) {
   const subtotal = orderItems.reduce((sum, item) => sum + item.total, 0);
   const total = subtotal + deliveryFee + escrowFee;
