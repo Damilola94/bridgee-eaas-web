@@ -1,6 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-duplicate-imports */
 import React, { useState, useEffect } from "react";
 
 import { Dispatch, SetStateAction } from "react";
@@ -23,7 +20,8 @@ import {
   getAccountName,
   getBanksList,
   addLinkedBank,
-  setPrimaryLinkedBank
+  setPrimaryLinkedBank,
+  deleteLinkedBank,
 } from "../../../services/api/bank";
 import notification from "../../../utilities/notification";
 import { useAccountsContext } from "../../../context/Accounts";
@@ -47,6 +45,12 @@ export default function AccountDetails() {
   const [accountNumber, setAccountNumber] = useState("");
   const [accountName, setAccountName] = useState("");
   const [accountValidated, setAccountValidated] = useState(false);
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [accountToDelete, setAccountToDelete] = useState<{
+    account: any;
+    index: number;
+  } | null>(null);
 
   // Initialize statuses when data loads
   useEffect(() => {
@@ -140,6 +144,33 @@ export default function AccountDetails() {
         type: "danger"
       });
     }
+  });
+
+  const deleteBankMutation = useMutation(deleteLinkedBank, {
+    onSuccess: (response) => {
+      if (response.isSuccess) {
+        notification({
+          title: "Success",
+          message: "Bank account deleted successfully.",
+          type: "success",
+        });
+
+        queryClient.invalidateQueries([QUERY_KEYS.IDENTITY_ACCOUNTS]);
+      } else {
+        notification({
+          title: "Delete Failed",
+          message: response.message || "Failed to delete bank account",
+          type: "danger",
+        });
+      }
+    },
+    onError: (error: any) => {
+      notification({
+        title: "Delete Failed",
+        message: error?.message || "Failed to delete bank account",
+        type: "danger",
+      });
+    },
   });
 
   let currentToggleIndex = -1;
@@ -238,7 +269,32 @@ export default function AccountDetails() {
     setAccountNumber("");
     setAccountName("");
     setAccountValidated(false);
+  };
 
+  const handleDeleteBank = (account: any, index: number) => {
+    setAccountToDelete({ account, index });
+  setDeleteModalOpen(true);
+  };
+
+  const confirmDeleteBank = () => {
+    if (accountToDelete?.account?.linkedBankId) {
+      deleteBankMutation.mutate({
+        linkedBankId: accountToDelete.account.linkedBankId,
+      });
+      setDeleteModalOpen(false);
+    } else {
+      notification({
+        title: "Error",
+        message: "Cannot delete: No linked bank ID available.",
+        type: "danger",
+      });
+      setDeleteModalOpen(false);
+    }
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModalOpen(false);
+    setAccountToDelete(null);
   };
 
   return (
@@ -276,7 +332,11 @@ export default function AccountDetails() {
                       </div>
                       <div className="flex items-center justify-end space-x-2">
                         {/* Delete Icon */}
-                        <button className="p-1 text-gray-400 hover:text-red-600 transition-colors">
+                        <button
+                          className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                          onClick={() => handleDeleteBank(account, index)}
+                          disabled={deleteBankMutation.isLoading}
+                        >
                           <svg
                             width="24"
                             height="25"
@@ -452,6 +512,66 @@ export default function AccountDetails() {
             </Button>
           </div>
         )}
+      </Modal>
+
+      <Modal
+        isCenter={true}
+        isShowCloseIcon={true}
+        maxWidth="max-w-[400px]"
+        isOpen={deleteModalOpen}
+        onClose={closeDeleteModal}
+      >
+        <div className="text-center p-6">
+          <div className="flex justify-center mb-4">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 9V11M12 15H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                  stroke="#DC2626"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            Delete Bank Account
+          </h3>
+
+          <p className="text-sm text-gray-600 mb-6">
+            Are you sure you want to delete the account ending in{" "}
+            <span className="font-medium text-gray-900">
+              {accountToDelete?.account?.accountNumber?.slice(-4)}
+            </span>
+            ? This action cannot be undone.
+          </p>
+
+          <div className="flex gap-3">
+            <Button
+              onClick={closeDeleteModal}
+              className="flex-1 py-2 px-4 bg-gray-100 text-gray-700 hover:bg-gray-200"
+              disabled={deleteBankMutation.isLoading}
+            >
+              Cancel
+            </Button>
+
+            <Button
+              onClick={confirmDeleteBank}
+              disabled={deleteBankMutation.isLoading}
+              className="flex-1 py-2 px-4 bg-red-600 text-white hover:bg-red-700"
+            >
+              {deleteBankMutation.isLoading ? "Deleting..." : "Delete"}
+            </Button>
+          </div>
+        </div>
       </Modal>
     </>
   );
