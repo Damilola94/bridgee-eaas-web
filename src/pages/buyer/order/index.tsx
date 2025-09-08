@@ -13,9 +13,9 @@ import { formatCurrency } from "../../../utilities/general";
 
 export default function BuyerCheckout() {
   const [formData, setFormData] = useState({
-    fullName: "Toluwalase Obasun",
-    email: "toluwalase.obasun@gmail.com",
-    phone: "08146644455",
+    fullName: "",
+    email: "",
+    phone: "",
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
