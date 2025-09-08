@@ -15,7 +15,7 @@ export const addLinkedBank = (data: AddLinkedBankData) => {
     endpoint: "/api/v1/users/add-linked-bank",
     method: "POST",
     body: data,
-    auth: true
+    auth: true,
   });
 };
 
@@ -37,6 +37,16 @@ export const setPrimaryLinkedBank = (data: { linkedBankId: string }) => {
     endpoint: "/api/v1/users/set-primary-linked-bank",
     method: "POST",
     body: data,
-    auth: true
+    auth: true,
+  });
+};
+
+export const deleteLinkedBank = (data: { linkedBankId: string }) => {
+  return handleFetch({
+    service: "identity-service",
+    endpoint: "/api/v1/users/delete-linked-bank",
+    method: "DELETE",
+    body: data,
+    auth: true,
   });
 };
