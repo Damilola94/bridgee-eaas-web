@@ -11,12 +11,16 @@ import Invoice from "../../../../components/pages/buyer/Invoice";
 import MakePayment from "../../../../components/pages/buyer/MakePayment";
 import { useRouter } from "next/router";
 import { useQuery, useQueryClient } from "react-query";
-import { getOrderStatus } from "../../../../services/api/escrow";
+import {
+  getOrderStatus,
+  getOrderDetails,
+} from "../../../../services/api/escrow";
 import notification from "../../../../utilities/notification";
 import OrderIdForm from "../../../../components/pages/buyer/OrderIdForm";
 import { QUERY_KEYS } from "../../../../configs/constants";
 import Activity from "../../../../components/pages/buyer/Activity";
 import { getStatusColor } from "../../../../utilities/color";
+import { OrderDetailsResponse } from "../../../../types/escrow";
 
 export default function BuyerOrder() {
   const router = useRouter();
@@ -24,6 +28,10 @@ export default function BuyerOrder() {
 
   const [orderReference, setOrderReference] = useState("");
   const [showOrderDetails, setShowOrderDetails] = useState(false);
+  const [orderDetails, setOrderDetails] = useState<
+    OrderDetailsResponse["data"] | null
+  >(null);
+  const [isLoadingOrderDetails, setIsLoadingOrderDetails] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -56,60 +64,62 @@ export default function BuyerOrder() {
     });
   };
 
-  const handleViewStatus = () => {
-    if (orderReference.trim()) {
-      setShowOrderDetails(true);
+  const handleViewStatus = async () => {
+    if (!orderReference.trim()) return;
+
+    setIsLoadingOrderDetails(true);
+    try {
+      const response = await getOrderDetails(orderReference);
+      console.log({ response });
+      if (response.isSuccess) {
+        setOrderDetails(response.data);
+        setShowOrderDetails(true);
+      } else {
+        notification({
+          title: "Error",
+          message: response.message,
+          type: "danger",
+        });
+      }
+    } catch (error: any) {
+      notification({
+        title: "Error",
+        message: error?.message || "Failed to fetch order details",
+        type: "danger",
+      });
+    } finally {
+      setIsLoadingOrderDetails(false);
     }
   };
 
   const orderData = useMemo(() => {
     return {
-      orderItems: [
-        {
-          id: 1,
-          name: "3 piece suit",
-          price: 32000.0,
-          quantity: 2,
-          total: 64000.0,
-        },
-        {
-          id: 2,
-          name: "Volt Desk & Table",
-          price: 32000.0,
-          quantity: 2,
-          total: 64000.0,
-        },
-        {
-          id: 3,
-          name: "Asus Monitor Screen",
-          price: 32000.0,
-          quantity: 2,
-          total: 64000.0,
-        },
-        {
-          id: 4,
-          name: "Alarm Clock",
-          price: 32000.0,
-          quantity: 2,
-          total: 64000.0,
-        },
-      ],
-      deliveryFee: 2000.0,
-      escrowFee: 2000.0,
+      orderItems:
+        orderDetails?.items.map((item, index) => ({
+          id: index + 1,
+          name: item.name,
+          price: item.unitPrice,
+          quantity: item.quantity,
+          total: item.total,
+        })) || [],
+      deliveryFee: orderDetails?.deliveryFee || 0,
+      escrowFee: orderDetails?.escrowFee || 0,
       storeName: "Tolu's Store",
       storeAddress: "291 N 4th St, Ikoyi, Lagos, Nigeria",
-      invoiceNumber: "0472",
-      invoiceDate: "August 1, 2021, 12:00pm",
-      recipientName: "Oluseola John",
-      recipientEmail: "oluseolajohn@gmail.com",
-      recipientPhone: "+234 808 857 9392",
-      recipientAddress: "54 Marina, Lagos Island, Lagos",
-      paymentType: "Bank Transfer",
-      disputeManager: "Bridgee Escrow",
-      inspectionPeriod: "2 Hours",
-      dueDate: "Jan 12, 2025; 2:00pm",
+      invoiceNumber: orderDetails?.reference || "",
+      invoiceDate: orderDetails?.createdDate || "",
+      recipientName: orderDetails?.recipientName || "",
+      recipientEmail: orderDetails?.recipientEmail || "",
+      recipientPhone: orderDetails?.recipientPhone || "",
+      recipientAddress: orderDetails?.recipientAddress || "",
+      paymentType: orderDetails?.paymentType || "",
+      disputeManager: orderDetails?.disputeManager || "",
+      inspectionPeriod: orderDetails?.inspectionPeriod || "",
+      dueDate: orderDetails?.dueDate || "",
       status: orderStatusData?.data?.status || "...",
       statusColor: getStatusColor(orderStatusData?.data?.status || ""),
+      subTotal: orderDetails?.subtotal || 0,
+      total: orderDetails?.total || 0,
     };
   }, [orderStatusData]);
 
@@ -183,10 +193,11 @@ export default function BuyerOrder() {
     urlOrderReference &&
     !statusLoading &&
     orderStatusData?.data?.allowPayment === true;
-  const shouldShowOrderIdForm =
-    urlOrderReference &&
-    !statusLoading &&
-    orderStatusData?.data?.allowPayment === false;
+  // const shouldShowOrderIdForm =
+  //   urlOrderReference &&
+  //   !statusLoading &&
+  //   orderStatusData?.data?.allowPayment === false;
+  const shouldShowOrderIdForm = true && !showOrderDetails;
   const shouldShowOrderDetails = showOrderDetails;
 
   if (shouldShowOrderIdForm) {
@@ -234,6 +245,7 @@ export default function BuyerOrder() {
                 orderId={orderReference}
                 setOrderId={setOrderReference}
                 onSubmit={handleViewStatus}
+                isLoading={isLoadingOrderDetails}
               />
             </div>
           </div>

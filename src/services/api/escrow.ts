@@ -1,4 +1,5 @@
 import {
+  OrderDetailsResponse,
   OrderStatusResponse,
   PaymentDetailsResponse,
   TransactionStatusResponse,
@@ -12,6 +13,14 @@ export const getOrderStatus = (orderReference: string): Promise<OrderStatusRespo
     endpoint: `/api/v1/escrows/orders/status/9C336337A6A5`,
     method: "GET",
   }) as Promise<OrderStatusResponse>;
+};
+
+export const getOrderDetails = (orderReference: string): Promise<OrderDetailsResponse> => {
+  return handleFetch({
+    service: "wallet-service",
+    endpoint: `/api/v1/escrows/orders/reference/${orderReference}`,
+    method: "GET",
+  }) as Promise<OrderDetailsResponse>;
 };
 
 export const getPaymentDetails = (

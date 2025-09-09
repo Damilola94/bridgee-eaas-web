@@ -31,3 +31,45 @@ export interface PaymentDetailsResponse {
   };
   metaData: null;
 }
+
+export interface OrderStatusResponse {
+  isSuccess: boolean;
+  statusCode: string;
+  message: string;
+  data: {
+    status: string;
+    allowPayment: boolean;
+  };
+  metaData: null;
+}
+
+export interface OrderDetailsResponse {
+  isSuccess: boolean;
+  statusCode: string;
+  message: string;
+  data: {
+    id: string;
+    createdDate: string;
+    reference: string;
+    recipientName: string;
+    recipientEmail: string;
+    recipientPhone: string;
+    recipientAddress: string;
+    paymentType: string;
+    disputeManager: string;
+    inspectionPeriod: string;
+    dueDate: string;
+    items: {
+      name: string;
+      quantity: number;
+      unitPrice: string;
+      weightKg: number;
+      total: string;
+    }[];
+    subtotal: string;
+    deliveryFee: string;
+    escrowFee: string;
+    total: string;
+  };
+  metaData: string;
+}
