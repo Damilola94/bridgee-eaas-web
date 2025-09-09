@@ -7,9 +7,10 @@ interface OrderIdFormProps {
   orderId: string;
   setOrderId: (orderId: string) => void;
   onSubmit: () => void;
+  isLoading?: boolean; 
 }
 
-export default function OrderIdForm({ orderId, setOrderId, onSubmit }: OrderIdFormProps) {
+export default function OrderIdForm({ orderId, setOrderId, onSubmit, isLoading = true }: OrderIdFormProps) {
   return (
     <div className="min-h-screen">
       <div className="p-10">
@@ -41,9 +42,10 @@ export default function OrderIdForm({ orderId, setOrderId, onSubmit }: OrderIdFo
 
             <Button
               onClick={onSubmit}
+              disabled={!orderId || isLoading}
               className="bg-success w-full text-base font-bold py-4 mt-10"
             >
-              View Order Status
+              {isLoading ? "Loading..." : "View Order Status"}
             </Button>
           </div>
         </div>

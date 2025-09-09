@@ -4,15 +4,15 @@ import { formatCurrency } from "../../../utilities/general";
 interface OrderItem {
   id: number;
   name: string;
-  price: number;
+  price: number | string;
   quantity: number;
-  total: number;
+  total: number | string;
 }
 
 interface InvoiceProps {
   orderItems: OrderItem[];
-  deliveryFee: number;
-  escrowFee: number;
+  deliveryFee: number | string;
+  escrowFee: number | string;
   storeName: string;
   storeAddress: string;
   invoiceNumber: string;
@@ -26,6 +26,8 @@ interface InvoiceProps {
   inspectionPeriod: string;
   dueDate: string;
   status: string;
+  subTotal: number | string;
+  total: number | string;
 }
 
 export default function Invoice({
@@ -45,9 +47,9 @@ export default function Invoice({
   inspectionPeriod,
   dueDate,
   status,
+  subTotal,
+  total,
 }: InvoiceProps) {
-  const subtotal = orderItems.reduce((sum, item) => sum + item.total, 0);
-  const total = subtotal + deliveryFee + escrowFee;
 
   const statusStyle = getStatusColor(status);
 
@@ -86,7 +88,10 @@ export default function Invoice({
             <h4 className="text-3xl font-bold text-textColor pb-2 ">
               Invoice #{invoiceNumber}
             </h4>
-            <span style={statusStyle} className={`text-xs font-medium px-2 py-1 rounded-full`}>
+            <span
+              style={statusStyle}
+              className={`text-xs font-medium px-2 py-1 rounded-full`}
+            >
               {status}
             </span>
           </div>
@@ -181,7 +186,7 @@ export default function Invoice({
             <div className="flex text-sm gap-x-14 justify-between">
               <span className="text-gray-600">SUBTOTAL</span>
               <span className="font-semibold">
-                NGN {formatCurrency(subtotal)}
+                NGN {formatCurrency(subTotal)}
               </span>
             </div>
             <div className="flex text-sm gap-x-14 justify-between">
