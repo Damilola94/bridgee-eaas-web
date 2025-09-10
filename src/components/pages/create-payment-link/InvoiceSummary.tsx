@@ -83,7 +83,7 @@ function InvoiceSummary() {
         if (item.name) body.append(`Items[${index}].Name`, item.name);
         if (item.quantity) body.append(`Items[${index}].Quantity`, String(item.quantity));
         if (item.amount) body.append(`Items[${index}].UnitPrice`, String(item.amount));
-        if (item.weight !== undefined) body.append(`Items[${index}].WeightKg`, String(item.weight));
+        if (item.weight !== undefined) body.append(`Items[${index}].WeightKg`, String(item.weight || 0));
       });
     }
 
