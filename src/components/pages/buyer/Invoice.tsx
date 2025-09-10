@@ -2,21 +2,19 @@ import { getStatusColor } from "../../../utilities/color";
 import { formatCurrency } from "../../../utilities/general";
 
 interface OrderItem {
-  id: number;
+  id?: number;
   name: string;
-  price: number | string;
+  unitPrice: number | string;
   quantity: number;
   total: number | string;
 }
 
-interface InvoiceProps {
-  orderItems: OrderItem[];
-  deliveryFee: number | string;
-  escrowFee: number | string;
-  storeName: string;
-  storeAddress: string;
-  invoiceNumber: string;
-  invoiceDate: string;
+interface OrderDetailsData {
+  storeName?: string;
+  storeAddress?: string;
+  id: string;
+  createdDate: string;
+  reference: string;
   recipientName: string;
   recipientEmail: string;
   recipientPhone: string;
@@ -25,43 +23,71 @@ interface InvoiceProps {
   disputeManager: string;
   inspectionPeriod: string;
   dueDate: string;
-  status: string;
-  subTotal: number | string;
+  buyerPaysEscrowFee: boolean;
+  items?: OrderItem[];
+  subtotal: number | string;
+  deliveryFee: number | string;
+  escrowFee: number | string;
   total: number | string;
+  status?: string;
+  paymentMade?: boolean;
+}
+
+interface InvoiceProps {
+  orderDetails: OrderDetailsData | null;
+  orderStatus?: { status?: string };
+  paymentMade?: boolean;
 }
 
 export default function Invoice({
-  orderItems,
-  deliveryFee,
-  escrowFee,
-  storeName,
-  storeAddress,
-  invoiceNumber,
-  invoiceDate,
-  recipientName,
-  recipientEmail,
-  recipientPhone,
-  recipientAddress,
-  paymentType,
-  disputeManager,
-  inspectionPeriod,
-  dueDate,
-  status,
-  subTotal,
-  total,
+  orderDetails,
+  orderStatus,
+  paymentMade = true,
 }: InvoiceProps) {
+  const orderData = {
+    storeName: "Tolu's Store",
+    storeAddress: "291 N 4th St, Ikoyi, Lagos, Nigeria",
+    id: orderDetails?.id || "",
+    invoiceDate: orderDetails?.createdDate || "",
+    invoiceNumber: orderDetails?.reference || "",
+    recipientName: orderDetails?.recipientName || "",
+    recipientEmail: orderDetails?.recipientEmail || "",
+    recipientPhone: orderDetails?.recipientPhone || "",
+    recipientAddress: orderDetails?.recipientAddress || "",
+    paymentType: orderDetails?.paymentType || "",
+    disputeManager: orderDetails?.disputeManager || "",
+    inspectionPeriod: orderDetails?.inspectionPeriod || "",
+    dueDate: orderDetails?.dueDate || "",
+    buyerPaysEscrowFee: orderDetails?.buyerPaysEscrowFee || false,
+    orderItems:
+      orderDetails?.items?.map((item, index) => ({
+        id: index + 1,
+        name: item.name,
+        price: item.unitPrice,
+        quantity: item.quantity,
+        total: item.total,
+      })) || [],
+    subTotal: orderDetails?.subtotal || 0,
+    deliveryFee: orderDetails?.deliveryFee || 0,
+    escrowFee: orderDetails?.escrowFee || 0,
+    total: orderDetails?.total || 0,
+    status: orderStatus?.status || "...",
+    paymentMade: paymentMade || false,
+  };
 
-  const statusStyle = getStatusColor(status);
+  const statusStyle = getStatusColor(orderData.status);
 
   return (
     <div className="w-full">
-      {status !== "Completed" && (
+      {orderData.status !== "Completed" && (
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-textColor mb-2">
             Order Summary
-            <span className="text-base font-normal text-textColor ml-2">
-              (Kindly confirm your order details below before making payment)
-            </span>
+            {paymentMade && (
+              <span className="text-base font-normal text-textColor ml-2">
+                (Kindly confirm your order details below before making payment)
+              </span>
+            )}
           </h2>
         </div>
       )}
@@ -75,18 +101,20 @@ export default function Invoice({
             </div>
             <div>
               <h3 className="text-base font-semibold text-textColor">
-                {storeName}
+                {orderData.storeName}
               </h3>
               <p className="text-sm font-medium text-textColor pb-2">
-                {storeAddress}
+                {orderData.storeAddress}
               </p>
-              <p className="text-sm font-medium text-grey2">{invoiceDate}</p>
+              <p className="text-sm font-medium text-grey2">
+                {orderData.invoiceDate}
+              </p>
             </div>
           </div>
 
           <div className="lg:text-right mb-9 lg:mb-0">
             <h4 className="text-3xl font-bold text-textColor pb-2 ">
-              Invoice #{invoiceNumber}
+              Invoice #{orderData.invoiceNumber}
             </h4>
             <span
               style={statusStyle}
@@ -103,10 +131,12 @@ export default function Invoice({
             <h4 className="text-base font-bold text-textColor mb-2">
               Recipient Details
             </h4>
-            <p className="text-base text-textColor">{recipientName}</p>
-            <p className="text-base text-grey2">{recipientEmail}</p>
-            <p className="text-base text-grey2">{recipientPhone}</p>
-            <p className="text-base text-grey2">{recipientAddress}</p>
+            <p className="text-base text-textColor">
+              {orderData.recipientName}
+            </p>
+            <p className="text-base text-grey2">{orderData.recipientEmail}</p>
+            <p className="text-base text-grey2">{orderData.recipientPhone}</p>
+            <p className="text-base text-grey2">{orderData.recipientAddress}</p>
           </div>
 
           <div className="lg:text-right">
@@ -115,19 +145,21 @@ export default function Invoice({
             </h4>
             <p className="text-base text-grey2">
               Payment Type:&nbsp;
-              <span className="text-textColor">{paymentType}</span>
+              <span className="text-textColor">{orderData.paymentType}</span>
             </p>
             <p className="text-base text-grey2">
               Dispute Manager:&nbsp;
-              <span className="text-textColor">{disputeManager}</span>
+              <span className="text-textColor">{orderData.disputeManager}</span>
             </p>
             <p className="text-base text-grey2">
               Inspection Period:&nbsp;
-              <span className="text-textColor">{inspectionPeriod}</span>
+              <span className="text-textColor">
+                {orderData.inspectionPeriod}
+              </span>
             </p>
             <p className="text-base text-grey2">
               Due Date:&nbsp;
-              <span className="text-textColor">{dueDate}</span>
+              <span className="text-textColor">{orderData.dueDate}</span>
             </p>
           </div>
         </div>
@@ -155,7 +187,7 @@ export default function Invoice({
             </section>
 
             {/* Data Rows */}
-            {orderItems.map((item, index) => (
+            {orderData.orderItems.map((item, index) => (
               <div
                 key={item.id}
                 className="grid grid-cols-[100px_1fr_1fr] lg:grid-cols-[60px_1fr_1fr_1fr_1fr]"
@@ -186,22 +218,24 @@ export default function Invoice({
             <div className="flex text-sm gap-x-14 justify-between">
               <span className="text-gray-600">SUBTOTAL</span>
               <span className="font-semibold">
-                NGN {formatCurrency(subTotal)}
+                NGN {formatCurrency(orderData.subTotal)}
               </span>
             </div>
             <div className="flex text-sm gap-x-14 justify-between">
               <span className="text-gray-600">Delivery fee</span>
               <span className="font-semibold">
-                {formatCurrency(deliveryFee)}
+                {formatCurrency(orderData.deliveryFee)}
               </span>
             </div>
             <div className="flex text-sm gap-x-14 justify-between">
               <span className="text-gray-600">Escrow fee (5%)</span>
-              <span className="font-semibold">{formatCurrency(escrowFee)}</span>
+              <span className="font-semibold">
+                {formatCurrency(orderData.escrowFee)}
+              </span>
             </div>
             <div className="flex gap-x-14 text-lg font-bold pt-2 justify-between">
               <span>TOTAL</span>
-              <span>NGN {formatCurrency(total)}</span>
+              <span>NGN {formatCurrency(orderData.total)}</span>
             </div>
           </div>
         </div>

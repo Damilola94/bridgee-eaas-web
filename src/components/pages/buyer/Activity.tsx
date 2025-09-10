@@ -1,64 +1,43 @@
 interface ActivityItem {
-  date: string;
-  text: string;
-  completed: boolean;
+  timestamp: string;
+  action: string;
+  isChecked: boolean;
 }
 
 interface ActivityProps {
-  activities: ActivityItem[];
+  activities?: ActivityItem[];
 }
 
-export default function Activity({ activities }: ActivityProps) {
+export default function Activity({ activities = [] }: ActivityProps) {
   return (
     <div className="w-full">
-      <div className="bg-white rounded-lg p-6 shadow-sm">
-        <h2 className="text-lg font-semibold mb-6">Activity</h2>
+      <div className="bg-white rounded-lg p-6 shadow">
+        <h2 className="text-2xl font-bold mb-6">Activity</h2>
 
-        <div className="bg-blue-50/30">
-          <div className="flex gap-x-4">
+        <section className="relative space-y-6">
+          <div
+            className="absolute left-[5px] top-4 bottom-4 w-[1px] bg-[#683AB7]"
+            aria-hidden="true"
+          ></div>
 
-            <div className="flex-shrink-0 mt-1">
-              {/* <div
-                className={`w-3 h-3 rounded-full ${
-                  activity.completed ? "bg-blue-500" : "bg-gray-300"
-                }`}
-              />
-            </div> */}
-
-              <div className="w-3 h-3 rounded-full bg-red-700 ">
-
-              </div>
-            </div>
-            <div className="flex-1 mt-1 min-w-0">
-              <p className="text-xs text-blue-600 font-medium mb-1">
-                August 1, 2021; 12:00pm
-              </p>
-              <p className="text-sm text-gray-900 font-medium leading-relaxed">
-                Seller initiates transaction
-              </p>
-            </div>
-
-            {/* {activities.map((activity, index) => (
-              <div key={index} className="flex items-start space-x-4">
+          {activities.map((activity, index) => (
+            <div key={index} className="bg-blue-50/30 z-10">
+              <div className="flex gap-x-4">
                 <div className="flex-shrink-0 mt-1">
-                  <div
-                    className={`w-3 h-3 rounded-full ${
-                      activity.completed ? "bg-blue-500" : "bg-gray-300"
-                    }`}
-                  />
+                  <div className="w-3 h-3 rounded-full bg-primary"></div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-blue-600 font-medium mb-1">
-                    {activity.date}
+                <div className="flex-1 mt-1 min-w-0">
+                  <p className="text-sm text-grey2 font-normal mb-1">
+                    {new Date(activity.timestamp).toLocaleString()}
                   </p>
-                  <p className="text-sm text-gray-900 font-medium leading-relaxed">
-                    {activity.text}
+                  <p className="text-lg text-textColor font-bold leading-relaxed capitalize">
+                    {activity.action}
                   </p>
                 </div>
               </div>
-            ))} */}
-          </div>
-        </div>
+            </div>
+          ))}
+        </section>
       </div>
     </div>
   );

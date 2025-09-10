@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 
 import { useState } from "react";
 import Head from "next/head";
@@ -14,24 +14,41 @@ import { useQuery, useQueryClient } from "react-query";
 import {
   getOrderStatus,
   getOrderDetails,
+  getOrderActivityLogs,
 } from "../../../../services/api/escrow";
 import notification from "../../../../utilities/notification";
 import OrderIdForm from "../../../../components/pages/buyer/OrderIdForm";
 import { QUERY_KEYS } from "../../../../configs/constants";
 import Activity from "../../../../components/pages/buyer/Activity";
 import { getStatusColor } from "../../../../utilities/color";
-import { OrderDetailsResponse } from "../../../../types/escrow";
+import {
+  ActivityLogItem,
+  ActivityLogsResponse,
+  OrderDetailsResponse,
+} from "../../../../types/escrow";
+import Loading from "../../../../components/common/Loading";
 
 export default function BuyerOrder() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  // Get order Reference from dynamic URL path using router.query
+  const urlOrderReference = router.query.id as string;
+
+  const [isInitialLoading, setIsInitialLoading] = useState(
+    Boolean(urlOrderReference)
+  );
 
   const [orderReference, setOrderReference] = useState("");
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [orderDetails, setOrderDetails] = useState<
     OrderDetailsResponse["data"] | null
   >(null);
-  const [isLoadingOrderDetails, setIsLoadingOrderDetails] = useState(false);
+  const [isLoadingOrderDetails, setIsLoadingOrderDetails] = useState(
+    Boolean(urlOrderReference)
+  );
+
+  const [activityLogs, setActivityLogs] = useState<ActivityLogItem[]>([]);
+  const [isLoadingActivities, setIsLoadingActivities] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -39,8 +56,22 @@ export default function BuyerOrder() {
     phone: "",
   });
 
-  // Get order Reference from dynamic URL path using router.query
-  const urlOrderReference = router.query.id as string;
+  useEffect(() => {
+    if (urlOrderReference) {
+      const orderId = urlOrderReference as string;
+      setOrderReference(orderId);
+      if (!showOrderDetails) {
+        handleViewStatus(); // Auto-fetch on reload
+      }
+    }
+  }, [urlOrderReference]);
+
+  // Ensure loading state when ID arrives
+  useEffect(() => {
+    if (urlOrderReference && !showOrderDetails) {
+      setIsInitialLoading(true);
+    }
+  }, [urlOrderReference, showOrderDetails]);
 
   const { data: orderStatusData, isLoading: statusLoading } = useQuery(
     [QUERY_KEYS.ORDER_STATUS, urlOrderReference],
@@ -65,14 +96,43 @@ export default function BuyerOrder() {
   };
 
   const handleViewStatus = async () => {
-    if (!orderReference.trim()) return;
+    const orderRef = orderReference || (urlOrderReference as string);
+    if (!orderRef?.trim()) return;
 
     setIsLoadingOrderDetails(true);
     try {
-      const response = await getOrderDetails(orderReference);
-      console.log({ response });
+      const response = await getOrderDetails(orderRef);
       if (response.isSuccess) {
         setOrderDetails(response.data);
+
+        const escrowOrderId = response.data?.id;
+
+        if (escrowOrderId) {
+          setIsLoadingActivities(true);
+          try {
+            const activityResponse: ActivityLogsResponse =
+              await getOrderActivityLogs(escrowOrderId);
+            if (activityResponse.isSuccess) {
+              setActivityLogs(activityResponse.data);
+            } else {
+              notification({
+                title: "Error",
+                message:
+                  activityResponse.message || "Failed to fetch activity logs",
+                type: "danger",
+              });
+            }
+          } catch (activityError: any) {
+            notification({
+              title: "Error",
+              message:
+                activityError?.message || "Failed to fetch activity logs",
+              type: "danger",
+            });
+          } finally {
+            setIsLoadingActivities(false);
+          }
+        }
         setShowOrderDetails(true);
       } else {
         notification({
@@ -89,97 +149,9 @@ export default function BuyerOrder() {
       });
     } finally {
       setIsLoadingOrderDetails(false);
+      setIsInitialLoading(false);
     }
   };
-
-  const orderData = useMemo(() => {
-    return {
-      orderItems:
-        orderDetails?.items.map((item, index) => ({
-          id: index + 1,
-          name: item.name,
-          price: item.unitPrice,
-          quantity: item.quantity,
-          total: item.total,
-        })) || [],
-      deliveryFee: orderDetails?.deliveryFee || 0,
-      escrowFee: orderDetails?.escrowFee || 0,
-      storeName: "Tolu's Store",
-      storeAddress: "291 N 4th St, Ikoyi, Lagos, Nigeria",
-      invoiceNumber: orderDetails?.reference || "",
-      invoiceDate: orderDetails?.createdDate || "",
-      recipientName: orderDetails?.recipientName || "",
-      recipientEmail: orderDetails?.recipientEmail || "",
-      recipientPhone: orderDetails?.recipientPhone || "",
-      recipientAddress: orderDetails?.recipientAddress || "",
-      paymentType: orderDetails?.paymentType || "",
-      disputeManager: orderDetails?.disputeManager || "",
-      inspectionPeriod: orderDetails?.inspectionPeriod || "",
-      dueDate: orderDetails?.dueDate || "",
-      status: orderStatusData?.data?.status || "...",
-      statusColor: getStatusColor(orderStatusData?.data?.status || ""),
-      subTotal: orderDetails?.subtotal || 0,
-      total: orderDetails?.total || 0,
-    };
-  }, [orderStatusData]);
-
-  const activities = [
-    {
-      date: "August 1, 2021, 12:00pm",
-      text: "Seller initiates transaction",
-      completed: true,
-    },
-    {
-      date: "August 1, 2021, 12:00pm",
-      text: "You made payment",
-      completed: true,
-    },
-    {
-      date: "August 1, 2021, 12:00pm",
-      text: "Seller requests delivery",
-      completed: true,
-    },
-    {
-      date: "August 1, 2021, 12:00pm",
-      text: "Seller awaiting pickup by Delyman",
-      completed: true,
-    },
-    {
-      date: "August 2, 2021, 12:00pm",
-      text: "Delyman picks up item",
-      completed: true,
-    },
-    {
-      date: "August 2, 2021, 12:00pm",
-      text: "Item close to transit",
-      completed: true,
-    },
-    {
-      date: "August 2, 2021, 12:00pm",
-      text: "Delyman arrived at your location",
-      completed: true,
-    },
-    {
-      date: "August 2, 2021, 12:00pm",
-      text: "You are inspecting your item",
-      completed: true,
-    },
-    {
-      date: "August 2, 2021, 12:00pm",
-      text: "You confirms your order as received",
-      completed: true,
-    },
-    {
-      date: "August 2, 2021, 12:00pm",
-      text: "Funds released into seller's Bridgee wallet",
-      completed: true,
-    },
-    {
-      date: "August 2, 2021, 12:00pm",
-      text: "Your order has been completed",
-      completed: true,
-    },
-  ];
 
   const handlePaymentSuccess = () => {
     queryClient.invalidateQueries([QUERY_KEYS.ORDER_STATUS, urlOrderReference]);
@@ -197,7 +169,7 @@ export default function BuyerOrder() {
   //   urlOrderReference &&
   //   !statusLoading &&
   //   orderStatusData?.data?.allowPayment === false;
-  const shouldShowOrderIdForm = true && !showOrderDetails;
+  const shouldShowOrderIdForm = !urlOrderReference && !showOrderDetails;
   const shouldShowOrderDetails = showOrderDetails;
 
   if (shouldShowOrderIdForm) {
@@ -256,56 +228,63 @@ export default function BuyerOrder() {
 
   if (shouldShowOrderDetails) {
     return (
-      <>
-        <Head>
-          <title>Order Status - Bridgee Escrow</title>
-        </Head>
-        <div className="min-h-screen bg-gray-50">
-          {/* Mobile Header */}
-          <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-4">
-            <div className="flex items-center">
-              <div className="block lg:hidden my-4 ml-2">
-                <Link href="#" onClick={() => {}}>
-                  <Image
-                    src={Logo}
-                    alt="UseBridge Inc. logo"
-                    priority
-                    width={120}
-                    height={45}
+          <>
+            <Head>
+              <title>Order Status - Bridgee Escrow</title>
+            </Head>
+            <div className="min-h-screen bg-gray-50">
+              {/* Mobile Header */}
+              <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-4">
+                <div className="flex items-center">
+                  <div className="block lg:hidden my-4 ml-2">
+                    <Link href="#" onClick={() => {}}>
+                      <Image
+                        src={Logo}
+                        alt="UseBridge Inc. logo"
+                        priority
+                        width={120}
+                        height={45}
+                      />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+              <div className="lg:flex lg:min-h-screen bg-bg-gray-50 container mx-auto">
+                {/* Left Side */}
+                <div className="lg:w-[65%] lg:py-10 p-6">
+                  {/* Desktop Header */}
+                  <div className="hidden lg:block">
+                    <Link href="#" onClick={() => {}}>
+                      <Image
+                        src={Logo}
+                        alt="UseBridge Inc. logo"
+                        priority
+                        width={120}
+                        height={45}
+                        className="mb-12"
+                      />
+                    </Link>
+                  </div>
+
+                  <Invoice
+                    orderDetails={orderDetails}
+                    orderStatus={orderStatusData?.data}
                   />
-                </Link>
+                </div>
+
+                {/* Right Side */}
+                <div className="lg:w-[35%] lg:py-10 p-6">
+                  <Activity activities={activityLogs} />
+                </div>
               </div>
             </div>
-          </div>
-          <div className="lg:flex lg:min-h-screen bg-bg-gray-50 container mx-auto">
-            {/* Left Side */}
-            <div className="lg:w-[45%] lg:p-10 p-6">
-              {/* Desktop Header */}
-              <div className="hidden lg:block">
-                <Link href="#" onClick={() => {}}>
-                  <Image
-                    src={Logo}
-                    alt="UseBridge Inc. logo"
-                    priority
-                    width={120}
-                    height={45}
-                    className="mb-12"
-                  />
-                </Link>
-              </div>
-
-              <Invoice {...orderData} />
-            </div>
-
-            {/* Right Side */}
-            <div className="lg:w-[55%] lg:p-10 p-6">
-              <Activity activities={activities} />
-            </div>
-          </div>
-        </div>
-      </>
-    );
+          </>
+        );
   }
+
+  if ((isInitialLoading || isLoadingOrderDetails || urlOrderReference) && !showOrderDetails) {
+  return <Loading />;
+}
 
   return (
     <>
@@ -362,7 +341,10 @@ export default function BuyerOrder() {
           {/* Right Side */}
 
           <div className="lg:w-[55%] lg:p-10 p-6">
-            <Invoice {...orderData} />
+            <Invoice
+              orderDetails={orderDetails}
+              orderStatus={orderStatusData?.data}
+            />
           </div>
         </div>
       </div>

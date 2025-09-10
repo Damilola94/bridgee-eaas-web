@@ -1,4 +1,5 @@
 import {
+  ActivityLogsResponse,
   OrderDetailsResponse,
   OrderStatusResponse,
   PaymentDetailsResponse,
@@ -10,7 +11,7 @@ export const getOrderStatus = (orderReference: string): Promise<OrderStatusRespo
   return handleFetch({
     service: "wallet-service",
     // endpoint: `/api/v1/escrows/orders/status/${orderReference}`,
-    endpoint: `/api/v1/escrows/orders/status/9C336337A6A5`,
+    endpoint: `/api/v1/escrows/orders/status/43450406DAD8`,
     method: "GET",
   }) as Promise<OrderStatusResponse>;
 };
@@ -42,4 +43,12 @@ export const getTransactionStatus = (
     endpoint: `/wallet/transactions/${transactionId}/status`,
     method: "GET",
   }) as Promise<TransactionStatusResponse>;
+};
+
+export const getOrderActivityLogs = async (escrowOrderId: string): Promise<ActivityLogsResponse> => {
+  return await handleFetch({
+    service: "wallet-service",
+    method: "GET",
+    endpoint: `/api/v1/activitylogs/order/${escrowOrderId}`,
+  }) as Promise<ActivityLogsResponse>;
 };
