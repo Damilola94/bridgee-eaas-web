@@ -37,7 +37,8 @@ module.exports = {
         xs: '480px'
       },
       backgroundImage: {
-        'auth-bg': "url('../assets/svgs/background.svg')"
+        'auth-bg': "url('../assets/svgs/background.svg')",
+        'dashed-line-dynamic': `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3cline y1='50%25' x2='100%25' y2='50%25' stroke='var(--stroke-color, %23696969)' stroke-width='var(--stroke-width, 0.8)' stroke-dasharray='8 8'/%3e%3c/svg%3e")`,
       }
     }
   },

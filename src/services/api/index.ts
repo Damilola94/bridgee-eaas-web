@@ -5,7 +5,7 @@ import errorHandler from '../../utilities/errorHandler';
 import memoizedRefreshToken from './refreshToken';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL
+  baseURL: "https://staging-api.usebridgee.com"
 });
 
 axiosInstance.interceptors.response.use(
