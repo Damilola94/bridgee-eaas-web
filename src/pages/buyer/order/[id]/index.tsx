@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 
 import { useState } from "react";
 import Head from "next/head";
@@ -17,16 +17,15 @@ import {
   getOrderActivityLogs,
 } from "../../../../services/api/escrow";
 import notification from "../../../../utilities/notification";
-import OrderIdForm from "../../../../components/pages/buyer/OrderIdForm";
 import { QUERY_KEYS } from "../../../../configs/constants";
 import Activity from "../../../../components/pages/buyer/Activity";
-import { getStatusColor } from "../../../../utilities/color";
 import {
   ActivityLogItem,
   ActivityLogsResponse,
   OrderDetailsResponse,
 } from "../../../../types/escrow";
 import Loading from "../../../../components/common/Loading";
+import Skeleton from "react-loading-skeleton";
 
 export default function BuyerOrder() {
   const router = useRouter();
@@ -161,22 +160,23 @@ export default function BuyerOrder() {
     queryClient.invalidateQueries([QUERY_KEYS.ORDER_STATUS, urlOrderReference]);
   };
 
-  const shouldShowPayment =
-    urlOrderReference &&
-    !statusLoading &&
-    orderStatusData?.data?.allowPayment === true;
-  // const shouldShowOrderIdForm =
-  //   urlOrderReference &&
-  //   !statusLoading &&
-  //   orderStatusData?.data?.allowPayment === false;
-  const shouldShowOrderIdForm = !urlOrderReference && !showOrderDetails;
-  const shouldShowOrderDetails = showOrderDetails;
 
-  if (shouldShowOrderIdForm) {
+  if (
+    isInitialLoading ||
+    isLoadingOrderDetails ||
+    statusLoading ||
+    !orderStatusData
+  ) {
+    return <Loading />;
+  }
+
+  const allowPayment = orderStatusData?.data?.allowPayment;
+
+  if (allowPayment === true) {
     return (
       <>
         <Head>
-          <title>Order Status - Bridgee Escrow</title>
+          <title>Checkout - Bridgee Escrow</title>
         </Head>
 
         <div className="min-h-screen bg-gray-50">
@@ -198,6 +198,7 @@ export default function BuyerOrder() {
           </div>
 
           <div className="lg:flex lg:min-h-screen bg-bg-gray-50 container mx-auto">
+            {/* Left Side */}
             <div className="lg:w-[45%] lg:p-10 p-6">
               {/* Desktop Header */}
               <div className="hidden lg:block">
@@ -213,121 +214,6 @@ export default function BuyerOrder() {
                 </Link>
               </div>
 
-              <OrderIdForm
-                orderId={orderReference}
-                setOrderId={setOrderReference}
-                onSubmit={handleViewStatus}
-                isLoading={isLoadingOrderDetails}
-              />
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  if (shouldShowOrderDetails) {
-    return (
-          <>
-            <Head>
-              <title>Order Status - Bridgee Escrow</title>
-            </Head>
-            <div className="min-h-screen bg-gray-50">
-              {/* Mobile Header */}
-              <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-4">
-                <div className="flex items-center">
-                  <div className="block lg:hidden my-4 ml-2">
-                    <Link href="#" onClick={() => {}}>
-                      <Image
-                        src={Logo}
-                        alt="UseBridge Inc. logo"
-                        priority
-                        width={120}
-                        height={45}
-                      />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-              <div className="lg:flex lg:min-h-screen bg-bg-gray-50 container mx-auto">
-                {/* Left Side */}
-                <div className="lg:w-[65%] lg:py-10 p-6">
-                  {/* Desktop Header */}
-                  <div className="hidden lg:block">
-                    <Link href="#" onClick={() => {}}>
-                      <Image
-                        src={Logo}
-                        alt="UseBridge Inc. logo"
-                        priority
-                        width={120}
-                        height={45}
-                        className="mb-12"
-                      />
-                    </Link>
-                  </div>
-
-                  <Invoice
-                    orderDetails={orderDetails}
-                    orderStatus={orderStatusData?.data}
-                  />
-                </div>
-
-                {/* Right Side */}
-                <div className="lg:w-[35%] lg:py-10 p-6">
-                  <Activity activities={activityLogs} />
-                </div>
-              </div>
-            </div>
-          </>
-        );
-  }
-
-  if ((isInitialLoading || isLoadingOrderDetails || urlOrderReference) && !showOrderDetails) {
-  return <Loading />;
-}
-
-  return (
-    <>
-      <Head>
-        <title>Checkout - Bridgee Escrow</title>
-      </Head>
-
-      <div className="min-h-screen bg-gray-50">
-        {/* Mobile Header */}
-        <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-4">
-          <div className="flex items-center">
-            <div className="block lg:hidden my-4 ml-2">
-              <Link href="#" onClick={() => {}}>
-                <Image
-                  src={Logo}
-                  alt="UseBridge Inc. logo"
-                  priority
-                  width={120}
-                  height={45}
-                />
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        <div className="lg:flex lg:min-h-screen bg-bg-gray-50 container mx-auto">
-          {/* Left Side */}
-          <div className="lg:w-[45%] lg:p-10 p-6">
-            {/* Desktop Header */}
-            <div className="hidden lg:block">
-              <Link href="#" onClick={() => {}}>
-                <Image
-                  src={Logo}
-                  alt="UseBridge Inc. logo"
-                  priority
-                  width={120}
-                  height={45}
-                  className="mb-12"
-                />
-              </Link>
-            </div>
-
-            {shouldShowPayment && (
               <MakePayment
                 formData={formData}
                 onInputChange={handleInputChange}
@@ -335,19 +221,80 @@ export default function BuyerOrder() {
                 onPaymentPending={handlePaymentPending}
                 onPaymentSuccess={handlePaymentSuccess}
               />
-            )}
-          </div>
+            </div>
 
-          {/* Right Side */}
-
-          <div className="lg:w-[55%] lg:p-10 p-6">
-            <Invoice
-              orderDetails={orderDetails}
-              orderStatus={orderStatusData?.data}
-            />
+            {/* Right Side */}
+            <div className="lg:w-[55%] lg:p-10 p-6">
+              <Invoice
+                orderDetails={orderDetails}
+                orderStatus={orderStatusData?.data}
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </>
-  );
+      </>
+    );
+  } else {
+    return (
+      <>
+        <Head>
+          <title>Order Status - Bridgee Escrow</title>
+        </Head>
+        <div className="min-h-screen bg-gray-50">
+          {/* Mobile Header */}
+          <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-4">
+            <div className="flex items-center">
+              <div className="block lg:hidden my-4 ml-2">
+                <Link href="#" onClick={() => {}}>
+                  <Image
+                    src={Logo}
+                    alt="UseBridge Inc. logo"
+                    priority
+                    width={120}
+                    height={45}
+                  />
+                </Link>
+              </div>
+            </div>
+          </div>
+          <div className="lg:flex lg:min-h-screen bg-bg-gray-50 container mx-auto">
+            {/* Left Side */}
+            <div className="lg:w-[65%] lg:py-10 p-6">
+              {/* Desktop Header */}
+              <div className="hidden lg:block">
+                <Link href="#" onClick={() => {}}>
+                  <Image
+                    src={Logo}
+                    alt="UseBridge Inc. logo"
+                    priority
+                    width={120}
+                    height={45}
+                    className="mb-12"
+                  />
+                </Link>
+              </div>
+
+              <Invoice
+                orderDetails={orderDetails}
+                orderStatus={orderStatusData?.data}
+              />
+            </div>
+
+            {/* Right Side */}
+            <div className="lg:w-[35%] lg:py-10 p-6">
+              {isLoadingActivities ? (
+                <div className="space-y-3">
+                  {[...Array(5)].map((_, i) => (
+                    <Skeleton key={i} width="100%" height={50} />
+                  ))}
+                </div>
+              ) : (
+                <Activity activities={activityLogs} />
+              )}
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
 }

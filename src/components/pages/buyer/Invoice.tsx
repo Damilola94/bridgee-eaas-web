@@ -10,8 +10,6 @@ interface OrderItem {
 }
 
 interface OrderDetailsData {
-  storeName?: string;
-  storeAddress?: string;
   id: string;
   createdDate: string;
   reference: string;
@@ -19,6 +17,8 @@ interface OrderDetailsData {
   recipientEmail: string;
   recipientPhone: string;
   recipientAddress: string;
+  businessName?: string;
+  businessAddress?: string;
   paymentType: string;
   disputeManager: string;
   inspectionPeriod: string;
@@ -45,8 +45,6 @@ export default function Invoice({
   paymentMade = true,
 }: InvoiceProps) {
   const orderData = {
-    storeName: "Tolu's Store",
-    storeAddress: "291 N 4th St, Ikoyi, Lagos, Nigeria",
     id: orderDetails?.id || "",
     invoiceDate: orderDetails?.createdDate || "",
     invoiceNumber: orderDetails?.reference || "",
@@ -54,6 +52,9 @@ export default function Invoice({
     recipientEmail: orderDetails?.recipientEmail || "",
     recipientPhone: orderDetails?.recipientPhone || "",
     recipientAddress: orderDetails?.recipientAddress || "",
+    businessName: orderDetails?.businessName || "Bridge Marketplace",
+    businessAddress:
+      orderDetails?.businessAddress || "291 N 4th St, Ikoyi, Lagos, Nigeria",
     paymentType: orderDetails?.paymentType || "",
     disputeManager: orderDetails?.disputeManager || "",
     inspectionPeriod: orderDetails?.inspectionPeriod || "",
@@ -101,10 +102,10 @@ export default function Invoice({
             </div>
             <div>
               <h3 className="text-base font-semibold text-textColor">
-                {orderData.storeName}
+                {orderData.businessName}
               </h3>
               <p className="text-sm font-medium text-textColor pb-2">
-                {orderData.storeAddress}
+                {orderData.businessAddress}
               </p>
               <p className="text-sm font-medium text-grey2">
                 {orderData.invoiceDate}
@@ -120,7 +121,7 @@ export default function Invoice({
               style={statusStyle}
               className={`text-xs font-medium px-2 py-1 rounded-full`}
             >
-              {status}
+              {orderData.status}
             </span>
           </div>
         </div>
@@ -200,13 +201,13 @@ export default function Invoice({
                   <span className="text-grey2 lg:hidden">{`Quantity: ${item.quantity}`}</span>
                 </div>
                 <div className="hidden lg:block py-4 px-4 text-sm text-gray-600">
-                  NGN {formatCurrency(item.price)}
+                  {formatCurrency(item.price)}
                 </div>
                 <div className="hidden lg:block py-4 px-4 text-sm text-gray-600">
                   {item.quantity}
                 </div>
                 <div className="py-4 px-4 text-sm font-semibold text-gray-900">
-                  NGN {formatCurrency(item.total)}
+                  {formatCurrency(item.total)}
                 </div>
               </div>
             ))}
@@ -218,7 +219,7 @@ export default function Invoice({
             <div className="flex text-sm gap-x-14 justify-between">
               <span className="text-gray-600">SUBTOTAL</span>
               <span className="font-semibold">
-                NGN {formatCurrency(orderData.subTotal)}
+                {formatCurrency(orderData.subTotal)}
               </span>
             </div>
             <div className="flex text-sm gap-x-14 justify-between">
@@ -235,7 +236,7 @@ export default function Invoice({
             </div>
             <div className="flex gap-x-14 text-lg font-bold pt-2 justify-between">
               <span>TOTAL</span>
-              <span>NGN {formatCurrency(orderData.total)}</span>
+              <span> {formatCurrency(orderData.total)}</span>
             </div>
           </div>
         </div>
