@@ -10,7 +10,7 @@ interface ActivityProps {
 
 export default function Activity({ activities = [] }: ActivityProps) {
   return (
-    <div className="w-full">
+    <div className="w-full lg:mt-[9.5rem]">
       <div className="bg-white rounded-lg p-6 shadow">
         <h2 className="text-2xl font-bold mb-6">Activity</h2>
 
