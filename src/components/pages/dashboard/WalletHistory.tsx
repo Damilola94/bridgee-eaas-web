@@ -116,7 +116,7 @@ function WalletHistory({ }: Props) {
                         <button
                           type="button"
                           onClick={() => {
-                            setSelectedTransaction(data?.id);
+                            setSelectedTransaction(item?.id);
                             setShowDetails(true);
                           }}
                           className="border border-black rounded-lg px-3 py-1.5 hover:bg-gray-100"

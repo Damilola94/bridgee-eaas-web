@@ -34,7 +34,7 @@ function TransactionDetailsModal({ onClose, transactionId }: Props) {
     if (status === "success" && data?.isSuccess && data?.data) {
       const tx = data.data;
       return {
-        amount: `₦${tx.amount ?? 0}`,
+        amount: `${tx.amount ?? 0}`,
         reference: tx.reference,
         channel: tx.transactionChannel,
         status: tx.status,
