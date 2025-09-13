@@ -14,6 +14,7 @@ export const statusColors = {
   Processing: '#42389D',
   OutForDelivery: '#5521B5',
   Delivered: '#03543F',
+  Successful: '#03543F',
   Returned: '#9B1C1C',
   Cancelled: '#111928',
 
@@ -54,6 +55,7 @@ export const statusTitle = {
   Processing: 'Processing Delivery',
   OutForDelivery: 'Out For Delivery',
   Delivered: 'Delivered',
+  Successful: 'Successful',
   Returned: 'Item(s) Returned',
   Cancelled: 'Delivery Cancelled',
 

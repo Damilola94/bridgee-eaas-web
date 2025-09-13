@@ -36,7 +36,7 @@ function WalletHistory({ }: Props) {
   const { data, status, error } = useGetQuery({
     service: "wallet-service",
     endpoint: 'wallet',
-    extra: 'transactions/transaction',
+    extra: 'transactions',
     pQuery: { pageSize: 10, pageNumber: 1, SearchKey: search },
     queryKey: ['wallet-transactions-dashboard', search, filter?.value || 'all'],
     enabled: !!cookie?.data?.accessToken
@@ -102,7 +102,7 @@ function WalletHistory({ }: Props) {
                               ? <InflowArrow className="w-4 h-4" color="#03543F" />
                               : <OutflowArrow className="w-4 h-4" color="#EB4336" />}
                           </span>
-                          <span className="capitalize">{item?.transaction}</span>
+                          <span className="capitalize">{item?.transaction ? item?.transaction : "Not Provided"}</span>
                         </div>
                       </td>
                       <td className="px-3 py-5">{`#${item?.referenceNumber}`}</td>
@@ -121,7 +121,7 @@ function WalletHistory({ }: Props) {
                           }}
                           className="border border-black rounded-lg px-3 py-1.5 hover:bg-gray-100"
                         >
-          View
+                          View
                         </button>
                       </td>
                     </tr>

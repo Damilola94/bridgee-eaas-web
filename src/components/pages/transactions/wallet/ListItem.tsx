@@ -21,7 +21,7 @@ function ListItem({ data, index }: { data: TransactionProps, index: number }) {
               ? <InflowArrow className="w-4 h-4" color="#03543F" />
               : <OutflowArrow className="w-4 h-4" color="#EB4336" />}
           </span>
-          <span className="capitalize">{data?.transaction}</span>
+          <span className="capitalize">{data?.transaction ? data?.transaction : "Not Provided"}</span>
         </div>
       </td>
       <td className="px-3 py-5">{data?.referenceNumber}</td>
