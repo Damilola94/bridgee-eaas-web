@@ -10,8 +10,7 @@ import handleFetch from "./handleFetch";
 export const getOrderStatus = (orderReference: string): Promise<OrderStatusResponse> => {
   return handleFetch({
     service: "wallet-service",
-    // endpoint: `/api/v1/escrows/orders/status/${orderReference}`,
-    endpoint: `/api/v1/escrows/orders/status/43450406DAD8`,
+    endpoint: `/api/v1/escrows/orders/status/${orderReference}`,
     method: "GET",
   }) as Promise<OrderStatusResponse>;
 };

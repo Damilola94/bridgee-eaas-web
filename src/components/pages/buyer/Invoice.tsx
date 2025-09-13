@@ -30,19 +30,19 @@ interface OrderDetailsData {
   escrowFee: number | string;
   total: number | string;
   status?: string;
-  paymentMade?: boolean;
+  allowPayment?: boolean;
 }
 
 interface InvoiceProps {
   orderDetails: OrderDetailsData | null;
-  orderStatus?: { status?: string };
-  paymentMade?: boolean;
+  orderStatus?: { status: string, allowPayment: boolean };
+  allowPayment?: boolean;
 }
 
 export default function Invoice({
   orderDetails,
   orderStatus,
-  paymentMade = true,
+  allowPayment,
 }: InvoiceProps) {
   const orderData = {
     id: orderDetails?.id || "",
@@ -73,7 +73,7 @@ export default function Invoice({
     escrowFee: orderDetails?.escrowFee || 0,
     total: orderDetails?.total || 0,
     status: orderStatus?.status || "...",
-    paymentMade: paymentMade || false,
+    allowPayment: orderStatus?.allowPayment,
   };
 
   const statusStyle = getStatusColor(orderData.status);
@@ -84,7 +84,7 @@ export default function Invoice({
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-textColor mb-2">
             Order Summary
-            {paymentMade && (
+            {allowPayment === true && (
               <span className="text-base font-normal text-textColor ml-2">
                 (Kindly confirm your order details below before making payment)
               </span>
