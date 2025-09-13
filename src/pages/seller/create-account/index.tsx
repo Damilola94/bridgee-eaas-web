@@ -155,7 +155,7 @@ export default function CreateAccountPage() {
       {/* Left side - Form */}
       <div className="w-full lg:w-1/2 flex justify-center mt-10 lg:mt-20">
         <div className="w-full max-w-md px-6 py-8">
-          <Link href="/#top" onClick={() => {}}>
+          <Link href="/#top">
             <Image
               src={Logo}
               alt="UseBridge Inc. logo"

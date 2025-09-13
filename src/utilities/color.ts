@@ -1,37 +1,38 @@
 export const getStatusColor = (status: string) => {
   switch (status?.toLowerCase()) {
-    case 'draft':
+    case "draft":
       return {
-        backgroundColor: '#f59e0b',
-        color: '#92400e', 
-        borderColor: '#f59e0b'
+        backgroundColor: "#FDF6B2",
+        color: "#723B13",
+        borderColor: "#FDF6B2",
       };
-    case 'paid':
-    case 'completed':
+    case "paid":
+    case "confirmed":
+    case "completed":
       return {
-        backgroundColor: '#10b981',
-        color: '#064e3b',
-        borderColor: '#10b981' 
+        backgroundColor: "#DEF7EC",
+        color: "#03543F",
+        borderColor: "#DEF7EC",
       };
-    case 'processing':
-    case 'in-progress':
+    case "processing":
+    case "in-progress":
       return {
-        backgroundColor: '#3b82f6',
-        color: '#1e3a8a',
-        borderColor: '#3b82f6'
+        backgroundColor: "#3b82f6",
+        color: "#1e3a8a",
+        borderColor: "#3b82f6",
       };
-    case 'cancelled':
-    case 'failed':
+    case "cancelled":
+    case "failed":
       return {
-        backgroundColor: '#ef4444', 
-        color: '#991b1b',
-        borderColor: '#ef4444'
+        backgroundColor: "#ef4444",
+        color: "#991b1b",
+        borderColor: "#ef4444",
       };
     default:
       return {
-        backgroundColor: '#6b7280',
-        color: '#374151',
-        borderColor: '#6b7280'
+        backgroundColor: "#6b7280",
+        color: "#374151",
+        borderColor: "#6b7280",
       };
   }
 };
