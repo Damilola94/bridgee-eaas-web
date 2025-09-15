@@ -12,7 +12,10 @@ import Loading from "../../common/Loading";
 import { updateBusinessDetails } from "../../../services/api/business";
 import { BusinessDetailsUpdateResponse } from "../../../types/business";
 import notification from "../../../utilities/notification";
-import { removeNigerianCountryCode, removeNigerianCountryCodeAddLeadingZero } from "../../../utilities/general"; // Assuming renamed to this
+import {
+  removeNigerianCountryCode,
+  removeNigerianCountryCodeAddLeadingZero,
+} from "../../../utilities/general"; // Assuming renamed to this
 import { QUERY_KEYS } from "../../../configs/constants"; // Assuming created
 
 function BusinessDetails() {
@@ -23,10 +26,10 @@ function BusinessDetails() {
   const isLoading = !accounts;
 
   const [formData, setFormData] = useState({
-    businessName: '',
-    businessEmail: '',
-    businessPhone: '',
-    logoFile: null as File | null
+    businessName: "",
+    businessEmail: "",
+    businessPhone: "",
+    logoFile: null as File | null,
   });
 
   const [countryCode, setCountryCode] = useState("NG");
@@ -39,13 +42,15 @@ function BusinessDetails() {
       const initialCountryCode = phoneNumberString.startsWith("234")
         ? "NG"
         : phoneNumberString.slice(0, 3) || "NG";
-      const initialPhoneWithoutCode = phoneNumberString.replace(/^234/, "") || "";
+      const initialPhoneWithoutCode =
+        phoneNumberString.replace(/^234/, "") || "";
 
       setFormData({
-        businessName: businessDetail.businessName || '',
-        businessEmail: businessDetail.businessEmail || '',
-        businessPhone: removeNigerianCountryCodeAddLeadingZero(phoneNumberString),
-        logoFile: null
+        businessName: businessDetail.businessName || "",
+        businessEmail: businessDetail.businessEmail || "",
+        businessPhone:
+          removeNigerianCountryCodeAddLeadingZero(phoneNumberString),
+        logoFile: null,
       });
 
       setCountryCode(initialCountryCode);
@@ -74,38 +79,47 @@ function BusinessDetails() {
   const updateMutation = useMutation(updateBusinessDetails, {
     onSuccess: (res: BusinessDetailsUpdateResponse) => {
       if (res.isSuccess) {
+        setFormData((prev) => ({ ...prev, logoFile: null }));
+
         notification({
           message: res.message || "Business details updated successfully!",
-          type: "success"
+          type: "success",
         });
         queryClient.invalidateQueries(QUERY_KEYS.IDENTITY_ACCOUNTS);
       } else {
         notification({
           message: res.message || "Update failed",
-          type: "danger"
+          type: "danger",
         });
       }
     },
     onError: (error: any) => {
       notification({
         message: error?.message || "Update failed",
-        type: "danger"
+        type: "danger",
       });
-    }
+    },
   });
 
   const handleSave = () => {
-    if (!formData.businessName || !formData.businessEmail || !phoneWithoutCode) {
+    if (
+      !formData.businessName ||
+      !formData.businessEmail ||
+      !phoneWithoutCode
+    ) {
       notification({ message: "Please fill in all fields", type: "warning" });
       return;
     }
 
-    const fullPhone = countryCode === "NG" ? `234${phoneWithoutCode}` : `${countryCode}${phoneWithoutCode}`;
+    const fullPhone =
+      countryCode === "NG"
+        ? `234${phoneWithoutCode}`
+        : `${countryCode}${phoneWithoutCode}`;
     const formattedPhone = removeNigerianCountryCode(fullPhone);
 
     updateMutation.mutate({
       ...formData,
-      businessPhone: formattedPhone
+      businessPhone: formattedPhone,
     });
   };
 
@@ -126,7 +140,11 @@ function BusinessDetails() {
               <div className="w-full px-2">
                 <div className="mb-10">
                   <Image
-                    src={formData.logoFile ? URL.createObjectURL(formData.logoFile) : businessDetail?.businessLogoUrl || AlatLogo}
+                    src={
+                      formData.logoFile
+                        ? URL.createObjectURL(formData.logoFile)
+                        : businessDetail?.businessLogoUrl || AlatLogo
+                    }
                     alt="business logo"
                     className="w-[100px] h-[100px] bg-gray-300 rounded-full object-cover object-center"
                     width={100}
@@ -141,8 +159,13 @@ function BusinessDetails() {
                   />
                   <div className="flex items-end mt-3">
                     Business Logo
-                    <button type="button" className="ml-2"
-                      onClick={() => document.getElementById('logo-file')?.click()}>
+                    <button
+                      type="button"
+                      className="ml-2"
+                      onClick={() =>
+                        document.getElementById("logo-file")?.click()
+                      }
+                    >
                       <svg
                         width="20"
                         height="20"
