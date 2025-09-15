@@ -35,6 +35,10 @@ export default function AccountDetails() {
   const accountDetails: Account[] = accounts?.identity?.accountDetails || [];
   const isSuccess = accounts?.identity;
 
+  const sortedAccountDetails = [...accountDetails].sort(
+    (a, b) => Number(b.isPrimary) - Number(a.isPrimary)
+  );
+
   const [primaryStatuses, setPrimaryStatuses] = useState<boolean[]>([]);
   const [hasAddedAccount, setHasAddedAccount] = useState(false);
 
@@ -67,7 +71,7 @@ export default function AccountDetails() {
   const banks: Bank[] =
     bankResponse?.data.map((apiBank) => ({
       bankCode: apiBank.bankCode,
-      bankName: apiBank.bankName
+      bankName: apiBank.bankName,
     })) || [];
 
   const accountNameMutation = useMutation(getAccountName, {
@@ -84,9 +88,9 @@ export default function AccountDetails() {
       notification({
         title: "Invalid Account",
         message: error?.message || "Account verification failed",
-        type: "danger"
+        type: "danger",
       });
-    }
+    },
   });
 
   const addBankMutation = useMutation(addLinkedBank, {
@@ -100,9 +104,9 @@ export default function AccountDetails() {
       notification({
         title: "Add Account Failed",
         message: error?.message || "Failed to add account",
-        type: "danger"
+        type: "danger",
       });
-    }
+    },
   });
 
   //set primary bank
@@ -112,11 +116,10 @@ export default function AccountDetails() {
         notification({
           title: "Success",
           message: "Primary account set successfully.",
-          type: "success"
+          type: "success",
         });
 
         queryClient.invalidateQueries([QUERY_KEYS.IDENTITY_ACCOUNTS]);
-        console.log("Primary account set successfully");
       } else {
         // Revert UI on failure
         setPrimaryStatuses((prev) =>
@@ -127,7 +130,7 @@ export default function AccountDetails() {
         notification({
           title: "Set Primary Failed",
           message: response.message || "Failed to set primary account",
-          type: "danger"
+          type: "danger",
         });
       }
     },
@@ -141,9 +144,9 @@ export default function AccountDetails() {
       notification({
         title: "Set Primary Failed",
         message: error?.message || "Failed to set primary account",
-        type: "danger"
+        type: "danger",
       });
-    }
+    },
   });
 
   const deleteBankMutation = useMutation(deleteLinkedBank, {
@@ -189,7 +192,7 @@ export default function AccountDetails() {
     if (value.length === 10 && selectedBank) {
       accountNameMutation.mutate({
         accountNumber: value,
-        bankCode: selectedBank.bankCode
+        bankCode: selectedBank.bankCode,
       });
     }
 
@@ -202,7 +205,7 @@ export default function AccountDetails() {
         bankCode: selectedBank!.bankCode,
         accountNumber,
         accountName,
-        isPrimary: false
+        isPrimary: false,
       });
     }
   };
@@ -238,7 +241,7 @@ export default function AccountDetails() {
         notification({
           title: "Error",
           message: "Cannot set primary: No linked bank ID available.",
-          type: "danger"
+          type: "danger",
         });
 
         setPrimaryStatuses((prev) =>
@@ -250,11 +253,11 @@ export default function AccountDetails() {
 
   const handleToggle =
     (index: number): Dispatch<SetStateAction<boolean>> =>
-      (val: boolean | SetStateAction<boolean>) => {
-        if (typeof val === "boolean") {
-          handleTogglePrimary(index, val);
-        }
-      };
+    (val: boolean | SetStateAction<boolean>) => {
+      if (typeof val === "boolean") {
+        handleTogglePrimary(index, val);
+      }
+    };
 
   const closeModal = () => {
     setModalOpen(false);
@@ -273,7 +276,7 @@ export default function AccountDetails() {
 
   const handleDeleteBank = (account: any, index: number) => {
     setAccountToDelete({ account, index });
-  setDeleteModalOpen(true);
+    setDeleteModalOpen(true);
   };
 
   const confirmDeleteBank = () => {
@@ -301,101 +304,109 @@ export default function AccountDetails() {
     <>
       {isSuccess ? (
         <>
-          {accountDetails.map((account: any, index: number) => (
-            <div
-              key={account.accountNumber}
-              className="bg-white rounded-lg p-10 shadow w-full xl:w-[60%] mt-12"
-            >
-              <div className="space-y-6">
-                <h2 className="text-xl font-semibold text-gray-900">
-                  Account Details
-                </h2>
-                <div>
-                  {/* Table Header */}
-                  <div className="grid grid-cols-4 gap-4 py-3 px-4 border-b border-gray-200 text-sm font-medium text-textColor/50">
-                    <div>Bank</div>
-                    <div>Account Number</div>
-                    <div>Account Name</div>
-                    <div className="hidden lg:block text-right">Actions</div>
-                  </div>
-                  {/* Table Row */}
-                  <div key={index}>
-                    <div className="grid grid-cols-4 gap-4 py-4 px-4 border-b border-gray-200 items-center">
-                      <div className="text-sm text-gray-900">
-                        {account.bankName}
-                      </div>
-                      <div className="text-sm text-gray-900">
-                        {account.accountNumber}
-                      </div>
-                      <div className="text-sm text-gray-900">
-                        {account.accountName}
-                      </div>
-                      <div className="flex items-center justify-end space-x-2">
-                        {/* Delete Icon */}
-                        <button
-                          className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-                          onClick={() => handleDeleteBank(account, index)}
-                          disabled={deleteBankMutation.isLoading}
-                        >
-                          <svg
-                            width="24"
-                            height="25"
-                            viewBox="0 0 24 25"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M21 6.48C17.67 6.15 14.32 5.98 10.98 5.98C9 5.98 7.02 6.08 5.04 6.28L3 6.48"
-                              stroke="#6B7280"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M8.5 5.47L8.72 4.16C8.88 3.21 9 2.5 10.69 2.5H13.31C15 2.5 15.13 3.25 15.28 4.17L15.5 5.47"
-                              stroke="#6B7280"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M18.85 9.64L18.2 19.71C18.09 21.28 18 22.5 15.21 22.5H8.79002C6.00002 22.5 5.91002 21.28 5.80002 19.71L5.15002 9.64"
-                              stroke="#6B7280"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M10.33 17H13.66"
-                              stroke="#6B7280"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M9.5 13H14.5"
-                              stroke="#6B7280"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
+          {sortedAccountDetails.map((account: any, sortedIndex: number) => {
+            const originalIndex = accountDetails.findIndex(
+              (acc) => acc.accountNumber === account.accountNumber
+            );
 
-                    <div className="mt-2 px-4 py-2">
-                      <ToggleInput
-                        label="Set as primary account"
-                        value={primaryStatuses[index]}
-                        onChange={handleToggle(index)}
-                      />
+            return (
+              <div
+                key={account.accountNumber}
+                className="bg-white rounded-lg p-10 shadow w-full xl:w-[60%] mt-12"
+              >
+                <div className="space-y-6">
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    Account Details
+                  </h2>
+                  <div>
+                    {/* Table Header */}
+                    <div className="grid grid-cols-4 gap-4 py-3 px-4 border-b border-gray-200 text-sm font-medium text-textColor/50">
+                      <div>Bank</div>
+                      <div>Account Number</div>
+                      <div>Account Name</div>
+                      <div className="hidden lg:block text-right">Actions</div>
+                    </div>
+                    {/* Table Row */}
+                    <div key={sortedIndex}>
+                      <div className="grid grid-cols-4 gap-4 py-4 px-4 border-b border-gray-200 items-center">
+                        <div className="text-sm text-gray-900">
+                          {account.bankName}
+                        </div>
+                        <div className="text-sm text-gray-900">
+                          {account.accountNumber}
+                        </div>
+                        <div className="text-sm text-gray-900">
+                          {account.accountName}
+                        </div>
+                        <div className="flex items-center justify-end space-x-2">
+                          {/* Delete Icon */}
+                          <button
+                            className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                            onClick={() =>
+                              handleDeleteBank(account, originalIndex)
+                            }
+                            disabled={deleteBankMutation.isLoading}
+                          >
+                            <svg
+                              width="24"
+                              height="25"
+                              viewBox="0 0 24 25"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M21 6.48C17.67 6.15 14.32 5.98 10.98 5.98C9 5.98 7.02 6.08 5.04 6.28L3 6.48"
+                                stroke="#6B7280"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                              <path
+                                d="M8.5 5.47L8.72 4.16C8.88 3.21 9 2.5 10.69 2.5H13.31C15 2.5 15.13 3.25 15.28 4.17L15.5 5.47"
+                                stroke="#6B7280"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                              <path
+                                d="M18.85 9.64L18.2 19.71C18.09 21.28 18 22.5 15.21 22.5H8.79002C6.00002 22.5 5.91002 21.28 5.80002 19.71L5.15002 9.64"
+                                stroke="#6B7280"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                              <path
+                                d="M10.33 17H13.66"
+                                stroke="#6B7280"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                              <path
+                                d="M9.5 13H14.5"
+                                stroke="#6B7280"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="mt-2 px-4 py-2">
+                        <ToggleInput
+                          label="Set as primary account"
+                          value={primaryStatuses[originalIndex]}
+                          onChange={handleToggle(originalIndex)}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
           {accountDetails.length === 0 && (
             <div className="bg-white rounded-lg p-10 shadow w-full xl:w-[60%] mt-12">
               <div className="space-y-6">
@@ -424,7 +435,7 @@ export default function AccountDetails() {
 
       <Modal
         isCenter={true}
-        isShowCloseIcon={false}
+        isShowCloseIcon={true}
         maxWidth="max-w-[450px]"
         isOpen={modalOpen}
         onClose={closeModal}
