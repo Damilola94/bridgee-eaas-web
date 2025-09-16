@@ -14,8 +14,13 @@ import Loading from "../../common/Loading";
 import CheckCircle from "../../../assets/svgs/check-circle.svg";
 
 import ChangePassword from "./ChangePassword";
+import { useAccountsContext } from "../../../context/Accounts";
+import WithdrawalPinBanner from "../dashboard/CreateWithdrawalPin";
 
 export default function SecuritySettings() {
+  const { accounts } = useAccountsContext();
+  const { wallet } = accounts || {};
+
   const [securitySubTab, setSecuritySubTab] = useState("Password");
 
   const [currentPin, setCurrentPin] = useState("");
@@ -120,12 +125,17 @@ export default function SecuritySettings() {
       )}
 
       {securitySubTab === "Pin" && (
-        <div className="w-full xl:w-[45%] bg-white rounded-lg px-10 py-7 shadow">
+        <div className="w-full xl:w-[45%]">
+          <div className="w-full my-3">
+            {!wallet?.hasPin && <WithdrawalPinBanner />}
+          </div>
+        
+        <div className="bg-white rounded-lg px-10 py-7 shadow">
           {formIndex === 0 && (
             <div className="space-y-6">
               <h2 className="font-bold text-xl mb-9">Update PIN</h2>
 
-              <div className="space-y-11">
+              <div className="space-y-11 pb-4">
                 <div>
                   <div className="text-sm font-medium text-textColor pb-5">
                     Current PIN
@@ -203,6 +213,7 @@ export default function SecuritySettings() {
               </Button>
             </div>
           )}
+        </div>
         </div>
       )}
     </div>
