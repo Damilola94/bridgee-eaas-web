@@ -130,7 +130,7 @@ function BusinessDetails() {
         <div className="w-full">
           <div className="flex justify-between items-center mb-6">
             <h2 className="font-bold text-xl">Business Details</h2>
-            <Button className="border border-success text-success bg-transparent">
+            <Button className="border border-success text-success bg-transparent" disabled>
               Upgrade Account
             </Button>
           </div>
