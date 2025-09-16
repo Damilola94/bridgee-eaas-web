@@ -186,13 +186,13 @@ export default function PersonalInfo({
           onChange={handleCheckboxChange}
         />
         <label htmlFor="terms" className="text-sm font-bold text-textColor">
-          I agree to the{" "}
-          <a href="/terms" className="text-success">
-            User Agreement
-          </a>{" "}
-          and{" "}
-          <a href="/privacy" className="text-success">
-            Privacy Policy
+          I agree to the&nbsp;
+          <a
+            href="https://staging.usebridgee.com/terms-and-condition"
+            className="text-success"
+            target="_blank"
+          >
+            User Agreement and Privacy Policy
           </a>
         </label>
       </div>
