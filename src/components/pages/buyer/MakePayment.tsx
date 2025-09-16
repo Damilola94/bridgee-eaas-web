@@ -27,6 +27,7 @@ interface MakePaymentProps {
   orderReference?: string;
   onPaymentSuccess?: () => void;
   onPaymentPending?: () => void;
+  initialIsPaymentInitiated?: boolean;
 }
 
 export default function MakePayment({
@@ -35,10 +36,11 @@ export default function MakePayment({
   orderReference,
   onPaymentSuccess,
   onPaymentPending,
+  initialIsPaymentInitiated = false,
 }: MakePaymentProps) {
   const router = useRouter();
 
-  const [isPaymentInitiated, setIsPaymentInitiated] = useState(false);
+  const [isPaymentInitiated, setIsPaymentInitiated] = useState(initialIsPaymentInitiated || false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [timeLeft, setTimeLeft] = useState(600); // 10 minutes in seconds
 
@@ -234,7 +236,7 @@ export default function MakePayment({
     </div>
   );
 
-  if (isPaymentInitiated) {
+
     return (
       <div className="w-full lg:max-w-[492px] bg-white rounded-[10px] p-8">
         {paymentLoading ? (
@@ -411,65 +413,4 @@ export default function MakePayment({
         )}
       </div>
     );
-  }
-
-  return (
-    <div className="w-full lg:max-w-[492px] bg-white rounded-[10px] p-8">
-      <h1 className="text-2xl font-bold text-textColor mb-2">Welcome,</h1>
-      <p className="text-black/40 mb-8 font-medium">
-        Kindly fill the information below to complete your order process.
-      </p>
-
-      <form className="space-y-6">
-        <TextInput
-          label="Full Name"
-          name="fullName"
-          value={formData.fullName}
-          onChange={onInputChange}
-          placeholder="Toluwalase Obasun"
-        />
-
-        <TextInput
-          label="Email Address"
-          name="email"
-          type="email"
-          placeholder="Email Address"
-          value={formData.email}
-          onChange={onInputChange}
-        />
-
-        <div>
-          <label
-            htmlFor="phone"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Phone Number
-          </label>
-          <div className="flex">
-            <div className="flex items-center px-3 py-3 border border-r-0 border-gray-300 rounded-l-lg bg-gray-50">
-              <span className="text-green-600 mr-2">🇳🇬</span>
-              <span className="text-sm text-gray-600">+234</span>
-            </div>
-
-            <TextInput
-              name="phone"
-              type="tel"
-              placeholder="Phone Number"
-              value={formData.phone}
-              onChange={onInputChange}
-              className="w-full"
-            />
-          </div>
-        </div>
-
-        <Button
-          className="w-full bg-success py-4 !mt-10"
-          onClick={handleMakePayment}
-          disabled={!isFormValid()}
-        >
-          Make Payment
-        </Button>
-      </form>
-    </div>
-  );
 }
