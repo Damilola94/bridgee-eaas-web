@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+
+import { useMutation } from "react-query";
+
 import TextInput from "../../../inputs/Text";
 import { StepData } from "../../../../pages/seller/create-account";
-import { useMutation } from "react-query";
 import handleFetch from "../../../../services/api/handleFetch";
 import notification from "../../../../utilities/notification";
 import Button from "../../../inputs/Button";
@@ -19,7 +21,7 @@ export default function PersonalInfo({
   formData,
   setFormData,
   onTermsChange,
-  onRegistrationSuccess,
+  onRegistrationSuccess
 }: Props) {
   const [termsAgreed, setTermsAgreed] = useState(false);
 
@@ -41,7 +43,7 @@ export default function PersonalInfo({
     onSuccess: (response) => {
       notification({
         message: "Account created successfully!",
-        type: "success",
+        type: "success"
       });
 
       if (onRegistrationSuccess) {
@@ -52,9 +54,9 @@ export default function PersonalInfo({
       notification({
         title: "Registration Failed",
         message: error?.message || "Please try again",
-        type: "danger",
+        type: "danger"
       });
-    },
+    }
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,8 +66,8 @@ export default function PersonalInfo({
         ...formData,
         personalInfo: {
           ...formData.personalInfo,
-          [name]: value,
-        },
+          [name]: value
+        }
       });
     }
   };
@@ -98,15 +100,15 @@ export default function PersonalInfo({
       accountDetail: {
         bankCode: formData.bankAccount.bankCode || "",
         accountNumber: formData.bankAccount.accountNumber || "",
-        accountName: formData.bankAccount.accountName || "",
-      },
+        accountName: formData.bankAccount.accountName || ""
+      }
     };
 
     registrationMutation.mutate({
       service: "identity-service",
       endpoint: "/api/v1/users/register",
       method: "POST",
-      body: registrationData,
+      body: registrationData
     });
   };
 

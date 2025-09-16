@@ -41,7 +41,7 @@ function AmountDetails({
   const debouncedSearch = useMemo(() => debounce(setDebouncedAmount, 1000), [setDebouncedAmount]);
 
   const handleAmountChange = (e: any) => {
-    onChange(e);
+    onChange(e, "input", "amount");
     debouncedSearch(e.target.value);
   };
 
@@ -55,10 +55,9 @@ function AmountDetails({
         <AmountInput
           name="amount"
           value={form?.amount}
-          onChange={(e) => e?.target?.value <= defaultWallets?.[0]?.balance && handleAmountChange(e)}
+          onChange={(e) => handleAmountChange(e)}
           className="w-full mb-1"
           label="Enter amount"
-          // label={`Amount: (Max: ${formatCurrency(defaultWallets?.[0]?.balance, true, defaultWallets?.[0]?.currency?.code)})`}
           currency={defaultWallets?.[0]?.currency?.code}
           maxValue={defaultWallets?.[0]?.balance}
         />

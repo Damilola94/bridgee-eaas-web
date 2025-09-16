@@ -3,9 +3,11 @@ import React, { useEffect, useState } from 'react';
 // import { FaCheck } from 'react-icons/fa';
 import { BiPlus } from 'react-icons/bi';
 
+import Image from 'next/image';
+
 import { OrderListItemProps } from '../../../types/invoice';
 
-import MenuOptions from '../../common/MenuOptions';
+// import MenuOptions from '../../common/MenuOptions';
 import NoData from '../../common/NoData';
 // import Editor from '../../inputs/Editor';
 import Button from '../../inputs/Button';
@@ -18,8 +20,10 @@ import SelectInput from '../../inputs/Select';
 
 import TextareaInput from '../../inputs/Textarea';
 
-import AddInvoiceItem from './AddInvoiceItem';
+import Edit from '../../../assets/svgs/edit-order.svg';
+import Delete from '../../../assets/svgs/delete.svg';
 
+import AddInvoiceItem from './AddInvoiceItem';
 // const disbursementTypes = [
 //   {
 //     disabled: false,
@@ -133,7 +137,7 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
           </div>
         </div>
 
-        <div className="w-full rounded-lg shadow-md mb-5 overflow-x-auto hide-scroll overflow-y-visible ">
+        <div className="w-full rounded-lg shadow-md mb-5 overflow-x-auto overflow-y-visible ">
           <table className="w-full min-w-max table-auto text-left">
             <thead className="bg-lightText/10">
               <tr className='text-textColor'>
@@ -148,19 +152,24 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
             <tbody className="">
               {form?.escrowItems?.map((item) => (
                 <tr className="border-t" key={item?.id}>
-                  <td className="px-3 py-1">{item?.name}</td>
-                  <td className="px-3 py-1">{item?.quantity}</td>
-                  <td className="px-3 py-1">{formatCurrency(item?.amount)}</td>
-                  <td className="px-3 py-1">{`${item?.weight || 0}kg`}</td>
-                  <td className="px-3 py-1">{formatCurrency(item?.total)}</td>
-                  <td className="px-3 py-1 flex justify-end">
-                    <MenuOptions
-                      position="bottom"
-                      options={[
-                        { title: 'Delete Item', action: () => handleDeleteItem(item?.id || '') },
-                        { title: 'Edit Item', action: () => handleEdit(item) }
-                      ]}
-                    />
+                  <td className="px-3 py-3">{item?.name}</td>
+                  <td className="px-3 py-3">{item?.quantity}</td>
+                  <td className="px-3 py-3">{formatCurrency(item?.amount)}</td>
+                  <td className="px-3 py-3">{`${item?.weight || 0}kg`}</td>
+                  <td className="px-3 py-3">{formatCurrency(item?.total)}</td>
+                  <td className="px-3 py-3 flex justify-end gap-4">
+                    <button
+                      onClick={() => handleEdit(item)}
+                      className="hover:opacity-75 transition"
+                    >
+                      <Image src={Edit} alt="Edit" className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteItem(item?.id || '')}
+                      className="hover:opacity-75 transition"
+                    >
+                      <Image src={Delete} alt="Delete" className="w-5 h-5" />
+                    </button>
                   </td>
                 </tr>
               ))}

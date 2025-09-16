@@ -25,8 +25,7 @@ function DisplayData({ label = "", value = "" }) {
 
 function TransactionSummary({ onNext, onPrev, form }: Props) {
   const { accounts } = useAccountsContext();
-  const { identity } = accounts || {};
-
+  const { wallet, identity } = accounts || {};
   const primaryAccount = identity?.accountDetails[0];
 
   return (
@@ -36,22 +35,21 @@ function TransactionSummary({ onNext, onPrev, form }: Props) {
       </div>
 
       <div className="w-full mb-7">
-        <DisplayData label="Processing fee:" value={formatCurrency(10)} />
+        <DisplayData label="Processing fee:" value={formatCurrency(form?.processFee || 0)} />
         <DisplayData label="Account Name:" value={primaryAccount.bankName} />
         <DisplayData label="Account Number:" value={primaryAccount.accountNumber} />
-        <DisplayData label="Amount:" value={formatCurrency(1000)} />
-        <DisplayData label="Fee:" value={formatCurrency(40000)} />
+        <DisplayData label="Amount:" value={formatCurrency(form?.amount)} />
+        <DisplayData label="Fee:" value={formatCurrency(10)} />
         <div className="w-full mb-7 space-y-3">
           <div
             onClick={() => { }}
             className="w-full p-4 py-2 border rounded-md cursor-pointer flex justify-between items-center transition border-borderColor bg-borderColor/10"
           >
-
             <div className='flex space-x-2'>
               <Image src={EmptyWalletIcon} alt="Icon" className={'w-10 h-auto'} />
               <p className="font-bold ff-bold mt-3">Balance</p>
             </div>
-            <p className="ff-bold">{formatCurrency(40000)}</p>
+            <p className="ff-bold">{formatCurrency(wallet?.wallets[0]?.balance, false) || "N/A"}</p>
           </div>
         </div>
       </div>

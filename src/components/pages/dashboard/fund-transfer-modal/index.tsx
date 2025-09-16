@@ -15,6 +15,8 @@ import Loading from "../../../common/Loading";
 import Modal from "../../../common/Modal";
 import Button from "../../../inputs/Button";
 
+import { useAccountsContext } from "../../../../context/Accounts";
+
 import AccountEnquiryForm from "./AccountEnquiryForm";
 import AmountDetails from "./AmountDetails";
 import PINValidation from "./PINValidation";
@@ -25,14 +27,15 @@ type Props = {
 }
 
 function Index({ onClose }: Props) {
-  // const { accounts } = useAccountsContext();
+  const { accounts } = useAccountsContext();
+  const { identity } = accounts || {};
+  const primaryAccount = identity?.accountDetails[0];
+
   const [formIndex, setFormIndex] = useState(0);
   const [form, setForm] = useState<FundTransferProps>({});
 
   const [accountNoToBeVerified, setAccountNoToBeVerified] = useState<string | undefined>(undefined);
   const accountNoIsVerified = useRef(false);
-
-  // const { defaultWallets } = accounts || {};
 
   const { status: categoryStatus } = useGetQuery({
     endpoint: "category",
@@ -85,7 +88,6 @@ function Index({ onClose }: Props) {
     if (type === "input") {
       const { value, name } = val.target;
       setForm((prev) => ({ ...prev, [name]: value }));
-
       if (name === "accountNumber") {
         accountNoIsVerified.current = false;
         setForm((prev) => ({ ...prev, accountName: undefined }));
@@ -103,31 +105,19 @@ function Index({ onClose }: Props) {
   };
 
   const processAccountEnquiry = () => {
-    // let error;
-    // if (!form?.bankCode?.value) error = "Please, select a bank";
-    // if (!form?.accountNumber) error = "Please, enter a valid account number";
-    // if (!form?.accountName) error = "Please, enter a valid account number";
+    let error;
+    if (!primaryAccount.bankName) error = "Please, select a bank";
+    if (!primaryAccount.accountNumber) error = "Please, enter a valid account number";
+    if (!primaryAccount.accountName) error = "Please, enter a valid account number";
 
-    // if (error) {
-    //   notification({ title: "Form Error", message: error, type: "danger" });
-    //   return;
-    // }
+    if (error) {
+      notification({ title: "Form Error", message: error, type: "danger" });
+      return;
+    }
     setFormIndex(1);
   };
 
   const processAmountDetails = () => {
-    // let error;
-    // if (!form?.amount) error = "Please, enter the amount you want to transfer";
-    // if (Number(form?.amount) + (form?.processFee || 0) > defaultWallets?.[0]?.balance) {
-    //   error = "The sum of the amount and process fee must not be greater than your wallet balance";
-    // }
-    // if (!form?.categoryId?.value) error = "Please, select a category for the transfer";
-    // if (!form?.narration) error = "Please, enter a narration/remark for your transfer";
-
-    // if (error) {
-    //   notification({ title: "Form Error", message: error, type: "danger" });
-    //   return;
-    // }
     setFormIndex(2);
   };
 

@@ -1,5 +1,5 @@
 export const statusColors = {
-  completed: '#03543F',
+  Confirmed: '#03543F',
   refunded: '#03543F',
   'in-progress': '#42389D',
   'awaiting-confirmation': '#111928',
@@ -41,7 +41,7 @@ export const statusColors = {
 };
 
 export const statusTitle = {
-  completed: 'Completed',
+  Confirmed: 'Confirmed',
   refunded: 'Refunded',
   'in-progress': 'In Progress',
   'awaiting-confirmation': 'Awaiting Confirmation',
