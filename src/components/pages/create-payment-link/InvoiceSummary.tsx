@@ -121,9 +121,9 @@ function InvoiceSummary() {
               {identity?.businessDetail?.businessName || 'Guest User'}
             </h3>
             <div className="w-full text-lightText">
-              <p className="mb-1">{accounts?.user?.email}</p>
-              <p className="mb-1">{form?.recipientDetails?.phoneNumber}</p>
-              <p className="mb-1">{accounts?.user?.residentialAddress?.fullAddress || form?.pickUpAddress?.label || 'N/A'}</p>
+              <p className="mb-1">{identity?.businessDetail?.businessEmail}</p>
+              <p className="mb-1">{identity?.businessDetail?.businessPhone}</p>
+              <p className="mb-1">{identity?.businessDetail?.businessAddress || 'N/A'}</p>
               <p className="text-lightText">{new Date().toDateString()}</p>
             </div>
           </div>

@@ -31,6 +31,9 @@ function AddInvoiceItem({ data, onAdd = () => { }, onClose = () => { } }: Props)
     if (!form?.name) return 'Item name is required';
     if (!form?.quantity) return 'Item quantity is required';
     if (!form?.amount) return 'Item unit price is required';
+    if (Number(form.amount) < 1000) {
+      return "Item unit price must not be less than ₦1000";
+    }
     return null;
   };
 

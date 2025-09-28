@@ -40,6 +40,7 @@ const errorHandler = (error: any, auth: boolean) => {
       message =
         response?.data?.detail ||
         response?.data?.error?.message ||
+        response?.data?.data ||
         response?.data?.message ||
         response?.data?.title ||
         response?.statusText ||
