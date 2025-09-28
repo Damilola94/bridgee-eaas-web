@@ -81,8 +81,6 @@ export default function CreateAccountPage() {
     },
   });
 
-  console.log("📝 Current Form Data:", formData);
-  console.log("✅ Is BVN Validated:", isBvnValidated);
 
   const totalSteps = stepsConfig.length;
   const isLastStep = currentStepIndex === totalSteps - 1;

@@ -87,6 +87,16 @@ export default function PersonalInfo({
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPhoneWithoutCode(e.target.value);
+
+     if (setFormData && formData) {
+    setFormData({
+      ...formData,
+      personalInfo: {
+        ...formData.personalInfo,
+        phoneNumber: e.target.value
+      }
+    });
+  }
   };
 
   const handleRegistration = () => {

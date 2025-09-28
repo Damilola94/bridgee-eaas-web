@@ -26,6 +26,7 @@ import {
 } from "../../../../types/escrow";
 import Loading from "../../../../components/common/Loading";
 import Skeleton from "react-loading-skeleton";
+import Button from "../../../../components/inputs/Button";
 
 export default function BuyerOrder() {
   const router = useRouter();
@@ -48,6 +49,7 @@ export default function BuyerOrder() {
 
   const [activityLogs, setActivityLogs] = useState<ActivityLogItem[]>([]);
   const [isLoadingActivities, setIsLoadingActivities] = useState(false);
+  const [showPaymentView, setShowPaymentView] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -103,6 +105,12 @@ export default function BuyerOrder() {
       const response = await getOrderDetails(orderRef);
       if (response.isSuccess) {
         setOrderDetails(response.data);
+
+        setFormData({
+          fullName: response.data?.recipientName || "",
+          email: response.data?.recipientEmail || "",
+          phone: response.data?.recipientPhone || "",
+        });
 
         const escrowOrderId = response.data?.id;
 
@@ -160,6 +168,9 @@ export default function BuyerOrder() {
     queryClient.invalidateQueries([QUERY_KEYS.ORDER_STATUS, urlOrderReference]);
   };
 
+  const handleShowPayment = () => {
+    setShowPaymentView(true);
+  };
 
   if (
     isInitialLoading ||
@@ -173,67 +184,128 @@ export default function BuyerOrder() {
   const allowPayment = orderStatusData?.data?.allowPayment;
 
   if (allowPayment === true) {
-    return (
-      <>
-        <Head>
-          <title>Checkout - Bridgee Escrow</title>
-        </Head>
+    if (!showPaymentView) {
+      return (
+        <>
+          <Head>
+            <title>Checkout - Bridgee Escrow</title>
+          </Head>
+          <div className="min-h-screen bg-gray-50 flex flex-col justify-center px-4">
+            <div className="container mx-auto">
 
-        <div className="min-h-screen bg-gray-50">
-          {/* Mobile Header */}
-          <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-4">
-            <div className="flex items-center">
-              <div className="block lg:hidden my-4 ml-2">
-                <Link href="#" onClick={() => {}}>
-                  <Image
-                    src={Logo}
-                    alt="UseBridge Inc. logo"
-                    priority
-                    width={120}
-                    height={45}
-                  />
-                </Link>
+           
+            {/* Mobile Header */}
+            <div className="lg:hidden bg-white border-b border-gray-200 w-full px-4 py-4 mb-4">
+              <div className="flex items-center">
+                <div className="block lg:hidden my-4 ml-2">
+                  <Link href="#" onClick={() => {}}>
+                    <Image
+                      src={Logo}
+                      alt="UseBridge Inc. logo"
+                      priority
+                      width={120}
+                      height={45}
+                    />
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="lg:flex lg:min-h-screen bg-bg-gray-50 container mx-auto">
-            {/* Left Side */}
-            <div className="lg:w-[45%] lg:p-10 p-6">
-              {/* Desktop Header */}
-              <div className="hidden lg:block">
-                <Link href="#" onClick={() => {}}>
-                  <Image
-                    src={Logo}
-                    alt="UseBridge Inc. logo"
-                    priority
-                    width={120}
-                    height={45}
-                    className="mb-12"
-                  />
-                </Link>
-              </div>
-
-              <MakePayment
-                formData={formData}
-                onInputChange={handleInputChange}
-                orderReference={urlOrderReference}
-                onPaymentPending={handlePaymentPending}
-                onPaymentSuccess={handlePaymentSuccess}
-              />
+            {/* Desktop Header */}
+            <div className="hidden lg:flex justify-start lg:pl-20 lg:pt-10">
+              <Link href="#" onClick={() => {}}>
+                <Image
+                  src={Logo}
+                  alt="UseBridge Inc. logo"
+                  priority
+                  width={120}
+                  height={45}
+                  className="mb-2"
+                />
+              </Link>
             </div>
 
-            {/* Right Side */}
-            <div className="lg:w-[55%] lg:p-10 p-6">
+            {/* Centered Invoice */}
+            <div className="w-full flex flex-col justify-center mx-auto max-w-2xl my-8">
+              <Button
+                onClick={handleShowPayment}
+                className="w-full max-w-2xl bg-success text-white py-3 px-4 rounded-lg font-bold text-lg mb-6"
+              >
+                Make Payment
+              </Button>
               <Invoice
                 orderDetails={orderDetails}
                 orderStatus={orderStatusData?.data}
               />
             </div>
+             </div>
           </div>
-        </div>
-      </>
-    );
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Head>
+            <title>Checkout - Bridgee Escrow</title>
+          </Head>
+
+          <div className="min-h-screen bg-gray-50">
+            {/* Mobile Header */}
+            <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-4">
+              <div className="flex items-center">
+                <div className="block lg:hidden my-4 ml-2">
+                  <Link href="#" onClick={() => {}}>
+                    <Image
+                      src={Logo}
+                      alt="UseBridge Inc. logo"
+                      priority
+                      width={120}
+                      height={45}
+                    />
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:flex lg:min-h-screen bg-bg-gray-50 container mx-auto">
+              {/* Left Side */}
+              <div className="lg:w-[45%] lg:p-10 p-6">
+                {/* Desktop Header */}
+                <div className="hidden lg:block">
+                  <Link href="#" onClick={() => {}}>
+                    <Image
+                      src={Logo}
+                      alt="UseBridge Inc. logo"
+                      priority
+                      width={120}
+                      height={45}
+                      className="mb-12"
+                    />
+                  </Link>
+                </div>
+
+                <MakePayment
+                  formData={formData}
+                  onInputChange={handleInputChange}
+                  orderReference={urlOrderReference}
+                  onPaymentPending={handlePaymentPending}
+                  onPaymentSuccess={handlePaymentSuccess}
+                  initialIsPaymentInitiated={showPaymentView}
+                />
+              </div>
+
+              {/* Right Side */}
+              <div className="lg:w-[55%] lg:p-10 lg:pt-16 p-6">
+                <Invoice
+                  orderDetails={orderDetails}
+                  orderStatus={orderStatusData?.data}
+                />
+              </div>
+            </div>
+          </div>
+        </>
+      );
+    }
   } else {
     return (
       <>
