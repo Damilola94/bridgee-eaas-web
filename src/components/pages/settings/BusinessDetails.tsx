@@ -15,8 +15,8 @@ import notification from "../../../utilities/notification";
 import {
   removeNigerianCountryCode,
   removeNigerianCountryCodeAddLeadingZero,
-} from "../../../utilities/general"; // Assuming renamed to this
-import { QUERY_KEYS } from "../../../configs/constants"; // Assuming created
+} from "../../../utilities/general"; 
+import { QUERY_KEYS } from "../../../configs/constants";
 
 function BusinessDetails() {
   const { accounts } = useAccountsContext();
@@ -41,7 +41,7 @@ function BusinessDetails() {
       const phoneNumberString = businessDetail.businessPhone || "";
       const initialCountryCode = phoneNumberString.startsWith("234")
         ? "NG"
-        : phoneNumberString.slice(0, 3) || "NG";
+        : "NG";
       const initialPhoneWithoutCode =
         phoneNumberString.replace(/^234/, "") || "";
 
