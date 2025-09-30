@@ -11,7 +11,7 @@ import type { StaticImageData } from "next/image";
 import moyinoluwaAkindeleImage from "../../../assets/images/moyinoluwa-akindele.png";
 // import victorOnwueluImage from "../../../assets/images/victor-onwuelu.png";
 // import oluwafisayoAdesinaImage from "../../../assets/images/oluwafisayo-adesina.png";
-import ese from "../../../assets/images/ese.png";
+import ceo from "../../../assets/images/sophy-ceo.png";
 import dorcas from "../../../assets/images/dorcas.png";
 import fisayo from "../../../assets/images/fisayo.png";
 import david from "../../../assets/images/david.png";
@@ -25,9 +25,9 @@ interface TeamMember {
 export default function TeamSection() {
   const teamMembers: TeamMember[] = [
     {
-      name: "Eseohe Asuelimen",
+      name: "Sophiya Sadiq",
       role: "Chief Executive Officer",
-      image: ese,
+      image: ceo,
     },
     {
       name: "Moyinoluwa Akindele",
