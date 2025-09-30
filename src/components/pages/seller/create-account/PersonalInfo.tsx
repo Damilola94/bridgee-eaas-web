@@ -21,7 +21,7 @@ export default function PersonalInfo({
   formData,
   setFormData,
   onTermsChange,
-  onRegistrationSuccess
+  onRegistrationSuccess,
 }: Props) {
   const [termsAgreed, setTermsAgreed] = useState(false);
 
@@ -43,7 +43,7 @@ export default function PersonalInfo({
     onSuccess: (response) => {
       notification({
         message: "Account created successfully!",
-        type: "success"
+        type: "success",
       });
 
       if (onRegistrationSuccess) {
@@ -54,9 +54,9 @@ export default function PersonalInfo({
       notification({
         title: "Registration Failed",
         message: error?.message || "Please try again",
-        type: "danger"
+        type: "danger",
       });
-    }
+    },
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,8 +66,8 @@ export default function PersonalInfo({
         ...formData,
         personalInfo: {
           ...formData.personalInfo,
-          [name]: value
-        }
+          [name]: value,
+        },
       });
     }
   };
@@ -88,15 +88,15 @@ export default function PersonalInfo({
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPhoneWithoutCode(e.target.value);
 
-     if (setFormData && formData) {
-    setFormData({
-      ...formData,
-      personalInfo: {
-        ...formData.personalInfo,
-        phoneNumber: e.target.value
-      }
-    });
-  }
+    if (setFormData && formData) {
+      setFormData({
+        ...formData,
+        personalInfo: {
+          ...formData.personalInfo,
+          phoneNumber: e.target.value,
+        },
+      });
+    }
   };
 
   const handleRegistration = () => {
@@ -110,15 +110,15 @@ export default function PersonalInfo({
       accountDetail: {
         bankCode: formData.bankAccount.bankCode || "",
         accountNumber: formData.bankAccount.accountNumber || "",
-        accountName: formData.bankAccount.accountName || ""
-      }
+        accountName: formData.bankAccount.accountName || "",
+      },
     };
 
     registrationMutation.mutate({
       service: "identity-service",
       endpoint: "/api/v1/users/register",
       method: "POST",
-      body: registrationData
+      body: registrationData,
     });
   };
 
@@ -128,6 +128,19 @@ export default function PersonalInfo({
     personalInfo.businessName?.trim() &&
     personalInfo.password?.trim() &&
     termsAgreed;
+
+  const checkPasswordRequirements = (password: string) => {
+    return {
+      minLength: password.length >= 8,
+      hasUppercase: /[A-Z]/.test(password),
+      hasLowercase: /[a-z]/.test(password),
+      hasNumber: /[0-9]/.test(password),
+      hasSpecial: /[^a-zA-Z0-9]/.test(password),
+    };
+  };
+
+  const password = personalInfo?.password || "";
+  const requirements = checkPasswordRequirements(password);
 
   return (
     <div className="space-y-6">
@@ -188,6 +201,50 @@ export default function PersonalInfo({
         onChange={handleChange}
         className=""
       />
+
+      <div className="mb-4">
+        <p className="text-sm text-gray-600 mb-2">Password must contain:</p>
+        <ul className="text-sm space-y-1">
+          <li
+            className={`flex items-center ${
+              requirements.minLength ? "text-[#059669]" : "text-red-600"
+            }`}
+          >
+            {requirements.minLength ? "✓" : "✗"} At least 8 characters
+          </li>
+          <li
+            className={`flex items-center ${
+              requirements.hasUppercase ? "text-[#059669]" : "text-red-600"
+            }`}
+          >
+            {requirements.hasUppercase ? "✓" : "✗"} At least one uppercase
+            letter
+          </li>
+          <li
+            className={`flex items-center ${
+              requirements.hasLowercase ? "text-[#059669]" : "text-red-600"
+            }`}
+          >
+            {requirements.hasLowercase ? "✓" : "✗"} At least one lowercase
+            letter
+          </li>
+          <li
+            className={`flex items-center ${
+              requirements.hasNumber ? "text-[#059669]" : "text-red-600"
+            }`}
+          >
+            {requirements.hasNumber ? "✓" : "✗"} At least one number
+          </li>
+          <li
+            className={`flex items-center ${
+              requirements.hasSpecial ? "text-[#059669]" : "text-red-600"
+            }`}
+          >
+            {requirements.hasSpecial ? "✓" : "✗"} At least one special character
+          </li>
+        </ul>
+      </div>
+
       <div className="flex items-center space-x-2 mt-2">
         <input
           type="checkbox"
