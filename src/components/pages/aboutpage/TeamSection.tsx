@@ -26,38 +26,28 @@ export default function TeamSection() {
   const teamMembers: TeamMember[] = [
     {
       name: "Sophiya Sadiq",
-      role: "Chief Executive Officer",
+      role: "Co-Founder/CEO",
       image: ceo,
     },
     {
       name: "Moyinoluwa Akindele",
-      role: "Product Manager",
+      role: "VP- Product & Technology",
       image: moyinoluwaAkindeleImage,
     },
+    //   {
+    //   name: "Damilola Ogunboyejo",
+    //   role: "Engineering Lead",
+    //   image: damiOgunboyejoImage,
+    // },
     {
       name: "Dorcas Popoola",
-      role: "Product Designer",
+      role: "Design Lead",
       image: dorcas,
     },
     {
-      name: "Oluwafisayo Adesina",
-      role: "Product Marketing",
-      image: fisayo,
-    },
-    {
       name: "KingDavid Babalola",
-      role: "Social Media Designer",
+      role: "Design & Brand Storytelling",
       image: david,
-    },
-    {
-      name: "Chizaram Anumadu",
-      role: "Operations",
-      image: moyinoluwaAkindeleImage,
-    },
-    {
-      name: "Jacinta Ijeoma Emeka",
-      role: "Community Manager",
-      image: jacinta,
     },
   ];
 
