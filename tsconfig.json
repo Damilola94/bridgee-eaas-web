@@ -13,7 +13,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+    "ignoreDeprecations": "6.0"
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "data/monthsAbbr.js", "jest.setup.js",  "public/Daon.FaceCapture.min.js"],
   "exclude": ["node_modules"]
