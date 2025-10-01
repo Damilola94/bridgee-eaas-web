@@ -4,10 +4,16 @@ export type InvoiceFormProps = {
   escrowItems?: OrderListItemProps[];
   weight?: string | number;
   isDeliveryOnUs?: boolean;
-  pickUpAddress?: string;
+  recipientAddress?: string;
+  pickUpAddress?: { label: string, value: string }
+  deliveryAddress?: { label: string, value: string }
+  deliveryZone?: { label: string, value: string }
+  pickUpZone?: { label: string, value: string }
+
   disbursementType?: string;
   inspectionDuration?: string;
   writtenTerms?: string;
+  description?: string;
   contract?: File;
   recipientDetails?: RecipientDetailsProps;
 };

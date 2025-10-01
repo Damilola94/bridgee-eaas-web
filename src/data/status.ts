@@ -1,18 +1,20 @@
 export const statusColors = {
-  completed: '#03543F',
+  Confirmed: '#03543F',
   refunded: '#03543F',
   'in-progress': '#42389D',
-  'awaiting-confirmation': '#111928', // to be changed
+  'awaiting-confirmation': '#111928',
   awaitingpayment: '#5521B5',
   bookedshipmentcompleted: '#FE4EDA',
   declined: '#9B1C1C',
   dispute: '#99154B',
   draft: '#111928',
 
-  Pending: '#5521B5',
+  Draft: '#111928',
+  Pending: '#F59E0B',
   Processing: '#42389D',
   OutForDelivery: '#5521B5',
   Delivered: '#03543F',
+  Successful: '#03543F',
   Returned: '#9B1C1C',
   Cancelled: '#111928',
 
@@ -39,7 +41,7 @@ export const statusColors = {
 };
 
 export const statusTitle = {
-  completed: 'Completed',
+  Confirmed: 'Confirmed',
   refunded: 'Refunded',
   'in-progress': 'In Progress',
   'awaiting-confirmation': 'Awaiting Confirmation',
@@ -47,12 +49,13 @@ export const statusTitle = {
   bookedshipmentcompleted: 'Shipment Booked',
   declined: 'Declined',
   dispute: 'Dispute',
-  draft: 'Draft',
+  Draft: 'Draft',
 
-  Pending: 'Pending Delivery',
+  Pending: 'Pending',
   Processing: 'Processing Delivery',
   OutForDelivery: 'Out For Delivery',
   Delivered: 'Delivered',
+  Successful: 'Successful',
   Returned: 'Item(s) Returned',
   Cancelled: 'Delivery Cancelled',
 

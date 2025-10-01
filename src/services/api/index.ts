@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-// import errorHandler from '../../utilities/errorHandler';
+import errorHandler from '../../utilities/errorHandler';
 
-// import memoizedRefreshToken from './refreshToken';
+import memoizedRefreshToken from './refreshToken';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL
+  baseURL: "https://staging-api.usebridgee.com"
 });
 
 axiosInstance.interceptors.response.use(
@@ -15,21 +15,21 @@ axiosInstance.interceptors.response.use(
 
     if (!!config?.headers?.authorization
       && (error?.response?.status === 401 || error?.response?.status === 403)) {
-      // if (!config?.sent) {
-      //   config.sent = true;
+      if (!config?.sent) {
+        config.sent = true;
 
-      //   const result = await memoizedRefreshToken();
+        const result = await memoizedRefreshToken();
 
-      //   if (result?.accessToken) {
-      //     config.headers = {
-      //       ...config.headers,
-      //       authorization: `bearer ${result.accessToken}`
-      //     };
-      //   }
+        if (result?.accessToken) {
+          config.headers = {
+            ...config.headers,
+            authorization: `bearer ${result.accessToken}`
+          };
+        }
 
-      //   return axiosInstance(config);
-      // }
-      // throw new Error(errorHandler(error, true));
+        return axiosInstance(config);
+      }
+      throw new Error(errorHandler(error, true));
     }
     return Promise.reject(error);
   }

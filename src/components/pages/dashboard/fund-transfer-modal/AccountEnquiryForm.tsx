@@ -1,48 +1,57 @@
-import React from 'react';
+import React from "react";
+import Image from "next/image";
 
-import { FundTransferProps } from '../../../../types/transaction';
-import Button from '../../../inputs/Button';
-
-import SelectInput, { SelectOptionType } from '../../../inputs/Select';
-import TextInput from '../../../inputs/Text';
+import { FundTransferProps } from "../../../../types/transaction";
+import Button from "../../../inputs/Button";
+import BankIcon from "../../../../assets/svgs/bank.svg";
+import { useAccountsContext } from "../../../../context/Accounts";
 
 type Props = {
-  banks: SelectOptionType[],
-  onChange: (val: any, type?: string, inputName?: string) => void
-  form: FundTransferProps
-  onNext: () => void
+  onChange: (val: any, type?: string, inputName?: string) => void;
+  form: FundTransferProps;
+  onNext: () => void;
 };
 
-function AccountEnquiryForm({
-  banks, onNext, onChange, form
-}: Props) {
+function AccountEnquiryForm({ onNext, onChange, form }: Props) {
+  const { accounts } = useAccountsContext();
+  const { identity } = accounts || {};
+
+  const primaryAccount =
+    identity?.accountDetails?.find(
+      (account: { isPrimary: boolean }) => account.isPrimary
+    ) || identity?.accountDetails?.[0];
+
   return (
     <div className="w-full py-5">
       <div className="mb-7">
-        <h1 className="w-full text-textColor ff-bold text-xl">Choose bank account</h1>
+        <h1 className="w-full text-textColor ff-bold text-xl">
+          Choose bank account
+        </h1>
       </div>
 
-      <div className="w-full mb-7">
-        <SelectInput
-          onChange={(val) => onChange(val, 'select', 'bankCode')}
-          value={form?.bankCode}
-          className="w-full mb-4"
-          label="Select bank"
-          options={banks || []}
-        />
-        <TextInput
-          name="accountNumber"
-          value={form?.accountNumber}
-          className="w-full mb-4"
-          label="Account number"
-          onChange={(e) => /^\d{0,10}$/g.test(e.target.value) && onChange(e)}
-        />
-        <TextInput
-          value={form?.accountName}
-          className="w-full"
-          label="Account name"
-          disabled
-        />
+      <div className="w-full mb-7 space-y-3">
+        {primaryAccount && (
+          <div
+            onClick={() => {
+              onChange(primaryAccount.accountNumber, "input", "accountNumber");
+              onChange(primaryAccount.bankName, "input", "bankName");
+            }}
+            className="w-full p-4 border rounded-md cursor-pointer flex justify-between items-center transition border-primary bg-primary/10"
+          >
+            <div className="flex space-x-2">
+              <Image src={BankIcon} alt="Icon" className="w-10 h-auto" />
+              <div>
+                <p className="font-bold ff-bold">{primaryAccount.bankName}</p>
+                <p className="text-sm text-gray-600">
+                  {primaryAccount.accountName}
+                </p>
+              </div>
+            </div>
+            <p className="text-sm text-gray-600">
+              {primaryAccount.accountNumber}
+            </p>
+          </div>
+        )}
       </div>
 
       <Button

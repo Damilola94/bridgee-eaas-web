@@ -6,9 +6,15 @@ const endpoints: any = {
   merchant: `${prefix}/merchant`,
   dashboard: `${prefix}/dashboard`,
   transaction: `${prefix}/transaction`,
+  activitylogs: `${prefix}/activitylogs`,
   category: `${prefix}/category`,
-  escrow: `${prefix}/escrow`,
+  escrows: `${prefix}/escrows`,
+  mine: `${prefix}/mine`,
+  users: `${prefix}/users`,
   dispute: `${prefix}/dispute`,
+  walletsecurity: `${prefix}/walletsecurity`,
+  wallets: `${prefix}/wallets`,
+  wallet: `${prefix}/wallet`,
   invitation: `${prefix}/invitation`
 };
 

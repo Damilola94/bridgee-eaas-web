@@ -59,9 +59,14 @@ function Login() {
     }
 
     loginMutation.mutate({
-      endpoint: 'auth', extra: 'login', method: 'POST', body: { email, password }
+      service: 'identity-service/',
+      endpoint: 'api/v1/auth/login',
+      extra: '',
+      method: 'POST',
+      body: { email, password }
     });
   };
+
   const { isLoading, isSuccess } = loginMutation;
 
   return (
@@ -112,7 +117,7 @@ function Login() {
 
         <p className="mt-5 text-center">
           Don&apos;t have an account?&nbsp;
-          <Link href="/signup"><span className="text-success cursor-pointer">Create an account</span></Link>
+          <Link href="/seller/create-account"><span className="text-success cursor-pointer">Create an account</span></Link>
         </p>
       </form>
     </div>

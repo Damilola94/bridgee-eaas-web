@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { RxChevronRight } from 'react-icons/rx';
@@ -22,6 +23,8 @@ function DisputeHistory() {
       status: currentTab === 0 ? 'Open' : 'Resolved'
     }
   });
+
+  console.log({ error, "errorerror": String(error) });
 
   return (
     <div className="w-full h-full">
@@ -72,8 +75,8 @@ function DisputeHistory() {
                     <p className="text-base font-bold">{item?.invoiceTitle}</p>
                   </div>
                   <div className="mt-5">
-                    <p className="text-xs text-lightText">Invoice Number</p>
-                    <p className="text-base font-bold">{`#${item?.invoiceNumber}`}</p>
+                    <p className="text-xs text-lightText">Inspection Period</p>
+                    <p className="text-base font-bold">{item?.invoicePeriod}</p>
                   </div>
                 </div>
 
@@ -97,7 +100,8 @@ function DisputeHistory() {
           </>
         )}
         {status === 'error' && (
-          <div className="px-5 py-10 text-center">{String(error)}</div>
+          <NoData />
+          // <div className="px-5 py-10 text-center">{String(error)}</div>
         )}
 
       </div>

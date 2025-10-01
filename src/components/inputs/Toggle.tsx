@@ -10,7 +10,7 @@ type Props = {
 function ToggleInput({ label = '', value = false, onChange = () => {} }: Props) {
   return (
     <div className="flex items-center space-x-2">
-      <span className="">{label}</span>
+      <span className="text-sm font-medium text-textColor">{label}</span>
       <Switch
         checked={value}
         onChange={onChange}
@@ -21,7 +21,7 @@ function ToggleInput({ label = '', value = false, onChange = () => {} }: Props) 
         <span
           aria-hidden="true"
           className={`${value ? 'translate-x-6' : 'translate-x-0'}
-            pointer-events-none inline-block h-[22px] w-[22px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
+            pointer-events-none inline-block h-auto w-[22px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
         />
       </Switch>
     </div>

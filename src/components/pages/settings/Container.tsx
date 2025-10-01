@@ -1,18 +1,20 @@
-import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
-import BankAccounts from './BankAccounts';
-import BusinessDetails from './BusinessDetails';
-import PersonalDetails from './PersonalDetails';
-import SecuritySettings from './SecuritySettings';
+import BusinessDetails from "./BusinessDetails";
+import PersonalDetails from "./PersonalDetails";
+import SecuritySettings from "./SecuritySettings";
 
-import Tabs from './Tabs';
+import Tabs from "./Tabs";
+import AccountDetails from "./AccountDetails";
+import Support from "./Support";
 
 const options = [
-  { title: 'Personal Details', tab: 'personal-details' },
-  { title: 'Business Details', tab: 'business-details' },
-  { title: 'Bank Accounts', tab: 'bank-accounts' },
-  { title: 'Security Settings', tab: 'security-settings' }
+  { title: "Profile Details", tab: "personal-details" },
+  { title: "Business Details", tab: "business-details" },
+  { title: "Account Details", tab: "account-details" },
+  { title: "Security Settings", tab: "security-settings" },
+  { title: "Support", tab: "support" },
 ];
 
 function SettingsContainer() {
@@ -21,18 +23,44 @@ function SettingsContainer() {
 
   useEffect(() => {
     if (!router?.query?.tab) {
-      router.push({ pathname: '/settings', query: { tab: 'personal-details' } });
+      router.push({
+        pathname: "/settings",
+        query: { tab: "personal-details" },
+      });
     }
   }, [router]);
+
+  const renderTabContent = () => {
+    switch (tab) {
+      case "personal-details":
+        return <PersonalDetails />;
+      case "business-details":
+        return <BusinessDetails />;
+      case "account-details":
+        return <AccountDetails />;
+      case "security-settings":
+        return <SecuritySettings />;
+      case "support":
+        return <Support />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="w-full">
       <Tabs options={options} pathname="/settings" />
-
-      {tab === 'personal-details' && <PersonalDetails />}
-      {tab === 'business-details' && <BusinessDetails />}
-      {tab === 'bank-accounts' && <BankAccounts />}
-      {tab === 'security-settings' && <SecuritySettings />}
+      <div
+        className={`${
+          tab !== "security-settings" &&
+          tab !== "account-details" &&
+          tab !== "support"
+            ? "bg-white rounded-lg p-10 shadow w-full xl:w-[60%] mt-12"
+            : ""
+        }`}
+      >
+        {renderTabContent()}
+      </div>
     </div>
   );
 }

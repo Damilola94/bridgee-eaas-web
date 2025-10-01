@@ -15,18 +15,17 @@ function TransactionsTabs() {
         <div className="w-1/2 p-1.5 xs:p-3">
           <div
             role="presentation"
-            onClick={() => router.push({ pathname: '/transactions', query: { tab: 'invoice', status: 'all' } })}
-            className={`h-full bg-white ${tab === 'invoice' ? 'border-2 border-success' : 'border'} cursor-pointer rounded-lg px-3 xs:px-7 py-5`}
+            onClick={() => router.push({ pathname: '/transactions', query: { tab: 'sales', status: 'all' } })}
+            className={`h-full bg-white ${tab === 'sales' ? 'border-2 border-success' : 'border'} cursor-pointer rounded-lg px-3 xs:px-7 py-5`}
           >
             <div className="flex items-center space-x-5">
               <span className="rounded-full bg-primary/10 flex p-2 xs:p-3">
                 <Image src={InvoiceIcon} alt="" width={40} height={40} />
               </span>
-              <p className="font-bold text-lg">Invoice</p>
+              <p className="font-bold text-lg">Sales</p>
             </div>
           </div>
         </div>
-
         <div className="w-1/2 p-1.5 xs:p-3">
           <div
             role="presentation"
@@ -37,7 +36,7 @@ function TransactionsTabs() {
               <span className="rounded-full bg-primary/10 flex p-2 xs:p-3">
                 <Image src={WalletIcon} alt="" width={40} height={40} />
               </span>
-              <p className="font-bold text-lg">Wallet</p>
+              <p className="font-bold text-lg"> Wallet </p>
             </div>
           </div>
         </div>

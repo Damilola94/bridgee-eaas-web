@@ -6,7 +6,7 @@ import { HiOutlineArrowLeft } from 'react-icons/hi';
 
 import Button from '../../../inputs/Button';
 
-import FormIndicator from '../../create-invoice/FormIndicator';
+import FormIndicator from '../../create-payment-link/FormIndicator';
 
 import useGetQuery from '../../../../hooks/useGetQuery';
 
@@ -56,8 +56,11 @@ function ReturnGoodsContainer() {
           textColor="text-primary"
           bgColor="bg-transparent"
           paddingX="px-3"
+          iconPosition="left"
+          icon={
+            <HiOutlineArrowLeft className="mr-2 mb-0.5" />
+          }
         >
-          <HiOutlineArrowLeft className="mr-2 mb-0.5" />
           Back
         </Button>
       </div>

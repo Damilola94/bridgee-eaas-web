@@ -3,9 +3,8 @@ import React, { useState, useMemo, ChangeEventHandler } from 'react';
 import { useRouter } from 'next/router';
 import { debounce } from 'lodash';
 
-import useGetQuery from '../../../../hooks/useGetQuery';
 import { useAccountsContext } from '../../../../context/Accounts';
-import { formatApiDate } from '../../../../utilities/dateTime';
+// import { formatApiDate } from '../../../../utilities/dateTime';
 
 import NoData from '../../../common/NoData';
 import Loading from '../../../common/Loading';
@@ -14,11 +13,13 @@ import SearchInput from '../../../inputs/Search';
 
 import { PAGE_SIZE } from '../../../../data/constants';
 
+import useGetQuery from "../../../../hooks/useGetQuery";
+
 import Filter from './Filter';
 
 import ListItem from './ListItem';
 
-function TransactionList() {
+function WalletList() {
   const { accounts } = useAccountsContext();
   const [filter, setFilter] = useState<any>(null);
   const [pageNumber, setPageNumber] = useState(0);
@@ -28,23 +29,23 @@ function TransactionList() {
   const router = useRouter();
 
   const { data, status, error } = useGetQuery({
-    endpoint: 'transaction',
-    extra: 'get-wallet-transactions',
+    service: "wallet-service",
+    endpoint: 'wallet',
+    extra: 'transactions',
     queryKey: ['wallet-transactions', router?.query?.status, accounts, filter, pageNumber, search],
     pQuery: {
       pageSize: PAGE_SIZE,
       pageNumber: pageNumber + 1,
-      walletId: accounts?.defaultWallets?.[0]?.id,
       status: router?.query?.status === 'all' ? null : router?.query?.status,
-      start: formatApiDate(filter?.startDate),
-      end: formatApiDate(filter?.endDate),
-      minAmount: Number(filter?.minAmount),
-      maxAmount: Number(filter?.maxAmount),
-      transactionType: filter?.type,
-      channel: filter?.channel,
+      // start: formatApiDate(filter?.startDate),
+      // end: formatApiDate(filter?.endDate),
+      // minAmount: Number(filter?.minAmount),
+      // maxAmount: Number(filter?.maxAmount),
+      // transactionType: filter?.type,
+      // channel: filter?.channel,
       search
     },
-    enabled: !!accounts?.defaultWallets?.[0]?.id
+    enabled: true
   });
 
   const debouncedSearch = useMemo(() => debounce(setSearch, 1000), [setSearch]);
@@ -81,7 +82,7 @@ function TransactionList() {
                 <th className="px-3 py-5">Transaction</th>
                 <th className="px-3 py-5">Reference Number</th>
                 <th className="px-3 py-5">Amount</th>
-                <th className="px-3 py-5">Channel</th>
+                <th className="px-3 py-5">Source</th>
                 <th className="px-3 py-5">Status</th>
                 <th className="px-3 py-5">Date</th>
                 <th className="pr-5 sm:pr-10 pl-3 py-5">ACTION</th>
@@ -89,9 +90,9 @@ function TransactionList() {
             </thead>
             <tbody>
               {status === 'success' && (
-                data?.data?.transactions?.length > 0 ? (
+                data?.data?.length > 0 ? (
                   <>
-                    {data?.data?.transactions.map((item: any, index: number) => (
+                    {data?.data?.map((item: any, index: number) => (
                       <ListItem key={item?.id} data={item} index={index} />
                     ))}
                     <tr>
@@ -128,4 +129,4 @@ function TransactionList() {
   );
 }
 
-export default TransactionList;
+export default WalletList;
