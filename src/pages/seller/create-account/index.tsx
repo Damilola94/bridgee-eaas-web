@@ -81,7 +81,6 @@ export default function CreateAccountPage() {
     },
   });
 
-
   const totalSteps = stepsConfig.length;
   const isLastStep = currentStepIndex === totalSteps - 1;
   const currentStepData = stepsConfig[currentStepIndex];
@@ -111,16 +110,18 @@ export default function CreateAccountPage() {
           <BvnValidation
             formData={formData}
             setFormData={setFormData}
-            onSuccess={(bvnData) => {
-              setFormData((prev) => ({ ...prev, ...bvnData }));
-            }}
-            onValidationSuccess={onBvnValidationSuccess}
+            // onSuccess={(bvnData) => {
+            //   setFormData((prev) => ({ ...prev, ...bvnData }));
+            // }}
+            // onValidationSuccess={onBvnValidationSuccess}
             onNavigateNext={handleNext}
           />
         );
       case "livenessCheck":
         return (
           <LivenessCheck
+            formData={formData}
+            setFormData={setFormData}
             onNavigateNext={handleNext}
           />
         );
@@ -200,8 +201,11 @@ export default function CreateAccountPage() {
               <span className="text-black text-sm font-bold">
                 Already have an account?{" "}
               </span>
-              <Link className="text-success font-bold text-sm" href={"/seller/login"}>
-              Login here
+              <Link
+                className="text-success font-bold text-sm"
+                href={"/seller/login"}
+              >
+                Login here
               </Link>
             </div>
           )}
