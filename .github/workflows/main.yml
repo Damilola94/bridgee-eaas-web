@@ -1,28 +1,65 @@
-name: Deploy Bridge Web App
+name: Deploy Bridge Web App to Prod
 
 on:
   push:
     branches:
-      - main
+      - main 
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: SSH into server to pull, build, and deploy
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.STAGING_SERVER_IP }}
-          username: ${{ secrets.STAGING_SERVER_USERNAME }}
-          key: ${{ secrets.STAGING_SERVER_KEY }}
-          script: |
+      # Step 1: Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Next.js app
+        run: |
+          echo "${{ secrets.PROD_ENV_FILE }}" > .env
+          npm run build
+      - name: Compress .next directory
+        run: tar -czf next_and_node_modules.tar.gz .next node_modules
+
+      - name: Copy build files to the remote server
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.PROD_SERVER_KEY }}
+          REMOTE_USER: ${{ secrets.PROD_SERVER_USERNAME }}
+          REMOTE_HOST: ${{ secrets.PROD_SERVER_IP }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "$REMOTE_HOST" >> ~/.ssh/known_hosts
+          
+          # Copy .next folder, public folder, and node_modules to the server
+          scp -r next_and_node_modules.tar.gz "$REMOTE_USER@$REMOTE_HOST:/home/ayodele/bridge-web-app"
+      # Step 6: SSH into the server, pull latest code, and run docker-compose
+      - name: SSH into the server, pull latest code, and run Docker Compose
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.PROD_SERVER_KEY }}
+          REMOTE_USER: ${{ secrets.PROD_SERVER_USERNAME }}
+          REMOTE_HOST: ${{ secrets.PROD_SERVER_IP }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "$REMOTE_HOST" >> ~/.ssh/known_hosts
+          # SSH into the server, pull the latest code, and run docker-compose
+          ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$REMOTE_HOST" << 'EOF'
             # Navigate to the project directory
-            cd /home/ayodele/main/bridge-web-app || exit 1
-            
-            # Pull the latest source code from the develop branch
-            git pull origin main
-            
-            # Stop the old container and build/start the new one using the existing .env file
-            docker compose build || exit 1
+            cd /home/ayodele/bridge-web-app || exit
+            # Pull latest code from the repo
+            rm package-lock.json yarn.lock
+            git checkout main
+            git pull origin main || exit
+            rm -rf .next node_modules
+            tar -xzf next_and_node_modules.tar.gz
+            rm next_and_node_modules.tar.gz
+            docker compose build
             docker compose up -d
+          EOF
