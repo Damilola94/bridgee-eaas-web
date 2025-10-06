@@ -8,8 +8,7 @@ import Loading from "../../../common/Loading";
 import notification from "../../../../utilities/notification";
 import handleFetch from "../../../../services/api/handleFetch";
 import { StepData } from "../../../../pages/seller/create-account";
-import { removeNigerianCountryCode } from "../../../../utilities/general";
-import { truncate } from "lodash";
+import { dataURLtoFile, removeNigerianCountryCode } from "../../../../utilities/general";
 
 interface Props {
   formData?: StepData;
@@ -18,32 +17,10 @@ interface Props {
   onSuccess?: (bvnData: any) => void;
 }
 
-// Function to convert base64 to a File object
-const dataURLtoFile = (dataurl: string, filename: string): File | null => {
-  const arr = dataurl.split(",");
-  if (arr.length < 2) {
-    return null;
-  }
-  const mimeMatch = arr[0].match(/:(.*?);/);
-  if (!mimeMatch || mimeMatch.length < 2) {
-    return null;
-  }
-  const mime = mimeMatch[1];
-  const bstr = atob(arr[1]);
-  let n = bstr.length;
-  const u8arr = new Uint8Array(n);
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
-  }
-  return new File([u8arr], filename, { type: mime });
-};
-
-// Define video constraints for higher resolution
 const videoConstraints = {
   width: 1280,
   height: 720,
   facingMode: "user",
-  // facingMode: { exact: "environment" }
 };
 
 export default function LivenessCheck({
@@ -160,9 +137,9 @@ export default function LivenessCheck({
           <li>Make sure you are in front of a plain background</li>
           <li>Make sure you remove hats, thick glasses or anything else</li>
           <li>Make sure to keep your expression neutral</li>
-          <li>Make sure to keep your face within the circle</li>
+          <li>Make sure to keep your face within the frame</li>
         </ul>
-        <div className="w-full lg:w-80 h-[340px] lg:h-80 bg-gray-200 flex items-center overflow-hidden rounded-lg">
+        <div className="border-[#01FE05] border-2 w-full lg:w-80 h-[340px] lg:h-80 bg-gray-200 flex items-center overflow-hidden rounded-lg">
           {selfie ? (
             <img
               src={selfie}
@@ -173,14 +150,12 @@ export default function LivenessCheck({
             <Webcam
               audio={false}
               ref={webcamRef}
-              // height={720}
-              // width={1280}
               forceScreenshotSourceSize={true}
               screenshotQuality={1}
               screenshotFormat="image/png"
               className="h-full w-full object-cover"
               mirrored={true}
-              videoConstraints={videoConstraints} // FIX: Request higher resolution
+              videoConstraints={videoConstraints}
             />
           )}
         </div>

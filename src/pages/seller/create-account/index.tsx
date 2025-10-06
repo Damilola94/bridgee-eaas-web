@@ -61,9 +61,6 @@ const stepsConfig = [
 export default function CreateAccountPage() {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
-  const [isBvnValidated, setIsBvnValidated] = useState(false);
-  const [isTermsAgreed, setIsTermsAgreed] = useState(false);
-
   const [formData, setFormData] = useState<StepData>({
     bvn: "",
     livenessSelfie: null,
@@ -82,25 +79,10 @@ export default function CreateAccountPage() {
   });
 
   const totalSteps = stepsConfig.length;
-  const isLastStep = currentStepIndex === totalSteps - 1;
   const currentStepData = stepsConfig[currentStepIndex];
 
   const handleNext = () => {
     setCurrentStepIndex((prevIndex) => prevIndex + 1);
-  };
-
-  const handleBack = () => {
-    if (currentStepIndex > 0) {
-      setCurrentStepIndex((prevIndex) => prevIndex - 1);
-    }
-  };
-
-  const onBvnValidationSuccess = () => {
-    setIsBvnValidated(true);
-  };
-
-  const onTermsAgreementChange = (agreed: boolean) => {
-    setIsTermsAgreed(agreed);
   };
 
   const renderStepComponent = () => {
@@ -110,10 +92,6 @@ export default function CreateAccountPage() {
           <BvnValidation
             formData={formData}
             setFormData={setFormData}
-            // onSuccess={(bvnData) => {
-            //   setFormData((prev) => ({ ...prev, ...bvnData }));
-            // }}
-            // onValidationSuccess={onBvnValidationSuccess}
             onNavigateNext={handleNext}
           />
         );
@@ -138,7 +116,6 @@ export default function CreateAccountPage() {
           <PersonalInfo
             formData={formData}
             setFormData={setFormData}
-            onTermsChange={onTermsAgreementChange}
             onRegistrationSuccess={handleNext}
           />
         );
