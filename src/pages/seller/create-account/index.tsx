@@ -33,12 +33,12 @@ export interface StepData {
 const stepsConfig = [
   {
     id: "bvnValidation",
-    description: "BVN Validation",
+    description: "Identity Verification",
     Component: BvnValidation,
   },
   {
     id: "livenessCheck",
-    description: "Liveness Check",
+    description: "Identity Verification",
     Component: LivenessCheck,
   },
   {
