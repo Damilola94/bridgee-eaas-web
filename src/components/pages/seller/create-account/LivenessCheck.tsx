@@ -152,7 +152,7 @@ export default function LivenessCheck({
               ref={webcamRef}
               forceScreenshotSourceSize={true}
               screenshotQuality={1}
-              screenshotFormat="image/png"
+              screenshotFormat="image/jpeg"
               className="h-full w-full object-cover"
               mirrored={true}
               videoConstraints={videoConstraints}
