@@ -54,6 +54,7 @@
     "react-select": "^5.7.0",
     "react-to-pdf": "^1.0.1",
     "react-tooltip": "^4.2.21",
+    "react-webcam": "^7.2.0",
     "sass": "^1.58.3",
     "tailwind-merge": "^3.0.2",
     "uuid": "^9.0.0"
