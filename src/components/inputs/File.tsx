@@ -70,7 +70,7 @@ function FileInput({
         <TextInput
           ref={inputRef}
           type="file"
-          accept="application/pdf"
+          accept=""
           name={name}
           onChange={onChange}
           disabled={disabled}
