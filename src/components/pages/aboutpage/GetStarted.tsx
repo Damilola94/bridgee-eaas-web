@@ -36,7 +36,7 @@ function GetStarted() {
                   </Button>
                 ) : (
                   <Button
-                    onClick={() => router.push("/login")}
+                    onClick={() => router.push("/seller/login")}
                     className="!rounded-full"
                     fontSize="text-xl"
                     bgColor="bg-[#B80074]"

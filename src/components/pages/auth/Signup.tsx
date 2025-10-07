@@ -249,7 +249,7 @@ function Signup({ gotoNextForm }: any) {
 
         <p className="mt-5 text-center">
           Already have an account?&nbsp;
-          <Link href="/login"><span className="text-success cursor-pointer">Login here</span></Link>
+          <Link href="/seller/login"><span className="text-success cursor-pointer">Login here</span></Link>
         </p>
       </form>
     </div>
