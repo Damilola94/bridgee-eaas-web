@@ -19,7 +19,6 @@ type BankOptionType = {
   label: string;
 };
 
-// Define the styles object with the correct type
 const selectStyles: StylesConfig<BankOptionType> = {
   control: (base) => ({
     ...base,

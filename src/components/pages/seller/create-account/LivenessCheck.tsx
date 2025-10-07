@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useMutation } from "react-query";
 import Webcam from "react-webcam";
 import Button from "../../../inputs/Button";
-import Loading from "../../../common/Loading";
 import notification from "../../../../utilities/notification";
 import handleFetch from "../../../../services/api/handleFetch";
 import { StepData } from "../../../../pages/seller/create-account";
