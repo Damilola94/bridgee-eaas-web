@@ -142,6 +142,26 @@ export const removeNigerianCountryCode = (phoneNumber: string): string => {
   return phoneNumber.replace(/^\+?234/, "");
 };
 
+// Function to convert base64 to a File object
+export const dataURLtoFile = (dataurl: string, filename: string): File | null => {
+  const arr = dataurl.split(",");
+  if (arr.length < 2) {
+    return null;
+  }
+  const mimeMatch = arr[0].match(/:(.*?);/);
+  if (!mimeMatch || mimeMatch.length < 2) {
+    return null;
+  }
+  const mime = mimeMatch[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], filename, { type: mime });
+};
+
 // export const base64ToFile = (base64String: string, fileName: string) => {
 //   const base64Parts = base64String?.split(';base64,');
 //   const contentType = base64Parts[0]?.split(':')[1];

@@ -7,15 +7,11 @@ import { motion } from "framer-motion";
 // eslint-disable-next-line no-duplicate-imports
 import type { StaticImageData } from "next/image";
 
-// import jerryPetersImage from "../../../assets/images/jerry-peters.png";
 import moyinoluwaAkindeleImage from "../../../assets/images/moyinoluwa-akindele.png";
-// import victorOnwueluImage from "../../../assets/images/victor-onwuelu.png";
-// import oluwafisayoAdesinaImage from "../../../assets/images/oluwafisayo-adesina.png";
 import ceo from "../../../assets/images/sophy-ceo.png";
 import dorcas from "../../../assets/images/dorcas.png";
-import fisayo from "../../../assets/images/fisayo.png";
 import david from "../../../assets/images/david.png";
-import jacinta from "../../../assets/images/jacinta.png";
+import damiOgunboyejoImage from "../../../assets/images/damilola-ogunboyejo.jpeg";
 interface TeamMember {
   name: string;
   role: string;
@@ -26,38 +22,28 @@ export default function TeamSection() {
   const teamMembers: TeamMember[] = [
     {
       name: "Sophiya Sadiq",
-      role: "Chief Executive Officer",
+      role: "Co-Founder/CEO",
       image: ceo,
     },
     {
       name: "Moyinoluwa Akindele",
-      role: "Product Manager",
+      role: "VP- Product & Technology",
       image: moyinoluwaAkindeleImage,
+    },
+      {
+      name: "Damilola Ogunboyejo",
+      role: "Engineering Lead",
+      image: damiOgunboyejoImage,
     },
     {
       name: "Dorcas Popoola",
-      role: "Product Designer",
+      role: "Design Lead",
       image: dorcas,
     },
     {
-      name: "Oluwafisayo Adesina",
-      role: "Product Marketing",
-      image: fisayo,
-    },
-    {
       name: "KingDavid Babalola",
-      role: "Social Media Designer",
+      role: "Design & Brand Storytelling",
       image: david,
-    },
-    {
-      name: "Chizaram Anumadu",
-      role: "Operations",
-      image: moyinoluwaAkindeleImage,
-    },
-    {
-      name: "Jacinta Ijeoma Emeka",
-      role: "Community Manager",
-      image: jacinta,
     },
   ];
 
@@ -145,18 +131,18 @@ export default function TeamSection() {
           >
             {/* First row - 4 items */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-              {teamMembers.slice(0, 4).map((member, index) => (
+              {teamMembers.slice(0, 5).map((member, index) => (
                 <motion.div
                   key={index}
                   className="transition-shadow duration-300"
                   variants={itemVariants}
                 >
-                  <div className="aspect-square relative">
+                  <div className="w-full h-[280px] relative rounded-lg overflow-hidden">
                     <Image
                       src={member.image}
                       alt={member.name}
                       sizes=""
-                      className="object-cover"
+                      className="object-cover w-full h-full object-top"
                       priority={index < 2}
                     />
                   </div>
@@ -171,7 +157,7 @@ export default function TeamSection() {
             </div>
 
             {/* Second row - 3 items centered */}
-            {teamMembers.length > 4 && (
+            {/* {teamMembers.length > 4 && (
               <div className="xl:flex xl:justify-center ">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
                   {teamMembers.slice(4, 7).map((member, index) => (
@@ -199,7 +185,7 @@ export default function TeamSection() {
                   ))}
                 </div>
               </div>
-            )}
+            )} */}
           </motion.div>
         </div>
       </div>
