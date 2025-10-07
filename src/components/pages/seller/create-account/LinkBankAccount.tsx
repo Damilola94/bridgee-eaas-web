@@ -1,4 +1,3 @@
-import { ChevronDown } from "lucide-react";
 import TextInput from "../../../inputs/Text";
 import { StepData } from "../../../../pages/seller/create-account";
 import { useState } from "react";
@@ -7,12 +6,33 @@ import { useMutation, useQuery } from "react-query";
 import { getAccountName, getBanksList } from "../../../../services/api/bank";
 import notification from "../../../../utilities/notification";
 import Button from "../../../inputs/Button";
+import Select, { StylesConfig } from "react-select";
 
 interface Props {
   formData: StepData;
   setFormData: (data: StepData) => void;
   onNextStep?: () => void;
 }
+
+type BankOptionType = {
+  value: string;
+  label: string;
+};
+
+// Define the styles object with the correct type
+const selectStyles: StylesConfig<BankOptionType> = {
+  control: (base) => ({
+    ...base,
+    height: "3rem",
+    border: "1px solid #CFCFCF",
+    borderRadius: "10px",
+    backgroundColor: "#F8F8F8",
+    boxShadow: "none",
+    "&:hover": {
+      borderColor: "#CFCFCF",
+    },
+  }),
+};
 
 export default function LinkBankAccount({
   formData,
@@ -32,6 +52,11 @@ export default function LinkBankAccount({
   const banks: Bank[] | undefined = bankResponse?.data.map((apiBank) => ({
     bankCode: apiBank.bankCode,
     bankName: apiBank.bankName,
+  }));
+
+  const bankOptions: BankOptionType[] | undefined = banks?.map((bank) => ({
+    value: bank.bankCode,
+    label: bank.bankName,
   }));
 
   const accountNameMutation = useMutation(getAccountName, {
@@ -99,29 +124,18 @@ export default function LinkBankAccount({
       <div>
         <label className="text-sm font-bold">Select Bank</label>
         <div className="relative mt-2 mb-3">
-          <select
-            className="h-12 w-full px-3 border border-[#CFCFCF] rounded-[10px] bg-[#F8F8F8] focus:outline-none focus:ring-2 focus:ring-purple-600 appearance-none text-greyDark"
-            value={selectedBank?.bankCode}
-            onChange={(e) => {
+          <Select
+            options={bankOptions}
+            isLoading={banksLoading}
+            placeholder="Search and select a bank"
+            onChange={(selectedOption: BankOptionType | null) => {
               const bank = banks?.find(
-                (b: Bank) => b.bankCode === e.target.value
+                (b) => b.bankCode === selectedOption?.value
               );
               setSelectedBank(bank || null);
             }}
-            placeholder="Select Bank "
-            disabled={banksLoading}
-          >
-            <option value="">Select Bank</option>
-            {banks?.map((bank: Bank) => (
-              <option key={bank.bankCode} value={bank.bankCode}>
-                {bank.bankName}
-              </option>
-            ))}
-          </select>
-
-          <div className="absolute inset-y-0 right-[6px] flex items-center px-2 pointer-events-none">
-            <ChevronDown className="h-5 w-5 text-grey" />
-          </div>
+            styles={selectStyles}
+          />
         </div>
 
         <p className="text-xs text-grey">
