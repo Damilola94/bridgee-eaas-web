@@ -52,7 +52,7 @@ function Hero() {
             <div className="flex justify-center space-x-4 mb-14 ">
               <Button
                 iconPosition="left"
-                onClick={() => router.push("/signup")}
+                onClick={() => router.push("/seller/create-account")}
                 paddingX="px-10"
                 paddingY="py-4"
                 fontSize="text-lg"
