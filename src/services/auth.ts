@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 
-export function logout(path = '/login') {
+export function logout(path = '/seller/login') {
   localStorage.clear();
   Cookies.remove('data');
 

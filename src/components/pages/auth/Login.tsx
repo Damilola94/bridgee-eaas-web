@@ -32,7 +32,7 @@ function Login() {
           type: 'warning'
         });
         setCookie('form', { email });
-        router?.push('/signup?stage=validateOtp');
+        router?.push('/seller/create-account?stage=validateOtp');
       } else {
         setCookie('data', res?.data, { secure: true, sameSite: true });
         router?.push('/dashboard');
