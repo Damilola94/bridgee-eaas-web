@@ -23,7 +23,7 @@ const errorHandler = (error: any, auth: boolean) => {
         "You are either not authorized to access this resource or your session has expired. Please login again.";
       if (auth) {
         Cookies.set("err", message);
-        // logout();
+        logout();
       }
     } else if (
       response?.data?.errors &&
