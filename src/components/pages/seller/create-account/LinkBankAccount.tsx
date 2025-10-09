@@ -7,6 +7,7 @@ import { getAccountName, getBanksList } from "../../../../services/api/bank";
 import notification from "../../../../utilities/notification";
 import Button from "../../../inputs/Button";
 import Select, { StylesConfig } from "react-select";
+import handleFetch from "../../../../services/api/handleFetch";
 
 interface Props {
   formData: StepData;
@@ -90,6 +91,25 @@ export default function LinkBankAccount({
     },
   });
 
+  const registrationMutation = useMutation(handleFetch, {
+    onSuccess: () => {
+      notification({
+        message: "Account created successfully!",
+        type: "success",
+      });
+      if (onNextStep) {
+        onNextStep();
+      }
+    },
+    onError: (error: any) => {
+      notification({
+        title: "Registration Failed",
+        message: error?.message || "Please try again",
+        type: "danger",
+      });
+    },
+  });
+
   const handleAccountNumberChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -110,10 +130,30 @@ export default function LinkBankAccount({
     setAccountNumber(value);
   };
 
-  const handleNext = () => {
-    if (onNextStep) {
-      onNextStep();
-    }
+  const handleRegistration = () => {
+    if (!isFormValid || registrationMutation.isLoading) return;
+
+    const registrationData = {
+      bvnValidationTicketId: formData.bvnValidationTicketId || "",
+      email: formData.personalInfo.emailAddress,
+      countryCode: "+234",
+      phoneNumber: formData.personalInfo.phoneNumber,
+      businessName: formData.personalInfo.businessName,
+      password: formData.personalInfo.password,
+      accountDetail: {
+        bankCode: formData.bankAccount.bankCode || "",
+        accountNumber: formData.bankAccount.accountNumber || "",
+        accountName: formData.bankAccount.accountName || "",
+      },
+      otpValidationTicket: formData.otpValidationTicket || "",
+    };
+
+    registrationMutation.mutate({
+      service: "identity-service",
+      endpoint: "/api/v1/users/register",
+      method: "POST",
+      body: registrationData,
+    });
   };
 
   const isFormValid = selectedBank && accountNumber && accountName;
@@ -164,13 +204,18 @@ export default function LinkBankAccount({
 
       <div className="mt-4">
         <Button
-          onClick={handleNext}
+          onClick={handleRegistration}
           disabled={
-            !accountValidated || accountNameMutation.isLoading || !isFormValid
+            !accountValidated ||
+            accountNameMutation.isLoading ||
+            registrationMutation.isLoading ||
+            !isFormValid
           }
           className="w-full h-12 bg-success text-white rounded-lg mt-10"
         >
-          {accountNameMutation.isLoading ? "Validating..." : "Continue"}
+          {registrationMutation.isLoading
+            ? "Creating Account..."
+            : "Create Account"}
         </Button>
       </div>
     </div>

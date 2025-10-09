@@ -14,14 +14,14 @@ interface Props {
   formData: StepData;
   setFormData: (data: StepData) => void;
   onTermsChange?: (agreed: boolean) => void;
-  onRegistrationSuccess?: () => void;
+  onOtpSentSuccess?: () => void;
 }
 
 export default function PersonalInfo({
   formData,
   setFormData,
   onTermsChange,
-  onRegistrationSuccess,
+  onOtpSentSuccess,
 }: Props) {
   const [termsAgreed, setTermsAgreed] = useState(false);
 
@@ -39,20 +39,20 @@ export default function PersonalInfo({
     setPhoneWithoutCode(initialPhoneWithoutCode);
   }, [personalInfo?.phoneNumber]);
 
-  const registrationMutation = useMutation(handleFetch, {
+  const sendOtpMutation = useMutation(handleFetch, {
     onSuccess: (response) => {
       notification({
-        message: "Account created successfully!",
+        message: "Verification code sent to your email!",
         type: "success",
       });
 
-      if (onRegistrationSuccess) {
-        onRegistrationSuccess();
+      if (onOtpSentSuccess) {
+        onOtpSentSuccess();
       }
     },
     onError: (error: any) => {
       notification({
-        title: "Registration Failed",
+        title: "Failed to send code",
         message: error?.message || "Please try again",
         type: "danger",
       });
@@ -99,28 +99,22 @@ export default function PersonalInfo({
     }
   };
 
-  const handleRegistration = () => {
-    const registrationData = {
-      bvnValidationTicketId: formData.bvnValidationTicketId || "",
-      email: formData.personalInfo.emailAddress,
-      countryCode: "+234",
-      phoneNumber: formData.personalInfo.phoneNumber,
-      businessName: formData.personalInfo.businessName,
-      password: formData.personalInfo.password,
-      accountDetail: {
-        bankCode: formData.bankAccount.bankCode || "",
-        accountNumber: formData.bankAccount.accountNumber || "",
-        accountName: formData.bankAccount.accountName || "",
-      },
-    };
+  const handleSendOtp = () => {
+    const email = formData.personalInfo.emailAddress;
+    const recipientName = `${formData.personalInfo.firstName} ${formData.personalInfo.lastName}`;
 
-    registrationMutation.mutate({
+    sendOtpMutation.mutate({
       service: "identity-service",
-      endpoint: "/api/v1/users/register",
+      endpoint: "/api/v1/otp/send",
       method: "POST",
-      body: registrationData,
+      body: {
+        identifier: email,
+        purpose: "EmailConfirmation",
+        recipientName,
+      },
     });
   };
+
 
   const isFormValid =
     personalInfo.emailAddress?.trim() &&
@@ -265,8 +259,8 @@ export default function PersonalInfo({
       </div>
 
       <Button
-        onClick={handleRegistration}
-        disabled={!isFormValid || registrationMutation.isLoading}
+        onClick={handleSendOtp}
+        disabled={!isFormValid || sendOtpMutation.isLoading}
         className="w-full h-12 bg-success text-white rounded-lg mt-10"
       >
         Next

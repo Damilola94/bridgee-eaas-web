@@ -9,6 +9,7 @@ import LivenessCheck from "../../../components/pages/seller/create-account/Liven
 import PersonalInfo from "../../../components/pages/seller/create-account/PersonalInfo";
 import LinkBankAccount from "../../../components/pages/seller/create-account/LinkBankAccount";
 import Success from "../../../components/pages/seller/create-account/Success";
+import EmailVerification from "../../../components/pages/seller/create-account/EmailVerification";
 
 export interface StepData {
   bvnValidationTicketId?: string;
@@ -28,6 +29,7 @@ export interface StepData {
     bankCode?: string;
     accountName?: string;
   };
+  otpValidationTicket?: string;
 }
 
 const stepsConfig = [
@@ -42,14 +44,19 @@ const stepsConfig = [
     Component: LivenessCheck,
   },
   {
-    id: "linkBankAccount",
-    description: "Link a Nigerian Bank Account for Payout",
-    Component: LinkBankAccount,
-  },
-  {
     id: "personalInfo",
     description: "Personal Information Validation",
     Component: PersonalInfo,
+  },
+  {
+    id: "emailVerification",
+    description: "Email Verification",
+    Component: EmailVerification,
+  },
+  {
+    id: "linkBankAccount",
+    description: "Link a Nigerian Bank Account for Payout",
+    Component: LinkBankAccount,
   },
   {
     id: "success",
@@ -76,6 +83,7 @@ export default function CreateAccountPage() {
       bank: "",
       accountNumber: "",
     },
+    otpValidationTicket: ""
   });
 
   const totalSteps = stepsConfig.length;
@@ -103,20 +111,28 @@ export default function CreateAccountPage() {
             onNavigateNext={handleNext}
           />
         );
-      case "linkBankAccount":
-        return (
-          <LinkBankAccount
+        case "personalInfo":
+          return (
+            <PersonalInfo
             formData={formData}
             setFormData={setFormData}
-            onNextStep={handleNext}
-          />
-        );
-      case "personalInfo":
+            onOtpSentSuccess={handleNext}
+            />
+          );
+          case "linkBankAccount":
+            return (
+              <LinkBankAccount
+                formData={formData}
+                setFormData={setFormData}
+                onNextStep={handleNext}
+              />
+            );
+          case "emailVerification":
         return (
-          <PersonalInfo
+          <EmailVerification
             formData={formData}
             setFormData={setFormData}
-            onRegistrationSuccess={handleNext}
+            onNavigateNext={handleNext}
           />
         );
       case "success":
@@ -173,7 +189,7 @@ export default function CreateAccountPage() {
 
           <div className="mb-9">{renderStepComponent()}</div>
 
-          {["bvnValidation", "personalInfo"].includes(currentStepData.id) && (
+          {["bvnValidation", "personalInfo", "emailVerification"].includes(currentStepData.id) && (
             <div className="text-center mt-8">
               <span className="text-black text-sm font-bold">
                 Already have an account?{" "}
