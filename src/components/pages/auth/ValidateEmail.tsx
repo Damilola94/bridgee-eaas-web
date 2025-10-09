@@ -73,7 +73,7 @@ function ValidateEmail({ gotoNextForm = () => {} }: ResetPasswordProps) {
         <div className="mb-7">
           <button
             type="button"
-            onClick={() => router.push('/login')}
+            onClick={() => router.push('/seller/login')}
             className="text-primary text-sm border border-primary flex items-center mb-3 rounded pt-2 pb-1 px-3"
           >
             <HiArrowLeft className="mr-2 mb-1" />
