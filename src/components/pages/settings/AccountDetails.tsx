@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { Dispatch, SetStateAction } from "react";
 
-import { ChevronDown } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
@@ -15,6 +15,7 @@ import CheckIncompleteCircle from "../../../assets/svgs/check-incomplete-circle.
 import TextInput from "../../inputs/Text";
 import Button from "../../inputs/Button";
 import { Account, Bank } from "../../../types/bank";
+import Select, { StylesConfig } from "react-select";
 
 import {
   getAccountName,
@@ -27,6 +28,25 @@ import notification from "../../../utilities/notification";
 import { useAccountsContext } from "../../../context/Accounts";
 
 import { QUERY_KEYS } from "../../../configs/constants";
+
+type BankOptionType = {
+  value: string;
+  label: string;
+};
+
+const selectStyles: StylesConfig<BankOptionType> = {
+  control: (base) => ({
+    ...base,
+    height: "3rem",
+    border: "1px solid #CFCFCF",
+    borderRadius: "10px",
+    backgroundColor: "#F8F8F8",
+    boxShadow: "none",
+    "&:hover": {
+      borderColor: "#CFCFCF",
+    },
+  }),
+};
 
 export default function AccountDetails() {
   const { accounts } = useAccountsContext();
@@ -73,6 +93,11 @@ export default function AccountDetails() {
       bankCode: apiBank.bankCode,
       bankName: apiBank.bankName,
     })) || [];
+
+  const bankOptions: BankOptionType[] = banks?.map((bank) => ({
+    value: bank.bankCode,
+    label: bank.bankName,
+  }));
 
   const accountNameMutation = useMutation(getAccountName, {
     onSuccess: (response) => {
@@ -304,6 +329,7 @@ export default function AccountDetails() {
     <>
       {isSuccess ? (
         <>
+          {/* Desktop Card View */}
           {sortedAccountDetails.map((account: any, sortedIndex: number) => {
             const originalIndex = accountDetails.findIndex(
               (acc) => acc.accountNumber === account.accountNumber
@@ -319,15 +345,16 @@ export default function AccountDetails() {
                     Account Details
                   </h2>
                   <div>
-                    {/* Table Header */}
-                    <div className="grid grid-cols-4 gap-4 py-3 px-4 border-b border-gray-200 text-sm font-medium text-textColor/50">
-                      <div>Bank</div>
-                      <div>Account Number</div>
-                      <div>Account Name</div>
-                      <div className="hidden lg:block text-right">Actions</div>
-                    </div>
-                    {/* Table Row */}
-                    <div key={sortedIndex}>
+                    {/* Desktop Table View */}
+                    <div className="hidden md:block">
+                      {/* Table Header */}
+                      <div className="grid grid-cols-4 gap-4 py-3 px-4 border-b border-gray-200 text-sm font-medium text-textColor/50">
+                        <div>Bank</div>
+                        <div>Account Number</div>
+                        <div>Account Name</div>
+                        <div className="hidden lg:block text-right">Actions</div>
+                      </div>
+                      {/* Table Row */}
                       <div className="grid grid-cols-4 gap-4 py-4 px-4 border-b border-gray-200 items-center">
                         <div className="text-sm text-gray-900">
                           {account.bankName}
@@ -393,14 +420,43 @@ export default function AccountDetails() {
                           </button>
                         </div>
                       </div>
+                    </div>
 
-                      <div className="mt-2 px-4 py-2">
-                        <ToggleInput
-                          label="Set as primary account"
-                          value={primaryStatuses[originalIndex]}
-                          onChange={handleToggle(originalIndex)}
-                        />
+                    {/* Mobile Card View */}
+                    <div className="md:hidden">
+                      <div className="border border-gray-200 rounded-lg p-4">
+                        <div className="flex justify-between items-start mb-4">
+                          <div className="flex-1">
+                            <div className="text-xs text-gray-500 mb-1">Bank</div>
+                            <div className="font-medium text-gray-900 text-sm">{account.bankName}</div>
+                          </div>
+                          <button
+                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                            onClick={() => handleDeleteBank(account, originalIndex)}
+                            disabled={deleteBankMutation.isLoading}
+                          >
+                            <Trash2 className="w-5 h-5 text-gray-400" />
+                          </button>
+                        </div>
+                        <div className="space-y-3">
+                          <div>
+                            <div className="text-xs text-gray-500 mb-1">Account Number</div>
+                            <div className="text-gray-900 text-sm">{account.accountNumber}</div>
+                          </div>
+                          <div>
+                            <div className="text-xs text-gray-500 mb-1">Account Name</div>
+                            <div className="text-gray-900 text-sm">{account.accountName}</div>
+                          </div>
+                        </div>
                       </div>
+                    </div>
+
+                    <div className="mt-2 px-4 py-2">
+                      <ToggleInput
+                        label="Set as primary account"
+                        value={primaryStatuses[originalIndex]}
+                        onChange={handleToggle(originalIndex)}
+                      />
                     </div>
                   </div>
                 </div>
@@ -433,6 +489,7 @@ export default function AccountDetails() {
         </Button>
       </div>
 
+      {/* Add Account Modal */}
       <Modal
         isCenter={true}
         isShowCloseIcon={true}
@@ -465,28 +522,20 @@ export default function AccountDetails() {
             <div>
               <label className="text-sm font-bold">Select Bank</label>
               <div className="relative mt-2 mb-3">
-                <select
-                  className="h-12 w-full px-3 border border-[#CFCFCF] rounded-[10px] bg-[#F8F8F8] focus:outline-none focus:ring-2 focus:ring-purple-600 appearance-none text-greyDark"
-                  value={selectedBank?.bankCode || ""}
-                  onChange={(e) => {
-                    const bank = banks.find(
-                      (b: Bank) => b.bankCode === e.target.value
+                <Select
+                  options={bankOptions}
+                  isLoading={banksLoading}
+                  placeholder="Search and select a bank"
+                  onChange={(selectedOption: BankOptionType | null) => {
+                    const bank = banks?.find(
+                      (b) => b.bankCode === selectedOption?.value
                     );
                     setSelectedBank(bank || null);
                   }}
-                  disabled={banksLoading}
-                >
-                  <option value="">Select Bank</option>
-                  {banks.map((bank: Bank) => (
-                    <option key={bank.bankCode} value={bank.bankCode}>
-                      {bank.bankName}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 right-[6px] flex items-center px-2 pointer-events-none">
-                  <ChevronDown className="h-5 w-5 text-grey" />
-                </div>
+                  styles={selectStyles}
+                />
               </div>
+
               <p className="text-xs text-grey">
                 Kindly ensure that your account name match your BVN name
               </p>
@@ -525,6 +574,7 @@ export default function AccountDetails() {
         )}
       </Modal>
 
+      {/* Delete Confirmation Modal */}
       <Modal
         isCenter={true}
         isShowCloseIcon={true}
@@ -533,24 +583,22 @@ export default function AccountDetails() {
         onClose={closeDeleteModal}
       >
         <div className="text-center p-6">
-          <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
-              <svg
-                width="32"
-                height="32"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 9V11M12 15H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                  stroke="#DC2626"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 9V11M12 15H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                stroke="#DC2626"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </div>
 
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
