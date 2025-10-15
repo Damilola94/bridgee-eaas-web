@@ -54,7 +54,7 @@ export default function Invoice({
     recipientAddress: orderDetails?.recipientAddress || "",
     businessName: orderDetails?.businessName || "Bridge Marketplace",
     businessAddress:
-      orderDetails?.businessAddress || "291 N 4th St, Ikoyi, Lagos, Nigeria",
+      orderDetails?.businessAddress || "",
     paymentType: orderDetails?.paymentType || "",
     disputeManager: orderDetails?.disputeManager || "",
     inspectionPeriod: orderDetails?.inspectionPeriod || "",
