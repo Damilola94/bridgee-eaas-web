@@ -78,7 +78,7 @@ function Header() {
               ) : (
                 <div className="flex space-x-2">
                   <Button
-                    onClick={() => router.push("/login")}
+                    onClick={() => router.push("/seller/login")}
                     border
                     borderColor="border-success"
                     fontSize="text-sm"
@@ -90,7 +90,7 @@ function Header() {
                     Login
                   </Button>
                   <Button
-                    onClick={() => router.push("/signup")}
+                    onClick={() => router.push("/seller/create-account")}
                     paddingX="px-8"
                     paddingY="py-3"
                   >
@@ -180,7 +180,7 @@ function Header() {
                   ) : (
                     <div className="flex space-x-2">
                       <Button
-                        onClick={() => router.push("/login")}
+                        onClick={() => router.push("/seller/login")}
                         border
                         borderColor="border-success"
                         fontSize="text-sm"
@@ -192,7 +192,7 @@ function Header() {
                         Login
                       </Button>
                       <Button
-                        onClick={() => router.push("/signup")}
+                        onClick={() => router.push("/seller/create-account")}
                         paddingX="px-8"
                         paddingY="py-3"
                       >

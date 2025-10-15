@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useCookies } from 'react-cookie';
-import { HiArrowLeft } from 'react-icons/hi';
 import { useRouter } from 'next/router';
 
 import TextInput from '../../inputs/Text';
@@ -57,7 +56,11 @@ function ValidateEmail({ gotoNextForm = () => {} }: ResetPasswordProps) {
     }
 
     resetMutation.mutate({
-      endpoint: 'auth', extra: 'initiate-reset-password', method: 'POST', body: { email }
+      service: 'identity-service/api/v1',
+      endpoint: 'auth',
+      extra: 'forgot-password',
+      method: 'POST',
+      body: { email }
     });
   };
 
@@ -71,17 +74,8 @@ function ValidateEmail({ gotoNextForm = () => {} }: ResetPasswordProps) {
         <ClickableLogo className="mb-10" />
 
         <div className="mb-7">
-          <button
-            type="button"
-            onClick={() => router.push('/login')}
-            className="text-primary text-sm border border-primary flex items-center mb-3 rounded pt-2 pb-1 px-3"
-          >
-            <HiArrowLeft className="mr-2 mb-1" />
-            <span>Back</span>
-          </button>
-
           <h1 className="w-full text-textColor ff-bold text-xl mb-2">Forgot Password</h1>
-          <p className="text-sm text-lightText">To reset your password, enter your email address.</p>
+          <p className="text-sm text-lightText">For instructions to reset your password, enter your email address.</p>
         </div>
 
         <div className="w-full">
@@ -101,6 +95,12 @@ function ValidateEmail({ gotoNextForm = () => {} }: ResetPasswordProps) {
           >
             Proceed
           </Button>
+          <div
+            onClick={() => router.push('/seller/login')}
+            className="w-full text-sm text-center mt-3 ff-bold !rounded-md mdx2:!rounded-xl text-success"
+          >
+            Back to login
+          </div>
         </div>
       </form>
     </div>

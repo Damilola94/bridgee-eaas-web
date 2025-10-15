@@ -18,7 +18,7 @@ type Props = {
   endpointExtra: string
 };
 
-function ValidateOTP({ endpointExtra = '', gotoPrevForm = () => {}, gotoNextForm = () => {} }: Props) {
+function ValidateOTP({ endpointExtra = '', gotoPrevForm = () => { }, gotoNextForm = () => { } }: Props) {
   const [cookie, setCookie] = useCookies(['form', 'data']);
   const [otp, setOtp] = useState('');
 
@@ -28,8 +28,8 @@ function ValidateOTP({ endpointExtra = '', gotoPrevForm = () => {}, gotoNextForm
         message: res?.data?.message || 'Successful account verification.',
         type: 'success'
       });
-      if (endpointExtra === 'validate-reset-password-otp') {
-        setCookie('form', res?.data);
+      if (endpointExtra === 'verify') {
+        setCookie('form', { otpValidationTicket: res?.data, email: cookie.form?.email });
       }
       gotoNextForm();
     },
@@ -69,22 +69,29 @@ function ValidateOTP({ endpointExtra = '', gotoPrevForm = () => {}, gotoNextForm
       return;
     }
 
-    const body = { email: cookie.form?.email, otp };
+    const body = {
+      identifier: cookie.form?.email,
+      otp,
+      purpose: "PasswordReset"
+    };
 
     activationMutation.mutate({
-      endpoint: 'auth', extra: endpointExtra, method: 'POST', body
+      service: 'identity-service/api/v1',
+      endpoint: 'otp',
+      extra: endpointExtra,
+      method: 'POST',
+      body
     });
   };
 
   const resendOtp = () => {
-    let purpose = '';
-    if (endpointExtra === 'validate-reset-password-otp') purpose = 'PasswordReset';
-    else if (endpointExtra === 'validate-otp') purpose = 'Onboarding';
-
-    const body = { email: cookie.form?.email, purpose };
-
+    const body = { email: cookie.form?.email };
     resendMutation.mutate({
-      endpoint: 'auth', extra: 'resend-otp', method: 'POST', body
+      service: 'identity-service/api/v1',
+      endpoint: 'auth',
+      extra: 'forgot-password',
+      method: 'POST',
+      body
     });
   };
 
@@ -99,9 +106,11 @@ function ValidateOTP({ endpointExtra = '', gotoPrevForm = () => {}, gotoNextForm
 
         <ClickableLogo className="mb-10" />
 
-        <h1 className="w-full text-textColor ff-bold text-xl mb-2">Enter Code</h1>
+        <h1 className="w-full text-textColor ff-bold text-xl mb-2">Forgot Password</h1>
         <p className="text-sm text-lightText mb-10">
-          {`Proceed to your email(${cookie.form?.email}) to get code`}
+          {/* {`Proceed to your email(${cookie.form?.email}) to get code`}
+           */}
+          A code has been send to your email, proceed to your email to get code
         </p>
 
         <div className="w-full">
@@ -118,7 +127,7 @@ function ValidateOTP({ endpointExtra = '', gotoPrevForm = () => {}, gotoNextForm
             <button
               type="button"
               onClick={resendOtp}
-              className="text-primary cursor-pointer outline-none border-none"
+              className="text-success underline cursor-pointer outline-none border-none"
             >
               Resend
             </button>
@@ -134,7 +143,7 @@ function ValidateOTP({ endpointExtra = '', gotoPrevForm = () => {}, gotoNextForm
 
         <p className="mt-5 text-center">
           Wrong email?&nbsp;
-          <button type="button" onClick={gotoPrevForm} className="text-primary cursor-pointer outline-none">click here</button>
+          <button type="button" onClick={gotoPrevForm} className="text-success cursor-pointer outline-none">click here</button>
         </p>
       </form>
     </div>

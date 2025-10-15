@@ -4,8 +4,6 @@ import Cookies from 'js-cookie';
 
 import { logout } from '../auth';
 
-import endpoints from './endpoints';
-
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 async function refreshTokenFn() {
@@ -13,18 +11,30 @@ async function refreshTokenFn() {
   const data = storedData && JSON.parse(storedData);
 
   try {
-    const url = `${endpoints.auth}/refresh-token/${data?.email}`;
-    const headers = { access_token: data?.refreshToken };
+    const url = '/api/v1/auth/refresh-token';
+    const body = {
+      expiredToken: data?.accessToken,
+      refreshToken: data?.refreshToken
+    };
 
-    const response: any = await axios({ url, headers, method: 'POST' });
+    const response: any = await axios({ url, method: 'POST', data: body });
 
-    const { data: session } = response.data;
-    if (!session?.accessToken) {
+    const { data: apiResponse } = response.data;
+    if (!apiResponse?.accessToken) {
       logout();
     }
 
-    Cookies.set('data', JSON.stringify({ ...data, ...session }), { secure: true, sameSite: 'strict' });
-    return session;
+    // Update cookie with new tokens and other data from response
+    Cookies.set('data', JSON.stringify({
+      ...data,
+      accessToken: apiResponse.accessToken,
+      refreshToken: apiResponse.refreshToken,
+      expiry: apiResponse.expiry,
+      roles: apiResponse.roles,
+      userId: apiResponse.userId
+    }), { secure: true, sameSite: 'strict' });
+
+    return apiResponse;
   } catch (error) {
     logout();
   }

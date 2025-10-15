@@ -1,14 +1,16 @@
 "use client";
 
-import React, { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useMutation } from "react-query";
 import Webcam from "react-webcam";
 import Button from "../../../inputs/Button";
-import Loading from "../../../common/Loading";
 import notification from "../../../../utilities/notification";
 import handleFetch from "../../../../services/api/handleFetch";
 import { StepData } from "../../../../pages/seller/create-account";
-import { dataURLtoFile, removeNigerianCountryCode } from "../../../../utilities/general";
+import {
+  dataURLtoFile,
+  removeNigerianCountryCode,
+} from "../../../../utilities/general";
 
 interface Props {
   formData?: StepData;
@@ -41,7 +43,7 @@ export default function LivenessCheck({
       if (newSelfieFile) {
         setSelfieFile(newSelfieFile);
         if (setFormData) {
-         setFormData({
+          setFormData({
             ...formData,
             livenessSelfie: newSelfieFile,
           } as StepData);
@@ -127,7 +129,7 @@ export default function LivenessCheck({
 
   return (
     <>
-      {bvnMutation.isLoading && <Loading />}
+      {/* {bvnMutation.isLoading && <Loading />} */}
       <div>
         <h3 className="text-lg font-semibold mb-2 text-textColor">
           Take a Selfie
@@ -152,7 +154,7 @@ export default function LivenessCheck({
               ref={webcamRef}
               forceScreenshotSourceSize={true}
               screenshotQuality={1}
-              screenshotFormat="image/png"
+              screenshotFormat="image/jpeg"
               className="h-full w-full object-cover"
               mirrored={true}
               videoConstraints={videoConstraints}
@@ -160,9 +162,18 @@ export default function LivenessCheck({
           )}
         </div>
       </div>
+
+      {bvnMutation.isLoading && (
+        <p className="text-[#FF9500] animate-pulse pt-6">
+          Your selfie has been successfully uploaded, it will take about 1min to
+          verify your identity, kindly be patient. Thank you.
+        </p>
+      )}
+
       <div className="lg:flex gap-x-4 space-y-4 lg:space-y-0 mt-10">
         <Button
           onClick={selfie ? () => setSelfie(null) : captureSelfie}
+          disabled={bvnMutation.isLoading}
           className="w-full h-12 bg-transparent border border-grey !text-greyDark"
         >
           {selfie ? "Try again" : "Capture Selfie"}

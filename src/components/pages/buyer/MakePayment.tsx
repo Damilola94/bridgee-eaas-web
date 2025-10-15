@@ -1,21 +1,30 @@
+/* eslint-disable no-nested-ternary */
 import { useEffect, useState } from "react";
+
+import { CopyToClipboard } from "react-copy-to-clipboard";
+
+import Image from "next/image";
+
+import { useQuery, useQueryClient } from "react-query";
+
+import Skeleton from "react-loading-skeleton";
+
+import { useRouter } from "next/router";
+
 import Button from "../../inputs/Button";
 import TextInput from "../../inputs/Text";
-import { CopyToClipboard } from "react-copy-to-clipboard";
 import CopyIcon from "../../../assets/svgs/copy.svg";
 import CancelIcon from "../../../assets/svgs/cancel.svg";
-import Image from "next/image";
-import { useQuery, useQueryClient } from "react-query";
+
 import notification from "../../../utilities/notification";
 import { QUERY_KEYS } from "../../../configs/constants";
 import {
   getPaymentDetails,
-  getTransactionStatus,
+  getTransactionStatus
 } from "../../../services/api/escrow";
+
 import PaymentSuccessful from "./PaymentSuccessful";
 import PaymentPending from "./PaymentPending";
-import Skeleton from "react-loading-skeleton";
-import { useRouter } from "next/router";
 
 interface MakePaymentProps {
   formData: {
@@ -36,7 +45,7 @@ export default function MakePayment({
   orderReference,
   onPaymentSuccess,
   onPaymentPending,
-  initialIsPaymentInitiated = false,
+  initialIsPaymentInitiated = false
 }: MakePaymentProps) {
   const router = useRouter();
 
@@ -56,7 +65,7 @@ export default function MakePayment({
     [QUERY_KEYS.PAYMENT_DETAILS, orderReference, formData.email],
     () => getPaymentDetails(orderReference || "", formData.email || ""),
     {
-      enabled: Boolean(orderReference && formData.email && isPaymentInitiated),
+      enabled: Boolean(orderReference && formData.email && isPaymentInitiated)
     }
   );
 
@@ -105,7 +114,7 @@ export default function MakePayment({
       notification({
         title: "Error",
         message: "Transaction ID not available. Please try again.",
-        type: "error",
+        type: "error"
       });
       return;
     }
@@ -124,7 +133,7 @@ export default function MakePayment({
             statusCode: "400",
             message: "Transaction status is Pending.",
             data: null,
-            metaData: null,
+            metaData: null
           };
         }
         throw error; // Re-throw actual network errors
@@ -137,7 +146,7 @@ export default function MakePayment({
         title: "Payment Successful",
         message:
           response.message || "Your payment has been processed successfully!",
-        type: "success",
+        type: "success"
       });
 
       queryClient.invalidateQueries([QUERY_KEYS.ORDER_STATUS, orderReference]);
@@ -155,7 +164,7 @@ export default function MakePayment({
         message:
           response.message ||
           "Your payment is being processed. We'll notify you once it's complete.",
-        type: "info",
+        type: "info"
       });
 
       onPaymentPending?.();
@@ -163,7 +172,7 @@ export default function MakePayment({
       notification({
         title: "Payment Status",
         message: response.message || "Unable to determine payment status.",
-        type: "warning",
+        type: "warning"
       });
     }
 
@@ -236,181 +245,180 @@ export default function MakePayment({
     </div>
   );
 
+  return (
+    <div className="w-full lg:max-w-[492px] bg-white rounded-[10px] p-8">
+      {paymentLoading ? (
+        <SkeletonPaymentForm />
+      ) : (
+        <div className="mx-auto">
+          <section className="block lg:flex items-center justify-between">
+            <div className="mb-6">
+              <h2 className="text-lg font-bold text-textColor mb-2">
+                {formData.fullName}
+              </h2>
+              <p className="text-grey2 text-lg font-normal mb-1">
+                {formData.phone}
+              </p>
+              <p className="text-grey2 text-lg font-medium">
+                {formData.email}
+              </p>
+            </div>
 
-    return (
-      <div className="w-full lg:max-w-[492px] bg-white rounded-[10px] p-8">
-        {paymentLoading ? (
-          <SkeletonPaymentForm />
-        ) : (
-          <div className="mx-auto">
-            <section className="block lg:flex items-center justify-between">
-              <div className="mb-6">
-                <h2 className="text-lg font-bold text-textColor mb-2">
-                  {formData.fullName}
-                </h2>
-                <p className="text-grey2 text-lg font-normal mb-1">
-                  {formData.phone}
-                </p>
-                <p className="text-grey2 text-lg font-medium">
-                  {formData.email}
-                </p>
-              </div>
-
-              <div className="mb-8">
-                <div className="text-lg font-bold text-textColor">
+            <div className="mb-8">
+              <div className="text-lg font-bold text-textColor">
                   Pay <span className="text-[#00A980]"> {amount}</span>
+              </div>
+            </div>
+          </section>
+
+          <div className="border-b-[0.8px] border-[#696969] mb-10"></div>
+
+          {paymentStatus === "pending" ? (
+            <PaymentPending onPaymentPending={resetPaymentState} />
+          ) : paymentStatus === "success" ? (
+            <PaymentSuccessful onPaymentSuccessful={resetPaymentState} />
+          ) : (
+            <>
+              <div className="mb-8">
+                <h3 className="text-xl font-bold text-textColor mb-6">
+                    Transfer NGN {amount} to the Collection Account Below
+                </h3>
+
+                <div className="space-y-4 mb-10">
+                  <section className="bg-secondary rounded-[10px] px-4 py-10 space-y-9">
+                    <div className="space-y-2">
+                      <label className="text-base font-medium text-grey2 mb-1">
+                          BANK NAME
+                      </label>
+                      <div className="text-textColor font-semibold text-lg">
+                        {bankName}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-base font-medium text-grey2 mb-1">
+                          ACCOUNT NAME
+                      </label>
+                      <div className="text-textColor font-semibold text-lg">
+                        {accountName}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-2">
+                        <label className="text-base font-medium text-grey2 mb-1">
+                            ACCOUNT NUMBER
+                        </label>
+                        <div className="text-textColor font-semibold text-lg">
+                          {accountNumber}
+                        </div>
+                      </div>
+
+                      <button
+                        className="text-gray-500 hover:text-gray-700"
+                        onClick={() => {
+                          navigator.clipboard.writeText(accountNumber);
+                          handleCopy("account");
+                        }}
+                      >
+                        {copiedField === "account" ? (
+                          <svg
+                            className="w-5 h-5 text-[#00A980]"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        ) : (
+                          <Image src={CopyIcon} alt="Copy Icon" />
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-2">
+                        <label className="text-base font-medium text-grey2 mb-1">
+                            AMOUNT
+                        </label>
+                        <div className="text-textColor font-semibold text-lg">
+                          {amount}
+                        </div>
+                      </div>
+
+                      <button
+                        className="text-gray-500 hover:text-gray-700"
+                        onClick={() => {
+                          navigator.clipboard.writeText(amount);
+                          handleCopy("amount");
+                        }}
+                      >
+                        {copiedField === "amount" ? (
+                          <svg
+                            className="w-5 h-5 text-[#00A980]"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        ) : (
+                          <Image src={CopyIcon} alt="Copy Icon" />
+                        )}
+                      </button>
+                    </div>
+                  </section>
                 </div>
               </div>
-            </section>
 
-            <div className="border-b-[0.8px] border-[#696969] mb-10"></div>
+              <div className="h-[1px] w-full bg-dashed-line-dynamic"></div>
 
-            {paymentStatus === "pending" ? (
-              <PaymentPending onPaymentPending={resetPaymentState} />
-            ) : paymentStatus === "success" ? (
-              <PaymentSuccessful onPaymentSuccessful={resetPaymentState} />
-            ) : (
-              <>
-                <div className="mb-8">
-                  <h3 className="text-xl font-bold text-textColor mb-6">
-                    Transfer NGN {amount} to the Collection Account Below
-                  </h3>
-
-                  <div className="space-y-4 mb-10">
-                    <section className="bg-secondary rounded-[10px] px-4 py-10 space-y-9">
-                      <div className="space-y-2">
-                        <label className="text-base font-medium text-grey2 mb-1">
-                          BANK NAME
-                        </label>
-                        <div className="text-textColor font-semibold text-lg">
-                          {bankName}
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-base font-medium text-grey2 mb-1">
-                          ACCOUNT NAME
-                        </label>
-                        <div className="text-textColor font-semibold text-lg">
-                          {accountName}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <div className="space-y-2">
-                          <label className="text-base font-medium text-grey2 mb-1">
-                            ACCOUNT NUMBER
-                          </label>
-                          <div className="text-textColor font-semibold text-lg">
-                            {accountNumber}
-                          </div>
-                        </div>
-
-                        <button
-                          className="text-gray-500 hover:text-gray-700"
-                          onClick={() => {
-                            navigator.clipboard.writeText(accountNumber);
-                            handleCopy("account");
-                          }}
-                        >
-                          {copiedField === "account" ? (
-                            <svg
-                              className="w-5 h-5 text-[#00A980]"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          ) : (
-                            <Image src={CopyIcon} alt="Copy Icon" />
-                          )}
-                        </button>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <div className="space-y-2">
-                          <label className="text-base font-medium text-grey2 mb-1">
-                            AMOUNT
-                          </label>
-                          <div className="text-textColor font-semibold text-lg">
-                            {amount}
-                          </div>
-                        </div>
-
-                        <button
-                          className="text-gray-500 hover:text-gray-700"
-                          onClick={() => {
-                            navigator.clipboard.writeText(amount);
-                            handleCopy("amount");
-                          }}
-                        >
-                          {copiedField === "amount" ? (
-                            <svg
-                              className="w-5 h-5 text-[#00A980]"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          ) : (
-                            <Image src={CopyIcon} alt="Copy Icon" />
-                          )}
-                        </button>
-                      </div>
-                    </section>
-                  </div>
-                </div>
-
-                <div className="h-[1px] w-full bg-dashed-line-dynamic"></div>
-
-                <div className="my-10 w-[90%] mx-auto">
-                  <p className="text-lg font-medium text-textColor text-center">
+              <div className="my-10 w-[90%] mx-auto">
+                <p className="text-lg font-medium text-textColor text-center">
                     The account is for this transaction only and expires in{" "}
-                    <span className="text-[#00A980] font-bold">
-                      {formatTime(timeLeft)}
-                    </span>
-                  </p>
-                </div>
+                  <span className="text-[#00A980] font-bold">
+                    {formatTime(timeLeft)}
+                  </span>
+                </p>
+              </div>
 
-                <div className="space-y-4">
-                  <Button
-                    onClick={handleSentMoney}
-                    className="bg-success py-4 w-full text-lg font-bold"
-                    disabled={sendingPayment}
-                  >
-                    {sendingPayment
-                      ? "Verifying Payment..."
-                      : "I've sent the money"}
-                  </Button>
+              <div className="space-y-4">
+                <Button
+                  onClick={handleSentMoney}
+                  className="bg-success py-4 w-full text-lg font-bold"
+                  disabled={sendingPayment}
+                >
+                  {sendingPayment
+                    ? "Verifying Payment..."
+                    : "I've sent the money"}
+                </Button>
 
-                  <Button
-                    onClick={handleCancelPayment}
-                    className="bg-transparent border border-grey2 py-4 w-full text-textColor "
-                  >
-                    <span className="flex items-center justify-center">
-                      <Image
-                        src={CancelIcon}
-                        alt="Cancel Icon"
-                        className="h-8 w-8"
-                      />
-                      <p className="text-lg font-bold text-textColor">
+                <Button
+                  onClick={handleCancelPayment}
+                  className="bg-transparent border border-grey2 py-4 w-full text-textColor "
+                >
+                  <span className="flex items-center justify-center">
+                    <Image
+                      src={CancelIcon}
+                      alt="Cancel Icon"
+                      className="h-8 w-8"
+                    />
+                    <p className="text-lg font-bold text-textColor">
                         Cancel Payment
-                      </p>
-                    </span>
-                  </Button>
-                </div>
-              </>
-            )}
-          </div>
-        )}
-      </div>
-    );
+                    </p>
+                  </span>
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
 }

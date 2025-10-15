@@ -30,3 +30,19 @@ export type WaitlistProps = {
   email?: string
   termsAccepted?: string
 };
+
+export interface OtpVerifyResponse {
+  isSuccess: boolean;
+  statusCode: string;
+  message: string;
+  data: string;
+  metaData: null;
+}
+
+export interface OtpSendResponse {
+  isSuccess: boolean;
+  statusCode: string;
+  message: string;
+  data: boolean; 
+  metaData: null;
+}

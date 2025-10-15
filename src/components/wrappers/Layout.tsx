@@ -18,7 +18,7 @@ function Layout({ children }: Props) {
   const { push, pathname } = useRouter();
 
   useEffect(() => {
-    if (!cookie?.data?.accessToken) push('/login');
+    if (!cookie?.data?.accessToken) push('/seller/login');
   }, [cookie, push]);
 
   if (!cookie?.data?.accessToken) {
@@ -27,7 +27,7 @@ function Layout({ children }: Props) {
 
   return (
     <div className="bg-secondary w-full h-full min-h-screen relative">
-      <SessionControl path="/login" />
+      <SessionControl path="/seller/login" />
       <Sidebar />
       <AccountsContextProvider>
         <ListFilterContextProvider>

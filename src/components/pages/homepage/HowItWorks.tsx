@@ -12,7 +12,7 @@ const steps = [
   { image: Image2, text: "Buyer makes payment to Escrow" },
   { image: Image3, text: "Seller delivers goods or service to buyer" },
   { image: Image4, text: "Buyer approves goods or services" },
-  { image: Image5, text: "Escrow releases payment to seller" },
+  { image: Image5, text: "Escrow releases payment to seller" }
 ];
 
 function HowItWorks() {
@@ -27,7 +27,7 @@ function HowItWorks() {
       }
     }, 2000);
 
-    return function () {
+    return function() {
       clearInterval(intervalId);
     };
   }, [index]);

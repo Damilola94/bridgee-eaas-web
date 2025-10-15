@@ -12,10 +12,12 @@ const endpoints: any = {
   mine: `${prefix}/mine`,
   users: `${prefix}/users`,
   dispute: `${prefix}/dispute`,
+  upload: `${prefix}/upload`,
   walletsecurity: `${prefix}/walletsecurity`,
   wallets: `${prefix}/wallets`,
   wallet: `${prefix}/wallet`,
-  invitation: `${prefix}/invitation`
+  invitation: `${prefix}/invitation`,
+  otp: `${prefix}/otp`
 };
 
 export default endpoints;

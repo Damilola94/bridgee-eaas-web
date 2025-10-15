@@ -32,7 +32,7 @@ function Login() {
           type: 'warning'
         });
         setCookie('form', { email });
-        router?.push('/signup?stage=validateOtp');
+        router?.push('/seller/create-account?stage=validateOtp');
       } else {
         setCookie('data', res?.data, { secure: true, sameSite: true });
         router?.push('/dashboard');
@@ -59,9 +59,9 @@ function Login() {
     }
 
     loginMutation.mutate({
-      service: 'identity-service/',
-      endpoint: 'api/v1/auth/login',
-      extra: '',
+      service: 'identity-service/api/v1',
+      endpoint: 'auth',
+      extra: 'login',
       method: 'POST',
       body: { email, password }
     });
