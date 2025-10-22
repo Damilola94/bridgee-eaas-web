@@ -17,7 +17,7 @@ import notification from "../../../utilities/notification";
 import FileInput from "../../inputs/File";
 
 import SelectInput from "../../inputs/Select";
-import Select, {StylesConfig} from "react-select";
+import Select, { StylesConfig } from "react-select";
 
 import TextareaInput from "../../inputs/Textarea";
 
@@ -33,6 +33,7 @@ import {
   ShipBubbleCategory,
   ShipBubbleDimension,
 } from "../../../types/shipbubble";
+import TextInput from "../../inputs/Text";
 
 // const disbursementTypes = [
 //   {
@@ -301,7 +302,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         )}
       </div>
 
-      <div className="w-full mb-10">
+      <div className="w-full mb-6">
         <label className="text-sm font-bold">Select Category</label>
         <div className="mt-2">
           <Select
@@ -318,7 +319,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         </div>
       </div>
 
-      <div className="w-full mb-10">
+      <div className="w-full mb-6">
         <label className="text-sm font-bold">Select Package Size</label>
         <div className="mt-2">
           <Select
@@ -335,7 +336,46 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         </div>
       </div>
 
-      <div className="w-full mb-3">
+      <div>
+        <p className="pb-4 font-bold text-base">Shipping Details</p>
+
+        <div className="flex gap-5 justify-between">
+          <div className="w-full">
+            <TextInput
+              label="Pickup Address"
+              name="Pickup Address"
+              placeholder="54 Marina"
+              // value={}
+              // onChange={}
+              className="h-12 font-bold"
+            />
+          </div>
+          <div className="w-full">
+            <TextInput
+              label="Delivery Address"
+              name="Delivery Address"
+              placeholder="54 Marina"
+              // value={}
+              // onChange={}
+              className="h-12 font-bold"
+            />
+          </div>
+        </div>
+
+        <div className="w-full flex justify-end">
+          <Button
+            paddingY="py-2"
+            className="mt-12"
+            onClick={() => {
+              // Handle calculate shipping cost
+            }}
+          >
+            Get Shipping Rate
+          </Button>
+        </div>
+      </div>
+
+      <div className="w-full mb-3 mt-8">
         <Button paddingY="py-3" className="w-full" onClick={handleSubmit}>
           Next: Recipient Details
         </Button>
