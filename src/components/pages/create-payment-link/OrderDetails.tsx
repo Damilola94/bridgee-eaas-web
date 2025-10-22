@@ -35,6 +35,7 @@ import {
 } from "../../../types/shipbubble";
 import TextInput from "../../inputs/Text";
 import SelectPackageSizeModal from "./SelectPackageSizeModal";
+import ShippingRatesModal from "./ShippingRatesModal";
 
 // const disbursementTypes = [
 //   {
@@ -76,11 +77,16 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const [selectedDimension, setSelectedDimension] =
     useState<ShipBubbleDimension | null>(null);
 
-  const [isSelectPackageSizeModalOpen, setIsSelectPackageSizeModalOpen] =
-    useState(false);
+  const [isPackageSizeModalOpen, setIsPackageSizeModalOpen] = useState(false);
+
+  const [isRatesModalOpen, setIsRatesModalOpen] = useState(false);
 
   const handleSelectDimension = (dimension: ShipBubbleDimension) => {
     setSelectedDimension(dimension);
+  };
+
+  const handleGetShippingRate = () => {
+    setIsRatesModalOpen(true);
   };
 
   useEffect(() => {
@@ -334,7 +340,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         <label className="text-sm font-bold">Select Package Size</label>
         <div
           className="w-full mt-2 p-4 border-2 border-dashed bg-[#F8F8F8] rounded-[10px] text-center cursor-pointer hover:bg-gray-50"
-          onClick={() => setIsSelectPackageSizeModalOpen(true)}
+          onClick={() => setIsPackageSizeModalOpen(true)}
         >
           {selectedDimension ? (
             <div>
@@ -378,9 +384,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
           <Button
             paddingY="py-2"
             className="mt-12"
-            onClick={() => {
-              // Handle calculate shipping cost
-            }}
+            onClick={handleGetShippingRate}
           >
             Get Shipping Rate
           </Button>
@@ -402,10 +406,15 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       )}
 
       <SelectPackageSizeModal
-        isOpen={isSelectPackageSizeModalOpen}
-        onClose={() => setIsSelectPackageSizeModalOpen(false)}
+        isOpen={isPackageSizeModalOpen}
+        onClose={() => setIsPackageSizeModalOpen(false)}
         dimensions={dimensions}
         onSelect={handleSelectDimension}
+      />
+
+      <ShippingRatesModal
+        isOpen={isRatesModalOpen}
+        onClose={() => setIsRatesModalOpen(false)}
       />
     </div>
   );
