@@ -17,7 +17,7 @@ import notification from "../../../utilities/notification";
 import FileInput from "../../inputs/File";
 
 import SelectInput from "../../inputs/Select";
-import Select, {StylesConfig} from "react-select";
+import Select, { StylesConfig } from "react-select";
 
 import TextareaInput from "../../inputs/Textarea";
 
@@ -33,6 +33,8 @@ import {
   ShipBubbleCategory,
   ShipBubbleDimension,
 } from "../../../types/shipbubble";
+import TextInput from "../../inputs/Text";
+import SelectPackageSizeModal from "./SelectPackageSizeModal";
 
 // const disbursementTypes = [
 //   {
@@ -69,7 +71,17 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const [itemToEdit, setItemToEdit] = useState<OrderListItemProps>();
 
   const [categories, setCategories] = useState<ShipBubbleCategory[]>([]);
+
   const [dimensions, setDimensions] = useState<ShipBubbleDimension[]>([]);
+  const [selectedDimension, setSelectedDimension] =
+    useState<ShipBubbleDimension | null>(null);
+
+  const [isSelectPackageSizeModalOpen, setIsSelectPackageSizeModalOpen] =
+    useState(false);
+
+  const handleSelectDimension = (dimension: ShipBubbleDimension) => {
+    setSelectedDimension(dimension);
+  };
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -301,7 +313,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         )}
       </div>
 
-      <div className="w-full mb-10">
+      <div className="w-full mb-6">
         <label className="text-sm font-bold">Select Category</label>
         <div className="mt-2">
           <Select
@@ -318,24 +330,64 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         </div>
       </div>
 
-      <div className="w-full mb-10">
+      <div className="w-full mb-6">
         <label className="text-sm font-bold">Select Package Size</label>
-        <div className="mt-2">
-          <Select
-            placeholder="Select the appropriate package size"
-            options={dimensions.map((dimension) => ({
-              label: dimension.name,
-              value: dimension.boxSizeId,
-            }))}
-            onChange={() => {
-              // Handle package size selection
-            }}
-            styles={selectStyles}
-          ></Select>
+        <div
+          className="w-full mt-2 p-4 border-2 border-dashed bg-[#F8F8F8] rounded-[10px] text-center cursor-pointer hover:bg-gray-50"
+          onClick={() => setIsSelectPackageSizeModalOpen(true)}
+        >
+          {selectedDimension ? (
+            <div>
+              <p className="font-semibold">{selectedDimension.name}</p>
+              <p className="text-sm text-gray-500">{`Max Weight: ${selectedDimension.maxWeight}kg`}</p>
+              <p className="text-blue-500 text-sm mt-1">Click to change</p>
+            </div>
+          ) : (
+            <p>Click to select a package size</p>
+          )}
         </div>
       </div>
 
-      <div className="w-full mb-3">
+      <div>
+        <p className="pb-4 font-bold text-base">Shipping Details</p>
+
+        <div className="flex gap-5 justify-between">
+          <div className="w-full">
+            <TextInput
+              label="Pickup Address"
+              name="Pickup Address"
+              placeholder="54 Marina"
+              // value={}
+              // onChange={}
+              className="h-12 font-bold"
+            />
+          </div>
+          <div className="w-full">
+            <TextInput
+              label="Delivery Address"
+              name="Delivery Address"
+              placeholder="54 Marina"
+              // value={}
+              // onChange={}
+              className="h-12 font-bold"
+            />
+          </div>
+        </div>
+
+        <div className="w-full flex justify-end">
+          <Button
+            paddingY="py-2"
+            className="mt-12"
+            onClick={() => {
+              // Handle calculate shipping cost
+            }}
+          >
+            Get Shipping Rate
+          </Button>
+        </div>
+      </div>
+
+      <div className="w-full mb-3 mt-8">
         <Button paddingY="py-3" className="w-full" onClick={handleSubmit}>
           Next: Recipient Details
         </Button>
@@ -348,6 +400,13 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
           onClose={() => setShow(false)}
         />
       )}
+
+      <SelectPackageSizeModal
+        isOpen={isSelectPackageSizeModalOpen}
+        onClose={() => setIsSelectPackageSizeModalOpen(false)}
+        dimensions={dimensions}
+        onSelect={handleSelectDimension}
+      />
     </div>
   );
 }
