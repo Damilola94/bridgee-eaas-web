@@ -44,6 +44,11 @@ import TextInput from "../../inputs/Text";
 import SelectPackageSizeModal from "./SelectPackageSizeModal";
 import ShippingRatesModal from "./ShippingRatesModal";
 
+interface SelectAddressOption {
+  label: string;
+  value: string;
+}
+
 const selectStyles: StylesConfig = {
   control: (base) => ({
     ...base,
@@ -509,7 +514,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
               cacheOptions
               defaultOptions
               loadOptions={loadSuggestions}
-              onChange={(option) => {
+              onChange={(option: SelectAddressOption) => {
                 handleAddressValidation(option, "pickupAddress");
               }}
               placeholder="Enter pickup address"
@@ -525,7 +530,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
               cacheOptions
               defaultOptions
               loadOptions={loadSuggestions}
-              onChange={(option) => {
+              onChange={(option: SelectAddressOption) => {
                 handleAddressValidation(option, "deliveryAddress");
               }}
               placeholder="Enter delivery address"
