@@ -1,4 +1,4 @@
-import { GooglePlacesResponse, ShipBubbleCategoriesResponse, ShipBubbleDimensionsResponse } from '../../types/shipbubble';
+import { GooglePlacesResponse, ShipBubbleCategoriesResponse, ShipBubbleDimensionsResponse, ValidateAddressPayload, ValidateAddressResponse } from '../../types/shipbubble';
 import handleFetch from './handleFetch';
 
 export const getPackageCategories = (): Promise<ShipBubbleCategoriesResponse> => {
@@ -26,5 +26,15 @@ export const getGooglePlacesSuggestions = (input: string): Promise<GooglePlacesR
     endpoint: `/api/v1/googleplaces/lookup?input=${encodeURIComponent(input)}`,
     method: 'GET',
     auth: true,
+  });
+};
+
+export const validateAddress = (data: ValidateAddressPayload): Promise<ValidateAddressResponse> => {
+  return handleFetch({
+    service: 'admin-service',
+    endpoint: '/api/v1/shipbubble/validate-address',
+    method: 'POST',
+    auth: true,
+    body: data,
   });
 };

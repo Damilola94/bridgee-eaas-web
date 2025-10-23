@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { debounce } from "lodash";
 import AsyncSelect from "react-select/async";
+import { useAccountsContext } from "../../../context/Accounts";
 
 // import { FaCheck } from 'react-icons/fa';
 import { BiPlus } from "react-icons/bi";
@@ -31,6 +32,7 @@ import {
   getPackageCategories,
   getPackageDimensions,
   getGooglePlacesSuggestions,
+  validateAddress,
 } from "../../../services/api/shipbubble";
 import {
   ShipBubbleCategory,
@@ -56,6 +58,8 @@ const selectStyles: StylesConfig = {
 };
 
 function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
+  const { accounts } = useAccountsContext();
+
   const { form, setForm } = useCreateInvoiceContext();
   const [show, setShow] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<OrderListItemProps>();
@@ -69,6 +73,9 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const [isPackageSizeModalOpen, setIsPackageSizeModalOpen] = useState(false);
 
   const [isRatesModalOpen, setIsRatesModalOpen] = useState(false);
+
+  const [pickupAddressResponse, setPickupAddressResponse] = useState(null);
+  const [deliveryAddressResponse, setDeliveryAddressResponse] = useState(null);
 
   const handleSelectDimension = (dimension: ShipBubbleDimension) => {
     setSelectedDimension(dimension);
@@ -119,7 +126,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         resolve([]);
         return;
       }
-     
+
       debouncedLoad(inputValue, resolve);
     });
 
@@ -144,19 +151,102 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     []
   );
 
+  const handleAddressValidation = async (
+    selectedOption: any,
+    fieldName: "pickupAddress" | "deliveryAddress"
+  ) => {
+    if (!selectedOption) return;
+
+    handleChange(selectedOption, "select", fieldName);
+
+    const isPickupAddress = fieldName === "pickupAddress";
+
+    const validationDetails = isPickupAddress
+      ? {
+          name: accounts?.identity?.businessDetail?.businessName || "",
+          email: accounts?.identity?.personalDetail?.email || "",
+          phone: accounts?.identity?.personalDetail?.phoneNumber || "",
+          address: selectedOption.label,
+          latitude: 0,
+          longitude: 0,
+        }
+      : {
+          name: form.recipientDetails?.recipientName || "",
+          email: form.recipientDetails?.email || "",
+          phone: form.recipientDetails?.phoneNumber || "",
+          address: selectedOption.label,
+          latitude: 0,
+          longitude: 0,
+        };
+
+    try {
+      const response = await validateAddress(validationDetails);
+
+      if (response.isSuccess && response.data.isValid) {
+        if (fieldName === "pickupAddress") {
+          setPickupAddressResponse(response.data);
+          console.log("Pickup Address Validation Response:", response.data);
+        } else {
+          setDeliveryAddressResponse(response.data);
+          console.log("Delivery Address Validation Response:", response.data);
+        }
+        notification({
+          title: "Success",
+          message: `${
+            fieldName === "pickupAddress" ? "Pickup" : "Delivery"
+          } address has been successfully validated.`,
+          type: "success",
+        });
+      } else {
+        notification({
+          title: "Address Error",
+          message: response.message || `The selected address is not valid.`,
+          type: "danger",
+        });
+      }
+    } catch (error) {
+      notification({
+        title: "API Error",
+        message: "An error occurred while validating the address.",
+        type: "danger",
+      });
+      console.error("Address validation error:", error);
+    }
+  };
+
   const handleChange = (val: any, inputType = "input", inputName = "") => {
-    if (inputType === "input") {
+    if (typeof val === "object" && val.target) {
       const { value, name, type, files } = val.target;
 
+      // Check if this is a recipient field
+      if (
+        name === "recipientName" ||
+        name === "email" ||
+        name === "phoneNumber"
+      ) {
+        setForm((state) => ({
+          ...state,
+          recipientDetails: {
+            ...state.recipientDetails,
+            [name]: value,
+          },
+        }));
+        return;
+      }
+
+      // Handle file inputs
       if (type === "file") {
         setForm((state) => ({
           ...state,
           [name]: files?.length > 1 ? Array.from(files) : files?.[0],
         }));
-      } else {
-        setForm((state) => ({ ...state, [name]: value }));
+        return;
       }
+
+      // Handle regular inputs
+      setForm((state) => ({ ...state, [name]: value }));
     } else {
+      // Handle select changes and other custom cases
       setForm((state) => ({ ...state, [inputName]: val }));
     }
   };
@@ -341,6 +431,37 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         )}
       </div>
 
+      <div className="border-2 border-lightText/20 rounded-lg p-5 mb-10">
+        <h3 className="font-bold text-lg ff-bold mb-4">Recipient's Details</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <TextInput
+            name="recipientName"
+            value={form.recipientDetails?.recipientName || ""}
+            onChange={handleChange}
+            label="Recipient’s Name"
+            placeholder="Enter name"
+          />
+          <TextInput
+            name="email"
+            value={form.recipientDetails?.email || ""}
+            onChange={handleChange}
+            label="Recipient’s Email"
+            type="email"
+            placeholder="Enter email"
+          />
+          <TextInput
+            name="phoneNumber"
+            value={form.recipientDetails?.phoneNumber || ""}
+            onChange={(e) =>
+              /^\d{0,12}$/g.test(e.target.value) && handleChange(e)
+            }
+            label="Recipient’s Phone Number"
+            type="tel"
+            placeholder="Enter phone number"
+          />
+        </div>
+      </div>
+
       <div className="w-full mb-6">
         <label className="text-sm font-bold">Select Category</label>
         <div className="mt-2">
@@ -388,8 +509,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
               defaultOptions
               loadOptions={loadSuggestions}
               onChange={(option) => {
-                // Update your main form state
-                handleChange(option, "select", "pickupAddress");
+                handleAddressValidation(option, "pickupAddress");
               }}
               placeholder="Enter pickup address"
               className="mt-2"
@@ -405,8 +525,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
               defaultOptions
               loadOptions={loadSuggestions}
               onChange={(option) => {
-                // Update your main form state
-                handleChange(option, "select", "deliveryAddress");
+                handleAddressValidation(option, "deliveryAddress");
               }}
               placeholder="Enter delivery address"
               className="mt-2"

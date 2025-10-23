@@ -46,4 +46,30 @@ export interface GooglePlacesResponse {
   metaData: string | null;
 }
 
+export interface ValidateAddressPayload {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+}
+
+export interface ValidatedAddress {
+  isValid: boolean;
+  addressCode: string;
+  formattedAddress: string;
+  state: string;
+  city: string;
+  country: string;
+  latitude: number;
+  longitude: number;
+}
+
+export interface ValidateAddressResponse {
+  isSuccess: boolean;
+  statusCode: string;
+  message: string;
+  data: ValidatedAddress;
+  metaData: string | null;
+}
+
 
