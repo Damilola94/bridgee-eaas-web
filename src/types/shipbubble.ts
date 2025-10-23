@@ -72,4 +72,106 @@ export interface ValidateAddressResponse {
   metaData: string | null;
 }
 
+export interface ShippingRatesPackageItem {
+  name: string;
+  description: string;
+  unitWeight: string;
+  unitAmount: string;
+  quantity: string;
+}
+
+export interface ShippingRatesPackageDimension {
+  length: number;
+  width: number;
+  height: number;
+}
+
+export interface ShippingRatesPayload {
+  senderAddressCode: number;
+  receiverAddressCode: number;
+  pickupDate: string;
+  categoryId: number;
+  packageItems: ShippingRatesPackageItem[];
+  serviceType: string;
+  deliveryInstructions: string;
+  packageDimension: ShippingRatesPackageDimension;
+}
+
+export interface ShippingRate {
+  courierId: string;
+  courierName: string;
+  courierImage: string;
+  serviceCode: string;
+  insurance: {
+    code: string;
+    fee: number;
+  };
+  discount: {
+    percentage: number;
+    symbol: string;
+    discounted: number;
+  };
+  serviceType: string;
+  waybill: boolean;
+  onDemand: boolean;
+  isCodAvailable: boolean;
+  codRemitDays: number | null;
+  trackingLevel: number;
+  ratings: number;
+  votes: number;
+  connectedAccount: boolean;
+  rateCardAmount: number;
+  rateCardCurrency: string;
+  pickupEta: string;
+  pickupEtaTime: string;
+  dropoffStation: null;
+  pickupStation: null;
+  deliveryEta: string;
+  deliveryEtaTime: string;
+  info: string[] | null;
+  currency: string;
+  vat: number;
+  total: number;
+  tracking: {
+    bars: number;
+    label: string;
+  };
+}
+
+export interface ShippingRatesResponse {
+  isSuccess: boolean;
+  statusCode: string;
+  message: string;
+  data: {
+    requestToken: string;
+    couriers: ShippingRate[];
+    fastestCourier: ShippingRate;
+    cheapestCourier: ShippingRate;
+    checkoutData: {
+      shipFrom: {
+        name: string;
+        phone: string;
+        email: string;
+        address: string;
+      };
+      shipTo: {
+        name: string;
+        phone: string;
+        email: string;
+        address: string;
+      };
+      currency: string;
+      packageAmount: number;
+      packageWeight: number;
+      pickupDate: string;
+      isInvoiceRequired: boolean;
+      codPolicy: string;
+    };
+  };
+  metaData: string | null;
+  method: string;
+  status: number;
+}
+
+
 

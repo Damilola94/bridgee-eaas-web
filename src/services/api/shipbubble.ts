@@ -1,4 +1,4 @@
-import { GooglePlacesResponse, ShipBubbleCategoriesResponse, ShipBubbleDimensionsResponse, ValidateAddressPayload, ValidateAddressResponse } from '../../types/shipbubble';
+import { GooglePlacesResponse, ShipBubbleCategoriesResponse, ShipBubbleDimensionsResponse, ShippingRatesPayload, ShippingRatesResponse, ValidateAddressPayload, ValidateAddressResponse } from '../../types/shipbubble';
 import handleFetch from './handleFetch';
 
 export const getPackageCategories = (): Promise<ShipBubbleCategoriesResponse> => {
@@ -33,6 +33,16 @@ export const validateAddress = (data: ValidateAddressPayload): Promise<ValidateA
   return handleFetch({
     service: 'admin-service',
     endpoint: '/api/v1/shipbubble/validate-address',
+    method: 'POST',
+    auth: true,
+    body: data,
+  });
+};
+
+export const getShippingRates = (data: ShippingRatesPayload): Promise<ShippingRatesResponse> => {
+  return handleFetch({
+    service: 'admin-service',
+    endpoint: '/api/v1/shipbubble/shipping-rates',
     method: 'POST',
     auth: true,
     body: data,

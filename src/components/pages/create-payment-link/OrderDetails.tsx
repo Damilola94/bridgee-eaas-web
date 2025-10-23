@@ -33,16 +33,17 @@ import {
   getPackageDimensions,
   getGooglePlacesSuggestions,
   validateAddress,
+  getShippingRates,
 } from "../../../services/api/shipbubble";
 import {
   ShipBubbleCategory,
   ShipBubbleDimension,
-  GooglePlaceSuggestion,
   ValidatedAddress,
+  ShippingRatesPayload,
 } from "../../../types/shipbubble";
 import TextInput from "../../inputs/Text";
 import SelectPackageSizeModal from "./SelectPackageSizeModal";
-import ShippingRatesModal from "./ShippingRatesModal";
+import ShippingRatesModal, { RatesData } from "./ShippingRatesModal";
 
 interface SelectAddressOption {
   label: string;
@@ -78,17 +79,19 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
 
   const [isPackageSizeModalOpen, setIsPackageSizeModalOpen] = useState(false);
 
+  const [isLoadingShippingRates, setIsLoadingShippingRates] = useState(false);
   const [isRatesModalOpen, setIsRatesModalOpen] = useState(false);
+  const [shippingRatesData, setShippingRatesData] = useState<
+    RatesData | undefined
+  >(undefined);
 
-  const [pickupAddressResponse, setPickupAddressResponse] = useState<ValidatedAddress | null>(null);
-  const [deliveryAddressResponse, setDeliveryAddressResponse] = useState<ValidatedAddress | null>(null);
+  const [pickupAddressResponse, setPickupAddressResponse] =
+    useState<ValidatedAddress | null>(null);
+  const [deliveryAddressResponse, setDeliveryAddressResponse] =
+    useState<ValidatedAddress | null>(null);
 
   const handleSelectDimension = (dimension: ShipBubbleDimension) => {
     setSelectedDimension(dimension);
-  };
-
-  const handleGetShippingRate = () => {
-    setIsRatesModalOpen(true);
   };
 
   // Fetch Categories
@@ -153,12 +156,12 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         console.error("Error fetching suggestions:", error);
         resolve([]);
       }
-    }, 500), // Increased debounce to 500ms for a better experience
+    }, 500),
     []
   );
 
   const handleAddressValidation = async (
-    selectedOption: any,
+    selectedOption: SelectAddressOption | null,
     fieldName: "pickupAddress" | "deliveryAddress"
   ) => {
     if (!selectedOption) return;
@@ -169,9 +172,12 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
 
     const validationDetails = isPickupAddress
       ? {
-          name: `${accounts?.identity?.personalDetail?.firstName || ''} ${accounts?.identity?.personalDetail?.lastName || ''}`.trim() || '',
-          email: accounts?.identity?.personalDetail?.email || '',
-          phone: accounts?.identity?.personalDetail?.phoneNumber || '',
+          name:
+            `${accounts?.identity?.personalDetail?.firstName || ""} ${
+              accounts?.identity?.personalDetail?.lastName || ""
+            }`.trim() || "",
+          email: accounts?.identity?.personalDetail?.email || "",
+          phone: accounts?.identity?.personalDetail?.phoneNumber || "",
           address: selectedOption.label,
           latitude: 0,
           longitude: 0,
@@ -217,6 +223,93 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         type: "danger",
       });
       console.error("Address validation error:", error);
+    }
+  };
+
+  const handleGetShippingRate = async () => {
+    if (
+      !pickupAddressResponse?.addressCode ||
+      !deliveryAddressResponse?.addressCode
+    ) {
+      notification({
+        title: "Form Error",
+        message:
+          "Please select and validate both pickup and delivery addresses.",
+        type: "danger",
+      });
+      return;
+    }
+
+    if (!selectedDimension) {
+      notification({
+        title: "Form Error",
+        message: "Please select a package size.",
+        type: "danger",
+      });
+      return;
+    }
+
+    // Get selected category
+    const selectedCategory = categories.find(
+      (cat) => cat.categoryId === Number(form.categoryId)
+    );
+
+    if (!selectedCategory) {
+      notification({
+        title: "Form Error",
+        message: "Please select a package category.",
+        type: "danger",
+      });
+      return;
+    }
+
+    setIsRatesModalOpen(true);
+    setIsLoadingShippingRates(true);
+
+    try {
+      const payload: ShippingRatesPayload = {
+        senderAddressCode: parseInt(pickupAddressResponse.addressCode),
+        receiverAddressCode: parseInt(deliveryAddressResponse.addressCode),
+        pickupDate: new Date().toISOString().split("T")[0],
+        categoryId: selectedCategory.categoryId,
+        packageItems:
+          form.escrowItems?.map((item) => ({
+            name: item.name || "",
+            description: item.name || "",
+            unitWeight: item.weight?.toString() || "0",
+            unitAmount: item.amount?.toString() || "0",
+            quantity: item.quantity?.toString() || "0",
+          })) || [],
+        serviceType: "pickup",
+        deliveryInstructions: form.description || "",
+        packageDimension: {
+          length: selectedDimension.length,
+          width: selectedDimension.width,
+          height: selectedDimension.height,
+        },
+      };
+
+      const response = await getShippingRates(payload);
+
+      if (response.isSuccess) {
+        setShippingRatesData(response.data);
+      } else {
+        notification({
+          title: "Error",
+          message: response.message || "Could not fetch shipping rates.",
+          type: "danger",
+        });
+        setIsRatesModalOpen(false);
+      }
+    } catch (error) {
+      notification({
+        title: "API Error",
+        message: "Could not fetch shipping rates.",
+        type: "danger",
+      });
+      console.error("Shipping rates error:", error);
+    } finally {
+      setIsLoadingShippingRates(false);
     }
   };
 
@@ -477,8 +570,12 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
               label: category.category,
               value: category.categoryId,
             }))}
-            onChange={() => {
-              // Handle category selection
+            onChange={(
+              selectedOption: { label: string; value: number } | null
+            ) => {
+              if (selectedOption) {
+                handleChange(selectedOption.value, "select", "categoryId");
+              }
             }}
             styles={selectStyles}
           ></Select>
@@ -575,6 +672,8 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       <ShippingRatesModal
         isOpen={isRatesModalOpen}
         onClose={() => setIsRatesModalOpen(false)}
+        ratesData={shippingRatesData}
+        isLoading={isLoadingShippingRates}
       />
     </div>
   );
