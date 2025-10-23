@@ -38,6 +38,7 @@ import {
   ShipBubbleCategory,
   ShipBubbleDimension,
   GooglePlaceSuggestion,
+  ValidatedAddress,
 } from "../../../types/shipbubble";
 import TextInput from "../../inputs/Text";
 import SelectPackageSizeModal from "./SelectPackageSizeModal";
@@ -74,8 +75,8 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
 
   const [isRatesModalOpen, setIsRatesModalOpen] = useState(false);
 
-  const [pickupAddressResponse, setPickupAddressResponse] = useState(null);
-  const [deliveryAddressResponse, setDeliveryAddressResponse] = useState(null);
+  const [pickupAddressResponse, setPickupAddressResponse] = useState<ValidatedAddress | null>(null);
+  const [deliveryAddressResponse, setDeliveryAddressResponse] = useState<ValidatedAddress | null>(null);
 
   const handleSelectDimension = (dimension: ShipBubbleDimension) => {
     setSelectedDimension(dimension);
@@ -163,9 +164,9 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
 
     const validationDetails = isPickupAddress
       ? {
-          name: accounts?.identity?.businessDetail?.businessName || "",
-          email: accounts?.identity?.personalDetail?.email || "",
-          phone: accounts?.identity?.personalDetail?.phoneNumber || "",
+          name: `${accounts?.identity?.personalDetail?.firstName || ''} ${accounts?.identity?.personalDetail?.lastName || ''}`.trim() || '',
+          email: accounts?.identity?.personalDetail?.email || '',
+          phone: accounts?.identity?.personalDetail?.phoneNumber || '',
           address: selectedOption.label,
           latitude: 0,
           longitude: 0,
