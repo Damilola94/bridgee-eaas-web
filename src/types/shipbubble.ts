@@ -33,3 +33,17 @@ export interface ShipBubbleDimensionsResponse {
   metaData: string | null;
 }
 
+export interface GooglePlaceSuggestion {
+  description: string;
+  placeId: string;
+}
+
+export interface GooglePlacesResponse {
+  isSuccess: boolean;
+  statusCode: string;
+  message: string;
+  data: GooglePlaceSuggestion[];
+  metaData: string | null;
+}
+
+

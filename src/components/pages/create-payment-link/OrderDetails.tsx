@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { debounce } from "lodash";
+import AsyncSelect from "react-select/async";
 
 // import { FaCheck } from 'react-icons/fa';
 import { BiPlus } from "react-icons/bi";
@@ -28,29 +30,16 @@ import AddInvoiceItem from "./AddInvoiceItem";
 import {
   getPackageCategories,
   getPackageDimensions,
+  getGooglePlacesSuggestions,
 } from "../../../services/api/shipbubble";
 import {
   ShipBubbleCategory,
   ShipBubbleDimension,
+  GooglePlaceSuggestion,
 } from "../../../types/shipbubble";
 import TextInput from "../../inputs/Text";
 import SelectPackageSizeModal from "./SelectPackageSizeModal";
 import ShippingRatesModal from "./ShippingRatesModal";
-
-// const disbursementTypes = [
-//   {
-//     disabled: false,
-//     value: 'onetime',
-//     header: 'One Time Disbursement',
-//     desc: 'An escrow transaction involving just two parties/entities (buyer and seller).'
-//   },
-//   {
-//     disabled: true,
-//     value: 'installment',
-//     header: 'In Installment',
-//     desc: 'An escrow transaction involving just two parties/entities (buyer and seller).'
-//   }
-// ];
 
 const selectStyles: StylesConfig = {
   control: (base) => ({
@@ -89,6 +78,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     setIsRatesModalOpen(true);
   };
 
+  // Fetch Categories
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
@@ -121,6 +111,38 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Load Google Address Suggestions
+  const loadSuggestions = (inputValue: string) =>
+    new Promise<any[]>((resolve) => {
+      if (inputValue.trim().length < 2) {
+        resolve([]);
+        return;
+      }
+     
+      debouncedLoad(inputValue, resolve);
+    });
+
+  const debouncedLoad = useCallback(
+    debounce(async (inputValue: string, resolve: (options: any[]) => void) => {
+      try {
+        const response = await getGooglePlacesSuggestions(inputValue);
+        if (response.isSuccess && response.data) {
+          const options = response.data.map((suggestion) => ({
+            label: suggestion.description,
+            value: suggestion.placeId,
+          }));
+          resolve(options);
+        } else {
+          resolve([]);
+        }
+      } catch (error) {
+        console.error("Error fetching suggestions:", error);
+        resolve([]);
+      }
+    }, 500), // Increased debounce to 500ms for a better experience
+    []
+  );
 
   const handleChange = (val: any, inputType = "input", inputName = "") => {
     if (inputType === "input") {
@@ -339,7 +361,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       <div className="w-full mb-6">
         <label className="text-sm font-bold">Select Package Size</label>
         <div
-          className="w-full mt-2 p-4 border-2 border-dashed bg-[#F8F8F8] rounded-[10px] text-center cursor-pointer hover:bg-gray-50"
+          className="w-full mt-2 p-3 border-2 border-dashed bg-[#F8F8F8] rounded-[10px] text-center cursor-pointer hover:bg-gray-50"
           onClick={() => setIsPackageSizeModalOpen(true)}
         >
           {selectedDimension ? (
@@ -357,33 +379,46 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       <div>
         <p className="pb-4 font-bold text-base">Shipping Details</p>
 
-        <div className="flex gap-5 justify-between">
+        <div className="md:flex gap-5 justify-between space-y-5 md:space-y-0">
+          {/* Pickup Address */}
           <div className="w-full">
-            <TextInput
-              label="Pickup Address"
-              name="Pickup Address"
-              placeholder="54 Marina"
-              // value={}
-              // onChange={}
-              className="h-12 font-bold"
+            <label className="text-sm font-bold">Pickup Address</label>
+            <AsyncSelect
+              cacheOptions
+              defaultOptions
+              loadOptions={loadSuggestions}
+              onChange={(option) => {
+                // Update your main form state
+                handleChange(option, "select", "pickupAddress");
+              }}
+              placeholder="Enter pickup address"
+              className="mt-2"
+              styles={selectStyles}
             />
           </div>
+
+          {/* Delivery Address */}
           <div className="w-full">
-            <TextInput
-              label="Delivery Address"
-              name="Delivery Address"
-              placeholder="54 Marina"
-              // value={}
-              // onChange={}
-              className="h-12 font-bold"
+            <label className="text-sm font-bold">Delivery Address</label>
+            <AsyncSelect
+              cacheOptions
+              defaultOptions
+              loadOptions={loadSuggestions}
+              onChange={(option) => {
+                // Update your main form state
+                handleChange(option, "select", "deliveryAddress");
+              }}
+              placeholder="Enter delivery address"
+              className="mt-2"
+              styles={selectStyles}
             />
           </div>
         </div>
 
         <div className="w-full flex justify-end">
           <Button
-            paddingY="py-2"
-            className="mt-12"
+            paddingY="py-3"
+            className="mt-8 md:mt-12 w-full md:w-auto"
             onClick={handleGetShippingRate}
           >
             Get Shipping Rate
