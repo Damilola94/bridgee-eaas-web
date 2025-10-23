@@ -58,8 +58,7 @@ const CreateInvoice: NextPageWithLayout = () => {
               <FormIndicator formIndex={formIndex} />
               <div className="w-full">
                 {formIndex === 0 && <OrderDetails onNext={() => setFormIndex(1)} />}
-                {formIndex === 1 && <RecipientDetails onNext={() => setFormIndex(2)} />}
-                {formIndex === 2 && <InvoiceSummary />}
+                {formIndex === 1 && <InvoiceSummary />}
               </div>
             </div>
 

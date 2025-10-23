@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { debounce } from "lodash";
+import AsyncSelect from "react-select/async";
+import { useAccountsContext } from "../../../context/Accounts";
 
 // import { FaCheck } from 'react-icons/fa';
 import { BiPlus } from "react-icons/bi";
@@ -28,28 +31,23 @@ import AddInvoiceItem from "./AddInvoiceItem";
 import {
   getPackageCategories,
   getPackageDimensions,
+  getGooglePlacesSuggestions,
+  validateAddress,
 } from "../../../services/api/shipbubble";
 import {
   ShipBubbleCategory,
   ShipBubbleDimension,
+  GooglePlaceSuggestion,
+  ValidatedAddress,
 } from "../../../types/shipbubble";
 import TextInput from "../../inputs/Text";
 import SelectPackageSizeModal from "./SelectPackageSizeModal";
+import ShippingRatesModal from "./ShippingRatesModal";
 
-// const disbursementTypes = [
-//   {
-//     disabled: false,
-//     value: 'onetime',
-//     header: 'One Time Disbursement',
-//     desc: 'An escrow transaction involving just two parties/entities (buyer and seller).'
-//   },
-//   {
-//     disabled: true,
-//     value: 'installment',
-//     header: 'In Installment',
-//     desc: 'An escrow transaction involving just two parties/entities (buyer and seller).'
-//   }
-// ];
+interface SelectAddressOption {
+  label: string;
+  value: string;
+}
 
 const selectStyles: StylesConfig = {
   control: (base) => ({
@@ -66,6 +64,8 @@ const selectStyles: StylesConfig = {
 };
 
 function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
+  const { accounts } = useAccountsContext();
+
   const { form, setForm } = useCreateInvoiceContext();
   const [show, setShow] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<OrderListItemProps>();
@@ -76,13 +76,22 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const [selectedDimension, setSelectedDimension] =
     useState<ShipBubbleDimension | null>(null);
 
-  const [isSelectPackageSizeModalOpen, setIsSelectPackageSizeModalOpen] =
-    useState(false);
+  const [isPackageSizeModalOpen, setIsPackageSizeModalOpen] = useState(false);
+
+  const [isRatesModalOpen, setIsRatesModalOpen] = useState(false);
+
+  const [pickupAddressResponse, setPickupAddressResponse] = useState<ValidatedAddress | null>(null);
+  const [deliveryAddressResponse, setDeliveryAddressResponse] = useState<ValidatedAddress | null>(null);
 
   const handleSelectDimension = (dimension: ShipBubbleDimension) => {
     setSelectedDimension(dimension);
   };
 
+  const handleGetShippingRate = () => {
+    setIsRatesModalOpen(true);
+  };
+
+  // Fetch Categories
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
@@ -116,19 +125,134 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     window.scrollTo(0, 0);
   }, []);
 
+  // Load Google Address Suggestions
+  const loadSuggestions = (inputValue: string) =>
+    new Promise<any[]>((resolve) => {
+      if (inputValue.trim().length < 2) {
+        resolve([]);
+        return;
+      }
+
+      debouncedLoad(inputValue, resolve);
+    });
+
+  const debouncedLoad = useCallback(
+    debounce(async (inputValue: string, resolve: (options: any[]) => void) => {
+      try {
+        const response = await getGooglePlacesSuggestions(inputValue);
+        if (response.isSuccess && response.data) {
+          const options = response.data.map((suggestion) => ({
+            label: suggestion.description,
+            value: suggestion.placeId,
+          }));
+          resolve(options);
+        } else {
+          resolve([]);
+        }
+      } catch (error) {
+        console.error("Error fetching suggestions:", error);
+        resolve([]);
+      }
+    }, 500), // Increased debounce to 500ms for a better experience
+    []
+  );
+
+  const handleAddressValidation = async (
+    selectedOption: any,
+    fieldName: "pickupAddress" | "deliveryAddress"
+  ) => {
+    if (!selectedOption) return;
+
+    handleChange(selectedOption, "select", fieldName);
+
+    const isPickupAddress = fieldName === "pickupAddress";
+
+    const validationDetails = isPickupAddress
+      ? {
+          name: `${accounts?.identity?.personalDetail?.firstName || ''} ${accounts?.identity?.personalDetail?.lastName || ''}`.trim() || '',
+          email: accounts?.identity?.personalDetail?.email || '',
+          phone: accounts?.identity?.personalDetail?.phoneNumber || '',
+          address: selectedOption.label,
+          latitude: 0,
+          longitude: 0,
+        }
+      : {
+          name: form.recipientDetails?.recipientName || "",
+          email: form.recipientDetails?.email || "",
+          phone: form.recipientDetails?.phoneNumber || "",
+          address: selectedOption.label,
+          latitude: 0,
+          longitude: 0,
+        };
+
+    try {
+      const response = await validateAddress(validationDetails);
+
+      if (response.isSuccess && response.data.isValid) {
+        if (fieldName === "pickupAddress") {
+          setPickupAddressResponse(response.data);
+          console.log("Pickup Address Validation Response:", response.data);
+        } else {
+          setDeliveryAddressResponse(response.data);
+          console.log("Delivery Address Validation Response:", response.data);
+        }
+        notification({
+          title: "Success",
+          message: `${
+            fieldName === "pickupAddress" ? "Pickup" : "Delivery"
+          } address has been successfully validated.`,
+          type: "success",
+        });
+      } else {
+        notification({
+          title: "Address Error",
+          message: response.message || `The selected address is not valid.`,
+          type: "danger",
+        });
+      }
+    } catch (error) {
+      notification({
+        title: "API Error",
+        message: "An error occurred while validating the address.",
+        type: "danger",
+      });
+      console.error("Address validation error:", error);
+    }
+  };
+
   const handleChange = (val: any, inputType = "input", inputName = "") => {
-    if (inputType === "input") {
+    if (typeof val === "object" && val.target) {
       const { value, name, type, files } = val.target;
 
+      // Check if this is a recipient field
+      if (
+        name === "recipientName" ||
+        name === "email" ||
+        name === "phoneNumber"
+      ) {
+        setForm((state) => ({
+          ...state,
+          recipientDetails: {
+            ...state.recipientDetails,
+            [name]: value,
+          },
+        }));
+        return;
+      }
+
+      // Handle file inputs
       if (type === "file") {
         setForm((state) => ({
           ...state,
           [name]: files?.length > 1 ? Array.from(files) : files?.[0],
         }));
-      } else {
-        setForm((state) => ({ ...state, [name]: value }));
+        return;
       }
+
+      // Handle regular inputs
+      setForm((state) => ({ ...state, [name]: value }));
     } else {
+      // Handle select changes and other custom cases
       setForm((state) => ({ ...state, [inputName]: val }));
     }
   };
@@ -313,6 +437,37 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         )}
       </div>
 
+      <div className="border-2 border-lightText/20 rounded-lg p-5 mb-10">
+        <h3 className="font-bold text-lg ff-bold mb-4">Recipient's Details</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <TextInput
+            name="recipientName"
+            value={form.recipientDetails?.recipientName || ""}
+            onChange={handleChange}
+            label="Recipient’s Name"
+            placeholder="Enter name"
+          />
+          <TextInput
+            name="email"
+            value={form.recipientDetails?.email || ""}
+            onChange={handleChange}
+            label="Recipient’s Email"
+            type="email"
+            placeholder="Enter email"
+          />
+          <TextInput
+            name="phoneNumber"
+            value={form.recipientDetails?.phoneNumber || ""}
+            onChange={(e) =>
+              /^\d{0,12}$/g.test(e.target.value) && handleChange(e)
+            }
+            label="Recipient’s Phone Number"
+            type="tel"
+            placeholder="Enter phone number"
+          />
+        </div>
+      </div>
+
       <div className="w-full mb-6">
         <label className="text-sm font-bold">Select Category</label>
         <div className="mt-2">
@@ -333,8 +488,8 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       <div className="w-full mb-6">
         <label className="text-sm font-bold">Select Package Size</label>
         <div
-          className="w-full mt-2 p-4 border-2 border-dashed bg-[#F8F8F8] rounded-[10px] text-center cursor-pointer hover:bg-gray-50"
-          onClick={() => setIsSelectPackageSizeModalOpen(true)}
+          className="w-full mt-2 p-3 border-2 border-dashed bg-[#F8F8F8] rounded-[10px] text-center cursor-pointer hover:bg-gray-50"
+          onClick={() => setIsPackageSizeModalOpen(true)}
         >
           {selectedDimension ? (
             <div>
@@ -351,36 +506,45 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       <div>
         <p className="pb-4 font-bold text-base">Shipping Details</p>
 
-        <div className="flex gap-5 justify-between">
+        <div className="md:flex gap-5 justify-between space-y-5 md:space-y-0">
+          {/* Pickup Address */}
           <div className="w-full">
-            <TextInput
-              label="Pickup Address"
-              name="Pickup Address"
-              placeholder="54 Marina"
-              // value={}
-              // onChange={}
-              className="h-12 font-bold"
+            <label className="text-sm font-bold">Pickup Address</label>
+            <AsyncSelect
+              cacheOptions
+              defaultOptions
+              loadOptions={loadSuggestions}
+              onChange={(option: SelectAddressOption) => {
+                handleAddressValidation(option, "pickupAddress");
+              }}
+              placeholder="Enter pickup address"
+              className="mt-2"
+              styles={selectStyles}
             />
           </div>
+
+          {/* Delivery Address */}
           <div className="w-full">
-            <TextInput
-              label="Delivery Address"
-              name="Delivery Address"
-              placeholder="54 Marina"
-              // value={}
-              // onChange={}
-              className="h-12 font-bold"
+            <label className="text-sm font-bold">Delivery Address</label>
+            <AsyncSelect
+              cacheOptions
+              defaultOptions
+              loadOptions={loadSuggestions}
+              onChange={(option: SelectAddressOption) => {
+                handleAddressValidation(option, "deliveryAddress");
+              }}
+              placeholder="Enter delivery address"
+              className="mt-2"
+              styles={selectStyles}
             />
           </div>
         </div>
 
         <div className="w-full flex justify-end">
           <Button
-            paddingY="py-2"
-            className="mt-12"
-            onClick={() => {
-              // Handle calculate shipping cost
-            }}
+            paddingY="py-3"
+            className="mt-8 md:mt-12 w-full md:w-auto"
+            onClick={handleGetShippingRate}
           >
             Get Shipping Rate
           </Button>
@@ -402,10 +566,15 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       )}
 
       <SelectPackageSizeModal
-        isOpen={isSelectPackageSizeModalOpen}
-        onClose={() => setIsSelectPackageSizeModalOpen(false)}
+        isOpen={isPackageSizeModalOpen}
+        onClose={() => setIsPackageSizeModalOpen(false)}
         dimensions={dimensions}
         onSelect={handleSelectDimension}
+      />
+
+      <ShippingRatesModal
+        isOpen={isRatesModalOpen}
+        onClose={() => setIsRatesModalOpen(false)}
       />
     </div>
   );
