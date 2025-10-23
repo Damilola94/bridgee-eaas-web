@@ -6,7 +6,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
    images: {
-    domains: ['bridgee.lon1.digitaloceanspaces.com', 'res.cloudinary.com'],
+    domains: ['bridgee.lon1.digitaloceanspaces.com', 'res.cloudinary.com', 'files.shipbubble.com'],
   },
 };
 
