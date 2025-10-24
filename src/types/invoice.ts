@@ -1,6 +1,9 @@
+import { ShippingRate } from "./shipbubble";
+
 export type InvoiceFormProps = {
   title?: string;
   categoryId?: string;
+  selectedCourier?: ShippingRate;
   role?: { label: string; value: string };
   escrowItems?: OrderListItemProps[];
   weight?: string | number;

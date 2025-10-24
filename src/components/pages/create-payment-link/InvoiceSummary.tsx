@@ -28,14 +28,15 @@ function InvoiceSummary() {
     window.scrollTo(0, 0);
   }, []);
 
-  const total = form?.escrowItems?.reduce((sum, item) => sum + (item?.total || 0), 0) || 0;
+  const total =
+    form?.escrowItems?.reduce((sum, item) => sum + (item?.total || 0), 0) || 0;
 
   const { data, status, isFetching } = useGetQuery({
     endpoint: "transaction",
     extra: "calculate-fee",
     pQuery: { feeType: "Escrow", amount: total },
     queryKey: ["calculate-fee", total],
-    enabled: !!total
+    enabled: !!total,
   });
 
   const uploadMutation = useMutation(handleFetch, {
@@ -43,9 +44,9 @@ function InvoiceSummary() {
       notification({
         title: "Upload Error",
         message: err?.toString() || "Failed to upload document.",
-        type: "danger"
+        type: "danger",
       });
-    }
+    },
   });
 
   const escrowMutation = useMutation(handleFetch, {
@@ -53,16 +54,16 @@ function InvoiceSummary() {
       router.push("/dashboard");
       notification({
         message: res?.message || "You have successfully created an invoice",
-        type: "success"
+        type: "success",
       });
     },
     onError: (err: any) => {
       notification({
         title: "Error",
         message: err?.toString() || "Something went wrong.",
-        type: "danger"
+        type: "danger",
       });
-    }
+    },
   });
 
   const handleSubmit = async () => {
@@ -70,7 +71,9 @@ function InvoiceSummary() {
 
     if (form?.contract) {
       const uploadBody = new FormData();
-      const files = Array.isArray(form.contract) ? form.contract : [form.contract];
+      const files = Array.isArray(form.contract)
+        ? form.contract
+        : [form.contract];
       files.forEach((file) => {
         uploadBody.append("images", file);
       });
@@ -82,12 +85,14 @@ function InvoiceSummary() {
           method: "POST",
           body: uploadBody,
           auth: true,
-          multipart: true
+          multipart: true,
         });
 
         if (uploadResponse?.data) {
           photoUrls = Array.isArray(uploadResponse.data)
-            ? uploadResponse.data.map((item: any) => item?.url || item).filter(Boolean)
+            ? uploadResponse.data
+                .map((item: any) => item?.url || item)
+                .filter(Boolean)
             : [uploadResponse.data?.url || uploadResponse.data].filter(Boolean);
         }
       } catch (error) {
@@ -100,23 +105,20 @@ function InvoiceSummary() {
         name: form?.recipientDetails?.recipientName || "",
         email: form?.recipientDetails?.email || "",
         phoneNumber: form?.recipientDetails?.phoneNumber || "",
-        address: form?.recipientDetails?.address || ""
+        address: form?.recipientDetails?.address || "",
       },
       photoUrls: photoUrls,
-      deliveryZone: form?.deliveryZone?.value || "",
-      pickupZone: form?.pickUpZone?.value || "",
-      pickUpAddress: form?.pickUpAddress?.value || "",
       buyerPaysEscrowFee: form?.isDeliveryOnUs || false,
       description: form?.description || "",
-      deliveryFee: 0,
-      items:
-        form?.escrowItems?.map((item) => ({
-          name: item.name || "",
-          quantity: item.quantity || 0,
-          unitPrice: item.amount || 0,
-          weightKg: item.weight || 0
-        })) || []
+      deliveryFee: form?.selectedCourier?.total || 0,
+      shipmentMetaData: {
+        requestToken: form?.selectedCourier?.requestToken || "",
+        serviceCode: form?.selectedCourier?.serviceCode || "",
+        courierId: form?.selectedCourier?.courierId || "",
+      },
     };
+
+    console.log("Escrow Payload:", payload);
 
     escrowMutation.mutate({
       service: "wallet-service/api/v1",
@@ -140,18 +142,28 @@ function InvoiceSummary() {
         <div className="w-full mb-5">
           <div className="text-right">
             <div className="flex justify-end mb-2">
-              <Image src={DefaultLogo || "/placeholder.svg"} alt="" className="w-20 h-20" />
+              <Image
+                src={DefaultLogo || "/placeholder.svg"}
+                alt=""
+                className="w-20 h-20"
+              />
             </div>
-            <h3 className="font-bold text-xl">{identity?.businessDetail?.businessName || "Guest User"}</h3>
+            <h3 className="font-bold text-xl">
+              {identity?.businessDetail?.businessName || ""}
+            </h3>
             <div className="w-full text-lightText">
               <p className="mb-1">{identity?.businessDetail?.businessEmail}</p>
               <p className="mb-1">{identity?.businessDetail?.businessPhone}</p>
-              <p className="mb-1">{identity?.businessDetail?.businessAddress || "N/A"}</p>
+              <p className="mb-1">
+                {identity?.businessDetail?.businessAddress || "N/A"}
+              </p>
               <p className="text-lightText">{new Date().toDateString()}</p>
             </div>
           </div>
           <div className="text-left">
-            <h3 className="font-bold ff-bold text-lg mb-2">Recipient Details</h3>
+            <h3 className="font-bold ff-bold text-lg mb-2">
+              Recipient Details
+            </h3>
             <p className="mb-1">{form?.recipientDetails?.recipientName}</p>
             <div className="w-full text-lightText">
               <p className="mb-1">{form?.recipientDetails?.email}</p>
@@ -177,7 +189,9 @@ function InvoiceSummary() {
                   <td className="px-3 py-3">{item?.name}</td>
                   <td className="px-3 py-3">{formatCurrency(item?.amount)}</td>
                   <td className="px-3 py-3 text-center">{item?.quantity}</td>
-                  <td className="px-3 py-3 font-bold ff-bold text-right">{formatCurrency(item?.total)}</td>
+                  <td className="px-3 py-3 font-bold ff-bold text-right">
+                    {formatCurrency(item?.total)}
+                  </td>
                 </tr>
               ))}
             </tbody>

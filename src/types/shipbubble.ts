@@ -98,6 +98,7 @@ export interface ShippingRatesPayload {
 }
 
 export interface ShippingRate {
+  requestToken?: string;
   courierId: string;
   courierName: string;
   courierImage: string;

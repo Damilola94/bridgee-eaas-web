@@ -14,6 +14,7 @@ export type RatesData = {
     shipFrom: { address: string };
     shipTo: { address: string };
   };
+  requestToken: string;
 };
 
 interface ShippingRatesModalProps {
@@ -21,6 +22,7 @@ interface ShippingRatesModalProps {
   onClose: () => void;
   ratesData?: RatesData;
   isLoading?: boolean;
+  onSelectCourier?: (courier: ShippingRate) => void;
 }
 
 const ShippingRatesModal: React.FC<ShippingRatesModalProps> = ({
@@ -28,6 +30,7 @@ const ShippingRatesModal: React.FC<ShippingRatesModalProps> = ({
   onClose,
   ratesData,
   isLoading = false,
+  onSelectCourier,
 }) => {
   const [sortedRates, setSortedRates] = useState<ShippingRate[]>([]);
 
@@ -37,16 +40,23 @@ const ShippingRatesModal: React.FC<ShippingRatesModalProps> = ({
       ratesData?.fastestCourier &&
       ratesData?.cheapestCourier
     ) {
-      const otherCouriers = ratesData.couriers.filter(
-        (courier) =>
-          courier.courierId !== ratesData.fastestCourier.courierId &&
-          courier.courierId !== ratesData.cheapestCourier.courierId
+      const { fastestCourier, cheapestCourier, couriers } = ratesData;
+      const isSame = fastestCourier.courierId === cheapestCourier.courierId;
+
+      // Use a Set to prevent duplicates
+      const topCouriers = new Set<ShippingRate>();
+      topCouriers.add(fastestCourier);
+      if (!isSame) {
+        topCouriers.add(cheapestCourier);
+      }
+
+      const topCourierIds = Array.from(topCouriers).map((c) => c.courierId);
+
+      const otherCouriers = couriers.filter(
+        (courier) => !topCourierIds.includes(courier.courierId)
       );
-      setSortedRates([
-        ratesData.fastestCourier,
-        ratesData.cheapestCourier,
-        ...otherCouriers,
-      ]);
+
+      setSortedRates([...Array.from(topCouriers), ...otherCouriers]);
     }
   }, [ratesData]);
 
@@ -166,22 +176,10 @@ const ShippingRatesModal: React.FC<ShippingRatesModalProps> = ({
           {/* Rates List */}
           <div className="space-y-4 max-h-[45vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
             {sortedRates.map((rate) => {
-              let badgeText = "";
-              if (rate.courierId === ratesData?.fastestCourier.courierId) {
-                badgeText = "Fastest";
-              } else if (
-                rate.courierId === ratesData?.cheapestCourier.courierId
-              ) {
-                badgeText = "Cheapest";
-              }
-
-              let badgeStyle = "";
-              if (badgeText === "Fastest") {
-                badgeStyle = "bg-[#DEF7EC] text-[#03543F]";
-              }
-              if (badgeText === "Cheapest") {
-                badgeStyle = "bg-[#FEF3C7] text-[#92400E]";
-              }
+              let showFastest =
+                rate.courierId === ratesData?.fastestCourier.courierId;
+              let showCheapest =
+                rate.courierId === ratesData?.cheapestCourier.courierId;
 
               return (
                 <div
@@ -203,11 +201,15 @@ const ShippingRatesModal: React.FC<ShippingRatesModalProps> = ({
                         <p className="font-bold text-textColor text-sm">
                           {rate.courierName}
                         </p>
-                        {badgeText && (
-                          <span
-                            className={`${badgeStyle} text-xs font-medium ml-2 px-2 py-1 rounded-md`}
-                          >
-                            {badgeText}
+                        {showFastest && (
+                          <span className="bg-[#DEF7EC] text-[#03543F] text-xs font-medium ml-2 px-2 py-1 rounded-md">
+                            Fastest
+                          </span>
+                        )}
+
+                        {showCheapest && (
+                          <span className="bg-[#FEF3C7] text-[#92400E] text-xs font-medium ml-2 px-2 py-1 rounded-md">
+                            Cheapest
                           </span>
                         )}
                       </div>
@@ -244,6 +246,14 @@ const ShippingRatesModal: React.FC<ShippingRatesModalProps> = ({
                       className="w-full md:w-auto text-sm mt-6 md:mt-2 bg-success hover:bg-success/85"
                       paddingX="px-6"
                       paddingY="py-3"
+                      onClick={() => {
+                        onSelectCourier?.({
+                          ...rate,
+                          requestToken: ratesData?.requestToken || "",
+                        });
+
+                        onClose();
+                      }}
                     >
                       Ship Now
                     </Button>

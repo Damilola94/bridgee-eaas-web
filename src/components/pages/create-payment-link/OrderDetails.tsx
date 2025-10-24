@@ -84,6 +84,9 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const [shippingRatesData, setShippingRatesData] = useState<
     RatesData | undefined
   >(undefined);
+  const [selectedCourierInfo, setSelectedCourierInfo] = useState<string | null>(
+    null
+  );
 
   const [pickupAddressResponse, setPickupAddressResponse] =
     useState<ValidatedAddress | null>(null);
@@ -200,7 +203,14 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
           console.log("Pickup Address Validation Response:", response.data);
         } else {
           setDeliveryAddressResponse(response.data);
-          console.log("Delivery Address Validation Response:", response.data);
+
+          setForm((state) => ({
+            ...state,
+            recipientDetails: {
+              ...state.recipientDetails,
+              address: response.data.formattedAddress,
+            },
+          }));
         }
         notification({
           title: "Success",
@@ -227,6 +237,15 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   };
 
   const handleGetShippingRate = async () => {
+    if (!form?.description?.trim()) {
+      notification({
+        title: "Form Error",
+        message: "Description is required to get shipping rates.",
+        type: "danger",
+      });
+      return;
+    }
+
     if (
       !pickupAddressResponse?.addressCode ||
       !deliveryAddressResponse?.addressCode
@@ -262,8 +281,6 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       });
       return;
     }
-
-    setIsRatesModalOpen(true);
     setIsLoadingShippingRates(true);
 
     try {
@@ -292,7 +309,12 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       const response = await getShippingRates(payload);
 
       if (response.isSuccess) {
-        setShippingRatesData(response.data);
+        setShippingRatesData({
+          ...response.data,
+          requestToken: response.data.requestToken,
+        });
+
+        setIsRatesModalOpen(true);
       } else {
         notification({
           title: "Error",
@@ -312,6 +334,14 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       setIsLoadingShippingRates(false);
     }
   };
+
+  const isGetShippingRateReadyToCall = !!(
+    form?.description?.trim() &&
+    pickupAddressResponse?.addressCode &&
+    deliveryAddressResponse?.addressCode &&
+    selectedDimension &&
+    categories.find((cat) => cat.categoryId === Number(form.categoryId))
+  );
 
   const handleChange = (val: any, inputType = "input", inputName = "") => {
     if (typeof val === "object" && val.target) {
@@ -384,12 +414,28 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
 
   const validateForm = () => {
     if (!form?.escrowItems?.length) return "Your order list must not be empty";
-    if (!form?.pickUpZone) {
-      return "Pickup Zone is required";
-    }
-    if (!form?.deliveryZone) {
-      return "Delivery Zone is required";
-    }
+    if (!form?.description?.trim()) return "Description is required";
+
+    // Recipient details
+    if (!form?.recipientDetails?.recipientName?.trim())
+      return "Recipient name is required";
+    if (!form?.recipientDetails?.email?.trim())
+      return "Recipient email is required";
+    if (!form?.recipientDetails?.phoneNumber?.trim())
+      return "Recipient phone number is required";
+
+    // Category and package
+    if (!form?.categoryId) return "Please select a category";
+    if (!selectedDimension) return "Please select a package size";
+
+    // Addresses
+    if (!pickupAddressResponse)
+      return "Please select and validate pickup address";
+    if (!deliveryAddressResponse)
+      return "Please select and validate delivery address";
+
+    // Shipping rate
+    if (!form?.selectedCourier) return "Please select a shipping rate";
   };
 
   const handleSubmit = () => {
@@ -486,30 +532,10 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         </div>
         {form?.escrowItems && form?.escrowItems?.length > 0 && (
           <div className="w-full mb-10">
-            <SelectInput
-              className="w-full mb-7"
-              onChange={(val) => handleChange(val, "select", "pickUpZone")}
-              value={form?.pickUpAddress}
-              label="Pickup Zone*"
-              options={[
-                { label: "Within Ikeja", value: "WithinIkeja" },
-                { label: "Victoria Island", value: "VictoriaIsland" },
-              ]}
-              placeholder="Select a Pickup Zone"
-            />
-            <SelectInput
-              className="w-full mb-7"
-              onChange={(val) => handleChange(val, "select", "deliveryZone")}
-              value={form?.deliveryAddress}
-              label="Delivery Zone*"
-              options={[
-                { label: "Within Ikeja", value: "WithinIkeja" },
-                { label: "Victoria Island", value: "VictoriaIsland" },
-              ]}
-              placeholder="Select a Delivery Zone"
-            />
             <div>
-              <p className="text-base mb-1">Add Description</p>
+              <p className="text-base mb-1">
+                Add Description <span>(required)</span>
+              </p>
               <TextareaInput
                 rows={3}
                 name="description"
@@ -640,17 +666,40 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         <div className="w-full flex justify-end">
           <Button
             paddingY="py-3"
-            className="mt-8 md:mt-12 w-full md:w-auto"
+            className={`${
+              isLoadingShippingRates ? "animate-pulse" : ""
+            } mt-8 md:mt-12 w-full md:w-auto`}
             onClick={handleGetShippingRate}
+            disabled={isLoadingShippingRates || !isGetShippingRateReadyToCall}
           >
-            Get Shipping Rate
+            {isLoadingShippingRates
+              ? "Getting Rates..."
+              : selectedCourierInfo
+              ? "Change Shipping Rate"
+              : "Get Shipping Rate"}
           </Button>
         </div>
+
+        {selectedCourierInfo && (
+          <div className="mt-4 text-center md:text-right">
+            <p className="text-sm font-semibold text-gray-700">
+              Selected Courier: &nbsp;
+              <span className="text-md text-green-600">
+                {selectedCourierInfo}
+              </span>
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="w-full mb-3 mt-8">
-        <Button paddingY="py-3" className="w-full" onClick={handleSubmit}>
-          Next: Recipient Details
+        <Button
+          paddingY="py-3"
+          className="w-full"
+          disabled={!!validateForm()}
+          onClick={handleSubmit}
+        >
+          Next: Invoice Summary
         </Button>
       </div>
 
@@ -674,6 +723,17 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         onClose={() => setIsRatesModalOpen(false)}
         ratesData={shippingRatesData}
         isLoading={isLoadingShippingRates}
+        onSelectCourier={(courier) => {
+          setForm((prev) => ({ ...prev, selectedCourier: courier }));
+
+          setSelectedCourierInfo(`${courier.courierName}`);
+
+          notification({
+            title: "Courier Selected",
+            message: `${courier.courierName} has been selected.`,
+            type: "success",
+          });
+        }}
       />
     </div>
   );
