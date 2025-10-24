@@ -2,7 +2,6 @@ import React, { Fragment } from 'react';
 
 const forms = [
   'Order Details',
-  'Recipient’s Details',
   'Summary'
 ];
 
