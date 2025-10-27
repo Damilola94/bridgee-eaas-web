@@ -37,6 +37,7 @@ interface MakePaymentProps {
   onPaymentSuccess?: () => void;
   onPaymentPending?: () => void;
   initialIsPaymentInitiated?: boolean;
+  onCancelPayment?: () => void;
 }
 
 export default function MakePayment({
@@ -45,7 +46,8 @@ export default function MakePayment({
   orderReference,
   onPaymentSuccess,
   onPaymentPending,
-  initialIsPaymentInitiated = false
+  initialIsPaymentInitiated = false,
+  onCancelPayment,
 }: MakePaymentProps) {
   const router = useRouter();
 
@@ -182,6 +184,7 @@ export default function MakePayment({
   const handleCancelPayment = () => {
     setIsPaymentInitiated(false);
     setTimeLeft(600);
+    onCancelPayment?.();
   };
 
   const resetPaymentState = () => {
