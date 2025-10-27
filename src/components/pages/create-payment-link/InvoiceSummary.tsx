@@ -111,6 +111,13 @@ function InvoiceSummary() {
       buyerPaysEscrowFee: form?.isDeliveryOnUs || false,
       description: form?.description || "",
       deliveryFee: form?.selectedCourier?.total || 0,
+      items:
+        form?.escrowItems?.map((item) => ({
+          name: item.name || "",
+          quantity: item.quantity || 0,
+          unitPrice: item.amount || 0,
+          weightKg: item.weight || 0
+        })) || [],
       shipmentMetaData: {
         requestToken: form?.selectedCourier?.requestToken || "",
         serviceCode: form?.selectedCourier?.serviceCode || "",
