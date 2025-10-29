@@ -21,6 +21,7 @@ export type Props = {
   onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   leftAddon?: React.ReactNode;
+  required?: boolean;
 };
 
 function TextInput({
@@ -43,6 +44,7 @@ function TextInput({
   height,
   accept,
   leftAddon,
+  required,
 }: Props) {
   const [inputType, setInputType] = useState(type);
 
@@ -81,6 +83,7 @@ function TextInput({
           min={minValue}
           max={maxValue}
           maxLength={maxValue}
+          required={required}
         />
 
         {error ? (
