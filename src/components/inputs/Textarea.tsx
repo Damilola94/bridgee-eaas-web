@@ -15,11 +15,12 @@ type Props = {
   error?: string
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void,
   onBlur?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void,
+  required?: boolean,
 };
 
 function TextareaInput({
   className, value, name, readOnly, onBlur, disabled,
-  onChange, label, placeholder, rows = 5, error
+  onChange, label, placeholder, rows = 5, error, required,
 }: Props) {
   return (
     <div className={`${className} relative`}>
@@ -37,6 +38,7 @@ function TextareaInput({
         onBlur={onBlur}
         disabled={disabled}
         rows={rows}
+        required={required}
       />
 
       {error ? <p className="error-msg" data-testid="error-msg">{error}</p> : null}
