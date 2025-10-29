@@ -9,7 +9,7 @@ export type InvoiceFormProps = {
   weight?: string | number;
   isDeliveryOnUs?: boolean;
   recipientAddress?: string;
-  pickUpAddress?: { label: string; value: string };
+  pickupAddress?: { label: string; value: string };
   deliveryAddress?: { label: string; value: string };
   deliveryZone?: { label: string; value: string };
   pickUpZone?: { label: string; value: string };

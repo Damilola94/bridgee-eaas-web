@@ -47,7 +47,7 @@ function OrderSummary() {
           </div>
           <div className="w-full flex justify-between py-3">
             <p className="">Delivery Fee</p>
-            <p className="font-bold ff-bold">{formatCurrency(0)}</p>
+            <p className="font-bold ff-bold">{formatCurrency(form?.selectedCourier?.total || 0)}</p>
           </div>
         </div>
       </div>
@@ -57,7 +57,7 @@ function OrderSummary() {
         <p className="font-bold text-xl ff-bold text-primary">
           {(status === 'loading' || isFetching)
             ? <Skeleton className="w-[80px]" />
-            : formatCurrency(total + (data?.data || 0))}
+            : formatCurrency(total + (data?.data || 0) + form?.selectedCourier?.total || 0)}
         </p>
       </div>
     </div>
