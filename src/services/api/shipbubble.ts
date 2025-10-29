@@ -1,0 +1,50 @@
+import { GooglePlacesResponse, ShipBubbleCategoriesResponse, ShipBubbleDimensionsResponse, ShippingRatesPayload, ShippingRatesResponse, ValidateAddressPayload, ValidateAddressResponse } from '../../types/shipbubble';
+import handleFetch from './handleFetch';
+
+export const getPackageCategories = (): Promise<ShipBubbleCategoriesResponse> => {
+  return handleFetch({
+    service: 'admin-service',
+    endpoint: '/api/v1/shipbubble/package-categories',
+    method: 'GET',
+    auth: true,
+  });
+};
+
+
+export const getPackageDimensions = (): Promise<ShipBubbleDimensionsResponse> => {
+  return handleFetch({
+    service: 'admin-service',
+    endpoint: '/api/v1/shipbubble/package-dimensions',
+    method: 'GET',
+    auth: true,
+  });
+};
+
+export const getGooglePlacesSuggestions = (input: string): Promise<GooglePlacesResponse> => {
+  return handleFetch({
+    service: 'admin-service',
+    endpoint: `/api/v1/googleplaces/lookup?input=${encodeURIComponent(input)}`,
+    method: 'GET',
+    auth: true,
+  });
+};
+
+export const validateAddress = (data: ValidateAddressPayload): Promise<ValidateAddressResponse> => {
+  return handleFetch({
+    service: 'admin-service',
+    endpoint: '/api/v1/shipbubble/validate-address',
+    method: 'POST',
+    auth: true,
+    body: data,
+  });
+};
+
+export const getShippingRates = (data: ShippingRatesPayload): Promise<ShippingRatesResponse> => {
+  return handleFetch({
+    service: 'admin-service',
+    endpoint: '/api/v1/shipbubble/shipping-rates',
+    method: 'POST',
+    auth: true,
+    body: data,
+  });
+};

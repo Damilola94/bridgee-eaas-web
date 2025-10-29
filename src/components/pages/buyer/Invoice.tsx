@@ -115,7 +115,7 @@ export default function Invoice({
 
           <div className="lg:text-right mb-9 lg:mb-0">
             <h4 className="text-3xl font-bold text-textColor pb-2 ">
-              Invoice #{orderData.invoiceNumber}
+              Invoice {orderData.invoiceNumber}
             </h4>
             <span
               style={statusStyle}
@@ -229,7 +229,7 @@ export default function Invoice({
               </span>
             </div>
             <div className="flex text-sm gap-x-14 justify-between">
-              <span className="text-gray-600">Escrow fee (5%)</span>
+              <span className="text-gray-600">Escrow fee</span>
               <span className="font-semibold">
                 {formatCurrency(orderData.escrowFee)}
               </span>

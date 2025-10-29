@@ -138,7 +138,8 @@ export const removeNigerianCountryCodeAddLeadingZero = (
   }
 };
 
-export const removeNigerianCountryCode = (phoneNumber: string): string => {
+export const removeNigerianCountryCode = (phoneNumber: string | undefined): string => {
+  if (!phoneNumber) return "";
   return phoneNumber.replace(/^\+?234/, "");
 };
 

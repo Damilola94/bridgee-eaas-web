@@ -291,6 +291,7 @@ export default function BuyerOrder() {
                   onPaymentPending={handlePaymentPending}
                   onPaymentSuccess={handlePaymentSuccess}
                   initialIsPaymentInitiated={showPaymentView}
+                  onCancelPayment={() => setShowPaymentView(false)}
                 />
               </div>
 

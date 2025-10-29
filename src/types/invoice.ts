@@ -1,15 +1,18 @@
+import { ShippingRate } from "./shipbubble";
+
 export type InvoiceFormProps = {
   title?: string;
-  role?: { label: string, value: string };
+  categoryId?: string;
+  selectedCourier?: ShippingRate;
+  role?: { label: string; value: string };
   escrowItems?: OrderListItemProps[];
   weight?: string | number;
   isDeliveryOnUs?: boolean;
   recipientAddress?: string;
-  pickUpAddress?: { label: string, value: string }
-  deliveryAddress?: { label: string, value: string }
-  deliveryZone?: { label: string, value: string }
-  pickUpZone?: { label: string, value: string }
-
+  pickupAddress?: { label: string; value: string };
+  deliveryAddress?: { label: string; value: string };
+  deliveryZone?: { label: string; value: string };
+  pickUpZone?: { label: string; value: string };
   disbursementType?: string;
   inspectionDuration?: string;
   writtenTerms?: string;
