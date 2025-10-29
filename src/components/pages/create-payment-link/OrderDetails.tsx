@@ -176,8 +176,8 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     const validationDetails = isPickupAddress
       ? {
           name:
-            `${accounts?.identity?.personalDetail?.firstName || "Henry"} ${
-              accounts?.identity?.personalDetail?.lastName || "Ozomgbachi"
+            `${accounts?.identity?.personalDetail?.firstName || ""} ${
+              accounts?.identity?.personalDetail?.lastName || ""
             }`.trim() || "",
           email: accounts?.identity?.personalDetail?.email || "",
           phone: accounts?.identity?.personalDetail?.phoneNumber || "",
