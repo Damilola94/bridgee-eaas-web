@@ -31,6 +31,7 @@ function AddInvoiceItem({ data, onAdd = () => { }, onClose = () => { } }: Props)
     if (!form?.name) return 'Item name is required';
     if (!form?.quantity) return 'Item quantity is required';
     if (!form?.amount) return 'Item unit price is required';
+    if (!form?.weight || Number(form?.weight) <= 0) return 'Item weight is required and must be greater than 0';
     // if (Number(form.amount) < 1000) {
     //   return "Item unit price must not be less than ₦1000";
     // }
@@ -38,9 +39,8 @@ function AddInvoiceItem({ data, onAdd = () => { }, onClose = () => { } }: Props)
   };
 
   const handleAddItem = () => {
-    const error = validateForm();
-    if (error) {
-      notification({ title: 'Form Error', message: error, type: 'danger' });
+    if (validateForm()) {
+      notification({ title: 'Form Error', message: 'Please fill in all required fields', type: 'danger' });
       return;
     }
     onAdd({
@@ -70,6 +70,16 @@ function AddInvoiceItem({ data, onAdd = () => { }, onClose = () => { } }: Props)
                 label="Item Name"
                 className="w-full mb-4"
                 placeholder="Item Name"
+                required
+                onBlur={() => {
+                  if (!form?.name?.trim()) {
+                    notification({
+                      title: "Form Error",
+                      message: "Item name is required",
+                      type: "danger",
+                    });
+                  }
+                }}
               />
             </div>
           </div>
@@ -84,6 +94,16 @@ function AddInvoiceItem({ data, onAdd = () => { }, onClose = () => { } }: Props)
                 type="number"
                 minValue={0}
                 placeholder="Quantity"
+                required
+                onBlur={() => {
+                  if (!form?.quantity) {
+                    notification({
+                      title: "Form Error",
+                      message: "Quantity is required",
+                      type: "danger",
+                    });
+                  }
+                }}
               />
             </div>
           </div>
@@ -100,6 +120,16 @@ function AddInvoiceItem({ data, onAdd = () => { }, onClose = () => { } }: Props)
                 label="Price per unit (NGN)"
                 className="w-full mb-4"
                 placeholder="Price per unit"
+                required
+                onBlur={() => {
+                  if (!form?.amount) {
+                    notification({
+                      title: "Form Error",
+                      message: "Price per unit is required",
+                      type: "danger",
+                    });
+                  }
+                }}
               />
             </div>
 
@@ -117,6 +147,16 @@ function AddInvoiceItem({ data, onAdd = () => { }, onClose = () => { } }: Props)
                 type="number"
                 minValue={0}
                 placeholder="Weight per unit"
+                required
+                 onBlur={() => {
+                  if (!form?.weight || Number(form?.weight) <= 0) {
+                    notification({
+                      title: "Form Error",
+                      message: "Weight is required and must be greater than 0",
+                      type: "danger",
+                    });
+                  }
+                }}
               />
             </div>
           </div>

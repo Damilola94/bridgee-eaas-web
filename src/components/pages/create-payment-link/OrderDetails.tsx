@@ -176,8 +176,8 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     const validationDetails = isPickupAddress
       ? {
           name:
-            `${accounts?.identity?.personalDetail?.firstName || "Henry"} ${
-              accounts?.identity?.personalDetail?.lastName || "Ozomgbachi"
+            `${accounts?.identity?.personalDetail?.firstName || ""} ${
+              accounts?.identity?.personalDetail?.lastName || ""
             }`.trim() || "",
           email: accounts?.identity?.personalDetail?.email || "",
           phone: accounts?.identity?.personalDetail?.phoneNumber || "",
@@ -335,6 +335,12 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     }
   };
 
+  const isGetShippingRateReadyToCall = !!(
+    pickupAddressResponse?.addressCode &&
+    deliveryAddressResponse?.addressCode &&
+    selectedDimension &&
+    categories.find((cat) => cat.categoryId === Number(form.categoryId))
+  );
 
   const handleChange = (val: any, inputType = "input", inputName = "") => {
     if (typeof val === "object" && val.target) {
@@ -527,7 +533,8 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
           <div className="w-full mb-10">
             <div>
               <p className="text-base mb-1">
-                Add Description <span>(required)</span>
+                Add Description{" "}
+                <span className="text-red-600 text-sm">(required)</span>
               </p>
               <TextareaInput
                 rows={3}
@@ -535,6 +542,16 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
                 className="mb-5"
                 value={form?.description}
                 onChange={handleChange}
+                required
+                onBlur={() => {
+                  if (!form?.description?.trim()) {
+                    notification({
+                      title: "Form Error",
+                      message: "Description is required",
+                      type: "danger",
+                    });
+                  }
+                }}
               />
             </div>
             <div className="w-full">
@@ -558,6 +575,18 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
             onChange={handleChange}
             label="Recipient’s Name"
             placeholder="Enter name"
+            onBlur={() => {
+              const name = form.recipientDetails?.recipientName?.trim() || "";
+              const nameParts = name.split(/\s+/);
+              if (!name || nameParts.length < 2) {
+                notification({
+                  title: "Form Error",
+                  message:
+                    "Recipient name must include both first and last name",
+                  type: "danger",
+                });
+              }
+            }}
           />
           <TextInput
             name="email"
@@ -663,7 +692,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
               isLoadingShippingRates ? "animate-pulse" : ""
             } mt-8 md:mt-12 w-full md:w-auto`}
             onClick={handleGetShippingRate}
-            disabled={isLoadingShippingRates}
+            disabled={isLoadingShippingRates || !isGetShippingRateReadyToCall}
           >
             {isLoadingShippingRates
               ? "Getting Rates..."
