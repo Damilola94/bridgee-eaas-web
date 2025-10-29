@@ -189,6 +189,7 @@ export default function LinkBankAccount({
         value={accountNumber}
         onChange={handleAccountNumberChange}
         className="h-12"
+        autoComplete="off"
       />
 
       <div className="flex justify-end mb-2">

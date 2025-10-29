@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { debounce } from "lodash";
 import AsyncSelect from "react-select/async";
 import { useAccountsContext } from "../../../context/Accounts";
@@ -335,11 +335,24 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     }
   };
 
-  const isGetShippingRateReadyToCall = !!(
-    pickupAddressResponse?.addressCode &&
-    deliveryAddressResponse?.addressCode &&
-    selectedDimension &&
-    categories.find((cat) => cat.categoryId === Number(form.categoryId))
+  const isGetShippingRateReadyToCall = useMemo(
+    () =>
+      !!(
+        pickupAddressResponse?.addressCode &&
+        deliveryAddressResponse?.addressCode &&
+        selectedDimension &&
+        categories.find((cat) => cat.categoryId === Number(form.categoryId)) &&
+        form?.recipientDetails?.recipientName?.trim() &&
+        form.recipientDetails.recipientName.split(/\s+/).length >= 2
+      ),
+    [
+      pickupAddressResponse?.addressCode,
+      deliveryAddressResponse?.addressCode,
+      selectedDimension,
+      categories,
+      form.categoryId,
+      form.recipientDetails?.recipientName,
+    ]
   );
 
   const handleChange = (val: any, inputType = "input", inputName = "") => {

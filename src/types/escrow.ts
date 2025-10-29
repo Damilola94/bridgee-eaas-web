@@ -23,7 +23,7 @@ export interface PaymentDetailsResponse {
   statusCode: string;
   message: string;
   data: {
-    walletTransactionId: string;
+    orderReference: string;
     bankName: string;
     accountName: string;
     accountNumber: string;
