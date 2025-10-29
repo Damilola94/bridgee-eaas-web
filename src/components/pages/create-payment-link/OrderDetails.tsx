@@ -253,7 +253,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       notification({
         title: "Form Error",
         message:
-          "Please select and validate both pickup and delivery addresses.",
+          "Please select and wait for both pickup and delivery addresses to be validated.",
         type: "danger",
       });
       return;
@@ -335,13 +335,6 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     }
   };
 
-  const isGetShippingRateReadyToCall = !!(
-    form?.description?.trim() &&
-    pickupAddressResponse?.addressCode &&
-    deliveryAddressResponse?.addressCode &&
-    selectedDimension &&
-    categories.find((cat) => cat.categoryId === Number(form.categoryId))
-  );
 
   const handleChange = (val: any, inputType = "input", inputName = "") => {
     if (typeof val === "object" && val.target) {
@@ -670,7 +663,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
               isLoadingShippingRates ? "animate-pulse" : ""
             } mt-8 md:mt-12 w-full md:w-auto`}
             onClick={handleGetShippingRate}
-            disabled={isLoadingShippingRates || !isGetShippingRateReadyToCall}
+            disabled={isLoadingShippingRates}
           >
             {isLoadingShippingRates
               ? "Getting Rates..."

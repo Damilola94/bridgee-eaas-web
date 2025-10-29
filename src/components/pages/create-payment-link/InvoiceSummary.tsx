@@ -162,7 +162,7 @@ function InvoiceSummary() {
               <p className="mb-1">{identity?.businessDetail?.businessEmail}</p>
               <p className="mb-1">{identity?.businessDetail?.businessPhone}</p>
               <p className="mb-1">
-                {identity?.businessDetail?.businessAddress || "N/A"}
+                {form?.pickupAddress?.label || "N/A"}
               </p>
               <p className="text-lightText">{new Date().toDateString()}</p>
             </div>
@@ -223,7 +223,7 @@ function InvoiceSummary() {
             </div>
             <div className="w-full flex justify-between mb-3">
               <p className="">Delivery Fee</p>
-              <p className="font-bold ff-bold">{formatCurrency(0)}</p>
+              <p className="font-bold ff-bold">{formatCurrency(form?.selectedCourier?.total || 0)}</p>
             </div>
             <div className="w-full flex justify-between mb-3 text-lg">
               <p className="">TOTAL</p>
@@ -231,7 +231,7 @@ function InvoiceSummary() {
                 {status === "loading" || isFetching ? (
                   <Skeleton className="w-[80px]" />
                 ) : (
-                  formatCurrency(total + (data?.data || 0))
+                  formatCurrency(total + (data?.data || 0) + form?.selectedCourier?.total || 0)
                 )}
               </p>
             </div>
