@@ -48,8 +48,6 @@ function TransactionDetailsModal({ onClose, transactionId }: Props) {
     return null;
   }, [status, data]);
 
-  console.log(transactionData), "data";
-
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     setCopiedRef(true);
