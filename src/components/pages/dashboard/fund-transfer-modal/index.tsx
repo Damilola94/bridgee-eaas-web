@@ -1,12 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useMutation } from "react-query";
 
 import SuccessSvg from "../../../../assets/svgs/success-tick.svg";
 // import { useAccountsContext } from "../../../../context/Accounts";
-import useGetQuery from "../../../../hooks/useGetQuery";
 import handleFetch from "../../../../services/api/handleFetch";
 import type { FundTransferProps } from "../../../../types/transaction";
 import notification from "../../../../utilities/notification";
@@ -28,48 +27,11 @@ type Props = {
 
 function Index({ onClose }: Props) {
   const { accounts } = useAccountsContext();
-  const { identity } = accounts || {};
+  const { wallet, identity } = accounts || {};
   const primaryAccount = identity?.accountDetails[0];
 
   const [formIndex, setFormIndex] = useState(0);
   const [form, setForm] = useState<FundTransferProps>({});
-
-  const [accountNoToBeVerified, setAccountNoToBeVerified] = useState<string | undefined>(undefined);
-  const accountNoIsVerified = useRef(false);
-
-  const { status: categoryStatus } = useGetQuery({
-    endpoint: "category",
-    queryKey: ["get-transaction-categories"]
-  });
-  const { data: accountDetails, status: enquiryStatus } = useGetQuery({
-    endpoint: "transaction",
-    extra: "account-name-enquiry",
-    pQuery: {
-      myDestinationBankCode: form?.bankCode?.value,
-      myDestinationAccountNumber: accountNoToBeVerified
-    },
-    queryKey: ["account-name-enquiry", form?.bankCode?.value, accountNoToBeVerified],
-    enabled: !!accountNoToBeVerified && !!form?.bankCode?.value
-  });
-
-  useEffect(() => {
-    if (accountNoToBeVerified) {
-      if (enquiryStatus === "success") {
-        setForm((prev) => ({
-          ...prev,
-          accountName: accountDetails?.data?.accountName
-        }));
-        setAccountNoToBeVerified(undefined);
-        accountNoIsVerified.current = true;
-      } else if (enquiryStatus === "error") {
-        setAccountNoToBeVerified(undefined);
-        notification({
-          message: "Account name enquiry failed.",
-          type: "danger"
-        });
-      }
-    }
-  }, [accountDetails, accountNoToBeVerified, enquiryStatus]);
 
   const transferMutation = useMutation(handleFetch, {
     onSuccess: () => {
@@ -88,19 +50,8 @@ function Index({ onClose }: Props) {
     if (type === "input") {
       const { value, name } = val.target;
       setForm((prev) => ({ ...prev, [name]: value }));
-      if (name === "accountNumber") {
-        accountNoIsVerified.current = false;
-        setForm((prev) => ({ ...prev, accountName: undefined }));
-        if (value?.length === 10 && !accountNoIsVerified.current) {
-          setAccountNoToBeVerified(value);
-        }
-      }
     } else {
       setForm((prev) => ({ ...prev, [inputName]: val }));
-    }
-
-    if (inputName === "bankCode" && form?.accountNumber?.length === 10 && !accountNoIsVerified.current) {
-      setAccountNoToBeVerified(form?.accountNumber);
     }
   };
 
@@ -118,47 +69,51 @@ function Index({ onClose }: Props) {
   };
 
   const processAmountDetails = () => {
+    const balance = wallet?.wallets?.[0]?.balance || 0;
+    const amount = Number(form?.amount) || 0;
+
+    if (balance < amount) {
+      notification({
+        title: "Insufficient Balance",
+        message: "Your wallet balance is lower than the entered amount.",
+        type: "danger"
+      });
+      return;
+    }
+
     setFormIndex(2);
   };
 
   const authenticateTransaction = () => {
+    if (!form?.pin?.length || form?.pin?.length < 4) {
+      notification({
+        title: "Form Error",
+        message: "Please, enter a valid PIN",
+        type: "danger"
+      });
+      return;
+    }
 
-    setFormIndex(4);
+    const body = {
+      amount: Number(form?.amount),
+      accountNumber: primaryAccount.accountNumber,
+      pin: form?.pin
+    };
 
-    // if (!form?.pin?.length || form?.pin?.length < 4) {
-    //   notification({
-    //     title: "Form Error",
-    //     message: "Please, enter a valid PIN",
-    //     type: "danger"
-    //   });
-    //   return;
-    // }
-
-    // const body = {
-    //   ...form,
-    //   amount: Number(form?.amount),
-    //   bankCode: form?.bankCode?.value,
-    //   categoryId: form?.categoryId?.value
-    // };
-
-    // delete body.processFee;
-    // delete body.accountName;
-
-    // transferMutation.mutate({
-    //   endpoint: "transaction",
-    //   extra: "interbank-fund-transfer",
-    //   body,
-    //   method: "POST",
-    //   auth: true
-    // });
+    transferMutation.mutate({
+      service: 'wallet-service/api/v1',
+      endpoint: "wallets",
+      extra: "withdraw-fund",
+      body,
+      method: "POST",
+      auth: true
+    });
   };
 
   const { isLoading } = transferMutation;
 
   return (
     <>
-      {(status === "loading" || categoryStatus === "loading") && <Loading />}
-      {enquiryStatus === "loading" && <Loading message="Verifying account..." />}
       {isLoading && <Loading message="Processing transfer..." />}
 
       <Modal isOpen onClose={onClose} maxWidth="max-w-[400px]">
