@@ -35,11 +35,11 @@ export const getPaymentDetails = (
 };
 
 export const getTransactionStatus = (
-  transactionId: string
+  orderReference: string
 ): Promise<TransactionStatusResponse> => {
   return handleFetch({
     service: "wallet-service",
-    endpoint: `/wallet/transactions/${transactionId}/status`,
+    endpoint: `/wallet/transactions/${orderReference}/status`,
     method: "GET",
   }) as Promise<TransactionStatusResponse>;
 };

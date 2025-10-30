@@ -86,14 +86,15 @@ export default function PersonalInfo({
   };
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPhoneWithoutCode(e.target.value);
+    const numericValue = e.target.value.replace(/\D/g, "").slice(0, 10);
+    setPhoneWithoutCode(numericValue);
 
     if (setFormData && formData) {
       setFormData({
         ...formData,
         personalInfo: {
           ...formData.personalInfo,
-          phoneNumber: e.target.value,
+          phoneNumber: numericValue,
         },
       });
     }
@@ -114,7 +115,6 @@ export default function PersonalInfo({
       },
     });
   };
-
 
   const isFormValid =
     personalInfo.emailAddress?.trim() &&
@@ -166,6 +166,7 @@ export default function PersonalInfo({
         value={personalInfo?.emailAddress || ""}
         onChange={handleChange}
         className=""
+        autoComplete="off"
       />
 
       <PhoneNumberInput
@@ -175,7 +176,8 @@ export default function PersonalInfo({
         onPhoneNumberChange={handlePhoneNumberChange}
         className="w-full mb-5"
         label="Phone Number"
-        placeholder="Phone Number"
+        placeholder="Phone Number (10 Digits)"
+        autoComplete="off"
       />
 
       <TextInput
@@ -194,6 +196,7 @@ export default function PersonalInfo({
         value={personalInfo?.password || ""}
         onChange={handleChange}
         className=""
+        autoComplete="off"
       />
 
       <div className="mb-4">
