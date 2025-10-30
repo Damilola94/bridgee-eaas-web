@@ -16,20 +16,22 @@ export default function Activity({ activities = [] }: ActivityProps) {
 
         <section className="relative space-y-6">
           <div
-            className="absolute left-[5px] top-4 bottom-4 w-[1px] bg-[#683AB7]"
+            className="absolute left-[5px] top-4 bottom-4 w-[1px] bg-[#683AB7] z-0"
             aria-hidden="true"
           ></div>
 
           {activities.map((activity, index) => (
-            <div key={index} className="bg-blue-50/30 z-10">
+            <div key={index} className="z-10 relative">
               <div className="flex gap-x-4">
                 <div className="flex-shrink-0 mt-1">
-                  <div className="w-3 h-3 rounded-full bg-primary"></div>
+                  <div className={`w-3 h-3 rounded-full ${activity.isChecked ? 'bg-primary' : 'bg-gray-400'}`}></div>
                 </div>
-                <div className="flex-1 mt-1 min-w-0">
-                  <p className="text-sm text-grey2 font-normal mb-1">
-                    {new Date(activity.timestamp).toLocaleString()}
-                  </p>
+                <div className="flex-1 min-w-0">
+                  {activity.isChecked && (
+                    <p className="text-sm text-grey2 font-normal mb-1">
+                      {new Date(activity.timestamp).toLocaleString()}
+                    </p>
+                  )}
                   <p className="text-lg text-textColor font-bold leading-relaxed capitalize">
                     {activity.action}
                   </p>
@@ -42,3 +44,4 @@ export default function Activity({ activities = [] }: ActivityProps) {
     </div>
   );
 }
+
