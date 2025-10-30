@@ -74,8 +74,8 @@ function TransactionDetailsModal({ onClose, transactionId }: Props) {
           <>
             <div className="flex items-center justify-center mb-2">
               <div className="flex items-center space-x-3">
-                <span className="w-8 h-8 bg-success/10 p-2 rounded-full">
-                  <InflowArrow className="w-4 h-4" color="#EB4336" />
+                <span className="w-8 h-8 bg-[#DEF7EC] p-2 rounded-full">
+                  <InflowArrow className="w-4 h-4" color="#03543F" />
                 </span>
                 <span className="capitalize">{transactionData.type}</span>
               </div>

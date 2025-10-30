@@ -11,8 +11,9 @@ import Modal from "../../common/Modal";
 import Button from "../../inputs/Button";
 import InflowArrow from "../../../assets/svg-tsx/InflowArrow";
 
-import useGetQuery from '../../../hooks/useGetQuery';
+import useGetQuery from "../../../hooks/useGetQuery";
 import { downloadTransactionPDF } from "../../../lib/downloadInvoice";
+import OutflowArrow from "../../../assets/svg-tsx/OutflowArrow";
 type Props = {
   onClose: () => void;
   transactionId: string;
@@ -27,7 +28,7 @@ function TransactionDetailsModal({ onClose, transactionId }: Props) {
     endpoint: "wallet",
     extra: `transactions/${transactionId}`,
     queryKey: ["transaction-details", transactionId],
-    enabled: !!cookie?.data?.accessToken && !!transactionId
+    enabled: !!cookie?.data?.accessToken && !!transactionId,
   });
 
   const transactionData = useMemo(() => {
@@ -41,11 +42,13 @@ function TransactionDetailsModal({ onClose, transactionId }: Props) {
         type: tx.transactionType,
         description: tx.description || "—",
         date: tx.date,
-        fee: tx.transactionFee ? `₦${tx.transactionFee}` : "—"
+        fee: tx.transactionFee ? `₦${tx.transactionFee}` : "—",
       };
     }
     return null;
   }, [status, data]);
+
+  console.log(transactionData), "data";
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -74,8 +77,18 @@ function TransactionDetailsModal({ onClose, transactionId }: Props) {
           <>
             <div className="flex items-center justify-center mb-2">
               <div className="flex items-center space-x-3">
-                <span className="w-8 h-8 bg-success/10 p-2 rounded-full">
-                  <InflowArrow className="w-4 h-4" color="#EB4336" />
+                <span
+                  className={`w-8 h-8 ${
+                    transactionData.type === "Credit"
+                      ? "bg-[#DEF7EC]"
+                      : "bg-[#FDE8E8]"
+                  }  p-2 rounded-full`}
+                >
+                  {transactionData.type === "Credit" ? (
+                    <InflowArrow className="w-4 h-4" color="#03543F" />
+                  ) : (
+                    <OutflowArrow className="w-4 h-4" color="#9B1C1C" />
+                  )}
                 </span>
                 <span className="capitalize">{transactionData.type}</span>
               </div>
@@ -89,7 +102,9 @@ function TransactionDetailsModal({ onClose, transactionId }: Props) {
               Transaction Reference:
             </div>
             <div className="flex items-center justify-center gap-2 mb-6">
-              <span className="text-sm font-mono">{transactionData.reference}</span>
+              <span className="text-sm font-mono">
+                {transactionData.reference}
+              </span>
               <button
                 onClick={() => copyToClipboard(transactionData.reference)}
                 className="p-1 hover:bg-gray-100 rounded"
@@ -102,14 +117,21 @@ function TransactionDetailsModal({ onClose, transactionId }: Props) {
             </div>
 
             <div className="space-y-6 mb-6">
-              <Row label="Transaction channel" value={transactionData.channel} />
+              <Row
+                label="Transaction channel"
+                value={transactionData.channel}
+              />
               <Row
                 label="Status"
                 value={<TransactionStatus status={transactionData.status} />}
                 valueClass="text-green-600"
               />
               <Row label="Transaction Type" value={transactionData.type} />
-              <Row label="Description" value={transactionData.description} wrap />
+              <Row
+                label="Description"
+                value={transactionData.description}
+                wrap
+              />
               <Row label="Date" value={transactionData.date} />
               <Row label="Transaction Fee" value={transactionData.fee} />
             </div>
@@ -133,7 +155,7 @@ const Row = ({
   label,
   value,
   wrap,
-  valueClass = ""
+  valueClass = "",
 }: {
   label: string;
   value: string | ReactNode;
@@ -143,7 +165,8 @@ const Row = ({
   <div className="flex justify-between items-start">
     <span className="text-sm text-gray-600">{label}</span>
     <span
-      className={`text-sm font-medium text-right ${wrap ? "max-w-[200px]" : ""
+      className={`text-sm font-medium text-right ${
+        wrap ? "max-w-[200px]" : ""
       } ${valueClass}`}
     >
       {value}
