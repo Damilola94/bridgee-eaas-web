@@ -20,7 +20,7 @@ import notification from "../../../utilities/notification";
 import { QUERY_KEYS } from "../../../configs/constants";
 import {
   getPaymentDetails,
-  getTransactionStatus
+  getTransactionStatus,
 } from "../../../services/api/escrow";
 
 import PaymentSuccessful from "./PaymentSuccessful";
@@ -51,7 +51,9 @@ export default function MakePayment({
 }: MakePaymentProps) {
   const router = useRouter();
 
-  const [isPaymentInitiated, setIsPaymentInitiated] = useState(initialIsPaymentInitiated || false);
+  const [isPaymentInitiated, setIsPaymentInitiated] = useState(
+    initialIsPaymentInitiated || false
+  );
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [timeLeft, setTimeLeft] = useState(600); // 10 minutes in seconds
 
@@ -67,13 +69,13 @@ export default function MakePayment({
     [QUERY_KEYS.PAYMENT_DETAILS, orderReference, formData.email],
     () => getPaymentDetails(orderReference || "", formData.email || ""),
     {
-      enabled: Boolean(orderReference && formData.email && isPaymentInitiated)
+      enabled: Boolean(orderReference && formData.email && isPaymentInitiated),
     }
   );
 
   useEffect(() => {
-    if (paymentDetailsData?.data?.walletTransactionId) {
-      setTransactionId(paymentDetailsData.data.walletTransactionId);
+    if (paymentDetailsData?.data?.orderReference) {
+      setTransactionId(paymentDetailsData.data.orderReference);
     }
   }, [paymentDetailsData]);
 
@@ -116,14 +118,23 @@ export default function MakePayment({
       notification({
         title: "Error",
         message: "Transaction ID not available. Please try again.",
-        type: "error"
+        type: "error",
       });
       return;
     }
 
     setSendingPayment(true);
 
-    const response = await getTransactionStatus(transactionId).catch(
+    if (!orderReference) {
+      notification({
+        title: "Error",
+        message: "Order reference not available.",
+        type: "error",
+      });
+      return;
+    }
+
+    const response = await getTransactionStatus(orderReference).catch(
       async (error) => {
         // Handle the specific "pending" case where API returns 400 with valid data
         if (
@@ -135,7 +146,7 @@ export default function MakePayment({
             statusCode: "400",
             message: "Transaction status is Pending.",
             data: null,
-            metaData: null
+            metaData: null,
           };
         }
         throw error; // Re-throw actual network errors
@@ -148,7 +159,7 @@ export default function MakePayment({
         title: "Payment Successful",
         message:
           response.message || "Your payment has been processed successfully!",
-        type: "success"
+        type: "success",
       });
 
       queryClient.invalidateQueries([QUERY_KEYS.ORDER_STATUS, orderReference]);
@@ -166,7 +177,7 @@ export default function MakePayment({
         message:
           response.message ||
           "Your payment is being processed. We'll notify you once it's complete.",
-        type: "info"
+        type: "info",
       });
 
       onPaymentPending?.();
@@ -174,7 +185,7 @@ export default function MakePayment({
       notification({
         title: "Payment Status",
         message: response.message || "Unable to determine payment status.",
-        type: "warning"
+        type: "warning",
       });
     }
 
@@ -262,14 +273,12 @@ export default function MakePayment({
               <p className="text-grey2 text-lg font-normal mb-1">
                 {formData.phone}
               </p>
-              <p className="text-grey2 text-lg font-medium">
-                {formData.email}
-              </p>
+              <p className="text-grey2 text-lg font-medium">{formData.email}</p>
             </div>
 
             <div className="mb-8">
               <div className="text-lg font-bold text-textColor">
-                  Pay <span className="text-[#00A980]"> {amount}</span>
+                Pay <span className="text-[#00A980]"> {amount}</span>
               </div>
             </div>
           </section>
@@ -284,14 +293,14 @@ export default function MakePayment({
             <>
               <div className="mb-8">
                 <h3 className="text-xl font-bold text-textColor mb-6">
-                    Transfer NGN {amount} to the Collection Account Below
+                  Transfer NGN {amount} to the Collection Account Below
                 </h3>
 
                 <div className="space-y-4 mb-10">
                   <section className="bg-secondary rounded-[10px] px-4 py-10 space-y-9">
                     <div className="space-y-2">
                       <label className="text-base font-medium text-grey2 mb-1">
-                          BANK NAME
+                        BANK NAME
                       </label>
                       <div className="text-textColor font-semibold text-lg">
                         {bankName}
@@ -300,7 +309,7 @@ export default function MakePayment({
 
                     <div className="space-y-2">
                       <label className="text-base font-medium text-grey2 mb-1">
-                          ACCOUNT NAME
+                        ACCOUNT NAME
                       </label>
                       <div className="text-textColor font-semibold text-lg">
                         {accountName}
@@ -310,7 +319,7 @@ export default function MakePayment({
                     <div className="flex items-center justify-between">
                       <div className="space-y-2">
                         <label className="text-base font-medium text-grey2 mb-1">
-                            ACCOUNT NUMBER
+                          ACCOUNT NUMBER
                         </label>
                         <div className="text-textColor font-semibold text-lg">
                           {accountNumber}
@@ -345,7 +354,7 @@ export default function MakePayment({
                     <div className="flex items-center justify-between">
                       <div className="space-y-2">
                         <label className="text-base font-medium text-grey2 mb-1">
-                            AMOUNT
+                          AMOUNT
                         </label>
                         <div className="text-textColor font-semibold text-lg">
                           {amount}
@@ -384,7 +393,7 @@ export default function MakePayment({
 
               <div className="my-10 w-[90%] mx-auto">
                 <p className="text-lg font-medium text-textColor text-center">
-                    The account is for this transaction only and expires in{" "}
+                  The account is for this transaction only and expires in{" "}
                   <span className="text-[#00A980] font-bold">
                     {formatTime(timeLeft)}
                   </span>
@@ -413,7 +422,7 @@ export default function MakePayment({
                       className="h-8 w-8"
                     />
                     <p className="text-lg font-bold text-textColor">
-                        Cancel Payment
+                      Cancel Payment
                     </p>
                   </span>
                 </Button>
