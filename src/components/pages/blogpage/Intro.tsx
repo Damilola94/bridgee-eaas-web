@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -10,129 +12,113 @@ const benefits = [
   {
     badge: BlogPost,
     bg: "#EDF9F9",
-    title: "Introduction to Bridge",
-    desc: "Introducing Bridge, its mission, and the reasons behind its creation.",
-    update: "PRODUCT UPDATES",
-    dateCreated: "12 Dec 2023"
-  },
-  {
-    badge: BlogPost,
-    bg: "#FAE9FC",
-    title: "Introduction to Bridge",
-    desc: "Introducing Bridge, its mission, and the reasons behind its creation.",
-    update: "SECURITY TIPS",
-    dateCreated: "12 Dec 2023"
-  },
-  {
-    badge: BlogPost,
-    bg: "#E8F6FF",
-    title: "Introduction to Bridge",
-    desc: "Introducing Bridge, its mission, and the reasons behind its creation.",
-    update: "INDUSTRY NEWS",
-    dateCreated: "12 Dec 2023"
-  },
-  {
-    badge: BlogPost,
-    bg: "#EDF9F9",
-    title: "Introduction to Bridge",
-    desc: "Introducing Bridge, its mission, and the reasons behind its creation.",
-    update: "PRODUCT UPDATES",
-    dateCreated: "12 Dec 2023"
-  },
-  {
-    badge: BlogPost,
-    bg: "#FAE9FC",
-    title: "Introduction to Bridge",
-    desc: "Introducing Bridge, its mission, and the reasons behind its creation.",
-    update: "SECURITY TIPS",
-    dateCreated: "12 Dec 2023"
-  },
-  {
-    badge: BlogPost,
-    bg: "#E8F6FF",
-    title: "Introduction to Bridge",
-    desc: "Introducing Bridge, its mission, and the reasons behind its creation.",
-    update: "INDUSTRY NEWS",
-    dateCreated: "12 Dec 2023"
-  },
-  {
-    badge: BlogPost,
-    bg: "#EDF9F9",
-    title: "Introduction to Bridge",
-    desc: "Introducing Bridge, its mission, and the reasons behind its creation.",
-    update: "PRODUCT UPDATES",
-    dateCreated: "12 Dec 2023"
-  },
-  {
-    badge: BlogPost,
-    bg: "#FAE9FC",
-    title: "Introduction to Bridge",
-    desc: "Introducing Bridge, its mission, and the reasons behind its creation.",
-    update: "SECURITY TIPS",
-    dateCreated: "12 Dec 2023"
-  },
-  {
-    badge: BlogPost,
-    bg: "#E8F6FF",
-    title: "Introduction to Bridge",
-    desc: "Introducing Bridge, its mission, and the reasons behind its creation.",
-    update: "INDUSTRY NEWS",
-    dateCreated: "12 Dec 2023"
+    title: "Wema Bank Startup Accelerator Programme",
+    desc: "Bridge is thrilled to announce its selection into Wema Bank’s esteemed...",
+    update: "Product Updates",
+    dateCreated: "15 September 2025"
   }
 ];
 
-function BlogPage() {
-  return (
-    <section id="why-us" className="w-full relative overflow- py-28">
-      <div className="w-full index-content">
-        <div className="w-full max-w-4xl text-center mx-auto space-x-5 mb-2">
-          <span className="uppercase cursor-pointer text-success">
-            All Posts
-          </span>
-          <span className="uppercase cursor-pointer">Online Security tips</span>
-          <span className="uppercase cursor-pointer">Customer Stories</span>
-          <span className="uppercase cursor-pointer">Product Updates</span>
-          <span className="uppercase cursor-pointer">How-To Guides</span>
-          <span className="uppercase cursor-pointer">Industry news</span>
-        </div>
-        <div className="w-full relative pt-20">
-          <div className="flex flex-wrap -mx-3">
-            {benefits.map((item) => (
-              <div
-                className="w-full flex-col mdx2:w-1/3 p-10 mt-16"
-                key={item.title}
-              >
-                <div className="w-full flex-col items-center mt-5 mdx2:mt-0">
-                  <Link href="/singlepost">
-                    <Image
-                      src={item.badge}
-                      alt="Delivery image"
-                      className="w-full h-auto rounded-xl cursor-pointer"
-                    />
-                  </Link>
+const categories = [
+  "All Posts",
+  "Online Security Tips",
+  "Customer Stories",
+  "Product Updates",
+  "How-To Guides",
+  "Industry News"
+];
 
-                  <div className="flex justify-between items-center mt-3">
-                    <h3 className="text-xs ff-medium text-success cursor-pointer">
-                      {item.update}
+function BlogPage() {
+  const [activeCategory, setActiveCategory] = useState("All Posts");
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 3;
+
+  const filteredPosts =
+    activeCategory === "All Posts"
+      ? benefits
+      : benefits.filter(
+        (post) =>
+          post.update.toLowerCase() === activeCategory.toLowerCase()
+      );
+
+  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+  const startIndex = (currentPage - 1) * postsPerPage;
+  const paginatedPosts = filteredPosts.slice(
+    startIndex,
+    startIndex + postsPerPage
+  );
+
+  return (
+    <section id="why-us" className="w-full relative overflow-hidden py-28">
+      <div className="w-full index-content">
+        <div className="w-full max-w-4xl text-center mx-auto flex flex-wrap justify-center gap-5 mb-2">
+          {categories.map((cat) => (
+            <span
+              key={cat}
+              onClick={() => {
+                setActiveCategory(cat);
+                setCurrentPage(1);
+              }}
+              className={`uppercase cursor-pointer transition-all duration-300 ${
+                activeCategory === cat
+                  ? "text-success font-semibold border-b-2 border-success pb-1"
+                  : "text-gray-500 hover:text-success"
+              }`}
+            >
+              {cat}
+            </span>
+          ))}
+        </div>
+
+        <div className="w-full relative pt-20">
+          {paginatedPosts.length === 0 ? (
+            <p className="text-center text-gray-500 text-lg py-20">
+              No posts found.
+            </p>
+          ) : (
+            <div className="flex flex-wrap -mx-3">
+              {paginatedPosts.map((item, idx) => (
+                <div
+                  className="w-full flex-col mdx2:w-1/3 p-10 mt-16"
+                  key={idx}
+                >
+                  <div className="w-full flex-col items-center mt-5 mdx2:mt-0">
+                    <Link href="/singlepost">
+                      <Image
+                        src={item.badge}
+                        alt="Blog post image"
+                        className="w-full h-auto rounded-xl cursor-pointer hover:opacity-90 transition-all duration-300"
+                      />
+                    </Link>
+
+                    <div className="flex justify-between items-center mt-3">
+                      <h3 className="text-xs ff-medium text-success cursor-pointer bg-[#FAE6F0] px-3 py-1 rounded-full">
+                        {item.update}
+                      </h3>
+                      <p className="text-xs leading-relaxed text-gray-500">
+                        {item.dateCreated}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-5">
+                    <h3 className="text-2xl ff-medium mb-4 cursor-pointer hover:text-success transition-all duration-300">
+                      {item.title}
                     </h3>
-                    <p className="text-xs leading-relaxed cursor-pointer">
-                      {item.dateCreated}
+                    <p className="text-sm leading-relaxed text-[#939393]">
+                      {item.desc}
                     </p>
                   </div>
                 </div>
-                <div className="mt-5">
-                  <h3 className="text-2xl ff-medium mb-4 cursor-pointer">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-[#939393] cursor-pointer">
-                    {item.desc}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
-        <Pagination/>
+
+        {filteredPosts.length > 0 && totalPages > 1 && (
+          <Pagination
+          />
+        )}
       </div>
     </section>
   );

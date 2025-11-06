@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -5,7 +7,7 @@ import { HiOutlineMenu } from "react-icons/hi";
 import Link from "next/link";
 import { MdClose } from "react-icons/md";
 
-import Logo from "../../../assets/svgs/logos/full-pink.svg";
+import Logo from "../../../assets/svgs/logos/red-full.svg";
 
 import Button from "../../inputs/Button";
 import { toggleScroll } from "../../../utilities/general";
@@ -40,11 +42,12 @@ function Header() {
 
   return (
     <>
-      <header className="fixed z-20 w-full h-24 border-b bg-[#FAE9FC]">
-        <div className="header-content flex items-center w-full h-full text-textColor">
+      <header className="fixed z-20 w-full h-24 border-b bg-[#FAE6F0]">
+        <div className="header-content flex items-center w-full h-full text-textColor px-6 md:px-10">
           <div className="w-full flex items-center justify-between">
-            <div className="">
-              <Link href="/">
+            {/* Logo */}
+            <div>
+              <Link href="/#top" onClick={handleScroll}>
                 <Image
                   src={Logo}
                   alt="UseBridge Inc. logo"
@@ -54,19 +57,46 @@ function Header() {
                 />
               </Link>
             </div>
+
+            {/* Desktop Navigation */}
             <div className="hidden sm:block">
               <ul className="flex space-x-10 text-lg font-bold">
-                <Link href="/">
-                  <li className="">Home</li>
+                <Link
+                  href="/"
+                  className={`${
+                    router.pathname === "/"
+                      ? "text-success border-b-2 border-success pb-1"
+                      : "text-textColor"
+                  } hover:text-success transition-colors`}
+                >
+                  <li>Home</li>
                 </Link>
-                <Link href="/aboutus">
-                  <li className="">About us</li>
+
+                <Link
+                  href="/aboutus"
+                  className={`${
+                    router.pathname === "/aboutus"
+                      ? "text-success border-b-2 border-success pb-1"
+                      : "text-textColor"
+                  } hover:text-success transition-colors`}
+                >
+                  <li>About us</li>
                 </Link>
-                <Link href="/blog" onClick={handleScroll}>
-                  <li className="">Blog</li>
+
+                <Link
+                  href="/blog"
+                  className={`${
+                    router.pathname === "/blog"
+                      ? "text-success border-b-2 border-success pb-1"
+                      : "text-textColor"
+                  } hover:text-success transition-colors`}
+                >
+                  <li>Blog</li>
                 </Link>
               </ul>
             </div>
+
+            {/* Desktop Buttons */}
             <div className="hidden sm:block">
               {homepageData?.isWaitlist ? (
                 <a
@@ -99,6 +129,8 @@ function Header() {
                 </div>
               )}
             </div>
+
+            {/* Mobile Menu Button */}
             <div className="sm:hidden">
               <HiOutlineMenu
                 className="w-8 h-auto cursor-pointer"
@@ -109,9 +141,10 @@ function Header() {
         </div>
       </header>
 
+      {/* Mobile Sidebar */}
       <div
         className={`header-side-menu ${
-          showMenu || false ? "show overlay" : ""
+          showMenu ? "show overlay" : ""
         } fixed z-40 top-0 left-0 w-full h-screen bg-black bg-opacity-40`}
       >
         <div className="bg-white w-full absolute right-0 top-0 h-full overflow-y-auto">
@@ -128,7 +161,7 @@ function Header() {
                   />
                 </Link>
               </div>
-              <div className="">
+              <div>
                 <button
                   type="button"
                   onClick={() => setShowMenu(false)}
@@ -138,18 +171,43 @@ function Header() {
                 </button>
               </div>
             </div>
+
+            {/* Mobile Menu Items */}
             <div className="w-full px-10 py-8">
-              <ul className="w-full text-sm text-center">
-                <Link href="/">
-                  <li className="">Home</li>
+              <ul className="w-full text-sm text-center space-y-6 font-medium">
+                <Link
+                  href="/"
+                  className={`block ${
+                    router.pathname === "/"
+                      ? "text-success font-semibold"
+                      : "text-gray-800"
+                  }`}
+                >
+                  <li>Home</li>
                 </Link>
-                <Link href="/aboutus">
-                  <li className="">About us</li>
+                <Link
+                  href="/aboutus"
+                  className={`block ${
+                    router.pathname === "/aboutus"
+                      ? "text-success font-semibold"
+                      : "text-gray-800"
+                  }`}
+                >
+                  <li>About us</li>
                 </Link>
-                <Link href="/blog">
-                  <li className="">Blog</li>
+                <Link
+                  href="/blog"
+                  className={`block ${
+                    router.pathname === "/blog"
+                      ? "text-success font-semibold"
+                      : "text-gray-800"
+                  }`}
+                >
+                  <li>Blog</li>
                 </Link>
               </ul>
+
+              {/* Mobile Buttons */}
               <div className="w-full border-t py-10 mt-5">
                 <div className="flex justify-center space-x-2">
                   {homepageData?.isWaitlist ? (

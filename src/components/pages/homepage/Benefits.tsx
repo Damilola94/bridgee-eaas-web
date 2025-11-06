@@ -1,29 +1,36 @@
 import React from "react";
 import Image from "next/image";
 
-import SecurityBadge from "../../../assets/svgs/badges/security.svg";
-import TrustBadge from "../../../assets/svgs/badges/trust.svg";
-import DisputeBadge from "../../../assets/svgs/badges/dispute.svg";
+import Credibility from "../../../assets/svgs/badges/user-tick.svg";
+import Confidence from "../../../assets/svgs/badges/credibility.svg";
+import Growth from "../../../assets/svgs/badges/growth.svg";
+import Community from "../../../assets/svgs/badges/community.svg";
 
 const benefits = [
   {
-    badge: SecurityBadge,
+    badge: Credibility,
     bg: "#EDF9F9",
-    title: "Security",
-    desc: "We prevent fraud, misrepresentation, or default by releasing funds only after all transaction terms and conditions are met.",
+    title: "Credibility",
+    desc: "Build a business people believe in. We help you prove your authenticity with verified profiles, transparent reviews, and systems that make customers feel safe buying from you."
   },
   {
-    badge: TrustBadge,
+    badge: Confidence,
     bg: "#FAE9FC",
-    title: "Trust",
-    desc: "We enhance trust by ensuring that both parties are confident in receiving what they expect and fulfilling their obligations.",
+    title: "Confidence",
+    desc: "Sell with peace of mind. Whether it’s secure payments or dispute protection, We give both you and your customers the confidence to transact freely and fairly."
   },
   {
-    badge: DisputeBadge,
+    badge: Growth,
     bg: "#E8F6FF",
-    title: "Dispute resolution",
-    desc: "We offer neutral third-party assistance to resolve disputes and reach mutually agreeable solutions.",
+    title: "Growth",
+    desc: "Turn trust into sales. More credibility = more customers. We help you scale faster through insights, spotlight features, and tools that position you as a trusted vendor."
   },
+  {
+    badge: Community,
+    bg: "#E8F6FF",
+    title: "Community",
+    desc: "You’re not doing business alone. We connect you to a network of verified vendors, partners, and buyers; so you can learn, grow, and succeed together."
+  }
 ];
 
 function Benefits() {
@@ -35,19 +42,17 @@ function Benefits() {
             Here&apos;s what you stand to gain
           </h1>
           <p className="text-xl leading-relaxed">
-            Bridge is designed with your needs in mind, ensuring that you enjoy
-            a secure, efficient, and transparent experience. Explore the
-            benefits of using UseBridge Inc. below:
+            Bridge is designed with your needs in mind, ensuring that you enjoy a secure, efficient, and transparent experience. Explore the benefits of using Bridge below:
           </p>
         </div>
 
         <div className="w-full relative pt-20">
           <div className="flex flex-wrap -mx-3">
             {benefits.map((item) => (
-              <div className="w-full flex mdx2:w-1/3 p-3" key={item.title}>
+              <div className="w-full flex mdx2:w-1/2 p-3" key={item.title}>
                 <div
                   style={{ backgroundColor: item?.bg }}
-                  className="w-full h-full max-w-xl mdx2:max-w-[350px] mx-auto p-5 rounded-2xl"
+                  className="w-full h-full max-w-xl mdx2:max-w-[550px] mx-auto p-5 rounded-2xl"
                 >
                   <Image
                     src={item.badge}

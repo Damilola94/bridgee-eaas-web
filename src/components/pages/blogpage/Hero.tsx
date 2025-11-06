@@ -5,7 +5,7 @@ import PinkLogo from "../../../assets/images/logos/pink-3d.png";
 
 function Hero() {
   return (
-    <section className="w-full relative bg-[#FAE9FC] overflow- pb-32">
+    <section className="w-full relative bg-[#FAE6F0] overflow- pb-32">
       <Image
         src={PinkLogo}
         alt="Pink 3D logo"
@@ -17,7 +17,7 @@ function Hero() {
             Blog
           </div>
           <h1 className="text-bold ff-bold text-3xl sm:text-3xl md:text-5xl mb-4 md:leading-tight">
-            Insights, Tips, and Stories from the World of Online Transactions
+           Insights, Tips, and Stories from the World of Online Transactions
           </h1>
         </div>
       </div>

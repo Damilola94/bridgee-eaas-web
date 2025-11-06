@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-import { FaWhatsapp } from "react-icons/fa";
+// import { FaWhatsapp } from "react-icons/fa";
 
 import { Dialog, DialogContent } from "../../common/UI";
 
@@ -14,6 +14,8 @@ import BlurLogo from "../../../assets/images/logos/blur-3d.png";
 import BlueLogo from "../../../assets/images/logos/blue-3d.png";
 import WemaBankLogo from "../../../assets/images/wemabanklogo.png";
 import IdeaxLab from "../../../assets/images/ideaxlab.png";
+import saraLogo from "../../../assets/images/saraLogo.png";
+import bgBoxes from "../../../assets/images/bg-boxes.png";
 import NDIC from "../../../assets/svg-tsx/NDIC";
 
 import Button from "../../inputs/Button";
@@ -22,13 +24,20 @@ function Hero() {
   const router = useRouter();
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  const handleWaitlistClick = () => {
-    window.open("https://chat.whatsapp.com/BeDo7zGcwm58N69zC05YIP", "_blank");
-  };
+  // const handleWaitlistClick = () => {
+  //   window.open("https://chat.whatsapp.com/BeDo7zGcwm58N69zC05YIP", "_blank");
+  // };
 
   return (
     <>
-      <section className="w-full relative bg-[#FAE9FC]">
+      <section className="w-full relative bg-[#FAE6F0]"
+      >
+        <Image
+          src={bgBoxes}
+          alt="Decorative background"
+          className="absolute top-0 left-0 w-full h-[200px] object-cover"
+          priority
+        />
         <Image
           src={BlurLogo || "/placeholder.svg"}
           alt="Blur 3D logo"
@@ -60,7 +69,7 @@ function Hero() {
                 Create Account
               </Button>
 
-              <Button
+              {/* <Button
                 icon={<FaWhatsapp size={20} />}
                 border
                 onClick={handleWaitlistClick}
@@ -71,7 +80,7 @@ function Hero() {
                 paddingY="py-3"
               >
                 Join our Community
-              </Button>
+              </Button> */}
             </div>
             <div className="mb-20 flex justify-center items-center space-x-2">
               <p className="text-[#383838] text-xl">Insured by</p> <NDIC />
@@ -84,23 +93,29 @@ function Hero() {
               className="w-full h-auto"
             />
           </div>
-          <div className="absolute left-0 w-full bg-blue py-8 px-6 flex z-10 text-center justify-center items-center">
-            <p className="mb-1 text-xs sm:text-lg tracking-wider text-white mr-5">
+          <div className="absolute left-0 w-full bg-blue py-8 px-6 flex flex-col z-10 text-center justify-center items-center">
+            <p className="mb-4 text-xs sm:text-lg tracking-wider text-white">
               Proudly backed and supported by:
             </p>
-            <div className="flex space-x-8">
+            <div className="flex space-x-8 justify-center items-center flex-wrap">
               <Image
                 src={WemaBankLogo}
                 alt="WemaBankLogo"
-                className="w-14 sm:w-36  h-auto"
+                className="w-12 sm:w-28 h-fit"
               />
               <Image
                 src={IdeaxLab}
                 alt="IdeaxLab"
-                className="w-14 sm:w-40 h-auto"
+                className="w-14 sm:w-28 h-fit"
+              />
+              <Image
+                src={saraLogo}
+                alt="SaraLogo"
+                className="w-14 sm:w-28 h-fit"
               />
             </div>
           </div>
+
           <div className="absolute z-10 left-1/2 bottom-[-2.7rem] xs:bottom-[-4rem]  sm:bottom-[-5rem] md:bottom-[-6.7rem] w-full max-w-5xl mx-auto -translate-x-1/2 px-10">
             <Image
               src={DashboardImg || "/placeholder.svg"}

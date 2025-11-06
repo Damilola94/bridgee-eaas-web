@@ -3,69 +3,38 @@ import Image from "next/image";
 
 import SinglePost from "../../../assets/images/single-post.png";
 
+import ShareFeature from "./ShareFeature";
+
 function BlogPage() {
   return (
     <section id="why-us" className="w-full relative overflow- mb-36">
-      <div className="w-full index-content">
+      <div className="w-full index-content max-w-4xl">
         <div className="w-full relative pt-5">
           <div className="flex flex-wrap -mx-3">
             <div className="w-full">
-              <div className="w-full mdx2:w-full max-w-5xl mx-auto">
-                <div className="w-full h-full flex items-center mt-5 mdx2:mt-0">
+              <div className="w-full mdx2:w-full mx-auto max-w-4xl">
+                <div className="w-full h-full  items-center mt-5 mdx2:mt-0">
                   <Image
                     src={SinglePost}
                     alt="Single Post"
                     className="w-full h-auto rounded-xl"
                   />
+                  <ShareFeature />
+
                 </div>
               </div>
               <div className="w-full mdx2:w-full flex items-center max-w-4xl mx-auto mb-12 mt-12 mdx2:mb-0  ">
                 <div className="w-full text-center mdx2:text-left pr-5">
-                  <h1 className="index-title mb-5">Who We Are</h1>
-                  <p className="text-xl leading-relaxed">
-                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-                    sed diam nonummy nibh euismod tincidunt ut laoreet dolore
-                    magna aliquam erat volutpat. Ut wisi enim ad minim veniam,
-                    quis nostrud exerci tation ullamcorper suscipit lobortis
-                    nisl ut aliquip ex ea commodo consequat. Duis autem vel eum
-                    iriure dolor in hendrerit in vulputate velit esse molestie
-                    consequat, vel illum dolore eu feugiat nulla facilisis at
-                    vero eros et accumsan et iusto odio dignissim qui blandit
-                    praesent luptatum zzril delenit augue duis dolore te feugait
-                    nulla facilisi.
+                  <p className="text-lg leading-relaxed">
+                    Bridge is thrilled to announce its selection into Wema Bank’s esteemed Startup Accelerator Programme and a strategic partnership with the bank as our financial and payment infrastructure partner.
                   </p>
                   <br />
-                  <p className="text-xl leading-relaxed">
-                    <strong>
-                      Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-                      sed
-                    </strong>
+                  <p className="text-lg  leading-relaxed">
+                    We extend our heartfelt gratitude to Wema Bank’s leadership, particularly Solomon Ayodele, Head of Innovation & IDEAx Labs, and Babatunde Mumuni, Chief Transformation & Innovation Officer, for their unwavering support and commitment to fostering innovation among startups.
                   </p>
                   <br />
-                  <p className="text-xl leading-relaxed">
-                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-                    sed diam nonummy nibh euismod tincidunt ut laoreet dolore
-                    magna aliquam erat volutpat. Ut wisi enim ad minim veniam,
-                    quis nostrud exerci tation ullamcorper suscipit lobortis
-                    nisl ut aliquip ex ea commodo consequat. Duis autem vel eum
-                    iriure dolor in hendrerit in vulputate velit esse molestie
-                    consequat, vel illum dolore eu feugiat nulla facilisis at
-                    vero eros et accumsan et iusto odio dignissim qui blandit
-                    praesent luptatum zzril delenit augue duis dolore te feugait
-                    nulla facilisi.
-                  </p>
-                  <br />
-                  <p className="text-xl leading-relaxed">
-                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-                    sed diam nonummy nibh euismod tincidunt ut laoreet dolore
-                    magna aliquam erat volutpat. Ut wisi enim ad minim veniam,
-                    quis nostrud exerci tation ullamcorper suscipit lobortis
-                    nisl ut aliquip ex ea commodo consequat. Duis autem vel eum
-                    iriure dolor in hendrerit in vulputate velit esse molestie
-                    consequat, vel illum dolore eu feugiat nulla facilisis at
-                    vero eros et accumsan et iusto odio dignissim qui blandit
-                    praesent luptatum zzril delenit augue duis dolore te feugait
-                    nulla facilisi.
+                  <p className="text-lg  leading-relaxed">
+                    This collaboration not only enhances the security and efficiency of our escrow payment platform but also strengthens trust among our users, paving the way for a more secure and seamless online transaction experience across Nigeria’s digital market.
                   </p>
                 </div>
               </div>
@@ -73,6 +42,7 @@ function BlogPage() {
           </div>
         </div>
       </div>
+
     </section>
   );
 }
