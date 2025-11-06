@@ -4,21 +4,36 @@ import { useRouter } from "next/router";
 import { BsArrowRight } from "react-icons/bs";
 
 import HappyCustomer from "../../../assets/images/happy-customer.png";
-
 import Button from "../../inputs/Button";
 import { useHomepageContext } from "../../../context/Homepage";
+import PinkLogo from "../../../assets/images/logos/pink-3d.png";
+import PurpleLogo from "../../../assets/images/logos/purple-3d.png";
+import bgBoxes from "../../../assets/images/bg-boxes.png";
 
 function GetStarted() {
   const router = useRouter();
   const { homepageData } = useHomepageContext();
 
   return (
-    <div className="w-full">
-      <div className="w-full index-content py-24">
-        <div className="w-full flex flex-wrap bg-purple py-16 rounded-[35px]">
-          <div className="w-full mdx2:w-3/5 flex items-center max-w-2xl mx-auto">
+    <div className="w-full relative">
+      <Image
+        src={PinkLogo}
+        alt="Pink 3D logo"
+        className="absolute w-[210px] h-auto top-[150px] -left-16 hidden lg:block z-0 opacity-70"
+      />
+
+      <div className="w-full index-content py-24 relative z-10">
+        <div className="w-full flex flex-wrap bg-blue relative py-16 rounded-[35px] overflow-hidden">
+          <Image
+            src={bgBoxes}
+            alt="Decorative background"
+            className="absolute top-0 left-0 w-full h-[200px] object-cover"
+            priority
+          />
+
+          <div className="w-full mdx2:w-3/5 flex items-center max-w-2xl mx-auto z-10">
             <div className="text-center mdx2:text-left px-5 mdx2:pl-10">
-              <h1 className="ff- text-4xl sm:text-[50px] sm:leading-[60px] text-white mb-10">
+              <h1 className="text-4xl sm:text-[50px] sm:leading-[60px] text-white mb-10">
                 Ready to experience the future of secure digital transactions?
               </h1>
               <div className="inline-block mb-10">
@@ -52,7 +67,8 @@ function GetStarted() {
               </div>
             </div>
           </div>
-          <div className="w-full mdx2:w-2/5 max-w-xl mx-auto">
+
+          <div className="w-full mdx2:w-2/5 max-w-xl mx-auto z-10">
             <div className="w-full h-full flex items-center pt-5 mdx2:pt-0">
               <Image
                 src={HappyCustomer}
@@ -63,6 +79,12 @@ function GetStarted() {
           </div>
         </div>
       </div>
+
+      <Image
+        src={PurpleLogo}
+        alt="Purple 3D logo"
+        className="absolute w-[190px] h-auto bottom-0 right-0 hidden md:block z-0 opacity-70"
+      />
     </div>
   );
 }

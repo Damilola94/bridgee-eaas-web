@@ -10,43 +10,43 @@ function ShareFeature() {
           <div className="flex flex-wrap -mx-3">
             <div className="w-full">
               <div className="w-full mdx2:w-full max-w-5xl mx-auto">
-                <div className="flex justify-end items-center space-x-4">
+                <div className="flex justify-start items-center space-x-4">
                   <span className="text-[#939393]">Share:</span>
                   <ul className="flex justify-end space-x-4">
-                    <li className="w-10 h-10 rounded-full bg-[#EAEAEA] flex justify-center items-center">
-                      <a
-                        href="https://www.facebook.com/Alatng"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <ImFacebook className="w-4 h-auto" />
-                      </a>
-                    </li>
-                    <li className="w-10 h-10 rounded-full bg-[#EAEAEA] flex justify-center items-center">
-                      <a
-                        href="https://twitter.com/alat_ng"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <ImTwitter className="w-4 h-auto" />
-                      </a>
-                    </li>
-                    <li className="w-10 h-10 rounded-full bg-[#EAEAEA] flex justify-center items-center">
+                    <li className="w-10 h-10 rounded-full flex justify-center items-center">
                       <a
                         href="https://www.instagram.com/alat_ng/"
                         target="_blank"
                         rel="noreferrer"
                       >
-                        <TbBrandInstagram className="w-4 h-auto" />
+                        <TbBrandInstagram className="w-4 h-auto text-success" />
                       </a>
                     </li>
-                    <li className="w-10 h-10 rounded-full bg-[#EAEAEA] flex justify-center items-center">
+                    <li className="w-10 h-10 rounded-full flex justify-center items-center">
+                      <a
+                        href="https://www.facebook.com/Alatng"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <ImFacebook className="w-4 h-auto text-success" />
+                      </a>
+                    </li>
+                    <li className="w-10 h-10 rounded-full flex justify-center items-center">
+                      <a
+                        href="https://twitter.com/alat_ng"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <ImTwitter className="w-4 h-auto text-success" />
+                      </a>
+                    </li>
+                    <li className="w-10 h-10 rounded-full flex justify-center items-center">
                       <a
                         href="https://www.linkedin.com/company/alatbywema/"
                         target="_blank"
                         rel="noreferrer"
                       >
-                        <ImLinkedin2 className="w-4 h-auto" />
+                        <ImLinkedin2 className="w-4 h-auto text-success" />
                       </a>
                     </li>
                   </ul>

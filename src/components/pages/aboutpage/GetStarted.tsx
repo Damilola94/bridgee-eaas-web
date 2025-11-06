@@ -15,7 +15,7 @@ function GetStarted() {
   return (
     <div className="w-full">
       <div className="w-full index-content py-24">
-        <div className="w-full flex flex-wrap bg-purple py-16 rounded-[35px]">
+        <div className="w-full flex flex-wrap bg-blue py-16 rounded-[35px]">
           <div className="w-full mdx2:w-3/5 flex items-center max-w-2xl mx-auto">
             <div className="text-center mdx2:text-left px-5 mdx2:pl-10">
               <h1 className="ff- text-4xl sm:text-[50px] sm:leading-[60px] text-white mb-10">

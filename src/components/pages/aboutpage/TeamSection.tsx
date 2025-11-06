@@ -1,3 +1,4 @@
+/* eslint-disable no-irregular-whitespace */
 /* eslint-disable comma-dangle */
 "use client";
 
@@ -9,9 +10,8 @@ import type { StaticImageData } from "next/image";
 
 import moyinoluwaAkindeleImage from "../../../assets/images/moyinoluwa-akindele.png";
 import ceo from "../../../assets/images/sophy-ceo.png";
-import dorcas from "../../../assets/images/dorcas.png";
-import david from "../../../assets/images/david.png";
-import damiOgunboyejoImage from "../../../assets/images/damilola-ogunboyejo.jpeg";
+import fisayo from "../../../assets/images/fisayo.png";
+import jacinta from "../../../assets/images/jacinta.png";
 interface TeamMember {
   name: string;
   role: string;
@@ -27,23 +27,18 @@ export default function TeamSection() {
     },
     {
       name: "Moyinoluwa Akindele",
-      role: "VP- Product & Technology",
+      role: "Head of product",
       image: moyinoluwaAkindeleImage,
     },
-      {
-      name: "Damilola Ogunboyejo",
-      role: "Engineering Lead",
-      image: damiOgunboyejoImage,
+    {
+      name: "Jacinta Ijeoma Emeka",
+      role: "Visual Brand Storyteller",
+      image: jacinta,
     },
     {
-      name: "Dorcas Popoola",
-      role: "Design Lead",
-      image: dorcas,
-    },
-    {
-      name: "KingDavid Babalola",
-      role: "Design & Brand Storytelling",
-      image: david,
+      name: "Oluwafisayo Adesina",
+      role: "Growth and Marketing",
+      image: fisayo,
     },
   ];
 
@@ -69,59 +64,21 @@ export default function TeamSection() {
   };
 
   return (
-    <section className="py-16 bg-[#faeafa]">
+    <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
-        <hr className="border-t border-t-[#B3B3B3] mb-16" />
-
         <div className="mx-auto p-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="w-full my-10">
             <div>
               <h2 className="text-5xl font-bold text-gray-900 mb-6">
                 The Team
               </h2>
             </div>
             <div>
-              <p className="text-gray-700 text-lg mb-6">
-                We are a team of tech eggheads who understand the challenges
-                faced by buyers in today&apos;s fast-paced digital marketplace,
-                where scams and fraudulent activities are becoming increasingly
-                common. At the heart of Bridge is our innovative platform, which
-                acts as a trusted intermediary (escrow) during transactions.
+              <p className="text-gray-700 text-lg mb-6 text-leading-relaxed text-justify">
+               Bridgee is powered by a founding team built for this specific challenge: merging deep financial regulatory expertise with digital agility and massive growth strategies. Our core comprises a previous Startup Head of Operations, bringing crucial experience in building and scaling complex platforms; an MTN Digital Marketer, who understands how to drive high-volume user acquisition in the African mobile ecosystem; a Head of Products from the banking sector, ensuring we have deep compliance and financial product knowledge necessary for the Wema Bank partnership; and a seasoned Brand Storyteller, dedicated to building the market narrative of trust and reliability. This blend of operational excellence, regulatory insight, and marketing horsepower is designed to successfully build and scale Bridgee into the dominant digital escrow provider.
               </p>
             </div>
           </div>
-
-          {/* <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            {teamMembers.map((member, index) => (
-              <motion.div
-                key={index}
-                className=" transition-shadow duration-300"
-                variants={itemVariants}
-              >
-                <div className="aspect-square relative">
-                  <Image
-                    src={member.image}
-                    alt={member.name}
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    className="object-cover"
-                    priority={index < 2}
-                  />
-                </div>
-                <div className="p-4">
-                  <h3 className="font-semibold text-xl text-gray-900">
-                    {member.name}
-                  </h3>
-                  <p className="text-gray-600 text-base">{member.role}</p>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div> */}
           <motion.div
             className="mt-8"
             variants={containerVariants}
