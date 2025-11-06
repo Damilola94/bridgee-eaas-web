@@ -12,6 +12,7 @@ import moyinoluwaAkindeleImage from "../../../assets/images/moyinoluwa-akindele.
 import ceo from "../../../assets/images/sophy-ceo.png";
 import fisayo from "../../../assets/images/fisayo.png";
 import jacinta from "../../../assets/images/jacinta.png";
+import henry from "../../../assets/images/henry.png";
 interface TeamMember {
   name: string;
   role: string;
@@ -39,6 +40,11 @@ export default function TeamSection() {
       name: "Oluwafisayo Adesina",
       role: "Growth and Marketing",
       image: fisayo,
+    },
+    {
+      name: "Henry Ozomgbachi",
+      role: "Head of Engineering",
+      image: henry,
     },
   ];
 
