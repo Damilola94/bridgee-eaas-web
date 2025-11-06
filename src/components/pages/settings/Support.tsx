@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import { faqs } from "../../../data/faqs";
 
 export default function Support() {
@@ -9,7 +10,6 @@ export default function Support() {
 
   return (
     <div className="flex flex-col lg:flex-row lg:space-x-8 h-full">
-      {/* Left Container - Support Options */}
       <div className="lg:w-1/2">
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Support</h2>
@@ -21,25 +21,22 @@ export default function Support() {
           <div className="space-y-4">
             <button
               onClick={() => setSelectedSupportOption("FAQs")}
-              className={`w-full flex items-center justify-between p-4 rounded-lg transition-colors group ${
-                selectedSupportOption === "FAQs"
-                  ? "bg-success text-white"
-                  : "border border-success hover:bg-success hover:text-white"
+              className={`w-full flex items-center justify-between p-4 rounded-lg transition-colors group ${selectedSupportOption === "FAQs"
+                ? "bg-success text-white"
+                : "border border-success hover:bg-success hover:text-white"
               }`}
             >
               <div className="flex items-center space-x-3">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    selectedSupportOption === "FAQs"
-                      ? "bg-white bg-opacity-20"
-                      : "bg-purple-100"
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${selectedSupportOption === "FAQs"
+                    ? "bg-white bg-opacity-20"
+                    : "bg-purple-100"
                   }`}
                 >
                   <svg
-                    className={`w-8 h-8 ${
-                      selectedSupportOption === "FAQs"
-                        ? "text-success bg-white rounded-lg"
-                        : "text-purple-600"
+                    className={`w-8 h-8 ${selectedSupportOption === "FAQs"
+                      ? "text-success bg-white rounded-lg"
+                      : "text-purple-600"
                     }`}
                     viewBox="0 0 40 40"
                     fill="none"
@@ -70,10 +67,9 @@ export default function Support() {
                 <span className="font-medium">FAQs</span>
               </div>
               <svg
-                className={`w-5 h-5 transition-colors ${
-                  selectedSupportOption === "FAQs"
-                    ? "text-white"
-                    : "text-gray-400 group-hover:text-white"
+                className={`w-5 h-5 transition-colors ${selectedSupportOption === "FAQs"
+                  ? "text-white"
+                  : "text-gray-400 group-hover:text-white"
                 }`}
                 fill="none"
                 stroke="currentColor"
@@ -91,25 +87,22 @@ export default function Support() {
             {/* Chat With Us */}
             <button
               onClick={() => setSelectedSupportOption("Chat")}
-              className={`w-full flex items-center justify-between p-4 rounded-lg transition-colors group ${
-                selectedSupportOption === "Chat"
-                  ? "bg-success text-white"
-                  : "border border-success hover:bg-success hover:text-white"
+              className={`w-full flex items-center justify-between p-4 rounded-lg transition-colors group ${selectedSupportOption === "Chat"
+                ? "bg-success text-white"
+                : "border border-success hover:bg-success hover:text-white"
               }`}
             >
               <div className="flex items-center space-x-3">
                 <div
-                  className={`w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center ${
-                    selectedSupportOption === "Chat"
-                      ? "bg-white bg-opacity-20"
-                      : "bg-purple-100"
+                  className={`w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center ${selectedSupportOption === "Chat"
+                    ? "bg-white bg-opacity-20"
+                    : "bg-purple-100"
                   }`}
                 >
                   <svg
-                    className={`w-8 h-8 ${
-                      selectedSupportOption === "Chat"
-                        ? "text-success bg-white rounded-lg"
-                        : "text-purple-600"
+                    className={`w-8 h-8 ${selectedSupportOption === "Chat"
+                      ? "text-success bg-white rounded-lg"
+                      : "text-purple-600"
                     }`}
                     viewBox="0 0 40 40"
                     fill="none"
@@ -139,10 +132,9 @@ export default function Support() {
                 <span className="font-medium">Chat With Us</span>
               </div>
               <svg
-                className={`w-5 h-5 transition-colors ${
-                  selectedSupportOption === "Chat"
-                    ? "text-white"
-                    : "text-gray-400 group-hover:text-white"
+                className={`w-5 h-5 transition-colors ${selectedSupportOption === "Chat"
+                  ? "text-white"
+                  : "text-gray-400 group-hover:text-white"
                 }`}
                 fill="none"
                 stroke="currentColor"
@@ -160,25 +152,22 @@ export default function Support() {
             {/* Call Us */}
             <button
               onClick={() => setSelectedSupportOption("Call")}
-              className={`w-full flex items-center justify-between p-4 rounded-lg transition-colors group ${
-                selectedSupportOption === "Call"
-                  ? "bg-success text-white"
-                  : "border border-success hover:bg-success hover:text-white"
+              className={`w-full flex items-center justify-between p-4 rounded-lg transition-colors group ${selectedSupportOption === "Call"
+                ? "bg-success text-white"
+                : "border border-success hover:bg-success hover:text-white"
               }`}
             >
               <div className="flex items-center space-x-3">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    selectedSupportOption === "Call"
-                      ? "bg-white bg-opacity-20"
-                      : "bg-purple-100"
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${selectedSupportOption === "Call"
+                    ? "bg-white bg-opacity-20"
+                    : "bg-purple-100"
                   }`}
                 >
                   <svg
-                    className={`w-8 h-8 ${
-                      selectedSupportOption === "Call"
-                        ? "text-success bg-white rounded-lg"
-                        : "text-purple-600"
+                    className={`w-8 h-8 ${selectedSupportOption === "Call"
+                      ? "text-success bg-white rounded-lg"
+                      : "text-purple-600"
                     }`}
                     viewBox="0 0 40 40"
                     fill="none"
@@ -207,10 +196,9 @@ export default function Support() {
                 <span className="font-medium">Call Us</span>
               </div>
               <svg
-                className={`w-5 h-5 transition-colors ${
-                  selectedSupportOption === "Call"
-                    ? "text-white"
-                    : "text-gray-400 group-hover:text-white"
+                className={`w-5 h-5 transition-colors ${selectedSupportOption === "Call"
+                  ? "text-white"
+                  : "text-gray-400 group-hover:text-white"
                 }`}
                 fill="none"
                 stroke="currentColor"
@@ -228,25 +216,22 @@ export default function Support() {
             {/* Email Us */}
             <button
               onClick={() => setSelectedSupportOption("Email")}
-              className={`w-full flex items-center justify-between p-4 rounded-lg transition-colors group ${
-                selectedSupportOption === "Email"
-                  ? "bg-success text-white"
-                  : "border border-success hover:bg-success hover:text-white"
+              className={`w-full flex items-center justify-between p-4 rounded-lg transition-colors group ${selectedSupportOption === "Email"
+                ? "bg-success text-white"
+                : "border border-success hover:bg-success hover:text-white"
               }`}
             >
               <div className="flex items-center space-x-3">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    selectedSupportOption === "Email"
-                      ? "bg-white bg-opacity-20"
-                      : "bg-purple-100"
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${selectedSupportOption === "Email"
+                    ? "bg-white bg-opacity-20"
+                    : "bg-purple-100"
                   }`}
                 >
                   <svg
-                    className={`w-8 h-8 ${
-                      selectedSupportOption === "Email"
-                        ? "text-success bg-white rounded-lg"
-                        : "text-purple-600"
+                    className={`w-8 h-8 ${selectedSupportOption === "Email"
+                      ? "text-success bg-white rounded-lg"
+                      : "text-purple-600"
                     }`}
                     viewBox="0 0 37 37"
                     fill="none"
@@ -282,10 +267,9 @@ export default function Support() {
                 <span className="font-medium">Email Us</span>
               </div>
               <svg
-                className={`w-5 h-5 transition-colors ${
-                  selectedSupportOption === "Email"
-                    ? "text-white"
-                    : "text-gray-400 group-hover:text-white"
+                className={`w-5 h-5 transition-colors ${selectedSupportOption === "Email"
+                  ? "text-white"
+                  : "text-gray-400 group-hover:text-white"
                 }`}
                 fill="none"
                 stroke="currentColor"
@@ -394,12 +378,27 @@ export default function Support() {
             </p>
           </div>
         )}
-
         {selectedSupportOption && selectedSupportOption !== "FAQs" && (
           <div className="bg-white rounded-lg border border-gray-200 p-6 h-full flex items-center justify-center">
-            <p className="text-gray-400">
-              Content for {selectedSupportOption} coming soon
-            </p>
+            {selectedSupportOption === "Call" && (
+              <div className=" h-full flex flex-col items-center justify-center text-center">
+                <h3 className="text-lg font-semibold text-purple-600 mb-2">Call Us</h3>
+                <p className="text-gray-700 text-base">09160874095</p>
+                <p className="text-gray-500 text-sm mt-2">Available Monday–Friday, 9AM–5PM</p>
+              </div>
+            )}
+            {selectedSupportOption === "Email" && (
+              <div className=" h-full flex flex-col items-center justify-center text-center">
+                <h3 className="text-lg font-semibold text-purple-600 mb-2">Email Us</h3>
+                <p className="text-gray-700 text-base">info@usebridgee.com</p>
+                <p className="text-gray-500 text-sm mt-2">We’ll get back to you within 24 hours</p>
+              </div>
+            )}
+            {selectedSupportOption === "Chat" && (
+              <p className="text-gray-400">
+                Content for {selectedSupportOption} coming soon
+              </p>
+            )}
           </div>
         )}
       </div>
