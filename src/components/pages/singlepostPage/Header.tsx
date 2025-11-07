@@ -5,7 +5,7 @@ import { HiOutlineMenu } from "react-icons/hi";
 import Link from "next/link";
 import { MdClose } from "react-icons/md";
 
-import Logo from "../../../assets/svgs/logos/full-pink.svg";
+import Logo from "../../../assets/svgs/logos/red-full.svg";
 
 import Button from "../../inputs/Button";
 import { toggleScroll } from "../../../utilities/general";
@@ -139,26 +139,36 @@ function Header() {
               </div>
             </div>
             <div className="w-full px-10 py-8">
-              <ul className="w-full text-sm">
-                <Link href="#top" onClick={handleScroll}>
-                  <li
-                    className={`${
-                      location.hash === "#top" ? "bg-primary bg-opacity-20" : ""
-                    } header-side-link`}
-                  >
-                    Home
-                  </li>
+              <ul className="w-full text-sm text-center space-y-6 font-medium">
+                <Link
+                  href="/"
+                  className={`block ${
+                    router.pathname === "/"
+                      ? "text-success font-semibold"
+                      : "text-gray-800"
+                  }`}
+                >
+                  <li>Home</li>
                 </Link>
-                <Link href="#why-us" onClick={handleScroll}>
-                  <li
-                    className={`${
-                      location.hash === "#why-us"
-                        ? "bg-primary bg-opacity-20"
-                        : ""
-                    } header-side-link`}
-                  >
-                    Why us
-                  </li>
+                <Link
+                  href="/aboutus"
+                  className={`block ${
+                    router.pathname === "/aboutus"
+                      ? "text-success font-semibold"
+                      : "text-gray-800"
+                  }`}
+                >
+                  <li>About us</li>
+                </Link>
+                <Link
+                  href="/blog"
+                  className={`block ${
+                    router.pathname === "/blog"
+                      ? "text-success font-semibold"
+                      : "text-gray-800"
+                  }`}
+                >
+                  <li>Blog</li>
                 </Link>
               </ul>
 
