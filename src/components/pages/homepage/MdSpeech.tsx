@@ -20,7 +20,7 @@ function Intro() {
           <div className="w-full mdx2:w-7/12 flex items-center max-w-[530px] mx-auto  mdx2:mb-0">
             <div className="w-full text-justify sm:text-center mdx2:text-left pr-5">
               <p className="text-xl leading-relaxed">
-                Bridge is thrilled to announce its selection into Wema Bank’s
+                Bridgee is thrilled to announce its selection into Wema Bank’s
                 esteemed Startup Accelerator Programme and a strategic
                 partnership with the bank as our financial and payment
                 infrastructure partner.
@@ -42,7 +42,7 @@ function Intro() {
               </p>
               <h1 className="text-3xl font-bold mt-6">Jerry Peter</h1>
               <p className="text-xl leading-relaxed">
-              CEO, Bridge
+              CEO, Bridgee
               </p>
             </div>
           </div>

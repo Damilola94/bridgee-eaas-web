@@ -13,7 +13,7 @@ const benefits = [
     badge: BlogPost,
     bg: "#EDF9F9",
     title: "Wema Bank Startup Accelerator Programme",
-    desc: "Bridge is thrilled to announce its selection into Wema Bank’s esteemed...",
+    desc: "Bridgee is thrilled to announce its selection into Wema Bank’s esteemed...",
     update: "Product Updates",
     dateCreated: "15 September 2025"
   }

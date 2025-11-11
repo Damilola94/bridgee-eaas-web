@@ -19,7 +19,7 @@ class MyDocument extends Document {
           />
           <meta
             name="description"
-            content="Shield yourself from online scams, protect your transactions with UseBridge Inc."
+            content="Shield yourself from online scams, protect your transactions with UseBridgee Inc."
           />
           <link
             href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;900&display=swap"

@@ -26,7 +26,7 @@ function Loading({ message }: LoadingProps) {
           className="mx-auto"
           width={200}
           height={45}
-          alt="UseBridge Inc. logo"
+          alt="UseBridgee Inc. logo"
         />
         <p className="mt-4 text-base">{message}</p>
       </div>

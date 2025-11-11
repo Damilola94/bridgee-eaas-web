@@ -6,7 +6,7 @@ import Container from '../components/pages/singlepostPage/Container';
 const SinglePost: NextPage = () => (
   <>
     <Head>
-      <title>UseBridge</title>
+      <title>UseBridgee</title>
     </Head>
 
     <Container />

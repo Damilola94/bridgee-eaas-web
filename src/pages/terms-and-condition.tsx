@@ -6,7 +6,7 @@ import Container from '../components/pages/terms-and-condition/Container';
 const TermsCondition: NextPage = () => (
   <>
     <Head>
-      <title>UseBridge Inc.</title>
+      <title>UseBridgee Inc.</title>
     </Head>
 
     <Container />

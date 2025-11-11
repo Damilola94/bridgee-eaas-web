@@ -9,7 +9,7 @@ import type { NextPageWithLayout } from './_app';
 const Settings: NextPageWithLayout = () => (
   <>
     <Head>
-      <title>UseBridge Inc. - Settings</title>
+      <title>UseBridgee Inc. - Settings</title>
     </Head>
 
     <div className="w-full bo">

@@ -17,7 +17,7 @@ const Login: NextPage = () => {
   }, [cookie, removeCookie]);
 
   return (
-    <AuthWrapper title="UseBridge Inc. - Login">
+    <AuthWrapper title="UseBridgee Inc. - Login">
       <LoginForm />
     </AuthWrapper>
   );

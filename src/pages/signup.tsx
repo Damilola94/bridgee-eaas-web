@@ -20,7 +20,7 @@ const Signup: NextPage = () => {
   }, [router]);
 
   return (
-    <AuthWrapper title="UseBridge Inc. - Signup">
+    <AuthWrapper title="UseBridgee Inc. - Signup">
       {/* {formIndex === 0 && <SignupForm gotoNextForm={() => setFormIndex(1)} />} */}
       {formIndex === 0 && <SignupForm />}
       {formIndex === 1 && (

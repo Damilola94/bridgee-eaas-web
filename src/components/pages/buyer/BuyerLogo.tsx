@@ -19,7 +19,7 @@ export default function BuyerLogo({ variant = "both" }: BuyerLogoProps) {
               <Link href="#" onClick={() => {}}>
                 <Image
                   src={Logo}
-                  alt="UseBridge Inc. logo"
+                  alt="UseBridgde Inc. logo"
                   priority
                   width={120}
                   height={45}
@@ -35,7 +35,7 @@ export default function BuyerLogo({ variant = "both" }: BuyerLogoProps) {
           <Link href="#" onClick={() => {}}>
             <Image
               src={Logo}
-              alt="UseBridge Inc. logo"
+              alt="UseBridgee Inc. logo"
               priority
               width={120}
               height={45}

@@ -42,7 +42,7 @@ function Benefits() {
             Here&apos;s what you stand to gain
           </h1>
           <p className="text-xl leading-relaxed">
-            Bridge is designed with your needs in mind, ensuring that you enjoy a secure, efficient, and transparent experience. Explore the benefits of using Bridge below:
+            Bridgee is designed with your needs in mind, ensuring that you enjoy a secure, efficient, and transparent experience. Explore the benefits of using Bridgee below:
           </p>
         </div>
 

@@ -26,7 +26,7 @@ function BlogPage() {
               <div className="w-full mdx2:w-full flex items-center max-w-4xl mx-auto mb-12 mt-12 mdx2:mb-0  ">
                 <div className="w-full text-center mdx2:text-left pr-5">
                   <p className="text-lg leading-relaxed">
-                    Bridge is thrilled to announce its selection into Wema Bank’s esteemed Startup Accelerator Programme and a strategic partnership with the bank as our financial and payment infrastructure partner.
+                    Bridgee is thrilled to announce its selection into Wema Bank’s esteemed Startup Accelerator Programme and a strategic partnership with the bank as our financial and payment infrastructure partner.
                   </p>
                   <br />
                   <p className="text-lg  leading-relaxed">

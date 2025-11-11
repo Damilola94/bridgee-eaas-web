@@ -14,7 +14,7 @@ function Footer() {
             <div className="flex flex-col sm:items-center md:items-start">
               <Image
                 src={Logo || "/placeholder.svg"}
-                alt="UseBridge Inc. logo"
+                alt="UseBridgee Inc. logo"
                 priority
                 width={134}
                 height={49}
@@ -103,7 +103,7 @@ function Footer() {
 
         <div className="text-center mt-6">
           <p className="text-gray-600">
-            © {new Date().getFullYear()} Bridge, Inc. All rights reserved.
+            © {new Date().getFullYear()} Bridgee, Inc. All rights reserved.
           </p>
         </div>
       </div>

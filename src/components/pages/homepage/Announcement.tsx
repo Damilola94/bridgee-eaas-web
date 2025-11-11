@@ -18,7 +18,7 @@ const Announcement = () => {
           <Image src={announce} alt="Announcement" />
           <div className="text-xl font-[400] leading-[170%] text-[#1A1A1A] tracking-[1%] space-y-5">
             <p>
-              Bridge is thrilled to announce its selection into Wema Bank&apos;s
+              Bridgee is thrilled to announce its selection into Wema Bank&apos;s
               esteemed Startup Accelerator Programme and a strategic partnership
               with the bank as our financial and payment infrastructure partner.
             </p>
