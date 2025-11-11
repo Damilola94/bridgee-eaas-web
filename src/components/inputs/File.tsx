@@ -7,6 +7,7 @@ type Props = {
   className?: string;
   name?: string;
   label?: string;
+  required?: boolean;
   readOnly?: boolean;
   disabled?: boolean;
   preview?: boolean;
@@ -21,8 +22,9 @@ function FileInput({
   disabled,
   readOnly,
   label,
+  required,
   className = "",
-  preview
+  preview,
 }: Props) {
   const [filePreview, setFilePreview] = useState("");
   const [removed, setRemoved] = useState(false);
@@ -48,8 +50,8 @@ function FileInput({
         target: {
           name,
           value: null,
-          files: null
-        }
+          files: null,
+        },
       } as unknown as React.ChangeEvent<HTMLInputElement>;
 
       onChange(emptyEvent);
@@ -64,6 +66,15 @@ function FileInput({
     if (value) setRemoved(false);
   }, [value]);
 
+  const displayLabel =
+    required && label ? (
+      <>
+        {label} <span className="text-red-600 text-sm">&nbsp;(required)</span>
+      </>
+    ) : (
+      label
+    );
+
   return (
     <div className={className}>
       <div className="w-full relative">
@@ -75,7 +86,7 @@ function FileInput({
           onChange={onChange}
           disabled={disabled}
           readOnly={readOnly}
-          label={label}
+          label={displayLabel as unknown as string}
           className="file-input"
         />
         {!removed && value?.name && (

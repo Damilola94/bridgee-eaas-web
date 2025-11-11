@@ -246,6 +246,15 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       return;
     }
 
+    if(!form?.contract) {
+      notification({
+        title: "Form Error",
+        message: "Please upload a product image before getting shipping rates.",
+        type: "danger",
+      });
+      return;
+    }
+
     if (
       !pickupAddressResponse?.addressCode ||
       !deliveryAddressResponse?.addressCode
@@ -427,6 +436,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const validateForm = () => {
     if (!form?.escrowItems?.length) return "Your order list must not be empty";
     if (!form?.description?.trim()) return "Description is required";
+    if (!form?.contract) return "Please upload a product image";
 
     // Recipient details
     if (!form?.recipientDetails?.recipientName?.trim())
@@ -572,7 +582,8 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
                 name="contract"
                 value={form?.contract}
                 onChange={handleChange}
-                label="Upload file"
+                label="Upload Product Image"
+                required
               />
             </div>
           </div>
