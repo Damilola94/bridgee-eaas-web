@@ -24,7 +24,7 @@ function Intro() {
               </p>
               <br/>
               <p className="text-xl leading-relaxed">
-              What sets Bridge apart is our strong partnership with Wema Bank, one of Nigeria&apos;s leading financial institutions. This collaboration empowers Bridge with the financial expertise, security infrastructure, and resources necessary to deliver a reliable and trustworthy service to our users.
+              What sets Bridgee apart is our strong partnership with Wema Bank, one of Nigeria&apos;s leading financial institutions. This collaboration empowers Bridgee with the financial expertise, security infrastructure, and resources necessary to deliver a reliable and trustworthy service to our users.
               </p>
             </div>
           </div>

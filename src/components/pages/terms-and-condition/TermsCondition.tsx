@@ -64,13 +64,13 @@ const TermsCondition = () => {
               <h3 className="  text-xl font-bold">Introducton</h3>
               <p className="m-auto mt-4 info-text">
                 The following Terms and Conditions (the “Terms”) is a contract
-                between you (“the user”) and Bridge Escrow Inc. By registering
+                between you (“the user”) and Bridgee Escrow Inc. By registering
                 and signing up to use this Platform/Website, you agree that you
                 have read, understood, and accepted all of the Terms contained
                 in this Agreement. You also accept and agree that you are solely
                 responsible for understanding and complying with all laws, rules
                 and regulations that may be applicable to your use of the
-                Services [MA1]The contract is between Bridge solution (app) and
+                Services [MA1]The contract is between Bridgee solution (app) and
                 the users These Terms are legally binding and serve to govern
                 your use of this Website. PLEASE READ AND UNDERSTAND THE TERMS
                 CAREFULLY BEFORE AGREEING TO BE BOUND BY THEM. All information
@@ -85,7 +85,7 @@ const TermsCondition = () => {
                 2. Benefits of this Platform
               </h3>
               <p className="m-auto mt-4 info-text">
-                Bridge Escrow Inc (“The Platform”) is a digital platform that
+                Bridgee Escrow Inc (“The Platform”) is a digital platform that
                 provides support for online trade between vendors and customers
                 by adoption of the Escrow Payment Model to provide security and
                 confidence between transacting parties. Through the Escrow
@@ -110,7 +110,7 @@ const TermsCondition = () => {
                 Transaction Dynamics of the Platform
               </h3>
               <p className="m-auto mt-4 info-text">
-                Purchaser: Bridge is authorised by the Purchaser to release
+                Purchaser: Bridgee is authorised by the Purchaser to release
                 payment for the Product to the Vendor within two (2) business
                 days of receipt of such Product or such shorter period as agreed
                 by the Purchaser and the Vendor, whichever is earlier [the
@@ -141,13 +141,13 @@ const TermsCondition = () => {
                 meets all conditions for return pre-communicated to the
                 Purchaser ("Vendor Inspection Period”). The cost of delivery of
                 the returned items shall be borne by the Purchaser. At the end
-                of the Vendor Inspection Period, Bridge is authorised by the
+                of the Vendor Inspection Period, Bridgee is authorised by the
                 Vendor to return payment for the Product to the Purchaser. If
-                you raise a complaint as to the state of the Product, Bridge
+                you raise a complaint as to the state of the Product, Bridgee
                 shall investigate and make a decision within 3 business days
               </p>
               <p className="m-auto mt-4 info-text">
-                You agree that if you file any dispute or complaint with Bridge
+                You agree that if you file any dispute or complaint with Bridgee
                 for a Product whose payment is subject to the Escrow feature,
                 you:{" "}
               </p>
@@ -308,7 +308,7 @@ const TermsCondition = () => {
                 <p>
                   xv. ensure that at all times, the phone number(s) and e-mail
                   address(es) for your customer service contact is displayed on
-                  your website and the Bridge platform.
+                  your website and the Bridgee platform.
                 </p>
                 <p>
                   xvi. provide to the Purchaser all Vendor’s Conditions which do

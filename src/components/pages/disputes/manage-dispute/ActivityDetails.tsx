@@ -25,7 +25,7 @@ const formatActivity = (activity: string) => {
     return (
       <span className="">
         escalated to
-        <b>Bridge Mediator</b>
+        <b>Bridgee Mediator</b>
       </span>
     );
   }

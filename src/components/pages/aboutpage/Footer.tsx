@@ -4,7 +4,9 @@ import React from "react";
 // import { FaInstagram } from "react-icons/fa";
 import { BsYoutube } from "react-icons/bs";
 
-import Logo1 from "../../../assets/svg-tsx/logo1";
+import Image from "next/image";
+
+import Logo from "../../../assets/svgs/logos/red-full.svg";
 
 function Footer() {
   return (
@@ -13,7 +15,13 @@ function Footer() {
         <div className="w-full border-b border-w pb-7">
           <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-6 md:gap-8">
             <div className="flex sm:justify-center md:justify-start">
-              <Logo1 />
+              <Image
+                src={Logo || "/placeholder.svg"}
+                alt="UseBridgee Inc. logo"
+                priority
+                width={134}
+                height={49}
+              />
             </div>
             <div className="sm:text-center md:text-left">
               <h4 className="font-semibold text-lg mb-4">Legal</h4>
@@ -104,7 +112,7 @@ function Footer() {
           <p className="text-[#828282]">
             ©&nbsp;
             {new Date().getFullYear()}
-            &nbsp;Bridge, Inc. All rights reserved.
+            &nbsp;Bridgee, Inc. All rights reserved.
           </p>
         </div>
       </div>

@@ -150,7 +150,7 @@ export default function CreateAccountPage() {
           <Link href="/#top">
             <Image
               src={Logo}
-              alt="UseBridge Inc. logo"
+              alt="UseBridgee Inc. logo"
               priority
               width={120}
               height={45}

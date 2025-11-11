@@ -52,7 +52,7 @@ export default function Invoice({
     recipientEmail: orderDetails?.recipientEmail || "",
     recipientPhone: orderDetails?.recipientPhone || "",
     recipientAddress: orderDetails?.recipientAddress || "",
-    businessName: orderDetails?.businessName || "Bridge Marketplace",
+    businessName: orderDetails?.businessName || "Bridgee Marketplace",
     businessAddress:
       orderDetails?.businessAddress || "",
     paymentType: orderDetails?.paymentType || "",

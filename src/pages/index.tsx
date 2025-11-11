@@ -6,7 +6,7 @@ import Container from '../components/pages/homepage/Container';
 const Home: NextPage = () => (
   <>
     <Head>
-      <title>UseBridge Inc.</title>
+      <title>UseBridgee Inc.</title>
     </Head>
 
     <Container />

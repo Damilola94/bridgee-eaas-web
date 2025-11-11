@@ -15,7 +15,7 @@ function Footer() {
             <div className="flex sm:justify-center md:justify-start">
               <Image
                 src={Logo}
-                alt="UseBridge Inc. logo"
+                alt="UseBridgee Inc. logo"
                 priority
                 width={134}
                 height={49}

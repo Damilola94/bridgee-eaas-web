@@ -82,7 +82,7 @@ function DisputeActivities() {
               </div>
               <div className="">
                 <Button paddingY="py-2" onClick={() => setShowEscalationPrompt(true)}>
-                  Escalate to Bridge mediator
+                  Escalate to Bridgee mediator
                 </Button>
               </div>
             </div>
@@ -113,7 +113,7 @@ function DisputeActivities() {
 
       <ConfirmPrompt
         title="Confirm action"
-        message="Are you sure you want to escalate this dispute to Bridge mediator?"
+        message="Are you sure you want to escalate this dispute to Bridgee mediator?"
         isOpen={showEscalationPrompt}
         handleYes={handleEscalation}
         onClose={() => setShowEscalationPrompt(false)}
