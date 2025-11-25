@@ -5,12 +5,12 @@ import clsx from 'clsx';
 import { CgClose } from 'react-icons/cg';
 
 type ModalProps = {
-	isOpen: boolean;
+  isOpen: boolean;
   isShowCloseIcon?: boolean;
   isCenter?: boolean;
   isCloseOnOverlayClick?: boolean;
   children: React.ReactNode;
-	onClose?: () => void;
+  onClose?: () => void;
   maxWidth?: string;
   isFullHeight?: boolean;
   noBg?: boolean;
@@ -19,7 +19,7 @@ type ModalProps = {
 }
 
 function Modal({
-  children, isOpen, onClose = () => {}, maxWidth, isShowCloseIcon,
+  children, isOpen, onClose = () => { }, maxWidth, isShowCloseIcon,
   isCenter, isFullHeight, isCloseOnOverlayClick, zIndex, noBg, filterTitle
 }: ModalProps) {
   return (
@@ -36,11 +36,11 @@ function Modal({
         }
       )}
     >
-      <Dialog.Panel className={clsx(`${!noBg && "bg-white" }  w-full rounded-xl relative p-5 mx-auto`, maxWidth, isFullHeight ? 'h-[90%]' : '')}>
+      <Dialog.Panel className={clsx(`${!noBg && "bg-white"}  w-full rounded-xl relative p-5 mx-auto`, maxWidth, isFullHeight ? 'h-[90%]' : '')}>
         {filterTitle && <p className="text-base font-bold mt-1">Filters</p>}
         {isShowCloseIcon && (
-          <button onClick={onClose} className="absolute z-20 top-3 right-3 outline-none">
-            <CgClose className="w-8 h-8 p-1 hover:bg-gray-300/50 rounded-lg" />
+          <button onClick={onClose} className="absolute z-20 top-4 right-5 outline-none">
+            <CgClose className="w-8 h-8 p-1 text-[#35617B] bg-[#F2F6F8] hover:bg-gray-300/50 rounded-lg" />
           </button>
         )}
 
