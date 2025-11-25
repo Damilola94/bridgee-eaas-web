@@ -165,7 +165,7 @@ function MenuItem({
           <span className="flex">
             <Image src={icon} alt={title} width={18} className="w-auto h-auto" />
             <span className={children ? 'has-sub-menu pointer' : ''}>
-              <span className="title ml-2.5 mt-[5px]">{title}</span>
+              <span className="title ml-2.5 mt-[5px]">{"title"}</span>
             </span>
           </span>
           {isShowingSub ? (

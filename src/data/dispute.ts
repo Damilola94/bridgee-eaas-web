@@ -55,6 +55,12 @@ export const shippingStatuses = [
   { label: 'New Dispute Opened', value: 'NewDisputeOpened' }
 ];
 
+export const disputesOptions = [
+  { title: 'All Dispute', status: 'all-dispute' },
+  { title: 'Resolved', status: 'resolved' },
+  { title: 'In progress', status: 'in-progress' }
+];
+
 export const statusOptions = [
   { title: 'All', status: 'all' },
   { title: 'Open dispute', status: 'Open' },

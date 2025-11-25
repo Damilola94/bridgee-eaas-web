@@ -1,12 +1,18 @@
+/* eslint-disable no-undef */
+import { useState } from "react";
+
+import { useMutation, useQuery } from "react-query";
+
+import Select, { StylesConfig, SingleValue, ActionMeta } from "react-select";
+
 import TextInput from "../../../inputs/Text";
 import { StepData } from "../../../../pages/seller/create-account";
-import { useState } from "react";
 import { Bank } from "../../../../types/bank";
-import { useMutation, useQuery } from "react-query";
+
 import { getAccountName, getBanksList } from "../../../../services/api/bank";
 import notification from "../../../../utilities/notification";
 import Button from "../../../inputs/Button";
-import Select, { StylesConfig } from "react-select";
+
 import handleFetch from "../../../../services/api/handleFetch";
 
 interface Props {
@@ -20,7 +26,7 @@ type BankOptionType = {
   label: string;
 };
 
-const selectStyles: StylesConfig<BankOptionType> = {
+const selectStyles: StylesConfig<BankOptionType, false> = {
   control: (base) => ({
     ...base,
     height: "3rem",
@@ -29,15 +35,15 @@ const selectStyles: StylesConfig<BankOptionType> = {
     backgroundColor: "#F8F8F8",
     boxShadow: "none",
     "&:hover": {
-      borderColor: "#CFCFCF",
-    },
-  }),
+      borderColor: "#CFCFCF"
+    }
+  })
 };
 
 export default function LinkBankAccount({
   formData,
   setFormData,
-  onNextStep,
+  onNextStep
 }: Props) {
   const [selectedBank, setSelectedBank] = useState<Bank | null>(null);
   const [accountNumber, setAccountNumber] = useState("");
@@ -51,12 +57,12 @@ export default function LinkBankAccount({
 
   const banks: Bank[] | undefined = bankResponse?.data.map((apiBank) => ({
     bankCode: apiBank.bankCode,
-    bankName: apiBank.bankName,
+    bankName: apiBank.bankName
   }));
 
   const bankOptions: BankOptionType[] | undefined = banks?.map((bank) => ({
     value: bank.bankCode,
-    label: bank.bankName,
+    label: bank.bankName
   }));
 
   const accountNameMutation = useMutation(getAccountName, {
@@ -73,8 +79,8 @@ export default function LinkBankAccount({
             accountNumber: variables.accountNumber,
             bankCode: selectedBank?.bankCode || "",
             bank: selectedBank?.bankName || "",
-            accountName: nameResult,
-          },
+            accountName: nameResult
+          }
         };
 
         setFormData(updatedFormData);
@@ -86,16 +92,16 @@ export default function LinkBankAccount({
       notification({
         title: "Invalid Account",
         message: error?.message || "Account verification failed",
-        type: "danger",
+        type: "danger"
       });
-    },
+    }
   });
 
   const registrationMutation = useMutation(handleFetch, {
     onSuccess: () => {
       notification({
         message: "Account created successfully!",
-        type: "success",
+        type: "success"
       });
       if (onNextStep) {
         onNextStep();
@@ -105,9 +111,9 @@ export default function LinkBankAccount({
       notification({
         title: "Registration Failed",
         message: error?.message || "Please try again",
-        type: "danger",
+        type: "danger"
       });
-    },
+    }
   });
 
   const handleAccountNumberChange = (
@@ -123,7 +129,7 @@ export default function LinkBankAccount({
     if (value.length === 10 && selectedBank) {
       accountNameMutation.mutate({
         accountNumber: value,
-        bankCode: selectedBank.bankCode,
+        bankCode: selectedBank.bankCode
       });
     }
 
@@ -143,16 +149,16 @@ export default function LinkBankAccount({
       accountDetail: {
         bankCode: formData.bankAccount.bankCode || "",
         accountNumber: formData.bankAccount.accountNumber || "",
-        accountName: formData.bankAccount.accountName || "",
+        accountName: formData.bankAccount.accountName || ""
       },
-      otpValidationTicket: formData.otpValidationTicket || "",
+      otpValidationTicket: formData.otpValidationTicket || ""
     };
 
     registrationMutation.mutate({
       service: "identity-service",
       endpoint: "/api/v1/users/register",
       method: "POST",
-      body: registrationData,
+      body: registrationData
     });
   };
 
@@ -163,13 +169,13 @@ export default function LinkBankAccount({
       <div>
         <label className="text-sm font-bold">Select Bank</label>
         <div className="relative mt-2 mb-3">
-          <Select
+          <Select<BankOptionType, false>
             options={bankOptions}
             isLoading={banksLoading}
             placeholder="Search and select a bank"
-            onChange={(selectedOption: BankOptionType | null) => {
+            onChange={(newValue: SingleValue<BankOptionType>, actionMeta: ActionMeta<BankOptionType>) => {
               const bank = banks?.find(
-                (b) => b.bankCode === selectedOption?.value
+                (b) => b.bankCode === newValue?.value
               );
               setSelectedBank(bank || null);
             }}

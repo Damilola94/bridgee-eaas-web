@@ -1,12 +1,18 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback, useEffect, useMemo, useState
+} from "react";
 import { debounce } from "lodash";
 import AsyncSelect from "react-select/async";
-import { useAccountsContext } from "../../../context/Accounts";
 
-// import { FaCheck } from 'react-icons/fa';
 import { BiPlus } from "react-icons/bi";
 
 import Image from "next/image";
+
+import Select, { StylesConfig } from "react-select";
+
+import { useAccountsContext } from "../../../context/Accounts";
+
+// import { FaCheck } from 'react-icons/fa';
 
 import { OrderListItemProps } from "../../../types/invoice";
 
@@ -19,29 +25,28 @@ import { formatCurrency } from "../../../utilities/general";
 import notification from "../../../utilities/notification";
 import FileInput from "../../inputs/File";
 
-import SelectInput from "../../inputs/Select";
-import Select, { StylesConfig } from "react-select";
-
 import TextareaInput from "../../inputs/Textarea";
 
 import Edit from "../../../assets/svgs/edit-order.svg";
 import Delete from "../../../assets/svgs/delete.svg";
 
-import AddInvoiceItem from "./AddInvoiceItem";
 import {
   getPackageCategories,
   getPackageDimensions,
   getGooglePlacesSuggestions,
-  validateAddress,
-  getShippingRates,
+  validateAddress
 } from "../../../services/api/shipbubble";
+
 import {
   ShipBubbleCategory,
   ShipBubbleDimension,
-  ValidatedAddress,
-  ShippingRatesPayload,
+  ValidatedAddress
 } from "../../../types/shipbubble";
+
 import TextInput from "../../inputs/Text";
+
+import AddInvoiceItem from "./AddInvoiceItem";
+
 import SelectPackageSizeModal from "./SelectPackageSizeModal";
 import ShippingRatesModal, { RatesData } from "./ShippingRatesModal";
 
@@ -50,8 +55,8 @@ interface SelectAddressOption {
   value: string;
 }
 
-const selectStyles: StylesConfig = {
-  control: (base) => ({
+const selectStyles: StylesConfig<any, false> = {
+  control: (base: any) => ({
     ...base,
     height: "3rem",
     border: "1px solid #CFCFCF",
@@ -59,9 +64,9 @@ const selectStyles: StylesConfig = {
     backgroundColor: "#F8F8F8",
     boxShadow: "none",
     "&:hover": {
-      borderColor: "#CFCFCF",
-    },
-  }),
+      borderColor: "#CFCFCF"
+    }
+  })
 };
 
 function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
@@ -103,7 +108,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       try {
         const [categoriesResponse, dimensionsResponse] = await Promise.all([
           getPackageCategories(),
-          getPackageDimensions(),
+          getPackageDimensions()
         ]);
 
         if (categoriesResponse.isSuccess) {
@@ -119,7 +124,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         notification({
           title: "Error",
           message: "Could not load shipping details.",
-          type: "danger",
+          type: "danger"
         });
       }
     };
@@ -149,7 +154,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         if (response.isSuccess && response.data) {
           const options = response.data.map((suggestion) => ({
             label: suggestion.description,
-            value: suggestion.placeId,
+            value: suggestion.placeId
           }));
           resolve(options);
         } else {
@@ -175,24 +180,24 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
 
     const validationDetails = isPickupAddress
       ? {
-          name:
+        name:
             `${accounts?.identity?.personalDetail?.firstName || ""} ${
               accounts?.identity?.personalDetail?.lastName || ""
             }`.trim() || "",
-          email: accounts?.identity?.personalDetail?.email || "",
-          phone: accounts?.identity?.personalDetail?.phoneNumber || "",
-          address: selectedOption.label,
-          latitude: 0,
-          longitude: 0,
-        }
+        email: accounts?.identity?.personalDetail?.email || "",
+        phone: accounts?.identity?.personalDetail?.phoneNumber || "",
+        address: selectedOption.label,
+        latitude: 0,
+        longitude: 0
+      }
       : {
-          name: form.recipientDetails?.recipientName || "",
-          email: form.recipientDetails?.email || "",
-          phone: form.recipientDetails?.phoneNumber || "",
-          address: selectedOption.label,
-          latitude: 0,
-          longitude: 0,
-        };
+        name: form.recipientDetails?.recipientName || "",
+        email: form.recipientDetails?.email || "",
+        phone: form.recipientDetails?.phoneNumber || "",
+        address: selectedOption.label,
+        latitude: 0,
+        longitude: 0
+      };
 
     try {
       const response = await validateAddress(validationDetails);
@@ -208,8 +213,8 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
             ...state,
             recipientDetails: {
               ...state.recipientDetails,
-              address: response.data.formattedAddress,
-            },
+              address: response.data.formattedAddress
+            }
           }));
         }
         notification({
@@ -217,132 +222,132 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
           message: `${
             fieldName === "pickupAddress" ? "Pickup" : "Delivery"
           } address has been successfully validated.`,
-          type: "success",
+          type: "success"
         });
       } else {
         notification({
           title: "Address Error",
           message: response.message || `The selected address is not valid.`,
-          type: "danger",
+          type: "danger"
         });
       }
     } catch (error) {
       notification({
         title: "API Error",
         message: "An error occurred while validating the address.",
-        type: "danger",
+        type: "danger"
       });
       console.error("Address validation error:", error);
     }
   };
 
-  const handleGetShippingRate = async () => {
-    if (!form?.description?.trim()) {
-      notification({
-        title: "Form Error",
-        message: "Description is required to get shipping rates.",
-        type: "danger",
-      });
-      return;
-    }
+  // const handleGetShippingRate = async () => {
+  //   if (!form?.description?.trim()) {
+  //     notification({
+  //       title: "Form Error",
+  //       message: "Description is required to get shipping rates.",
+  //       type: "danger"
+  //     });
+  //     return;
+  //   }
 
-    if(!form?.contract) {
-      notification({
-        title: "Form Error",
-        message: "Please upload a product image before getting shipping rates.",
-        type: "danger",
-      });
-      return;
-    }
+  //   if (!form?.contract) {
+  //     notification({
+  //       title: "Form Error",
+  //       message: "Please upload a product image before getting shipping rates.",
+  //       type: "danger"
+  //     });
+  //     return;
+  //   }
 
-    if (
-      !pickupAddressResponse?.addressCode ||
-      !deliveryAddressResponse?.addressCode
-    ) {
-      notification({
-        title: "Form Error",
-        message:
-          "Please select and wait for both pickup and delivery addresses to be validated.",
-        type: "danger",
-      });
-      return;
-    }
+  //   if (
+  //     !pickupAddressResponse?.addressCode ||
+  //     !deliveryAddressResponse?.addressCode
+  //   ) {
+  //     notification({
+  //       title: "Form Error",
+  //       message:
+  //         "Please select and wait for both pickup and delivery addresses to be validated.",
+  //       type: "danger"
+  //     });
+  //     return;
+  //   }
 
-    if (!selectedDimension) {
-      notification({
-        title: "Form Error",
-        message: "Please select a package size.",
-        type: "danger",
-      });
-      return;
-    }
+  //   if (!selectedDimension) {
+  //     notification({
+  //       title: "Form Error",
+  //       message: "Please select a package size.",
+  //       type: "danger"
+  //     });
+  //     return;
+  //   }
 
-    // Get selected category
-    const selectedCategory = categories.find(
-      (cat) => cat.categoryId === Number(form.categoryId)
-    );
+  //   // Get selected category
+  //   const selectedCategory = categories.find(
+  //     (cat) => cat.categoryId === Number(form.categoryId)
+  //   );
 
-    if (!selectedCategory) {
-      notification({
-        title: "Form Error",
-        message: "Please select a package category.",
-        type: "danger",
-      });
-      return;
-    }
-    setIsLoadingShippingRates(true);
+  //   if (!selectedCategory) {
+  //     notification({
+  //       title: "Form Error",
+  //       message: "Please select a package category.",
+  //       type: "danger"
+  //     });
+  //     return;
+  //   }
+  //   setIsLoadingShippingRates(true);
 
-    try {
-      const payload: ShippingRatesPayload = {
-        senderAddressCode: parseInt(pickupAddressResponse.addressCode),
-        receiverAddressCode: parseInt(deliveryAddressResponse.addressCode),
-        pickupDate: new Date().toISOString().split("T")[0],
-        categoryId: selectedCategory.categoryId,
-        packageItems:
-          form.escrowItems?.map((item) => ({
-            name: item.name || "",
-            description: item.name || "",
-            unitWeight: item.weight?.toString() || "0",
-            unitAmount: item.amount?.toString() || "0",
-            quantity: item.quantity?.toString() || "0",
-          })) || [],
-        serviceType: "pickup",
-        deliveryInstructions: form.description || "",
-        packageDimension: {
-          length: selectedDimension.length,
-          width: selectedDimension.width,
-          height: selectedDimension.height,
-        },
-      };
+  //   try {
+  //     const payload: ShippingRatesPayload = {
+  //       senderAddressCode: parseInt(pickupAddressResponse.addressCode),
+  //       receiverAddressCode: parseInt(deliveryAddressResponse.addressCode),
+  //       pickupDate: new Date().toISOString().split("T")[0],
+  //       categoryId: selectedCategory.categoryId,
+  //       packageItems:
+  //         form.escrowItems?.map((item) => ({
+  //           name: item.name || "",
+  //           description: item.name || "",
+  //           unitWeight: item.weight?.toString() || "0",
+  //           unitAmount: item.amount?.toString() || "0",
+  //           quantity: item.quantity?.toString() || "0"
+  //         })) || [],
+  //       serviceType: "pickup",
+  //       deliveryInstructions: form.description || "",
+  //       packageDimension: {
+  //         length: selectedDimension.length,
+  //         width: selectedDimension.width,
+  //         height: selectedDimension.height
+  //       }
+  //     };
 
-      const response = await getShippingRates(payload);
+  //     const response = await getShippingRates(payload);
 
-      if (response.isSuccess) {
-        setShippingRatesData({
-          ...response.data,
-          requestToken: response.data.requestToken,
-        });
+  //     if (response.isSuccess) {
+  //       setShippingRatesData({
+  //         ...response.data,
+  //         requestToken: response.data.requestToken
+  //       });
 
-        setIsRatesModalOpen(true);
-      } else {
-        notification({
-          title: "Error",
-          message: response.message || "Could not fetch shipping rates.",
-          type: "danger",
-        });
-        setIsRatesModalOpen(false);
-      }
-    } catch (error) {
-      notification({
-        title: "API Error",
-        message: "Could not fetch shipping rates.",
-        type: "danger",
-      });
-      console.error("Shipping rates error:", error);
-    } finally {
-      setIsLoadingShippingRates(false);
-    }
-  };
+  //       setIsRatesModalOpen(true);
+  //     } else {
+  //       notification({
+  //         title: "Error",
+  //         message: response.message || "Could not fetch shipping rates.",
+  //         type: "danger"
+  //       });
+  //       setIsRatesModalOpen(false);
+  //     }
+  //   } catch (error) {
+  //     notification({
+  //       title: "API Error",
+  //       message: "Could not fetch shipping rates.",
+  //       type: "danger"
+  //     });
+  //     console.error("Shipping rates error:", error);
+  //   } finally {
+  //     setIsLoadingShippingRates(false);
+  //   }
+  // };
 
   const isGetShippingRateReadyToCall = useMemo(
     () =>
@@ -360,13 +365,15 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       selectedDimension,
       categories,
       form.categoryId,
-      form.recipientDetails?.recipientName,
+      form.recipientDetails?.recipientName
     ]
   );
 
   const handleChange = (val: any, inputType = "input", inputName = "") => {
     if (typeof val === "object" && val.target) {
-      const { value, name, type, files } = val.target;
+      const {
+        value, name, type, files
+      } = val.target;
 
       // Check if this is a recipient field
       if (
@@ -378,8 +385,8 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
           ...state,
           recipientDetails: {
             ...state.recipientDetails,
-            [name]: value,
-          },
+            [name]: value
+          }
         }));
         return;
       }
@@ -388,7 +395,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       if (type === "file") {
         setForm((state) => ({
           ...state,
-          [name]: files?.length > 1 ? Array.from(files) : files?.[0],
+          [name]: files?.length > 1 ? Array.from(files) : files?.[0]
         }));
         return;
       }
@@ -417,12 +424,12 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         ...state,
         escrowItems: state?.escrowItems?.map((item) =>
           item?.id === itemPayload?.id ? itemPayload : item
-        ),
+        )
       }));
     } else {
       setForm((state) => ({
         ...state,
-        escrowItems: [...(state?.escrowItems || []), itemPayload],
+        escrowItems: [...(state?.escrowItems || []), itemPayload]
       }));
     }
   };
@@ -468,6 +475,13 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     }
     onNext();
   };
+
+  let shippingButtonLabel = "Get Shipping Rate";
+  if (isLoadingShippingRates) {
+    shippingButtonLabel = "Getting Rates...";
+  } else if (selectedCourierInfo) {
+    shippingButtonLabel = "Change Shipping Rate";
+  }
 
   return (
     <div className="w-full bg-white px-10 py-8 rounded-lg shadow-md">
@@ -571,7 +585,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
                     notification({
                       title: "Form Error",
                       message: "Description is required",
-                      type: "danger",
+                      type: "danger"
                     });
                   }
                 }}
@@ -591,7 +605,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       </div>
 
       <div className="border-2 border-lightText/20 rounded-lg p-5 mb-10">
-        <h3 className="font-bold text-lg ff-bold mb-4">Recipient's Details</h3>
+        <h3 className="font-bold text-lg ff-bold mb-4">Recipient&#39;s Details</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <TextInput
             name="recipientName"
@@ -607,7 +621,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
                   title: "Form Error",
                   message:
                     "Recipient name must include both first and last name",
-                  type: "danger",
+                  type: "danger"
                 });
               }
             }}
@@ -636,21 +650,19 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       <div className="w-full mb-6">
         <label className="text-sm font-bold">Select Category</label>
         <div className="mt-2">
-          <Select
+          <Select<{ label: string; value: number }, false>
             placeholder="Select category that your item falls into"
             options={categories.map((category) => ({
               label: category.category,
-              value: category.categoryId,
+              value: category.categoryId
             }))}
-            onChange={(
-              selectedOption: { label: string; value: number } | null
-            ) => {
+            onChange={(selectedOption: { value: any; }) => {
               if (selectedOption) {
                 handleChange(selectedOption.value, "select", "categoryId");
               }
             }}
             styles={selectStyles}
-          ></Select>
+          />
         </div>
       </div>
 
@@ -711,18 +723,9 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
 
         <div className="w-full flex justify-end">
           <Button
-            paddingY="py-3"
-            className={`${
-              isLoadingShippingRates ? "animate-pulse" : ""
-            } mt-8 md:mt-12 w-full md:w-auto`}
-            onClick={handleGetShippingRate}
             disabled={isLoadingShippingRates || !isGetShippingRateReadyToCall}
           >
-            {isLoadingShippingRates
-              ? "Getting Rates..."
-              : selectedCourierInfo
-              ? "Change Shipping Rate"
-              : "Get Shipping Rate"}
+            {shippingButtonLabel}
           </Button>
         </div>
 
@@ -777,7 +780,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
           notification({
             title: "Courier Selected",
             message: `${courier.courierName} has been selected.`,
-            type: "success",
+            type: "success"
           });
         }}
       />

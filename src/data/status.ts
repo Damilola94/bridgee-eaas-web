@@ -26,6 +26,7 @@ export const statusColors = {
   rejected: '#9B1C1C',
   accepted: '#03543F',
 
+  'Dispute In Progress': '#5521B5',
   'dispute-Open': '#5521B5',
   'dispute-Resolved': '#03543F',
   'dispute-InProgress': '#5521B5',
@@ -67,6 +68,7 @@ export const statusTitle = {
   rejected: 'Rejected',
   accepted: 'Accepted',
 
+  'Dispute In Progress': 'In Progress',
   'dispute-Open': 'Open',
   'dispute-Resolved': 'Resolved',
   'dispute-InProgress': 'In Progress',

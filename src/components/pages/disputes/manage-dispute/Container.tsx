@@ -5,18 +5,21 @@ import { useRouter } from 'next/router';
 import { HiOutlineArrowLeft } from 'react-icons/hi';
 
 import TransactionStatus from '../../../common/TransactionStatus';
+import NationalIdentification from '../../../../assets/images/national-identification.png';
 import Button from '../../../inputs/Button';
 
 import useGetQuery from '../../../../hooks/useGetQuery';
 import Loading from '../../../common/Loading';
 import { formatDateTime } from '../../../../utilities/dateTime';
-import { formatCurrency } from '../../../../utilities/general';
+// import { formatCurrency } from '../../../../utilities/general';
 import { useDisputeContext } from '../../../../context/Dispute';
 
 import DisputeActivities from './DisputeActivities';
-import DisputeGuide from './DisputeGuide';
+import ActivityLog from './ActivityLog';
+
+// import DisputeGuide from './DisputeGuide';
 import OpenDispute from './OpenDispute';
-import FormIndicator from './FormIndicator';
+import Dispute from './DisputeDet';
 
 function ManageDisputeContainer() {
   const router = useRouter();
@@ -62,63 +65,88 @@ function ManageDisputeContainer() {
 
       {status === 'loading' && <Loading />}
 
-      {status === 'success' && (
+      {status === 'error' && (
         <div className="w-full">
           <div className="flex flex-wrap -m-4">
             <div className="w-full xl:w-7/12 p-4">
-              <FormIndicator formIndex={formIndex} />
+              <div className="w-full bg-white px-10 py-8 rounded-lg shadow-md mb-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
 
-              <div className="w-full sm:flex justify-between bg-white px-10 py-8 rounded-lg shadow-md mb-5">
-                <div>
                   <table className="text-[#888888]">
                     <tbody>
                       <tr>
                         <td className="py-1 pr-5">Invoice Number</td>
-                        <td className="py-1">
-                          #
-                          {data?.data?.invoiceNumber}
+                        <td className="py-1 font-semibold text-black">
+                          {/* #{data?.data?.invoiceNumber} */}
+                          #83JHW4
                         </td>
                       </tr>
+
                       <tr>
-                        <td className="py-1 pr-5">Invoice Title</td>
-                        <td className="py-1">{data?.data?.title}</td>
+                        <td className="py-1 pr-5">Due Date</td>
+                        <td className="py-1 font-semibold text-black">
+                          {/* {formatDateTime(data?.data?.dueDate)}
+                           */}
+                          12/7/2023
+                        </td>
                       </tr>
+
                       <tr>
-                        <td className="py-1 pr-5">Date Created</td>
-                        <td className="py-1">{formatDateTime(data?.data?.createAt)}</td>
-                      </tr>
-                      <tr>
-                        <td className="py-1 pr-5">Order Status</td>
+                        <td className="py-1 pr-5">Dispute Status</td>
                         <td className="py-1">
-                          <TransactionStatus
-                            status={data?.data?.status === 'paymentcompleted' ? data?.data?.deliveryStatus : data?.data?.status}
-                          />
+                          {/* <TransactionStatus status={data?.data?.disputeStatus} /> */}
+                          <TransactionStatus status={"Dispute In Progress"} />
                         </td>
                       </tr>
                     </tbody>
                   </table>
-                </div>
-                <div>
+
                   <table className="text-[#888888]">
                     <tbody>
                       <tr>
-                        <td className="py-1 pr-5">Amount</td>
-                        <td className="py-1 text-black font-bold">{formatCurrency(data?.data?.totalAmount)}</td>
+                        <td className="py-1 pr-5">Invoice Name</td>
+                        <td className="py-1 font-semibold text-black">
+                          {/* {data?.data?.title}
+                           */}
+                          Sneakers
+                        </td>
                       </tr>
+
                       <tr>
-                        <td className="py-1 pr-5">Inspection Period</td>
-                        <td className="py-1">
-                          {data?.data?.inspectionDay}
-                          {' '}
-                          hour(s)
+                        <td className="py-1 pr-5">Amount</td>
+                        <td className="py-1 font-bold text-black">
+                          {/* {formatCurrency(data?.data?.totalAmount)} */}
+                          NGN 64,000
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td className="py-1 pr-5">Date Sent</td>
+                        <td className="py-1 font-semibold text-black">
+                          {formatDateTime(data?.data?.createdAt)}
+                          12/7/2023, 5:09 PM
                         </td>
                       </tr>
                     </tbody>
                   </table>
+
                 </div>
               </div>
 
               <div className="w-full">
+                <Dispute
+                  userType="Buyer"
+                  reason="“The product is not what i asked for, i asked for a bag and i got a shoe. i will provide evidences of our chat and a picture of the product that was delivered.”"
+                  evidence={[
+                    {
+                      name: "National Identification.jpeg",
+                      url: NationalIdentification
+                    }
+                  ]}
+                  onAccept={() => {}}
+                  onReject={() => {}}
+                  onViewEvidence={() => {}}
+                />
                 {formIndex === 0 && <OpenDispute onNext={() => setFormIndex(1)} />}
                 {formIndex === 1 && <DisputeActivities />}
                 {formIndex === 2 && <DisputeActivities />}
@@ -126,13 +154,14 @@ function ManageDisputeContainer() {
             </div>
 
             <div className="w-full xl:w-5/12 p-4">
-              <DisputeGuide />
+              {/* <DisputeGuide /> */}
+              <ActivityLog data={data?.data} />
             </div>
           </div>
         </div>
       )}
 
-      {status === 'error' && (
+      {status === 'success' && (
         <div className="w-full py-10">
           {String(error)}
         </div>

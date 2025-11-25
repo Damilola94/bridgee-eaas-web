@@ -30,7 +30,7 @@ function InvoiceList() {
     pQuery: {
       pageSize: PAGE_SIZE,
       pageNumber: pageNumber + 1,
-      status: router?.query?.status === 'all' ? null : router?.query?.status,
+      status: router?.query?.status === 'all-dispute' ? null : router?.query?.status,
       start: formatApiDate(filter?.startDate),
       end: formatApiDate(filter?.endDate),
       search
@@ -45,6 +45,18 @@ function InvoiceList() {
     setSearchText(value);
     debouncedSearch(value);
   };
+  const statusTitleMap: Record<string, string> = {
+    'all-dispute': 'All Disputes',
+    'resolved': 'Resolved Disputes',
+    'in-progress': 'In Progress'
+  };
+  const statusSubTitleMap: Record<string, string> = {
+    'all-dispute': 'List of all disputes raised',
+    'resolved': 'List of all resolved dispute',
+    'in-progress': 'List of all disputes in progress'
+  };
+  const tableTitle = statusTitleMap[router?.query?.status as string];
+  const tableSubTitle = statusSubTitleMap[router?.query?.status as string];
 
   return (
     <>
@@ -52,7 +64,10 @@ function InvoiceList() {
 
       <div className="w-full bg-white shadow-md rounded-lg overflow-hidden">
         <div className="flex flex-wrap items-center justify-between px-5 sm:px-10 py-5">
-          <h3 className="font-bold text-lg mr-5 mb-2">Invoice Disputes</h3>
+          <div>
+            <h3 className="font-bold text-lg mr-5 mb-2">{tableTitle}</h3>
+            <p>{tableSubTitle}</p>
+          </div>
           <div className="w-full max-w-[380px] flex space-x-2">
             <DisputeFilter filter={filter} onChange={setFilter} />
             <SearchInput
@@ -69,11 +84,14 @@ function InvoiceList() {
             <thead className="bg-secondary">
               <tr className="">
                 <th className="pl-5 sm:pl-10 pr-3 py-5">#</th>
-                <th className="px-3 py-5">Invoice Title</th>
-                <th className="px-3 py-5">Invoice Number</th>
+                <th className="px-3 py-5">Dispute Id</th>
+                <th className="px-3 py-5">Invoice name</th>
+                <th className="px-3 py-5">Invoice number</th>
                 <th className="px-3 py-5">Dispute Reason</th>
-                <th className="px-3 py-5">Date Opened</th>
+                <th className="px-3 py-5">Date filled</th>
+                <th className="px-3 py-5">Amount</th>
                 <th className="px-3 py-5">Status</th>
+                <th className="px-3 py-5">Action</th>
                 <th>{null}</th>
               </tr>
             </thead>
@@ -85,6 +103,8 @@ function InvoiceList() {
                       <tr className="border-t" key={item?.id}>
                         <td className="pl-5 sm:pl-10 pr-3 py-5">{index + 1}</td>
                         <td className="px-3 py-5">{item?.invoiceTitle}</td>
+                        <td className="px-3 py-5">{item?.invoiceNumber}</td>
+                        <td className="px-3 py-5">{item?.invoiceNumber}</td>
                         <td className="px-3 py-5">{item?.invoiceNumber}</td>
                         <td className="px-3 py-5">{item?.reasons}</td>
                         <td className="px-3 py-5">{formatDateTime(item?.date)}</td>
