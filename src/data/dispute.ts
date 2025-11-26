@@ -56,9 +56,9 @@ export const shippingStatuses = [
 ];
 
 export const disputesOptions = [
-  { title: 'All Dispute', status: 'all-dispute' },
-  { title: 'Resolved', status: 'resolved' },
-  { title: 'In progress', status: 'in-progress' }
+  { title: 'All Dispute', status: 'all' },
+  { title: 'Resolved', status: 'ResolvedInSellerFavor' },
+  { title: 'In progress', status: 'Pending' }
 ];
 
 export const statusOptions = [

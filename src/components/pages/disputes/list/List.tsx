@@ -5,7 +5,7 @@ import { debounce } from 'lodash';
 import { PAGE_SIZE } from '../../../../data/constants';
 import useGetQuery from '../../../../hooks/useGetQuery';
 
-import { formatApiDate, formatDateTime } from '../../../../utilities/dateTime';
+import { formatDateTime } from '../../../../utilities/dateTime';
 
 import MenuOptions from '../../../common/MenuOptions';
 import NoData from '../../../common/NoData';
@@ -17,25 +17,26 @@ import Pagination from '../../../common/Pagination';
 
 import DisputeFilter from './Filter';
 
-function InvoiceList() {
+function DisputeList() {
   const router = useRouter();
+  const statusFromUrl = router?.query?.status || 'all'; // default fallback
+
   const [filter, setFilter] = useState<any>(null);
   const [pageNumber, setPageNumber] = useState(0);
   const [searchText, setSearchText] = useState('');
   const [search, setSearch] = useState('');
 
   const { data, status, error } = useGetQuery({
-    endpoint: 'dispute',
-    queryKey: ['dispute-list', router?.query?.status, filter, pageNumber, search],
+    service: "wallet-service/api/v1/",
+    endpoint: 'disputes',
+    extra: 'seller',
+    queryKey: ['dispute-seller-list', statusFromUrl, filter, pageNumber, search],
     pQuery: {
       pageSize: PAGE_SIZE,
       pageNumber: pageNumber + 1,
-      status: router?.query?.status === 'all-dispute' ? null : router?.query?.status,
-      start: formatApiDate(filter?.startDate),
-      end: formatApiDate(filter?.endDate),
-      search
-    },
-    enabled: !!router?.query?.status
+      search,
+      status: statusFromUrl !== 'all' ? statusFromUrl : null
+    }
   });
 
   const debouncedSearch = useMemo(() => debounce(setSearch, 1000), [setSearch]);
@@ -45,16 +46,9 @@ function InvoiceList() {
     setSearchText(value);
     debouncedSearch(value);
   };
-  const statusTitleMap: Record<string, string> = {
-    'all-dispute': 'All Disputes',
-    'resolved': 'Resolved Disputes',
-    'in-progress': 'In Progress'
-  };
-  const statusSubTitleMap: Record<string, string> = {
-    'all-dispute': 'List of all disputes raised',
-    'resolved': 'List of all resolved dispute',
-    'in-progress': 'List of all disputes in progress'
-  };
+
+  const statusTitleMap: Record<string, string> = { 'all': 'All Disputes', 'ResolvedInSellerFavor': 'Resolved Disputes', 'Pending': 'In Progress' };
+  const statusSubTitleMap: Record<string, string> = { 'all': 'List of all disputes raised', 'ResolvedInSellerFavor': 'List of all resolved dispute', 'Pending': 'List of all disputes in progress' };
   const tableTitle = statusTitleMap[router?.query?.status as string];
   const tableSubTitle = statusSubTitleMap[router?.query?.status as string];
 
@@ -65,9 +59,12 @@ function InvoiceList() {
       <div className="w-full bg-white shadow-md rounded-lg overflow-hidden">
         <div className="flex flex-wrap items-center justify-between px-5 sm:px-10 py-5">
           <div>
-            <h3 className="font-bold text-lg mr-5 mb-2">{tableTitle}</h3>
+            <h3 className="font-bold text-lg mr-5 mb-2 capitalize">
+              {tableTitle}
+            </h3>
             <p>{tableSubTitle}</p>
           </div>
+
           <div className="w-full max-w-[380px] flex space-x-2">
             <DisputeFilter filter={filter} onChange={setFilter} />
             <SearchInput
@@ -82,53 +79,58 @@ function InvoiceList() {
         <div className="w-full overflow-auto pb-20">
           <table className="w-full min-w-max table-auto text-left">
             <thead className="bg-secondary">
-              <tr className="">
+              <tr>
                 <th className="pl-5 sm:pl-10 pr-3 py-5">#</th>
-                <th className="px-3 py-5">Dispute Id</th>
-                <th className="px-3 py-5">Invoice name</th>
-                <th className="px-3 py-5">Invoice number</th>
+                <th className="px-3 py-5">Order Reference</th>
+                <th className="px-3 py-5">Reporter</th>
+                <th className="px-3 py-5">Email</th>
                 <th className="px-3 py-5">Dispute Reason</th>
-                <th className="px-3 py-5">Date filled</th>
-                <th className="px-3 py-5">Amount</th>
+                <th className="px-3 py-5">Created Date</th>
                 <th className="px-3 py-5">Status</th>
                 <th className="px-3 py-5">Action</th>
-                <th>{null}</th>
               </tr>
             </thead>
-            <tbody className="">
+
+            <tbody>
               {status === 'success' && (
-                data?.data?.disputes?.length > 0 ? (
+                data?.data?.length > 0 ? (
                   <>
-                    {data?.data?.disputes.map((item: any, index: number) => (
+                    {data?.data?.map((item: any, index: number) => (
                       <tr className="border-t" key={item?.id}>
                         <td className="pl-5 sm:pl-10 pr-3 py-5">{index + 1}</td>
-                        <td className="px-3 py-5">{item?.invoiceTitle}</td>
-                        <td className="px-3 py-5">{item?.invoiceNumber}</td>
-                        <td className="px-3 py-5">{item?.invoiceNumber}</td>
-                        <td className="px-3 py-5">{item?.invoiceNumber}</td>
-                        <td className="px-3 py-5">{item?.reasons}</td>
-                        <td className="px-3 py-5">{formatDateTime(item?.date)}</td>
+
+                        <td className="px-3 py-5">{item?.orderReference}</td>
+
+                        <td className="px-3 py-5">{item?.reporterName}</td>
+
+                        <td className="px-3 py-5">{item?.reporterEmail}</td>
+
+                        <td className="px-3 py-5">{item?.disputeReason}</td>
+
+                        <td className="px-3 py-5">{formatDateTime(item?.createdAt)}</td>
+
                         <td className="px-3 py-5">
-                          <TransactionStatus status={`dispute-${item?.status}`} />
+                          <TransactionStatus status={item?.status} />
                         </td>
+
                         <td className="pr-5 sm:pr-10 pl-3 py-5 flex justify-end">
                           <MenuOptions
                             options={[
                               {
                                 title: 'View',
-                                action: () => router.push({
-                                  pathname: `disputes/manage-dispute/${item?.invoiceId}`
-                                })
+                                action: () =>
+                                  router.push(`disputes/manage-dispute/${item?.id}`)
                               }
                             ]}
                           />
                         </td>
                       </tr>
                     ))}
+
                     <tr>
                       <td colSpan={8} className="pt-4">
                         <Pagination
-                          count={data?.data?.pagination?.totalPages}
+                          count={Math.ceil(data?.data?.length / PAGE_SIZE)}
                           currentPage={pageNumber}
                           onChange={(e) => setPageNumber(e.selected)}
                         />
@@ -159,4 +161,4 @@ function InvoiceList() {
   );
 }
 
-export default InvoiceList;
+export default DisputeList;

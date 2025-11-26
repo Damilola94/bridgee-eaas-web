@@ -1,101 +1,130 @@
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useState, useMemo } from "react";
+import { useRouter } from "next/router";
+import { HiOutlineArrowLeft } from "react-icons/hi";
+import { useMutation, useQueryClient } from "react-query";
 
-import { HiOutlineArrowLeft } from 'react-icons/hi';
+import useGetQuery from "../../../../hooks/useGetQuery"; import { formatDateTime } from "../../../../utilities/dateTime";
+import Loading from "../../../common/Loading";
+import Button from "../../../inputs/Button";
+import notification from "../../../../utilities/notification";
 
-import TransactionStatus from '../../../common/TransactionStatus';
-import NationalIdentification from '../../../../assets/images/national-identification.png';
-import Button from '../../../inputs/Button';
+import handleFetch from "../../../../services/api/handleFetch";
 
-import useGetQuery from '../../../../hooks/useGetQuery';
-import Loading from '../../../common/Loading';
-import { formatDateTime } from '../../../../utilities/dateTime';
-// import { formatCurrency } from '../../../../utilities/general';
-import { useDisputeContext } from '../../../../context/Dispute';
+import TransactionStatus from "../../../common/TransactionStatus";
 
-import DisputeActivities from './DisputeActivities';
-import ActivityLog from './ActivityLog';
+import DisputeDetails from "./DisputeDet";
+import DisputeResponse from "./OpenDispute";
+import ActivityLog from "./ActivityLog";
+import type { ApiDispute } from "./type";
 
-// import DisputeGuide from './DisputeGuide';
-import OpenDispute from './OpenDispute';
-import Dispute from './DisputeDet';
-
-function ManageDisputeContainer() {
+export default function ManageDisputeContainer() {
   const router = useRouter();
-  const { setDispute } = useDisputeContext();
-  const [formIndex, setFormIndex] = useState(0);
+  const slug = String(router?.query?.slug ?? "");
+  const queryClient = useQueryClient();
+  const [showResponseForm, setShowResponseForm] = useState(false);
 
-  const { data, status, error } = useGetQuery({
-    endpoint: 'escrow',
-    queryKey: ['escrow-details', router?.query?.slug],
-    param: router?.query?.slug,
-    enabled: !!router?.query?.slug
+  const { data, status } = useGetQuery({
+    service: "wallet-service/api/v1/",
+    endpoint: "disputes",
+    param: slug,
+    queryKey: ["dispute-details", slug],
+    enabled: !!slug
   });
 
-  useEffect(() => {
-    if (status === 'success' && data?.data?.disputes?.[0]?.id) {
-      setDispute(data?.data?.disputes?.[0]);
-      if (data?.data?.disputes?.[0]?.status === 'Resolved') {
-        setFormIndex(2);
-      } else {
-        setFormIndex(1);
-      }
+  const acceptMutation = useMutation(handleFetch, {
+    onSuccess: (res: any) => {
+      queryClient.invalidateQueries(["dispute-details", slug]);
+      notification({
+        title: "Successful",
+        message: res?.message || "Dispute claim accepted successfully",
+        type: "success"
+      });
+    },
+    onError: (err: any) => {
+      notification({
+        title: "Error",
+        message: String(err) || "Something went wrong.",
+        type: "danger"
+      });
     }
-  }, [status, data, setDispute]);
+  });
+
+  const dispute: ApiDispute | null = useMemo(() => {
+    if (status !== "success" || !data?.data) return null;
+    return data.data as ApiDispute;
+  }, [status, data]);
+
+  const handleBack = () => router.back();
+
+  const handleAcceptClaim = () => {
+    if (!slug) {
+      notification({
+        title: "Error",
+        message: "Dispute ID not found",
+        type: "danger"
+      });
+      return;
+    }
+
+    const payload = {
+      SellerResponse: "",
+      EvidenceFiles: [],
+      AcceptClaim: true
+    };
+
+    acceptMutation.mutate({
+      endpoint: `wallet-service/api/v1/disputes/${slug}/respond`,
+      method: "POST",
+      body: payload,
+      auth: true
+    });
+  };
+
+  const handleRejectClaim = () => {
+    setShowResponseForm(true);
+  };
 
   return (
     <div className="w-full">
       <div className="w-full mb-3">
         <Button
           border
-          onClick={() => router.back()}
+          onClick={handleBack}
           borderColor="border-primary"
           textColor="text-primary"
           bgColor="bg-transparent"
           paddingX="px-3"
           iconPosition="left"
-          icon={
-            <HiOutlineArrowLeft className="mr-2 mb-0.5" />
-          }
+          icon={<HiOutlineArrowLeft className="mr-2 mb-0.5" />}
         >
           Back
         </Button>
       </div>
 
-      {status === 'loading' && <Loading />}
+      {status === "loading" && <Loading />}
 
-      {status === 'error' && (
+      {status === "error" && (
         <div className="w-full">
           <div className="flex flex-wrap -m-4">
             <div className="w-full xl:w-7/12 p-4">
               <div className="w-full bg-white px-10 py-8 rounded-lg shadow-md mb-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
-
                   <table className="text-[#888888]">
                     <tbody>
                       <tr>
                         <td className="py-1 pr-5">Invoice Number</td>
-                        <td className="py-1 font-semibold text-black">
-                          {/* #{data?.data?.invoiceNumber} */}
-                          #83JHW4
-                        </td>
+                        <td className="py-1 font-semibold text-black">#—</td>
                       </tr>
-
                       <tr>
                         <td className="py-1 pr-5">Due Date</td>
-                        <td className="py-1 font-semibold text-black">
-                          {/* {formatDateTime(data?.data?.dueDate)}
-                           */}
-                          12/7/2023
-                        </td>
+                        <td className="py-1 font-semibold text-black">—</td>
                       </tr>
-
                       <tr>
                         <td className="py-1 pr-5">Dispute Status</td>
                         <td className="py-1">
-                          {/* <TransactionStatus status={data?.data?.disputeStatus} /> */}
-                          <TransactionStatus status={"Dispute In Progress"} />
+                          <span className="text-sm font-medium">—</span>
                         </td>
                       </tr>
                     </tbody>
@@ -105,69 +134,135 @@ function ManageDisputeContainer() {
                     <tbody>
                       <tr>
                         <td className="py-1 pr-5">Invoice Name</td>
-                        <td className="py-1 font-semibold text-black">
-                          {/* {data?.data?.title}
-                           */}
-                          Sneakers
-                        </td>
+                        <td className="py-1 font-semibold text-black">—</td>
                       </tr>
-
                       <tr>
                         <td className="py-1 pr-5">Amount</td>
-                        <td className="py-1 font-bold text-black">
-                          {/* {formatCurrency(data?.data?.totalAmount)} */}
-                          NGN 64,000
-                        </td>
+                        <td className="py-1 font-bold text-black">—</td>
                       </tr>
-
                       <tr>
                         <td className="py-1 pr-5">Date Sent</td>
-                        <td className="py-1 font-semibold text-black">
-                          {formatDateTime(data?.data?.createdAt)}
-                          12/7/2023, 5:09 PM
-                        </td>
+                        <td className="py-1 font-semibold text-black">—</td>
                       </tr>
                     </tbody>
                   </table>
-
                 </div>
               </div>
 
               <div className="w-full">
-                <Dispute
-                  userType="Buyer"
-                  reason="“The product is not what i asked for, i asked for a bag and i got a shoe. i will provide evidences of our chat and a picture of the product that was delivered.”"
-                  evidence={[
-                    {
-                      name: "National Identification.jpeg",
-                      url: NationalIdentification
-                    }
-                  ]}
-                  onAccept={() => {}}
-                  onReject={() => {}}
-                  onViewEvidence={() => {}}
-                />
-                {formIndex === 0 && <OpenDispute onNext={() => setFormIndex(1)} />}
-                {formIndex === 1 && <DisputeActivities />}
-                {formIndex === 2 && <DisputeActivities />}
+                <div className="w-full bg-white px-10 py-8 rounded-lg shadow-md my-5">
+                  <h2 className="text-2xl font-semibold mb-6">Dispute</h2>
+                  <p className="text-sm text-gray-600">Could not load dispute.</p>
+                </div>
               </div>
             </div>
 
             <div className="w-full xl:w-5/12 p-4">
-              {/* <DisputeGuide /> */}
-              <ActivityLog data={data?.data} />
+              <ActivityLog data={[]} />
             </div>
           </div>
         </div>
       )}
 
-      {status === 'success' && (
-        <div className="w-full py-10">
-          {String(error)}
+      {status === "success" && dispute && (
+        <div className="w-full">
+          <div className="flex flex-wrap -m-4">
+            <div className="w-full xl:w-7/12 p-4">
+              <div className="w-full bg-white px-10 py-8 rounded-lg shadow-md mb-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 sm:gap-10">
+                  <table className="text-[#888888]">
+                    <tbody>
+                      <tr>
+                        <td className="py-1 pr-5">Order Reference</td>
+                        <td className="py-1 font-semibold text-black">{dispute.orderReference ?? "—"}</td>
+                      </tr>
+
+                      <tr>
+                        <td className="py-1 pr-5">Created</td>
+                        <td className="py-1 font-semibold text-black">{formatDateTime(dispute.createdAt ?? "")}</td>
+                      </tr>
+
+                      <tr>
+                        <td className="py-1 pr-5">Dispute Status</td>
+                        <td className="py-1 w-full">
+                          <TransactionStatus status={dispute.status ?? "unknown"} />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <table className="text-[#888888]">
+                    <tbody>
+                      <tr>
+                        <td className="py-1 pr-5">Reporter</td>
+                        <td className="py-1 font-semibold text-black">{dispute.reporterName ?? "—"}</td>
+                      </tr>
+
+                      <tr>
+                        <td className="py-1 pr-5">Amount</td>
+                        <td className="py-1 font-bold text-black">
+                          {typeof dispute.orderTotalAmount === "number"
+                            ? `NGN ${dispute.orderTotalAmount.toLocaleString()}`
+                            : "—"}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td className="py-1 pr-5">Date Sent</td>
+                        <td className="py-1 font-semibold text-black ">{formatDateTime(dispute.createdAt ?? "")}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <DisputeDetails dispute={dispute} onAccept={handleAcceptClaim} onReject={handleRejectClaim} />
+
+              {showResponseForm && (
+                <DisputeResponse
+                  openDispute={showResponseForm}
+                  disputeId={slug}
+                  isResponse={true}
+                  onClose={() => setShowResponseForm(false)}
+                />
+              )}
+            </div>
+
+            <div className="w-full xl:w-5/12 p-4">
+              <ActivityLog
+                data={[
+                  {
+                    timestamp: dispute.createdAt,
+                    action: "Dispute opened",
+                    isChecked: true
+                  },
+                  ...(dispute.sellerResponseDate
+                    ? [
+                      {
+                        timestamp: dispute.sellerResponseDate,
+                        action: "Seller responded",
+                        isChecked: dispute.status !== "Resolved"
+                      }
+                    ]
+                    : []),
+                  ...(dispute.resolvedDate
+                    ? [
+                      {
+                        timestamp: dispute.resolvedDate,
+                        action:
+                            dispute.resolvedInBuyerFavor === true
+                              ? "Resolved in buyer favor"
+                              : "Resolved in seller favor",
+                        isChecked: true
+                      }
+                    ]
+                    : [])
+                ].filter(Boolean)}
+              />
+            </div>
+          </div>
         </div>
       )}
     </div>
   );
 }
-
-export default ManageDisputeContainer;

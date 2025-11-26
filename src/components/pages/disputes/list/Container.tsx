@@ -5,7 +5,7 @@ import { disputesOptions } from '../../../../data/dispute';
 
 import ListStatusTabs from '../../../common/ListStatusTabs';
 
-import InvoiceList from './List';
+import DisputeList from './List';
 import DisputeMetrics from './DisputeMetrics';
 
 function DisputesContainer() {
@@ -13,7 +13,7 @@ function DisputesContainer() {
 
   useEffect(() => {
     if (!router?.query?.status) {
-      router.push({ pathname: '/disputes', query: { status: 'all-dispute' } });
+      router.push({ pathname: '/disputes', query: { status: 'all' } });
     }
   }, [router]);
 
@@ -21,7 +21,7 @@ function DisputesContainer() {
     <div className="w-full">
       <DisputeMetrics />
       <ListStatusTabs options={disputesOptions} pathname="/disputes" />
-      <InvoiceList />
+      <DisputeList />
     </div>
   );
 }
