@@ -33,6 +33,15 @@ export default function ManageDisputeContainer() {
     enabled: !!slug
   });
 
+  const { data: activityData, status: activityStatus, error: activityError } = useGetQuery({
+    service: "wallet-service/api/v1",
+    endpoint: "activitylogs",
+    extra: "order",
+    queryKey: ['activitylogs', router?.query?.slug],
+    param: router?.query?.slug,
+    enabled: !!router?.query?.slug
+  });
+
   const acceptMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
       queryClient.invalidateQueries(["dispute-details", slug]);
@@ -230,37 +239,15 @@ export default function ManageDisputeContainer() {
 
             <div className="w-full xl:w-5/12 p-4">
               <ActivityLog
-                data={[
-                  {
-                    timestamp: dispute.createdAt,
-                    action: "Dispute opened",
-                    isChecked: true
-                  },
-                  ...(dispute.sellerResponseDate
-                    ? [
-                      {
-                        timestamp: dispute.sellerResponseDate,
-                        action: "Seller responded",
-                        isChecked: dispute.status !== "Resolved"
-                      }
-                    ]
-                    : []),
-                  ...(dispute.resolvedDate
-                    ? [
-                      {
-                        timestamp: dispute.resolvedDate,
-                        action:
-                            dispute.resolvedInBuyerFavor === true
-                              ? "Resolved in buyer favor"
-                              : "Resolved in seller favor",
-                        isChecked: true
-                      }
-                    ]
-                    : [])
-                ].filter(Boolean)}
+                data={activityStatus === 'success' ? activityData?.data : []}
               />
             </div>
           </div>
+        </div>
+      )}
+      {activityStatus === 'error' && (
+        <div className="w-full py-10">
+          {String(activityError)}
         </div>
       )}
     </div>
