@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useMutation } from "react-query";
+
+import AuthCode from "react-auth-code-input";
+
 import Button from "../../../inputs/Button";
 import { StepData } from "../../../../pages/seller/create-account";
 import handleFetch from "../../../../services/api/handleFetch";
 import notification from "../../../../utilities/notification";
-import AuthCode from "react-auth-code-input";
 import { OtpSendResponse, OtpVerifyResponse } from "../../../../types/auth";
 
 interface Props {
@@ -16,7 +18,7 @@ interface Props {
 export default function EmailVerification({
   formData,
   setFormData,
-  onNavigateNext,
+  onNavigateNext
 }: Props) {
   const [otp, setOtp] = useState("");
 
@@ -24,14 +26,13 @@ export default function EmailVerification({
     onSuccess: (response: OtpVerifyResponse) => {
       notification({
         message: "Email verified successfully!",
-        type: "success",
+        type: "success"
       });
-
 
       setFormData({
         ...formData,
-        otpValidationTicket: response.data,
-      })
+        otpValidationTicket: response.data
+      });
 
       if (onNavigateNext) {
         onNavigateNext();
@@ -41,25 +42,25 @@ export default function EmailVerification({
       notification({
         title: "Verification Failed",
         message: error?.message || "Invalid code, please try again",
-        type: "danger",
+        type: "danger"
       });
-    },
+    }
   });
 
   const resendMutation = useMutation(handleFetch, {
     onSuccess: (response: OtpSendResponse) => {
       notification({
         message: "Verification code resent successfully",
-        type: "success",
+        type: "success"
       });
     },
     onError: (error: any) => {
       notification({
         title: "Error",
         message: error?.message || "Something went wrong.",
-        type: "danger",
+        type: "danger"
       });
-    },
+    }
   });
 
   const handleValidateToken = (e: React.FormEvent) => {
@@ -72,7 +73,7 @@ export default function EmailVerification({
     if (!otp.trim()) {
       notification({
         message: "Please enter the verification code",
-        type: "danger",
+        type: "danger"
       });
       return;
     }
@@ -83,8 +84,8 @@ export default function EmailVerification({
       body: {
         identifier: email,
         otp: otp,
-        purpose: "EmailConfirmation",
-      },
+        purpose: "EmailConfirmation"
+      }
     });
   };
 
@@ -98,8 +99,8 @@ export default function EmailVerification({
       body: {
         identifier: email,
         purpose: "EmailConfirmation",
-        recipientName,
-      },
+        recipientName
+      }
     });
   };
 

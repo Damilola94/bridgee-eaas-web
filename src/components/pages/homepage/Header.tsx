@@ -13,16 +13,25 @@ import Button from "../../inputs/Button";
 import { toggleScroll } from "../../../utilities/general";
 import { useHomepageContext } from "../../../context/Homepage";
 
-function Header() {
+type HeaderProps = {
+  onOpenRegisterModal: () => void;
+};
+
+function Header({ onOpenRegisterModal }: HeaderProps) {
   const router = useRouter();
   const { homepageData } = useHomepageContext();
 
   const [showMenu, setShowMenu] = useState(false);
 
+  const handleCreateAccountClick = () => {
+    onOpenRegisterModal();
+    setShowMenu(false); // Close mobile menu if open
+  };
+
   useEffect(() => {
     toggleScroll();
 
-    return function() {
+    return function () {
       setTimeout(() => {
         toggleScroll();
       }, 0);
@@ -63,33 +72,30 @@ function Header() {
               <ul className="flex space-x-10 text-lg font-bold">
                 <Link
                   href="/"
-                  className={`${
-                    router.pathname === "/"
-                      ? "text-success border-b-2 border-success pb-1"
-                      : "text-textColor"
-                  } hover:text-success transition-colors`}
+                  className={`${router.pathname === "/"
+                    ? "text-success border-b-2 border-success pb-1"
+                    : "text-textColor"
+                    } hover:text-success transition-colors`}
                 >
                   <li>Home</li>
                 </Link>
 
                 <Link
                   href="/aboutus"
-                  className={`${
-                    router.pathname === "/aboutus"
-                      ? "text-success border-b-2 border-success pb-1"
-                      : "text-textColor"
-                  } hover:text-success transition-colors`}
+                  className={`${router.pathname === "/aboutus"
+                    ? "text-success border-b-2 border-success pb-1"
+                    : "text-textColor"
+                    } hover:text-success transition-colors`}
                 >
                   <li>About us</li>
                 </Link>
 
                 <Link
                   href="/blog"
-                  className={`${
-                    router.pathname === "/blog"
-                      ? "text-success border-b-2 border-success pb-1"
-                      : "text-textColor"
-                  } hover:text-success transition-colors`}
+                  className={`${router.pathname === "/blog"
+                    ? "text-success border-b-2 border-success pb-1"
+                    : "text-textColor"
+                    } hover:text-success transition-colors`}
                 >
                   <li>Blog</li>
                 </Link>
@@ -120,7 +126,7 @@ function Header() {
                     Login
                   </Button>
                   <Button
-                    onClick={() => router.push("/seller/create-account")}
+                    onClick={handleCreateAccountClick}
                     paddingX="px-8"
                     paddingY="py-3"
                   >
@@ -143,9 +149,8 @@ function Header() {
 
       {/* Mobile Sidebar */}
       <div
-        className={`header-side-menu ${
-          showMenu ? "show overlay" : ""
-        } fixed z-40 top-0 left-0 w-full h-screen bg-black bg-opacity-40`}
+        className={`header-side-menu ${showMenu ? "show overlay" : ""
+          } fixed z-40 top-0 left-0 w-full h-screen bg-black bg-opacity-40`}
       >
         <div className="bg-white w-full absolute right-0 top-0 h-full overflow-y-auto">
           <div className="w-full relative">
@@ -177,31 +182,28 @@ function Header() {
               <ul className="w-full text-sm text-center space-y-6 font-medium">
                 <Link
                   href="/"
-                  className={`block ${
-                    router.pathname === "/"
-                      ? "text-success font-semibold"
-                      : "text-gray-800"
-                  }`}
+                  className={`block ${router.pathname === "/"
+                    ? "text-success font-semibold"
+                    : "text-gray-800"
+                    }`}
                 >
                   <li>Home</li>
                 </Link>
                 <Link
                   href="/aboutus"
-                  className={`block ${
-                    router.pathname === "/aboutus"
-                      ? "text-success font-semibold"
-                      : "text-gray-800"
-                  }`}
+                  className={`block ${router.pathname === "/aboutus"
+                    ? "text-success font-semibold"
+                    : "text-gray-800"
+                    }`}
                 >
                   <li>About us</li>
                 </Link>
                 <Link
                   href="/blog"
-                  className={`block ${
-                    router.pathname === "/blog"
-                      ? "text-success font-semibold"
-                      : "text-gray-800"
-                  }`}
+                  className={`block ${router.pathname === "/blog"
+                    ? "text-success font-semibold"
+                    : "text-gray-800"
+                    }`}
                 >
                   <li>Blog</li>
                 </Link>
@@ -238,7 +240,7 @@ function Header() {
                         Login
                       </Button>
                       <Button
-                        onClick={() => router.push("/seller/create-account")}
+                        onClick={handleCreateAccountClick}
                         paddingX="px-8"
                         paddingY="py-3"
                       >

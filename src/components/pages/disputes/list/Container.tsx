@@ -1,11 +1,12 @@
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
-import { statusOptions } from '../../../../data/dispute';
+import { disputesOptions } from '../../../../data/dispute';
 
 import ListStatusTabs from '../../../common/ListStatusTabs';
 
-import InvoiceList from './List';
+import DisputeList from './List';
+import DisputeMetrics from './DisputeMetrics';
 
 function DisputesContainer() {
   const router = useRouter();
@@ -18,8 +19,9 @@ function DisputesContainer() {
 
   return (
     <div className="w-full">
-      <ListStatusTabs options={statusOptions} pathname="/disputes" />
-      <InvoiceList />
+      <DisputeMetrics />
+      <ListStatusTabs options={disputesOptions} pathname="/disputes" />
+      <DisputeList />
     </div>
   );
 }

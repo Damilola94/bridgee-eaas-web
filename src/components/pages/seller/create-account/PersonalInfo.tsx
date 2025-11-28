@@ -21,7 +21,7 @@ export default function PersonalInfo({
   formData,
   setFormData,
   onTermsChange,
-  onOtpSentSuccess,
+  onOtpSentSuccess
 }: Props) {
   const [termsAgreed, setTermsAgreed] = useState(false);
 
@@ -43,7 +43,7 @@ export default function PersonalInfo({
     onSuccess: (response) => {
       notification({
         message: "Verification code sent to your email!",
-        type: "success",
+        type: "success"
       });
 
       if (onOtpSentSuccess) {
@@ -54,9 +54,9 @@ export default function PersonalInfo({
       notification({
         title: "Failed to send code",
         message: error?.message || "Please try again",
-        type: "danger",
+        type: "danger"
       });
-    },
+    }
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,8 +66,8 @@ export default function PersonalInfo({
         ...formData,
         personalInfo: {
           ...formData.personalInfo,
-          [name]: value,
-        },
+          [name]: value
+        }
       });
     }
   };
@@ -94,8 +94,8 @@ export default function PersonalInfo({
         ...formData,
         personalInfo: {
           ...formData.personalInfo,
-          phoneNumber: numericValue,
-        },
+          phoneNumber: numericValue
+        }
       });
     }
   };
@@ -111,8 +111,8 @@ export default function PersonalInfo({
       body: {
         identifier: email,
         purpose: "EmailConfirmation",
-        recipientName,
-      },
+        recipientName
+      }
     });
   };
 
@@ -129,7 +129,7 @@ export default function PersonalInfo({
       hasUppercase: /[A-Z]/.test(password),
       hasLowercase: /[a-z]/.test(password),
       hasNumber: /[0-9]/.test(password),
-      hasSpecial: /[^a-zA-Z0-9]/.test(password),
+      hasSpecial: /[^a-zA-Z0-9]/.test(password)
     };
   };
 
@@ -189,6 +189,15 @@ export default function PersonalInfo({
         className=""
       />
       <TextInput
+        className="w-full mb-3"
+        onChange={handleChange}
+        value={personalInfo?.referralCode || ''}
+        type="text"
+        label="Referral Code"
+        name="referralCode"
+        placeholder="Enter Referral Code"
+      />
+      <TextInput
         label="Password"
         name="password"
         type="password"
@@ -203,38 +212,33 @@ export default function PersonalInfo({
         <p className="text-sm text-gray-600 mb-2">Password must contain:</p>
         <ul className="text-sm space-y-1">
           <li
-            className={`flex items-center ${
-              requirements.minLength ? "text-[#059669]" : "text-red-600"
+            className={`flex items-center ${requirements.minLength ? "text-[#059669]" : "text-red-600"
             }`}
           >
             {requirements.minLength ? "✓" : "✗"} At least 8 characters
           </li>
           <li
-            className={`flex items-center ${
-              requirements.hasUppercase ? "text-[#059669]" : "text-red-600"
+            className={`flex items-center ${requirements.hasUppercase ? "text-[#059669]" : "text-red-600"
             }`}
           >
             {requirements.hasUppercase ? "✓" : "✗"} At least one uppercase
             letter
           </li>
           <li
-            className={`flex items-center ${
-              requirements.hasLowercase ? "text-[#059669]" : "text-red-600"
+            className={`flex items-center ${requirements.hasLowercase ? "text-[#059669]" : "text-red-600"
             }`}
           >
             {requirements.hasLowercase ? "✓" : "✗"} At least one lowercase
             letter
           </li>
           <li
-            className={`flex items-center ${
-              requirements.hasNumber ? "text-[#059669]" : "text-red-600"
+            className={`flex items-center ${requirements.hasNumber ? "text-[#059669]" : "text-red-600"
             }`}
           >
             {requirements.hasNumber ? "✓" : "✗"} At least one number
           </li>
           <li
-            className={`flex items-center ${
-              requirements.hasSpecial ? "text-[#059669]" : "text-red-600"
+            className={`flex items-center ${requirements.hasSpecial ? "text-[#059669]" : "text-red-600"
             }`}
           >
             {requirements.hasSpecial ? "✓" : "✗"} At least one special character

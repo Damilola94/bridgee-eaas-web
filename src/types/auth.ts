@@ -7,6 +7,7 @@ export type SignupFormProps = {
   phoneNumber?: string
   dateOfBirth?: string
   email?: string
+  referralCode?: string
   password?: string
   termsAccepted?: string
 };
@@ -43,6 +44,6 @@ export interface OtpSendResponse {
   isSuccess: boolean;
   statusCode: string;
   message: string;
-  data: boolean; 
+  data: boolean;
   metaData: null;
 }

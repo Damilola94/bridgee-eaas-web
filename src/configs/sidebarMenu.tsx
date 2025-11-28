@@ -1,11 +1,13 @@
 import DashboardIcon from '../assets/svgs/dashboard.svg';
 import TransactionsIcon from '../assets/svgs/transactions.svg';
+import DisputeIcon from '../assets/svgs/dispute.svg';
 
 import SettingsIcon from '../assets/svgs/settings.svg';
 
 const menu = [
   { title: 'Dashboard', link: '/dashboard', icon: DashboardIcon },
   { title: 'Transactions', link: '/transactions', icon: TransactionsIcon },
+  { title: 'Disputes', link: '/disputes', icon: DisputeIcon },
   { title: 'Settings', link: '/settings', icon: SettingsIcon }
 ];
 

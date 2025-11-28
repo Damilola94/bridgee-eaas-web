@@ -3,13 +3,14 @@
 import { useState, useRef, useCallback } from "react";
 import { useMutation } from "react-query";
 import Webcam from "react-webcam";
+
 import Button from "../../../inputs/Button";
 import notification from "../../../../utilities/notification";
 import handleFetch from "../../../../services/api/handleFetch";
 import { StepData } from "../../../../pages/seller/create-account";
 import {
   dataURLtoFile,
-  removeNigerianCountryCode,
+  removeNigerianCountryCode
 } from "../../../../utilities/general";
 
 interface Props {
@@ -22,14 +23,14 @@ interface Props {
 const videoConstraints = {
   width: 1280,
   height: 720,
-  facingMode: "user",
+  facingMode: "user"
 };
 
 export default function LivenessCheck({
   formData,
   setFormData,
   onNavigateNext,
-  onSuccess,
+  onSuccess
 }: Props) {
   const webcamRef = useRef<Webcam>(null);
   const [selfie, setSelfie] = useState<string | null>(null);
@@ -45,7 +46,7 @@ export default function LivenessCheck({
         if (setFormData) {
           setFormData({
             ...formData,
-            livenessSelfie: newSelfieFile,
+            livenessSelfie: newSelfieFile
           } as StepData);
         }
       }
@@ -56,7 +57,7 @@ export default function LivenessCheck({
     onSuccess: (res: any) => {
       notification({
         message: "BVN validated successfully",
-        type: "success",
+        type: "success"
       });
 
       const apiData = res?.data;
@@ -73,14 +74,14 @@ export default function LivenessCheck({
             "",
           emailAddress: formData?.personalInfo?.emailAddress || "",
           businessName: formData?.personalInfo?.businessName || "",
-          password: formData?.personalInfo?.password || "",
+          password: formData?.personalInfo?.password || ""
         },
         bvnValidationTicketId: apiData?.bvnValidationTicketId || "",
         bvn: apiData?.bvn || formData?.bvn,
         bankAccount: formData?.bankAccount || {
           bank: "",
-          accountNumber: "",
-        },
+          accountNumber: ""
+        }
       };
 
       if (setFormData) {
@@ -99,9 +100,9 @@ export default function LivenessCheck({
       notification({
         title: "Error",
         message: err?.toString() || "BVN validation failed. Please try again.",
-        type: "danger",
+        type: "danger"
       });
-    },
+    }
   });
 
   const handleValidation = () => {
@@ -109,7 +110,7 @@ export default function LivenessCheck({
       notification({
         title: "Missing Information",
         message: "Please provide your BVN and a selfie.",
-        type: "danger",
+        type: "danger"
       });
       return;
     }
@@ -123,7 +124,7 @@ export default function LivenessCheck({
       endpoint: "/api/v1/users/validate-bvn",
       method: "POST",
       multipart: true,
-      body: formDataBody,
+      body: formDataBody
     });
   };
 
