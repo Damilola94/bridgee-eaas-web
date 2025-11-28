@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+
 import TextInput from "../../../inputs/Text";
 import { StepData } from "../../../../pages/seller/create-account";
 import Button from "../../../inputs/Button";
@@ -14,7 +15,7 @@ interface Props {
 export default function BvnValidation({
   formData,
   setFormData,
-  onNavigateNext,
+  onNavigateNext
 }: Props) {
   const [bvn, setBvn] = useState(formData?.bvn || "");
   const [isBvnValid, setIsBvnValid] = useState(false);

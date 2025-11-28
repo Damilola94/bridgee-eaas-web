@@ -151,7 +151,8 @@ export default function LinkBankAccount({
         accountNumber: formData.bankAccount.accountNumber || "",
         accountName: formData.bankAccount.accountName || ""
       },
-      otpValidationTicket: formData.otpValidationTicket || ""
+      otpValidationTicket: formData.otpValidationTicket || "",
+      partnerCode: formData.partnerCode || ""
     };
 
     registrationMutation.mutate({

@@ -1,10 +1,14 @@
 import { useState } from "react";
+
+import Image from "next/image";
+
+import Link from "next/link";
+
 import BvnValidation from "../../../components/pages/seller/create-account/BvnValidation";
 import StaticLayout from "../../../components/pages/seller/create-account/StaticLayout";
 import Logo from "../../../assets/svgs/logos/full-pink.svg";
 import WemaLogoSmall from "../../../assets/svgs/wema-logo-small.svg";
-import Image from "next/image";
-import Link from "next/link";
+
 import LivenessCheck from "../../../components/pages/seller/create-account/LivenessCheck";
 import PersonalInfo from "../../../components/pages/seller/create-account/PersonalInfo";
 import LinkBankAccount from "../../../components/pages/seller/create-account/LinkBankAccount";
@@ -22,6 +26,7 @@ export interface StepData {
     phoneNumber: string;
     businessName: string;
     password: string;
+    referralCode?: string;
   };
   bankAccount: {
     bank: string;
@@ -30,39 +35,40 @@ export interface StepData {
     accountName?: string;
   };
   otpValidationTicket?: string;
+  partnerCode?: string;
 }
 
 const stepsConfig = [
   {
     id: "bvnValidation",
     description: "Identity Verification",
-    Component: BvnValidation,
+    Component: BvnValidation
   },
   {
     id: "livenessCheck",
     description: "Identity Verification",
-    Component: LivenessCheck,
+    Component: LivenessCheck
   },
   {
     id: "personalInfo",
     description: "Personal Information Validation",
-    Component: PersonalInfo,
+    Component: PersonalInfo
   },
   {
     id: "emailVerification",
     description: "Email Verification",
-    Component: EmailVerification,
+    Component: EmailVerification
   },
   {
     id: "linkBankAccount",
     description: "Link a Nigerian Bank Account for Payout",
-    Component: LinkBankAccount,
+    Component: LinkBankAccount
   },
   {
     id: "success",
     description: "",
-    Component: Success,
-  },
+    Component: Success
+  }
 ];
 
 export default function CreateAccountPage() {
@@ -77,13 +83,14 @@ export default function CreateAccountPage() {
       emailAddress: "",
       phoneNumber: "",
       businessName: "",
-      password: "",
+      password: ""
     },
     bankAccount: {
       bank: "",
-      accountNumber: "",
+      accountNumber: ""
     },
-    otpValidationTicket: ""
+    otpValidationTicket: "",
+    partnerCode: ""
   });
 
   const totalSteps = stepsConfig.length;
@@ -95,50 +102,50 @@ export default function CreateAccountPage() {
 
   const renderStepComponent = () => {
     switch (currentStepData.id) {
-      case "bvnValidation":
-        return (
-          <BvnValidation
-            formData={formData}
-            setFormData={setFormData}
-            onNavigateNext={handleNext}
-          />
-        );
-      case "livenessCheck":
-        return (
-          <LivenessCheck
-            formData={formData}
-            setFormData={setFormData}
-            onNavigateNext={handleNext}
-          />
-        );
-        case "personalInfo":
-          return (
-            <PersonalInfo
-            formData={formData}
-            setFormData={setFormData}
-            onOtpSentSuccess={handleNext}
-            />
-          );
-          case "linkBankAccount":
-            return (
-              <LinkBankAccount
-                formData={formData}
-                setFormData={setFormData}
-                onNextStep={handleNext}
-              />
-            );
-          case "emailVerification":
-        return (
-          <EmailVerification
-            formData={formData}
-            setFormData={setFormData}
-            onNavigateNext={handleNext}
-          />
-        );
-      case "success":
-        return <Success />;
-      default:
-        return null;
+    case "bvnValidation":
+      return (
+        <BvnValidation
+          formData={formData}
+          setFormData={setFormData}
+          onNavigateNext={handleNext}
+        />
+      );
+    case "livenessCheck":
+      return (
+        <LivenessCheck
+          formData={formData}
+          setFormData={setFormData}
+          onNavigateNext={handleNext}
+        />
+      );
+    case "personalInfo":
+      return (
+        <PersonalInfo
+          formData={formData}
+          setFormData={setFormData}
+          onOtpSentSuccess={handleNext}
+        />
+      );
+    case "linkBankAccount":
+      return (
+        <LinkBankAccount
+          formData={formData}
+          setFormData={setFormData}
+          onNextStep={handleNext}
+        />
+      );
+    case "emailVerification":
+      return (
+        <EmailVerification
+          formData={formData}
+          setFormData={setFormData}
+          onNavigateNext={handleNext}
+        />
+      );
+    case "success":
+      return <Success />;
+    default:
+      return null;
     }
   };
 
@@ -180,7 +187,7 @@ export default function CreateAccountPage() {
                       currentStepIndex === 0
                         ? 20
                         : ((currentStepIndex + 1) / totalSteps) * 100
-                    }%`,
+                    }%`
                   }}
                 />
               </div>
