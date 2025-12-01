@@ -14,51 +14,54 @@ import Footer from "./Footer";
 import Intro from "./Intro";
 // import Announcement from "./Announcement";
 
-import RegisterSelectionModal from "./modals/RegisterSelectionModal";
-import JoinWaitlistModal from "./modals/JoinWaitlistModal";
-import SuccessModal from "./modals/SuccessModal";
+// import RegisterSelectionModal from "./modals/RegisterSelectionModal";
+// import JoinWaitlistModal from "./modals/JoinWaitlistModal";
+// import SuccessModal from "./modals/SuccessModal";
 
 function Container() {
   const router = useRouter();
-  const [showRegisterModal, setShowRegisterModal] = useState(false);
-  const [showWaitlistModal, setShowWaitlistModal] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  // const [showRegisterModal, setShowRegisterModal] = useState(false);
+  // const [showWaitlistModal, setShowWaitlistModal] = useState(false);
+  // const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-  const handleOpenRegisterModal = () => setShowRegisterModal(true);
+  // const handleOpenRegisterModal = () => setShowRegisterModal(true);
 
-  const handleSelectSeller = () => {
-    setShowRegisterModal(false);
-    router.push("/seller/create-account");
-  };
+  // const handleSelectSeller = () => {
+  //   setShowRegisterModal(false);
+  //   router.push("/seller/create-account");
+  // };
 
-  const handleSelectBuyer = () => {
-    setShowRegisterModal(false);
-    setShowWaitlistModal(true);
-  };
+  // const handleSelectBuyer = () => {
+  //   setShowRegisterModal(false);
+  //   setShowWaitlistModal(true);
+  // };
 
-  const handleWaitlistSuccess = () => {
-    setShowWaitlistModal(false);
-    setShowSuccessModal(true);
-  };
+  // const handleWaitlistSuccess = () => {
+  //   setShowWaitlistModal(false);
+  //   setShowSuccessModal(true);
+  // };
 
   return (
     <HomepageContextProvider>
       <div className="bg-white">
-        <Header onOpenRegisterModal={handleOpenRegisterModal} />
+        {/* <Header onOpenRegisterModal={handleOpenRegisterModal} /> */}
+        <Header />
 
         <main id="top" className="w-full pt-24">
-          <Hero onOpenRegisterModal={handleOpenRegisterModal} />
+          {/* <Hero onOpenRegisterModal={handleOpenRegisterModal} /> */}
+          <Hero />
           {/* <MdSpeech /> */}
           <Intro />
           <HowItWorks />
           <Benefits />
           {/* <Announcement /> */}
-          <GetStarted onOpenRegisterModal={handleOpenRegisterModal} />
+          {/* <GetStarted onOpenRegisterModal={handleOpenRegisterModal} /> */}
+          <GetStarted />
         </main>
 
         <Footer />
 
-        <RegisterSelectionModal
+        {/* <RegisterSelectionModal
           isOpen={showRegisterModal}
           onClose={() => setShowRegisterModal(false)}
           onSelectSeller={handleSelectSeller}
@@ -74,7 +77,7 @@ function Container() {
         <SuccessModal
           isOpen={showSuccessModal}
           onClose={() => setShowSuccessModal(false)}
-        />
+        /> */}
       </div>
     </HomepageContextProvider>
   );
