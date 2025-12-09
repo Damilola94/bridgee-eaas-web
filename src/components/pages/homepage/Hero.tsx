@@ -20,11 +20,12 @@ import NDIC from "../../../assets/svg-tsx/NDIC";
 
 import Button from "../../inputs/Button";
 
-type HeroProps = {
-  onOpenRegisterModal: () => void;
-};
+// type HeroProps = {
+//   onOpenRegisterModal: () => void;
+// };
 
-function Hero({ onOpenRegisterModal }: HeroProps) {
+// function Hero({ onOpenRegisterModal }: HeroProps) {
+function Hero() {
   const router = useRouter();
   const [isFormOpen, setIsFormOpen] = useState(false);
 
@@ -68,7 +69,8 @@ function Hero({ onOpenRegisterModal }: HeroProps) {
             <div className="flex justify-center space-x-4 mb-14 ">
               <Button
                 iconPosition="left"
-                onClick={onOpenRegisterModal}
+                // onClick={onOpenRegisterModal}
+                onClick={() => router.push("/seller/create-account")}
                 paddingX="px-10"
                 paddingY="py-4"
                 fontSize="text-lg"
