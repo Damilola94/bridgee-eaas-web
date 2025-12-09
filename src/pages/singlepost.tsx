@@ -9,7 +9,9 @@ const SinglePost: NextPage = () => (
       <title>UseBridgee</title>
     </Head>
 
-    <Container />
+    <Container params={{
+      slug: ''
+    }} />
   </>
 );
 
