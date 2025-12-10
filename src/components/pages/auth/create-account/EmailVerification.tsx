@@ -4,14 +4,13 @@ import { useMutation } from "react-query";
 import AuthCode from "react-auth-code-input";
 
 import Button from "../../../inputs/Button";
-import { StepData } from "../../../../pages/seller/create-account";
+import { OnboardingStepData, OtpSendResponse, OtpVerifyResponse } from "../../../../types/auth";
 import handleFetch from "../../../../services/api/handleFetch";
 import notification from "../../../../utilities/notification";
-import { OtpSendResponse, OtpVerifyResponse } from "../../../../types/auth";
 
 interface Props {
-  formData: StepData;
-  setFormData: (data: StepData) => void;
+  formData: OnboardingStepData;
+  setFormData: (data: OnboardingStepData) => void;
   onNavigateNext?: () => void;
 }
 

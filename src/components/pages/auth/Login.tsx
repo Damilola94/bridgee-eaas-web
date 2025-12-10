@@ -35,7 +35,12 @@ function Login() {
         router?.push('/seller/create-account?stage=validateOtp');
       } else {
         setCookie('data', res?.data, { secure: true, sameSite: true });
-        router?.push('/dashboard');
+        const userRole = res?.data?.role || res?.data?.userType;
+        if (userRole === 'buyer') {
+          router?.push('/buyer/dashboard');
+        } else {
+          router?.push('/dashboard');
+        }
       }
     },
     onError: (err: any) => {
@@ -116,8 +121,8 @@ function Login() {
         </div>
 
         <p className="mt-5 text-center">
-          Don&apos;t have an account?&nbsp;
-          <Link href="/seller/create-account"><span className="text-success cursor-pointer">Create an account</span></Link>
+          Don't have an account?&nbsp;
+          <Link href="/"><span className="text-success cursor-pointer">Create an account</span></Link>
         </p>
       </form>
     </div>
