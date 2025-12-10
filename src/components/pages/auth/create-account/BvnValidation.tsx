@@ -3,12 +3,12 @@
 import React, { useState, useEffect } from "react";
 
 import TextInput from "../../../inputs/Text";
-import { StepData } from "../../../../pages/seller/create-account";
+import { OnboardingStepData } from "../../../../types/auth";
 import Button from "../../../inputs/Button";
 
 interface Props {
-  formData?: StepData;
-  setFormData?: (data: StepData) => void;
+  formData?: OnboardingStepData;
+  setFormData?: (data: OnboardingStepData) => void;
   onNavigateNext?: () => void;
 }
 
@@ -31,7 +31,7 @@ export default function BvnValidation({
     if (/^\d{0,11}$/.test(value)) {
       setBvn(value);
       if (setFormData) {
-        setFormData({ ...formData, bvn: value } as StepData);
+        setFormData({ ...formData, bvn: value } as OnboardingStepData);
       }
     }
   };

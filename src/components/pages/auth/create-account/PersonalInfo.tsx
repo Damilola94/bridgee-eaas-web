@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 
 import TextInput from "../../../inputs/Text";
-import { StepData } from "../../../../pages/seller/create-account";
+import { OnboardingStepData } from "../../../../types/auth";
 import handleFetch from "../../../../services/api/handleFetch";
 import notification from "../../../../utilities/notification";
 import Button from "../../../inputs/Button";
@@ -11,17 +11,19 @@ import PhoneNumberInput from "../../../inputs/PhoneNumberInput";
 import { removeNigerianCountryCode } from "../../../../utilities/general";
 
 interface Props {
-  formData: StepData;
-  setFormData: (data: StepData) => void;
+  formData: OnboardingStepData;
+  setFormData: (data: OnboardingStepData) => void;
   onTermsChange?: (agreed: boolean) => void;
   onOtpSentSuccess?: () => void;
+  isSeller?: boolean;
 }
 
 export default function PersonalInfo({
   formData,
   setFormData,
   onTermsChange,
-  onOtpSentSuccess
+  onOtpSentSuccess,
+  isSeller = true
 }: Props) {
   const [termsAgreed, setTermsAgreed] = useState(false);
 
@@ -119,7 +121,7 @@ export default function PersonalInfo({
   const isFormValid =
     personalInfo.emailAddress?.trim() &&
     personalInfo.phoneNumber?.trim() &&
-    personalInfo.businessName?.trim() &&
+    (isSeller ? personalInfo.businessName?.trim() : true) &&
     personalInfo.password?.trim() &&
     termsAgreed;
 
@@ -180,14 +182,17 @@ export default function PersonalInfo({
         autoComplete="off"
       />
 
-      <TextInput
-        label="Business Name"
-        name="businessName"
-        placeholder="Enter Business Name"
-        value={personalInfo?.businessName || ""}
-        onChange={handleChange}
-        className=""
-      />
+      {isSeller && (
+        <TextInput
+          label="Business Name"
+          name="businessName"
+          placeholder="Enter Business Name"
+          value={personalInfo?.businessName || ""}
+          onChange={handleChange}
+          className=""
+        />
+      )}
+      
       <TextInput
         className="w-full mb-3"
         onChange={handleChange}

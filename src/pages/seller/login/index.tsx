@@ -14,7 +14,7 @@ import notification from "../../../utilities/notification";
 import handleFetch from "../../../services/api/handleFetch";
 
 import ClickableLogo from "../../../components/pages/auth/ClickableLogo";
-import StaticLayout from "../../../components/pages/seller/create-account/StaticLayout";
+import StaticLayout from "../../../components/pages/auth/create-account/StaticLayout";
 
 function Login() {
   const router = useRouter();
