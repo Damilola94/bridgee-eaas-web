@@ -5,16 +5,16 @@ import { useRouter } from "next/router";
 
 import Link from "next/link";
 
-import TextInput from "../../../components/inputs/Text";
+import TextInput from "../../components/inputs/Text";
 
-import Button from "../../../components/inputs/Button";
-import Loading from "../../../components/common/Loading";
+import Button from "../../components/inputs/Button";
+import Loading from "../../components/common/Loading";
 
-import notification from "../../../utilities/notification";
-import handleFetch from "../../../services/api/handleFetch";
+import notification from "../../utilities/notification";
+import handleFetch from "../../services/api/handleFetch";
 
-import ClickableLogo from "../../../components/pages/auth/ClickableLogo";
-import StaticLayout from "../../../components/pages/auth/create-account/StaticLayout";
+import ClickableLogo from "../../components/pages/auth/ClickableLogo";
+import StaticLayout from "../../components/pages/auth/create-account/StaticLayout";
 
 function Login() {
   const router = useRouter();
@@ -36,7 +36,12 @@ function Login() {
         router?.push("/signup?stage=validateOtp");
       } else {
         setCookie("data", res?.data, { secure: true, sameSite: true });
-        router?.push("/dashboard");
+        const userRole = res?.data?.role || res?.data?.userType;
+        if (userRole === "buyer") {
+          router?.push("/buyer/dashboard");
+        } else {
+          router?.push("/dashboard");
+        }
       }
     },
     onError: (err: any) => {
@@ -119,8 +124,8 @@ function Login() {
           </div>
 
           <p className="mt-5 text-center">
-            Don&apos;t have an account?&nbsp;
-            <Link href="/seller/create-account">
+            Don't have an account?&nbsp;
+            <Link href="/">
               <span className="text-success cursor-pointer">
                 Create an account
               </span>

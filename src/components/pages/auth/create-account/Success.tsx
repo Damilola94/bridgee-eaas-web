@@ -22,7 +22,7 @@ export default function Success({
     if (onButtonClick) {
       onButtonClick();
     } else {
-      router.push("/seller/login");
+      router.push("/login");
     }
   };
 

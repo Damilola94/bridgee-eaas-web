@@ -183,7 +183,7 @@ export default function CreateAccountPage() {
               </span>
               <Link
                 className="text-success font-bold text-sm"
-                href={"/seller/login"}
+                href={"/login"}
               >
                 Login here
               </Link>
