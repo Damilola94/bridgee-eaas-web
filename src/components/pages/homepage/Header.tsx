@@ -13,20 +13,19 @@ import Button from "../../inputs/Button";
 import { toggleScroll } from "../../../utilities/general";
 import { useHomepageContext } from "../../../context/Homepage";
 
-// type HeaderProps = {
-//   onOpenRegisterModal: () => void;
-// };
+type HeaderProps = {
+  onOpenRegisterModal: () => void;
+};
 
-// function Header({ onOpenRegisterModal }: HeaderProps) {
-function Header() {
+function Header({ onOpenRegisterModal }: HeaderProps) {
   const router = useRouter();
   const { homepageData } = useHomepageContext();
 
   const [showMenu, setShowMenu] = useState(false);
 
   const handleCreateAccountClick = () => {
-    // onOpenRegisterModal();
-    router.push("/seller/create-account");
+    onOpenRegisterModal();
+    // router.push("/seller/create-account");
     setShowMenu(false); // Close mobile menu if open
   };
 
