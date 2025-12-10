@@ -3,6 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import BvnValidation from "../../../components/pages/auth/create-account/BvnValidation";
 import StaticLayout from "../../../components/pages/auth/create-account/StaticLayout";
@@ -49,7 +50,8 @@ const stepsConfig = [
   }
 ];
 
-export default function CreateAccountPage() {
+export default function BuyerCreateAccountPage() {
+  const router = useRouter();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
   const [formData, setFormData] = useState<OnboardingStepData>({
@@ -102,7 +104,7 @@ export default function CreateAccountPage() {
           formData={formData}
           setFormData={setFormData}
           onOtpSentSuccess={handleNext}
-          isSeller={true}
+          isSeller={false}
         />
       );
     case "linkBankAccount":
@@ -111,7 +113,7 @@ export default function CreateAccountPage() {
           formData={formData}
           setFormData={setFormData}
           onNextStep={handleNext}
-          isSeller={true}
+          isSeller={false}
         />
       );
     case "emailVerification":
@@ -123,7 +125,12 @@ export default function CreateAccountPage() {
         />
       );
     case "success":
-      return <Success />;
+      return (
+        <Success
+          buttonText="Go to dashboard"
+          onButtonClick={() => router.push("/dashboard")}
+        />
+      );
     default:
       return null;
     }
