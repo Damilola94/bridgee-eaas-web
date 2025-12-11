@@ -7,15 +7,15 @@ import Webcam from "react-webcam";
 import Button from "../../../inputs/Button";
 import notification from "../../../../utilities/notification";
 import handleFetch from "../../../../services/api/handleFetch";
-import { StepData } from "../../../../pages/seller/create-account";
+import { OnboardingStepData } from "../../../../types/auth";
 import {
   dataURLtoFile,
   removeNigerianCountryCode
 } from "../../../../utilities/general";
 
 interface Props {
-  formData?: StepData;
-  setFormData?: (data: StepData) => void;
+  formData?: OnboardingStepData;
+  setFormData?: (data: OnboardingStepData) => void;
   onNavigateNext?: () => void;
   onSuccess?: (bvnData: any) => void;
 }
@@ -47,7 +47,7 @@ export default function LivenessCheck({
           setFormData({
             ...formData,
             livenessSelfie: newSelfieFile
-          } as StepData);
+          } as OnboardingStepData);
         }
       }
     }
@@ -62,7 +62,7 @@ export default function LivenessCheck({
 
       const apiData = res?.data;
 
-      const updatedFormData: StepData = {
+      const updatedFormData: OnboardingStepData = {
         ...formData,
         personalInfo: {
           firstName:
@@ -77,7 +77,7 @@ export default function LivenessCheck({
           password: formData?.personalInfo?.password || ""
         },
         bvnValidationTicketId: apiData?.bvnValidationTicketId || "",
-        bvn: apiData?.bvn || formData?.bvn,
+        bvn: apiData?.bvn || formData?.bvn || "",
         bankAccount: formData?.bankAccount || {
           bank: "",
           accountNumber: ""

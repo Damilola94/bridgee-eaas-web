@@ -21,6 +21,10 @@ class MyDocument extends Document {
             name="description"
             content="Shield yourself from online scams, protect your transactions with UseBridgee Inc."
           />
+          <meta
+            name="google-site-verification"
+            content="D1t8IAeRdekuhqo7m96jmyKraj7WOBfLAMOqYIRXbRo"
+          />
           <link
             href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;900&display=swap"
             rel="stylesheet"
@@ -34,9 +38,10 @@ class MyDocument extends Document {
           <script src="../Daon.FaceCapture.min.js"></script>
 
           <Script
-            src="https://www.googletagmanager.com/gtag/js?id=G-Y9V7VND8SR"
+            src="https://www.googletagmanager.com/gtag/js?id=G-Q27PGW7EQZ"
             strategy="afterInteractive"
           />
+
           <Script
             id="google-analytics"
             strategy="afterInteractive"
@@ -45,7 +50,7 @@ class MyDocument extends Document {
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
-                gtag('config', 'G-Y9V7VND8SR', {
+                gtag('config', 'G-Q27PGW7EQZ', {
                   page_path: window.location.pathname,
                 });
               `
@@ -57,14 +62,14 @@ class MyDocument extends Document {
             strategy="afterInteractive"
             dangerouslySetInnerHTML={{
               __html: `
-            !function(e,t,n,s,u,a){
-              e.twq||(s=e.twq=function(){
-                s.exe?s.exe.apply(s,arguments):s.queue.push(arguments);
-              },s.version='1.1',s.queue=[],u=t.createElement(n),u.async=!0,u.src='https://static.ads-twitter.com/uwt.js',
-              a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))
-            }(window,document,'script');
-            twq('config','pfu9z');
-          `
+                !function(e,t,n,s,u,a){
+                  e.twq||(s=e.twq=function(){
+                    s.exe?s.exe.apply(s,arguments):s.queue.push(arguments);
+                  },s.version='1.1',s.queue=[],u=t.createElement(n),u.async=!0,u.src='https://static.ads-twitter.com/uwt.js',
+                  a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))
+                }(window,document,'script');
+                twq('config','pfu9z');
+              `
             }}
           />
 
@@ -73,11 +78,11 @@ class MyDocument extends Document {
             strategy="afterInteractive"
             dangerouslySetInnerHTML={{
               __html: `
-            twq('event', 'tw-pfu9z-pfua1', {
-              email_address: null,
-              phone_number: null
-            });
-          `
+                twq('event', 'tw-pfu9z-pfua1', {
+                  email_address: null,
+                  phone_number: null
+                });
+              `
             }}
           />
         </body>

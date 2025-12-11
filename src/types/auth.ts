@@ -47,3 +47,26 @@ export interface OtpSendResponse {
   data: boolean;
   metaData: null;
 }
+
+export interface OnboardingStepData {
+  bvnValidationTicketId?: string;
+  bvn: string;
+  livenessSelfie?: File | null;
+  personalInfo: {
+    firstName: string;
+    lastName: string;
+    emailAddress: string;
+    phoneNumber: string;
+    businessName: string;
+    password: string;
+    referralCode?: string;
+  };
+  bankAccount: {
+    bank: string;
+    accountNumber: string;
+    bankCode?: string;
+    accountName?: string;
+  };
+  otpValidationTicket?: string;
+  partnerCode?: string;
+}

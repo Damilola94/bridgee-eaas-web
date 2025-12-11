@@ -10,12 +10,11 @@ import PinkLogo from "../../../assets/images/logos/pink-3d.png";
 import PurpleLogo from "../../../assets/images/logos/purple-3d.png";
 import bgBoxes from "../../../assets/images/bg-boxes.png";
 
-// type GetStartedProps = {
-//   onOpenRegisterModal: () => void;
-// };
+type GetStartedProps = {
+  onOpenRegisterModal: () => void;
+};
 
-// function GetStarted({ onOpenRegisterModal }: GetStartedProps) {
-function GetStarted() {
+function GetStarted({ onOpenRegisterModal }: GetStartedProps) {
   const router = useRouter();
   const { homepageData } = useHomepageContext();
 
@@ -56,8 +55,8 @@ function GetStarted() {
                   </Button>
                 ) : (
                   <Button
-                    // onClick={onOpenRegisterModal}
-                    onClick={() => router.push("/seller/create-account")}
+                    onClick={onOpenRegisterModal}
+                    // onClick={() => router.push("/seller/create-account")}
                     className="!rounded-full"
                     fontSize="text-xl"
                     bgColor="bg-[#B80074]"

@@ -6,7 +6,7 @@ import { useMutation, useQuery } from "react-query";
 import Select, { StylesConfig, SingleValue, ActionMeta } from "react-select";
 
 import TextInput from "../../../inputs/Text";
-import { StepData } from "../../../../pages/seller/create-account";
+import { OnboardingStepData } from "../../../../types/auth";
 import { Bank } from "../../../../types/bank";
 
 import { getAccountName, getBanksList } from "../../../../services/api/bank";
@@ -16,9 +16,10 @@ import Button from "../../../inputs/Button";
 import handleFetch from "../../../../services/api/handleFetch";
 
 interface Props {
-  formData: StepData;
-  setFormData: (data: StepData) => void;
+  formData: OnboardingStepData;
+  setFormData: (data: OnboardingStepData) => void;
   onNextStep?: () => void;
+  isSeller?: boolean;
 }
 
 type BankOptionType = {
@@ -43,7 +44,8 @@ const selectStyles: StylesConfig<BankOptionType, false> = {
 export default function LinkBankAccount({
   formData,
   setFormData,
-  onNextStep
+  onNextStep,
+  isSeller = true
 }: Props) {
   const [selectedBank, setSelectedBank] = useState<Bank | null>(null);
   const [accountNumber, setAccountNumber] = useState("");
@@ -155,6 +157,7 @@ export default function LinkBankAccount({
       partnerCode: formData.partnerCode || ""
     };
 
+    // TODO: Adjust endpoint or payload for Buyer registration when API is ready
     registrationMutation.mutate({
       service: "identity-service",
       endpoint: "/api/v1/users/register",
