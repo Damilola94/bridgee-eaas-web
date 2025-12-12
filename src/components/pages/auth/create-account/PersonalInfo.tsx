@@ -190,6 +190,7 @@ export default function PersonalInfo({
           value={personalInfo?.businessName || ""}
           onChange={handleChange}
           className=""
+          autoComplete="off"
         />
       )}
       
@@ -201,6 +202,7 @@ export default function PersonalInfo({
         label="Referral Code"
         name="referralCode"
         placeholder="Enter Referral Code"
+        autoComplete="off"
       />
       <TextInput
         label="Password"

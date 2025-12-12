@@ -68,7 +68,7 @@ const EmailStep: React.FC<EmailStepProps> = ({
       </Button>
       <p className="mt-5 text-center">
         Already have an account?&nbsp;
-        <Link href="/seller/login">
+        <Link href="/login">
           <span className="text-success cursor-pointer">Login here</span>
         </Link>
       </p>

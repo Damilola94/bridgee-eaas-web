@@ -28,12 +28,12 @@ function Container() {
 
   const handleSelectSeller = () => {
     setShowRegisterModal(false);
-    router.push("/seller/create-account");
+    router.push("/create-account?userType=Seller");
   };
 
   const handleSelectBuyer = () => {
     setShowRegisterModal(false);
-    router.push("/buyer/create-account");
+    router.push("/create-account?userType=Buyer");
   };
 
   const handleWaitlistSuccess = () => {

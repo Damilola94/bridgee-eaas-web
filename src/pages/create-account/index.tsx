@@ -4,17 +4,18 @@ import Image from "next/image";
 
 import Link from "next/link";
 
-import BvnValidation from "../../../components/pages/auth/create-account/BvnValidation";
-import StaticLayout from "../../../components/pages/auth/create-account/StaticLayout";
-import Logo from "../../../assets/svgs/logos/full-pink.svg";
-import WemaLogoSmall from "../../../assets/svgs/wema-logo-small.svg";
+import { useRouter } from "next/router";
 
-import LivenessCheck from "../../../components/pages/auth/create-account/LivenessCheck";
-import PersonalInfo from "../../../components/pages/auth/create-account/PersonalInfo";
-import LinkBankAccount from "../../../components/pages/auth/create-account/LinkBankAccount";
-import Success from "../../../components/pages/auth/create-account/Success";
-import EmailVerification from "../../../components/pages/auth/create-account/EmailVerification";
-import { OnboardingStepData } from "../../../types/auth";
+import BvnValidation from "../../components/pages/auth/create-account/BvnValidation";
+import StaticLayout from "../../components/pages/auth/create-account/StaticLayout";
+import Logo from "../../assets/svgs/logos/full-pink.svg";
+import WemaLogoSmall from "../../assets/svgs/wema-logo-small.svg";
+
+import LivenessCheck from "../../components/pages/auth/create-account/LivenessCheck";
+import PersonalInfo from "../../components/pages/auth/create-account/PersonalInfo";
+import Success from "../../components/pages/auth/create-account/Success";
+import EmailVerification from "../../components/pages/auth/create-account/EmailVerification";
+import { OnboardingStepData, UserType } from "../../types/auth";
 
 const stepsConfig = [
   {
@@ -38,11 +39,6 @@ const stepsConfig = [
     Component: EmailVerification
   },
   {
-    id: "linkBankAccount",
-    description: "Link a Nigerian Bank Account for Payout",
-    Component: LinkBankAccount
-  },
-  {
     id: "success",
     description: "",
     Component: Success
@@ -50,6 +46,10 @@ const stepsConfig = [
 ];
 
 export default function CreateAccountPage() {
+  const router = useRouter();
+  const userType = router.query.userType as UserType | undefined;
+  const isSeller = userType === "Seller";
+
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
   const [formData, setFormData] = useState<OnboardingStepData>({
@@ -62,10 +62,6 @@ export default function CreateAccountPage() {
       phoneNumber: "",
       businessName: "",
       password: ""
-    },
-    bankAccount: {
-      bank: "",
-      accountNumber: ""
     },
     otpValidationTicket: "",
     partnerCode: ""
@@ -102,16 +98,7 @@ export default function CreateAccountPage() {
           formData={formData}
           setFormData={setFormData}
           onOtpSentSuccess={handleNext}
-          isSeller={true}
-        />
-      );
-    case "linkBankAccount":
-      return (
-        <LinkBankAccount
-          formData={formData}
-          setFormData={setFormData}
-          onNextStep={handleNext}
-          isSeller={true}
+          isSeller={isSeller}
         />
       );
     case "emailVerification":
@@ -120,10 +107,11 @@ export default function CreateAccountPage() {
           formData={formData}
           setFormData={setFormData}
           onNavigateNext={handleNext}
+          isSeller={isSeller}
         />
       );
     case "success":
-      return <Success />;
+     return <Success />
     default:
       return null;
     }
