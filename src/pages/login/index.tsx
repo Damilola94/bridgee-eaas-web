@@ -36,8 +36,8 @@ function Login() {
         router?.push("/signup?stage=validateOtp");
       } else {
         setCookie("data", res?.data, { secure: true, sameSite: true });
-        const userRole = res?.data?.role || res?.data?.userType;
-        if (userRole === "buyer") {
+        const userRole = res?.data?.roles?.[0];
+        if (userRole === "Buyer") {
           router?.push("/buyer/dashboard");
         } else {
           router?.push("/dashboard");

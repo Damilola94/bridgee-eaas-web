@@ -72,7 +72,7 @@ export default function EmailVerification({
         businessName: formData.personalInfo.businessName,
         password: formData.personalInfo.password,
         otpValidationTicket: formData.otpValidationTicket || "",
-        partnerCode: formData.partnerCode || "",
+        partnerCode: formData.personalInfo.partnerCode || "",
         userType: isSeller ? "Seller" : "Buyer",
       };
 
