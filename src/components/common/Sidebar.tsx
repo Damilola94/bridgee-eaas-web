@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import PropTypes from 'prop-types';
 import { useMutation } from 'react-query';
+import { useCookies } from 'react-cookie';
 
 import { IoIosArrowBack, IoIosArrowDown } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
@@ -12,6 +13,7 @@ import { BsDot } from 'react-icons/bs';
 
 import Logo from '../../assets/svgs/logos/full-white.svg';
 import LogoutIcon from '../../assets/svgs/logout.svg';
+import DashboardIcon from '../../assets/svgs/dashboard.svg';
 
 import menuList from '../../configs/sidebarMenu';
 import useClickOutsideBox from '../../hooks/useClickOutsideBox';
@@ -28,6 +30,19 @@ function Sidebar() {
   const wrapperRef = useRef(null);
   const [showMenu, setShowMenu] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [cookie] = useCookies(["data"])
+
+  const userRole = cookie?.data?.activeRole || cookie?.data?.roles?.[0];
+
+  const buyerMenu = [
+    {
+      title: 'Dashboard',
+      link: '/buyer/dashboard',
+      icon: DashboardIcon
+    }
+  ]
+
+  const displayMenu = userRole === 'Buyer' ? buyerMenu : menuList;
 
   useClickOutsideBox(wrapperRef, () => setShowMenu(false));
 
@@ -120,7 +135,7 @@ function Sidebar() {
           </div>
 
           <ul className="menu-items pt-5">
-            {menuList?.map((item: any) => (
+            {displayMenu?.map((item: any) => (
               <MenuItem props={item} toggleMenu={toggleMenu} key={item.title} />
             ))}
 

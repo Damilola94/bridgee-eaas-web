@@ -15,6 +15,7 @@ import handleFetch from "../../services/api/handleFetch";
 
 import ClickableLogo from "../../components/pages/auth/ClickableLogo";
 import StaticLayout from "../../components/pages/auth/create-account/StaticLayout";
+import { LoginResponse } from "../../types/auth";
 
 function Login() {
   const router = useRouter();
@@ -24,7 +25,7 @@ function Login() {
   const [password, setPassword] = useState("");
 
   const loginMutation = useMutation(handleFetch, {
-    onSuccess: (res: any) => {
+    onSuccess: (res: LoginResponse) => {
       if (res?.message === "Pending Verification") {
         notification({
           title: "Email Not Verified",
@@ -36,7 +37,8 @@ function Login() {
         router?.push("/signup?stage=validateOtp");
       } else {
         setCookie("data", res?.data, { secure: true, sameSite: true });
-        const userRole = res?.data?.roles?.[0];
+        const userRole = res?.data?.activeRole || res?.data?.roles?.[0];
+
         if (userRole === "Buyer") {
           router?.push("/buyer/dashboard");
         } else {
