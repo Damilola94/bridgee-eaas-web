@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Image from "next/image";
 
@@ -16,33 +16,34 @@ import PersonalInfo from "../../components/pages/auth/create-account/PersonalInf
 import Success from "../../components/pages/auth/create-account/Success";
 import EmailVerification from "../../components/pages/auth/create-account/EmailVerification";
 import { OnboardingStepData, UserType } from "../../types/auth";
+import RegisterSelectionModal from "../../components/pages/homepage/modals/RegisterSelectionModal";
 
 const stepsConfig = [
   {
     id: "bvnValidation",
     description: "Identity Verification",
-    Component: BvnValidation
+    Component: BvnValidation,
   },
   {
     id: "livenessCheck",
     description: "Identity Verification",
-    Component: LivenessCheck
+    Component: LivenessCheck,
   },
   {
     id: "personalInfo",
     description: "Personal Information Validation",
-    Component: PersonalInfo
+    Component: PersonalInfo,
   },
   {
     id: "emailVerification",
     description: "Email Verification",
-    Component: EmailVerification
+    Component: EmailVerification,
   },
   {
     id: "success",
     description: "",
-    Component: Success
-  }
+    Component: Success,
+  },
 ];
 
 export default function CreateAccountPage() {
@@ -51,6 +52,9 @@ export default function CreateAccountPage() {
   const isSeller = userType === "Seller";
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+
+  const totalSteps = stepsConfig.length;
+  const currentStepData = stepsConfig[currentStepIndex];
 
   const [formData, setFormData] = useState<OnboardingStepData>({
     bvn: "",
@@ -61,59 +65,91 @@ export default function CreateAccountPage() {
       emailAddress: "",
       phoneNumber: "",
       businessName: "",
-      password: ""
+      password: "",
+      partnerCode: "",
     },
     otpValidationTicket: "",
-    partnerCode: ""
   });
 
-  const totalSteps = stepsConfig.length;
-  const currentStepData = stepsConfig[currentStepIndex];
+  useEffect(() => {
+    if (router.query.ref) {
+      setFormData((prev) => ({
+        ...prev,
+        personalInfo: {
+          ...prev.personalInfo,
+          partnerCode: router.query.ref as string,
+        },
+      }));
+    }
+  }, [router.query.ref, currentStepIndex]);
+
 
   const handleNext = () => {
     setCurrentStepIndex((prevIndex) => prevIndex + 1);
   };
 
+  const handleSelectSeller = () => {
+    router.push(
+      `/create-account?userType=Seller&ref=${router.query.ref || ""}`
+    );
+  };
+
+  const handleSelectBuyer = () => {
+    router.push(`/create-account?userType=Buyer&ref=${router.query.ref || ""}`);
+  };
+
+  if (!userType) {
+    return (
+      <RegisterSelectionModal
+        isOpen={true}
+        onClose={() => {}}
+        isShowCloseIcon={false}
+        onSelectSeller={handleSelectSeller}
+        onSelectBuyer={handleSelectBuyer}
+      />
+    );
+  }
+
   const renderStepComponent = () => {
     switch (currentStepData.id) {
-    case "bvnValidation":
-      return (
-        <BvnValidation
-          formData={formData}
-          setFormData={setFormData}
-          onNavigateNext={handleNext}
-        />
-      );
-    case "livenessCheck":
-      return (
-        <LivenessCheck
-          formData={formData}
-          setFormData={setFormData}
-          onNavigateNext={handleNext}
-        />
-      );
-    case "personalInfo":
-      return (
-        <PersonalInfo
-          formData={formData}
-          setFormData={setFormData}
-          onOtpSentSuccess={handleNext}
-          isSeller={isSeller}
-        />
-      );
-    case "emailVerification":
-      return (
-        <EmailVerification
-          formData={formData}
-          setFormData={setFormData}
-          onNavigateNext={handleNext}
-          isSeller={isSeller}
-        />
-      );
-    case "success":
-     return <Success />
-    default:
-      return null;
+      case "bvnValidation":
+        return (
+          <BvnValidation
+            formData={formData}
+            setFormData={setFormData}
+            onNavigateNext={handleNext}
+          />
+        );
+      case "livenessCheck":
+        return (
+          <LivenessCheck
+            formData={formData}
+            setFormData={setFormData}
+            onNavigateNext={handleNext}
+          />
+        );
+      case "personalInfo":
+        return (
+          <PersonalInfo
+            formData={formData}
+            setFormData={setFormData}
+            onOtpSentSuccess={handleNext}
+            isSeller={isSeller}
+          />
+        );
+      case "emailVerification":
+        return (
+          <EmailVerification
+            formData={formData}
+            setFormData={setFormData}
+            onNavigateNext={handleNext}
+            isSeller={isSeller}
+          />
+        );
+      case "success":
+        return <Success />;
+      default:
+        return null;
     }
   };
 
@@ -155,7 +191,7 @@ export default function CreateAccountPage() {
                       currentStepIndex === 0
                         ? 20
                         : ((currentStepIndex + 1) / totalSteps) * 100
-                    }%`
+                    }%`,
                   }}
                 />
               </div>
@@ -164,15 +200,14 @@ export default function CreateAccountPage() {
 
           <div className="mb-9">{renderStepComponent()}</div>
 
-          {["bvnValidation", "personalInfo", "emailVerification"].includes(currentStepData.id) && (
+          {["bvnValidation", "personalInfo", "emailVerification"].includes(
+            currentStepData.id
+          ) && (
             <div className="text-center mt-8">
               <span className="text-black text-sm font-bold">
                 Already have an account?{" "}
               </span>
-              <Link
-                className="text-success font-bold text-sm"
-                href={"/login"}
-              >
+              <Link className="text-success font-bold text-sm" href={"/login"}>
                 Login here
               </Link>
             </div>

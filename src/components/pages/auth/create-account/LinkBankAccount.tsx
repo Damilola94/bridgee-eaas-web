@@ -149,7 +149,7 @@ export default function LinkBankAccount({
       businessName: formData.personalInfo.businessName,
       password: formData.personalInfo.password,
       otpValidationTicket: formData.otpValidationTicket || "",
-      partnerCode: formData.partnerCode || "",
+      partnerCode: formData.personalInfo.partnerCode || "",
       userType: isSeller ? "Seller" : "Buyer"
     };
 

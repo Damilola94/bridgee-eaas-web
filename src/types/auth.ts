@@ -61,7 +61,7 @@ export interface OnboardingStepData {
     phoneNumber: string;
     businessName: string;
     password: string;
-    referralCode?: string;
+    partnerCode?: string;
   };
   bankAccount?: {
     bank: string;
@@ -70,7 +70,6 @@ export interface OnboardingStepData {
     accountName?: string;
   };
   otpValidationTicket?: string;
-  partnerCode?: string;
   userType?: UserType;
 }
 
