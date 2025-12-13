@@ -153,7 +153,6 @@ export default function LinkBankAccount({
       userType: isSeller ? "Seller" : "Buyer"
     };
 
-    // TODO: Adjust endpoint or payload for Buyer registration when API is ready
     registrationMutation.mutate({
       service: "identity-service",
       endpoint: "/api/v1/users/register",

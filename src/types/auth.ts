@@ -48,6 +48,22 @@ export interface OtpSendResponse {
   metaData: null;
 }
 
+export interface LoginResponse {
+  isSuccess: boolean;
+  statusCode: string;
+  message: string;
+  data: {
+    userId: string;
+    accessToken: string;
+    refreshToken: string;
+    expiry: string;
+    activeRole?: string;
+    roles: string[];
+  };
+  metaData: any;
+}
+
+
 export type UserType = 'Buyer' | 'Seller';
 
 export interface OnboardingStepData {
