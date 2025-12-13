@@ -31,7 +31,7 @@ function SuccessMessage({ message = '' }: ResetPasswordProps) {
 
           <Button
             className="w-full text-lg ff-bold !rounded-md mdx2:!rounded-xl mt-5"
-            onClick={() => router.push('/seller/login')}
+            onClick={() => router.push('/login')}
             paddingY="p-3.5"
           >
             Login

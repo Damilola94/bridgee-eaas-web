@@ -96,7 +96,7 @@ function ValidateEmail({ gotoNextForm = () => {} }: ResetPasswordProps) {
             Proceed
           </Button>
           <div
-            onClick={() => router.push('/seller/login')}
+            onClick={() => router.push('/login')}
             className="w-full text-sm text-center mt-3 ff-bold !rounded-md mdx2:!rounded-xl text-success"
           >
             Back to login

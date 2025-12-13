@@ -160,6 +160,7 @@ export default function PersonalInfo({
           className=""
         />
       </div>
+
       <TextInput
         label="Email Address"
         name="emailAddress"
@@ -190,18 +191,21 @@ export default function PersonalInfo({
           value={personalInfo?.businessName || ""}
           onChange={handleChange}
           className=""
+          autoComplete="off"
         />
       )}
       
       <TextInput
         className="w-full mb-3"
         onChange={handleChange}
-        value={personalInfo?.referralCode || ''}
+        value={personalInfo?.partnerCode || ''}
         type="text"
         label="Referral Code"
-        name="referralCode"
+        name="partnerCode"
         placeholder="Enter Referral Code"
+        autoComplete="new-password"
       />
+
       <TextInput
         label="Password"
         name="password"
@@ -210,7 +214,7 @@ export default function PersonalInfo({
         value={personalInfo?.password || ""}
         onChange={handleChange}
         className=""
-        autoComplete="off"
+        autoComplete="new-password"
       />
 
       <div className="mb-4">

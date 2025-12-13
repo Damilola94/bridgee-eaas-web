@@ -1,58 +1,60 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Image from "next/image";
 
 import Link from "next/link";
+
 import { useRouter } from "next/router";
 
-import BvnValidation from "../../../components/pages/auth/create-account/BvnValidation";
-import StaticLayout from "../../../components/pages/auth/create-account/StaticLayout";
-import Logo from "../../../assets/svgs/logos/full-pink.svg";
-import WemaLogoSmall from "../../../assets/svgs/wema-logo-small.svg";
+import BvnValidation from "../../components/pages/auth/create-account/BvnValidation";
+import StaticLayout from "../../components/pages/auth/create-account/StaticLayout";
+import Logo from "../../assets/svgs/logos/full-pink.svg";
+import WemaLogoSmall from "../../assets/svgs/wema-logo-small.svg";
 
-import LivenessCheck from "../../../components/pages/auth/create-account/LivenessCheck";
-import PersonalInfo from "../../../components/pages/auth/create-account/PersonalInfo";
-import LinkBankAccount from "../../../components/pages/auth/create-account/LinkBankAccount";
-import Success from "../../../components/pages/auth/create-account/Success";
-import EmailVerification from "../../../components/pages/auth/create-account/EmailVerification";
-import { OnboardingStepData } from "../../../types/auth";
+import LivenessCheck from "../../components/pages/auth/create-account/LivenessCheck";
+import PersonalInfo from "../../components/pages/auth/create-account/PersonalInfo";
+import Success from "../../components/pages/auth/create-account/Success";
+import EmailVerification from "../../components/pages/auth/create-account/EmailVerification";
+import { OnboardingStepData, UserType } from "../../types/auth";
+import RegisterSelectionModal from "../../components/pages/homepage/modals/RegisterSelectionModal";
 
 const stepsConfig = [
   {
     id: "bvnValidation",
     description: "Identity Verification",
-    Component: BvnValidation
+    Component: BvnValidation,
   },
   {
     id: "livenessCheck",
     description: "Identity Verification",
-    Component: LivenessCheck
+    Component: LivenessCheck,
   },
   {
     id: "personalInfo",
     description: "Personal Information Validation",
-    Component: PersonalInfo
+    Component: PersonalInfo,
   },
   {
     id: "emailVerification",
     description: "Email Verification",
-    Component: EmailVerification
-  },
-  {
-    id: "linkBankAccount",
-    description: "Link a Nigerian Bank Account for Payout",
-    Component: LinkBankAccount
+    Component: EmailVerification,
   },
   {
     id: "success",
     description: "",
-    Component: Success
-  }
+    Component: Success,
+  },
 ];
 
-export default function BuyerCreateAccountPage() {
+export default function CreateAccountPage() {
   const router = useRouter();
+  const userType = router.query.userType as UserType | undefined;
+  const isSeller = userType === "Seller";
+
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+
+  const totalSteps = stepsConfig.length;
+  const currentStepData = stepsConfig[currentStepIndex];
 
   const [formData, setFormData] = useState<OnboardingStepData>({
     bvn: "",
@@ -63,76 +65,91 @@ export default function BuyerCreateAccountPage() {
       emailAddress: "",
       phoneNumber: "",
       businessName: "",
-      password: ""
-    },
-    bankAccount: {
-      bank: "",
-      accountNumber: ""
+      password: "",
+      partnerCode: "",
     },
     otpValidationTicket: "",
-    partnerCode: ""
   });
 
-  const totalSteps = stepsConfig.length;
-  const currentStepData = stepsConfig[currentStepIndex];
+  useEffect(() => {
+    if (router.query.ref) {
+      setFormData((prev) => ({
+        ...prev,
+        personalInfo: {
+          ...prev.personalInfo,
+          partnerCode: router.query.ref as string,
+        },
+      }));
+    }
+  }, [router.query.ref, currentStepIndex]);
+
 
   const handleNext = () => {
     setCurrentStepIndex((prevIndex) => prevIndex + 1);
   };
 
+  const handleSelectSeller = () => {
+    router.push(
+      `/create-account?userType=Seller&ref=${router.query.ref || ""}`
+    );
+  };
+
+  const handleSelectBuyer = () => {
+    router.push(`/create-account?userType=Buyer&ref=${router.query.ref || ""}`);
+  };
+
+  if (!userType) {
+    return (
+      <RegisterSelectionModal
+        isOpen={true}
+        onClose={() => {}}
+        isShowCloseIcon={false}
+        onSelectSeller={handleSelectSeller}
+        onSelectBuyer={handleSelectBuyer}
+      />
+    );
+  }
+
   const renderStepComponent = () => {
     switch (currentStepData.id) {
-    case "bvnValidation":
-      return (
-        <BvnValidation
-          formData={formData}
-          setFormData={setFormData}
-          onNavigateNext={handleNext}
-        />
-      );
-    case "livenessCheck":
-      return (
-        <LivenessCheck
-          formData={formData}
-          setFormData={setFormData}
-          onNavigateNext={handleNext}
-        />
-      );
-    case "personalInfo":
-      return (
-        <PersonalInfo
-          formData={formData}
-          setFormData={setFormData}
-          onOtpSentSuccess={handleNext}
-          isSeller={false}
-        />
-      );
-    case "linkBankAccount":
-      return (
-        <LinkBankAccount
-          formData={formData}
-          setFormData={setFormData}
-          onNextStep={handleNext}
-          isSeller={false}
-        />
-      );
-    case "emailVerification":
-      return (
-        <EmailVerification
-          formData={formData}
-          setFormData={setFormData}
-          onNavigateNext={handleNext}
-        />
-      );
-    case "success":
-      return (
-        <Success
-          buttonText="Go to dashboard"
-          onButtonClick={() => router.push("/dashboard")}
-        />
-      );
-    default:
-      return null;
+      case "bvnValidation":
+        return (
+          <BvnValidation
+            formData={formData}
+            setFormData={setFormData}
+            onNavigateNext={handleNext}
+          />
+        );
+      case "livenessCheck":
+        return (
+          <LivenessCheck
+            formData={formData}
+            setFormData={setFormData}
+            onNavigateNext={handleNext}
+          />
+        );
+      case "personalInfo":
+        return (
+          <PersonalInfo
+            formData={formData}
+            setFormData={setFormData}
+            onOtpSentSuccess={handleNext}
+            isSeller={isSeller}
+          />
+        );
+      case "emailVerification":
+        return (
+          <EmailVerification
+            formData={formData}
+            setFormData={setFormData}
+            onNavigateNext={handleNext}
+            isSeller={isSeller}
+          />
+        );
+      case "success":
+        return <Success />;
+      default:
+        return null;
     }
   };
 
@@ -174,7 +191,7 @@ export default function BuyerCreateAccountPage() {
                       currentStepIndex === 0
                         ? 20
                         : ((currentStepIndex + 1) / totalSteps) * 100
-                    }%`
+                    }%`,
                   }}
                 />
               </div>
@@ -183,15 +200,14 @@ export default function BuyerCreateAccountPage() {
 
           <div className="mb-9">{renderStepComponent()}</div>
 
-          {["bvnValidation", "personalInfo", "emailVerification"].includes(currentStepData.id) && (
+          {["bvnValidation", "personalInfo", "emailVerification"].includes(
+            currentStepData.id
+          ) && (
             <div className="text-center mt-8">
               <span className="text-black text-sm font-bold">
                 Already have an account?{" "}
               </span>
-              <Link
-                className="text-success font-bold text-sm"
-                href={"/login"}
-              >
+              <Link className="text-success font-bold text-sm" href={"/login"}>
                 Login here
               </Link>
             </div>

@@ -6,7 +6,7 @@ import { useMutation, useQuery } from "react-query";
 import Select, { StylesConfig, SingleValue, ActionMeta } from "react-select";
 
 import TextInput from "../../../inputs/Text";
-import { OnboardingStepData } from "../../../../types/auth";
+import { OnboardingStepData, RegisterRequest } from "../../../../types/auth";
 import { Bank } from "../../../../types/bank";
 
 import { getAccountName, getBanksList } from "../../../../services/api/bank";
@@ -141,23 +141,18 @@ export default function LinkBankAccount({
   const handleRegistration = () => {
     if (!isFormValid || registrationMutation.isLoading) return;
 
-    const registrationData = {
+    const registrationData: RegisterRequest = {
       bvnValidationTicketId: formData.bvnValidationTicketId || "",
       email: formData.personalInfo.emailAddress,
       countryCode: "+234",
       phoneNumber: formData.personalInfo.phoneNumber,
       businessName: formData.personalInfo.businessName,
       password: formData.personalInfo.password,
-      accountDetail: {
-        bankCode: formData.bankAccount.bankCode || "",
-        accountNumber: formData.bankAccount.accountNumber || "",
-        accountName: formData.bankAccount.accountName || ""
-      },
       otpValidationTicket: formData.otpValidationTicket || "",
-      partnerCode: formData.partnerCode || ""
+      partnerCode: formData.personalInfo.partnerCode || "",
+      userType: isSeller ? "Seller" : "Buyer"
     };
 
-    // TODO: Adjust endpoint or payload for Buyer registration when API is ready
     registrationMutation.mutate({
       service: "identity-service",
       endpoint: "/api/v1/users/register",
