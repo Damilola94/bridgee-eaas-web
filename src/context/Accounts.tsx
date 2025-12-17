@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useState
 } from "react";
+import { useCookies } from "react-cookie";
 
 import Loading from "../components/common/Loading";
 import useGetQuery from "../hooks/useGetQuery";
@@ -25,6 +26,9 @@ export const AccountsContext = createContext<valueProps>({
 });
 
 function AccountsContextProvider({ children }: Props) {
+  const [cookie] = useCookies(["data"]);
+  const activeRole = cookie?.data?.activeRole;
+
   const [accounts, setAccounts] = useState<any>(null);
 
   const accountsMemo = useMemo(() => ({ accounts, setAccounts }), [accounts]);
@@ -37,7 +41,7 @@ function AccountsContextProvider({ children }: Props) {
     service: "wallet-service/api/v1",
     endpoint: "wallets",
     extra: "mine",
-    queryKey: [QUERY_KEYS.WALLET_ACCOUNTS]
+    queryKey: [QUERY_KEYS.WALLET_ACCOUNTS, activeRole]
   });
 
   const {
@@ -48,7 +52,7 @@ function AccountsContextProvider({ children }: Props) {
     service: "identity-service/api/v1",
     endpoint: "users",
     extra: "me",
-    queryKey: [QUERY_KEYS.IDENTITY_ACCOUNTS]
+    queryKey: [QUERY_KEYS.IDENTITY_ACCOUNTS, activeRole]
   });
 
   useEffect(() => {
