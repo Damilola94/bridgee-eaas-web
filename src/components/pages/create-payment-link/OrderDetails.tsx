@@ -34,12 +34,14 @@ import {
   getPackageCategories,
   getPackageDimensions,
   getGooglePlacesSuggestions,
-  validateAddress
+  validateAddress,
+  getShippingRates
 } from "../../../services/api/shipbubble";
 
 import {
   ShipBubbleCategory,
   ShipBubbleDimension,
+  ShippingRatesPayload,
   ValidatedAddress
 } from "../../../types/shipbubble";
 
@@ -241,113 +243,113 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     }
   };
 
-  // const handleGetShippingRate = async () => {
-  //   if (!form?.description?.trim()) {
-  //     notification({
-  //       title: "Form Error",
-  //       message: "Description is required to get shipping rates.",
-  //       type: "danger"
-  //     });
-  //     return;
-  //   }
+  const handleGetShippingRate = async () => {
+    if (!form?.description?.trim()) {
+      notification({
+        title: "Form Error",
+        message: "Description is required to get shipping rates.",
+        type: "danger"
+      });
+      return;
+    }
 
-  //   if (!form?.contract) {
-  //     notification({
-  //       title: "Form Error",
-  //       message: "Please upload a product image before getting shipping rates.",
-  //       type: "danger"
-  //     });
-  //     return;
-  //   }
+    if (!form?.contract) {
+      notification({
+        title: "Form Error",
+        message: "Please upload a product image before getting shipping rates.",
+        type: "danger"
+      });
+      return;
+    }
 
-  //   if (
-  //     !pickupAddressResponse?.addressCode ||
-  //     !deliveryAddressResponse?.addressCode
-  //   ) {
-  //     notification({
-  //       title: "Form Error",
-  //       message:
-  //         "Please select and wait for both pickup and delivery addresses to be validated.",
-  //       type: "danger"
-  //     });
-  //     return;
-  //   }
+    if (
+      !pickupAddressResponse?.addressCode ||
+      !deliveryAddressResponse?.addressCode
+    ) {
+      notification({
+        title: "Form Error",
+        message:
+          "Please select and wait for both pickup and delivery addresses to be validated.",
+        type: "danger"
+      });
+      return;
+    }
 
-  //   if (!selectedDimension) {
-  //     notification({
-  //       title: "Form Error",
-  //       message: "Please select a package size.",
-  //       type: "danger"
-  //     });
-  //     return;
-  //   }
+    if (!selectedDimension) {
+      notification({
+        title: "Form Error",
+        message: "Please select a package size.",
+        type: "danger"
+      });
+      return;
+    }
 
-  //   // Get selected category
-  //   const selectedCategory = categories.find(
-  //     (cat) => cat.categoryId === Number(form.categoryId)
-  //   );
+    // Get selected category
+    const selectedCategory = categories.find(
+      (cat) => cat.categoryId === Number(form.categoryId)
+    );
 
-  //   if (!selectedCategory) {
-  //     notification({
-  //       title: "Form Error",
-  //       message: "Please select a package category.",
-  //       type: "danger"
-  //     });
-  //     return;
-  //   }
-  //   setIsLoadingShippingRates(true);
+    if (!selectedCategory) {
+      notification({
+        title: "Form Error",
+        message: "Please select a package category.",
+        type: "danger"
+      });
+      return;
+    }
+    setIsLoadingShippingRates(true);
 
-  //   try {
-  //     const payload: ShippingRatesPayload = {
-  //       senderAddressCode: parseInt(pickupAddressResponse.addressCode),
-  //       receiverAddressCode: parseInt(deliveryAddressResponse.addressCode),
-  //       pickupDate: new Date().toISOString().split("T")[0],
-  //       categoryId: selectedCategory.categoryId,
-  //       packageItems:
-  //         form.escrowItems?.map((item) => ({
-  //           name: item.name || "",
-  //           description: item.name || "",
-  //           unitWeight: item.weight?.toString() || "0",
-  //           unitAmount: item.amount?.toString() || "0",
-  //           quantity: item.quantity?.toString() || "0"
-  //         })) || [],
-  //       serviceType: "pickup",
-  //       deliveryInstructions: form.description || "",
-  //       packageDimension: {
-  //         length: selectedDimension.length,
-  //         width: selectedDimension.width,
-  //         height: selectedDimension.height
-  //       }
-  //     };
+    try {
+      const payload: ShippingRatesPayload = {
+        senderAddressCode: parseInt(pickupAddressResponse.addressCode),
+        receiverAddressCode: parseInt(deliveryAddressResponse.addressCode),
+        pickupDate: new Date().toISOString().split("T")[0],
+        categoryId: selectedCategory.categoryId,
+        packageItems:
+          form.escrowItems?.map((item) => ({
+            name: item.name || "",
+            description: item.name || "",
+            unitWeight: item.weight?.toString() || "0",
+            unitAmount: item.amount?.toString() || "0",
+            quantity: item.quantity?.toString() || "0"
+          })) || [],
+        serviceType: "pickup",
+        deliveryInstructions: form.description || "",
+        packageDimension: {
+          length: selectedDimension.length,
+          width: selectedDimension.width,
+          height: selectedDimension.height
+        }
+      };
 
-  //     const response = await getShippingRates(payload);
+      const response = await getShippingRates(payload);
 
-  //     if (response.isSuccess) {
-  //       setShippingRatesData({
-  //         ...response.data,
-  //         requestToken: response.data.requestToken
-  //       });
+      if (response.isSuccess) {
+        setShippingRatesData({
+          ...response.data,
+          requestToken: response.data.requestToken
+        });
 
-  //       setIsRatesModalOpen(true);
-  //     } else {
-  //       notification({
-  //         title: "Error",
-  //         message: response.message || "Could not fetch shipping rates.",
-  //         type: "danger"
-  //       });
-  //       setIsRatesModalOpen(false);
-  //     }
-  //   } catch (error) {
-  //     notification({
-  //       title: "API Error",
-  //       message: "Could not fetch shipping rates.",
-  //       type: "danger"
-  //     });
-  //     console.error("Shipping rates error:", error);
-  //   } finally {
-  //     setIsLoadingShippingRates(false);
-  //   }
-  // };
+        setIsRatesModalOpen(true);
+      } else {
+        notification({
+          title: "Error",
+          message: response.message || "Could not fetch shipping rates.",
+          type: "danger"
+        });
+        setIsRatesModalOpen(false);
+      }
+    } catch (error) {
+      notification({
+        title: "API Error",
+        message: "Could not fetch shipping rates.",
+        type: "danger"
+      });
+      console.error("Shipping rates error:", error);
+    } finally {
+      setIsLoadingShippingRates(false);
+    }
+  };
 
   const isGetShippingRateReadyToCall = useMemo(
     () =>
@@ -724,6 +726,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         <div className="w-full flex justify-end">
           <Button
             disabled={isLoadingShippingRates || !isGetShippingRateReadyToCall}
+            onClick={handleGetShippingRate}
           >
             {shippingButtonLabel}
           </Button>
