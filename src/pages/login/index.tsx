@@ -39,11 +39,7 @@ function Login() {
         setCookie("data", res?.data, { secure: true, sameSite: true });
         const userRole = res?.data?.activeRole || res?.data?.roles?.[0];
 
-        if (userRole === "Buyer") {
-          router?.push("/buyer/dashboard");
-        } else {
-          router?.push("/dashboard");
-        }
+        router?.push("/dashboard");
       }
     },
     onError: (err: any) => {

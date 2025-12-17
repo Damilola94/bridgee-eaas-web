@@ -124,11 +124,7 @@ export default function ProfileDropdown({ className }: { className: string }) {
 
       queryClient.invalidateQueries(["accounts-context"]);
 
-      if (newRole === "Buyer") {
-        push("/buyer/dashboard");
-      } else {
-        push("/dashboard");
-      }
+      push("/dashboard");
     },
     onError: (err: any) => {
       notification({

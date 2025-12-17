@@ -33,6 +33,8 @@ function WalletHistory({ }: Props) {
   const [searchText, setSearchText] = useState('');
   const [search, setSearch] = useState('');
   const [cookie] = useCookies(['data']);
+  const isBuyer = cookie?.data?.activeRole === 'Buyer';
+
   const { data, status, error } = useGetQuery({
     service: "wallet-service",
     endpoint: 'wallet',
@@ -52,7 +54,7 @@ function WalletHistory({ }: Props) {
   return (
     <div className="w-full bg-white shadow-md rounded-lg overflow-hidden">
       <div className="flex flex-wrap items-center justify-between px-5 sm:px-10 py-5">
-        <h3 className="font-bold text-lg mr-5 mb-2">Wallet</h3>
+        <h3 className="font-bold text-lg mr-5 mb-2">{isBuyer ? "Transactions" : "Wallet"}</h3>
         <div className="w-full max-w-[380px] flex space-x-2">
           <DisputeFilter filter={filter} onChange={setFilter} />
           <SearchInput

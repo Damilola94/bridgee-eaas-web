@@ -1,4 +1,5 @@
 import React from 'react';
+import { useCookies } from 'react-cookie';
 
 import { useAccountsContext } from '../../../context/Accounts';
 
@@ -6,15 +7,19 @@ import WalletCard from './WalletCard';
 import TransactionBanner from './TransactionBanner';
 import DisputeHistory from './DisputeHistory';
 import SalesHistory from './SalesHistory';
+import PurchasesHistory from './PurchasesHistory';
 import WalletHistory from './WalletHistory';
 // import EscrowInviteReminder from './EscrowInviteReminder';
 import EscrowCard from './EscrowCard';
 import WithdrawalPinBanner from './CreateWithdrawalPin';
 
 function DashboardContainer() {
+  const [cookie] = useCookies(['data']);
   const { accounts } = useAccountsContext();
   const { wallet } = accounts || {};
   const { identity } = accounts || {};
+
+  const isBuyer = cookie?.data?.activeRole === 'Buyer';
 
   return (
     <>
@@ -32,14 +37,16 @@ function DashboardContainer() {
             <WalletCard />
             <EscrowCard />
           </div>
-          <div className="w-full mb-3">
-            <TransactionBanner />
-          </div>
+          {!isBuyer && (
+            <div className="w-full mb-3">
+              <TransactionBanner />
+            </div>
+          )}
           <div className="w-full mb-3">
             <WalletHistory />
           </div>
           <div className="w-full">
-            <SalesHistory />
+            {isBuyer ? <PurchasesHistory /> : <SalesHistory />}
           </div>
         </div>
 
