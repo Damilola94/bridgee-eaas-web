@@ -48,6 +48,24 @@ export interface OtpSendResponse {
   metaData: null;
 }
 
+export interface LoginResponse {
+  isSuccess: boolean;
+  statusCode: string;
+  message: string;
+  data: {
+    userId: string;
+    accessToken: string;
+    refreshToken: string;
+    expiry: string;
+    activeRole?: string;
+    roles: string[];
+  };
+  metaData: any;
+}
+
+
+export type UserType = 'Buyer' | 'Seller';
+
 export interface OnboardingStepData {
   bvnValidationTicketId?: string;
   bvn: string;
@@ -59,14 +77,33 @@ export interface OnboardingStepData {
     phoneNumber: string;
     businessName: string;
     password: string;
-    referralCode?: string;
+    partnerCode?: string;
   };
-  bankAccount: {
+  bankAccount?: {
     bank: string;
     accountNumber: string;
     bankCode?: string;
     accountName?: string;
   };
   otpValidationTicket?: string;
-  partnerCode?: string;
+  userType?: UserType;
 }
+
+export interface RegisterRequest {
+  bvnValidationTicketId?: string;
+  email: string;
+  countryCode: string;
+  phoneNumber: string;
+  businessName?: string;
+  password: string;
+  otpValidationTicket?: string;
+  partnerCode?: string;
+  userType: UserType; 
+  accountDetail?: {
+    bankCode: string;
+    accountNumber: string;
+    accountName: string;
+  };
+}
+
+

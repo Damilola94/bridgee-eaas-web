@@ -7,6 +7,7 @@ interface RegisterSelectionModalProps {
     onClose: () => void;
     onSelectSeller: () => void;
     onSelectBuyer: () => void;
+    isShowCloseIcon?: boolean;
 }
 
 const RegisterSelectionModal: React.FC<RegisterSelectionModalProps> = ({
@@ -14,9 +15,10 @@ const RegisterSelectionModal: React.FC<RegisterSelectionModalProps> = ({
     onClose,
     onSelectSeller,
     onSelectBuyer,
+    isShowCloseIcon = true,
 }) => {
     return (
-        <Modal isOpen={isOpen} onClose={onClose} maxWidth="max-w-2xl" isCenter>
+        <Modal isOpen={isOpen} onClose={onClose} maxWidth="max-w-2xl" isCenter isShowCloseIcon={isShowCloseIcon}>
             <div className="flex flex-col space-y-10 py-4 my-6 mx-2 md:m-10">
                 <button
                     onClick={onSelectSeller}

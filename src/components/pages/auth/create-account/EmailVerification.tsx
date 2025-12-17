@@ -4,33 +4,36 @@ import { useMutation } from "react-query";
 import AuthCode from "react-auth-code-input";
 
 import Button from "../../../inputs/Button";
-import { OnboardingStepData, OtpSendResponse, OtpVerifyResponse } from "../../../../types/auth";
+import {
+  OnboardingStepData,
+  OtpSendResponse,
+  OtpVerifyResponse,
+  RegisterRequest,
+} from "../../../../types/auth";
 import handleFetch from "../../../../services/api/handleFetch";
 import notification from "../../../../utilities/notification";
+import Loading from "../../../common/Loading";
 
 interface Props {
   formData: OnboardingStepData;
   setFormData: (data: OnboardingStepData) => void;
   onNavigateNext?: () => void;
+  isSeller?: boolean;
 }
 
 export default function EmailVerification({
   formData,
   setFormData,
-  onNavigateNext
+  onNavigateNext,
+  isSeller = true,
 }: Props) {
   const [otp, setOtp] = useState("");
 
-  const verifyMutation = useMutation(handleFetch, {
-    onSuccess: (response: OtpVerifyResponse) => {
+  const registrationMutation = useMutation(handleFetch, {
+    onSuccess: () => {
       notification({
-        message: "Email verified successfully!",
-        type: "success"
-      });
-
-      setFormData({
-        ...formData,
-        otpValidationTicket: response.data
+        message: "Account created successfully!",
+        type: "success",
       });
 
       if (onNavigateNext) {
@@ -39,27 +42,70 @@ export default function EmailVerification({
     },
     onError: (error: any) => {
       notification({
+        title: "Registration Failed",
+        message: error?.message || "Please try again",
+        type: "danger",
+      });
+    },
+  });
+
+  const isRegistering = registrationMutation.isLoading;
+
+  const verifyMutation = useMutation(handleFetch, {
+    onSuccess: (response: OtpVerifyResponse) => {
+      notification({
+        message: "Email verified successfully!",
+        type: "success",
+      });
+
+      setFormData({
+        ...formData,
+        otpValidationTicket: response.data,
+      });
+
+      //Call Registration api after successful email verification
+      const registrationData: RegisterRequest = {
+        bvnValidationTicketId: formData.bvnValidationTicketId || "",
+        email: formData.personalInfo.emailAddress,
+        countryCode: "+234",
+        phoneNumber: formData.personalInfo.phoneNumber,
+        businessName: formData.personalInfo.businessName,
+        password: formData.personalInfo.password,
+        otpValidationTicket: formData.otpValidationTicket || "",
+        partnerCode: formData.personalInfo.partnerCode || "",
+        userType: isSeller ? "Seller" : "Buyer",
+      };
+
+      registrationMutation.mutate({
+        service: "identity-service",
+        endpoint: "/api/v1/users/register",
+        method: "POST",
+        body: registrationData,
+      });
+    },
+    onError: (error: any) => {
+      notification({
         title: "Verification Failed",
         message: error?.message || "Invalid code, please try again",
-        type: "danger"
+        type: "danger",
       });
-    }
+    },
   });
 
   const resendMutation = useMutation(handleFetch, {
     onSuccess: (response: OtpSendResponse) => {
       notification({
         message: "Verification code resent successfully",
-        type: "success"
+        type: "success",
       });
     },
     onError: (error: any) => {
       notification({
         title: "Error",
         message: error?.message || "Something went wrong.",
-        type: "danger"
+        type: "danger",
       });
-    }
+    },
   });
 
   const handleValidateToken = (e: React.FormEvent) => {
@@ -72,7 +118,7 @@ export default function EmailVerification({
     if (!otp.trim()) {
       notification({
         message: "Please enter the verification code",
-        type: "danger"
+        type: "danger",
       });
       return;
     }
@@ -83,8 +129,8 @@ export default function EmailVerification({
       body: {
         identifier: email,
         otp: otp,
-        purpose: "EmailConfirmation"
-      }
+        purpose: "EmailConfirmation",
+      },
     });
   };
 
@@ -98,8 +144,8 @@ export default function EmailVerification({
       body: {
         identifier: email,
         purpose: "EmailConfirmation",
-        recipientName
-      }
+        recipientName,
+      },
     });
   };
 
@@ -107,6 +153,10 @@ export default function EmailVerification({
 
   return (
     <div className="space-y-6">
+      {isRegistering ? (
+        <Loading message="Creating Account..." />
+      ): (
+       <>     
       <p className="text-[#808080]">
         A code has been send to your email, proceed to your email to get code
       </p>
@@ -142,6 +192,8 @@ export default function EmailVerification({
           {verifyMutation.isLoading ? "Verifying..." : "Verify Email"}
         </Button>
       </form>
+       </> 
+      )}
     </div>
   );
 }
