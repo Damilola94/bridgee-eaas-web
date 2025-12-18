@@ -36,11 +36,7 @@ function Login() {
       } else {
         setCookie('data', res?.data, { secure: true, sameSite: true });
         const userRole = res?.data?.role || res?.data?.userType;
-        if (userRole === 'buyer') {
-          router?.push('/buyer/dashboard');
-        } else {
-          router?.push('/dashboard');
-        }
+        router?.push('/dashboard');
       }
     },
     onError: (err: any) => {
