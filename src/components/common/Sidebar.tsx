@@ -37,7 +37,7 @@ function Sidebar() {
   const buyerMenu = [
     {
       title: 'Dashboard',
-      link: '/buyer/dashboard',
+      link: '/dashboard',
       icon: DashboardIcon
     }
   ]
