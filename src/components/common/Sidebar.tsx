@@ -14,6 +14,7 @@ import { BsDot } from 'react-icons/bs';
 import Logo from '../../assets/svgs/logos/full-white.svg';
 import LogoutIcon from '../../assets/svgs/logout.svg';
 import DashboardIcon from '../../assets/svgs/dashboard.svg';
+import SettingsIcon from '../../assets/svgs/settings.svg';
 
 import menuList from '../../configs/sidebarMenu';
 import useClickOutsideBox from '../../hooks/useClickOutsideBox';
@@ -39,6 +40,11 @@ function Sidebar() {
       title: 'Dashboard',
       link: '/dashboard',
       icon: DashboardIcon
+    },
+    {
+      title: 'Settings',
+      link: '/settings',
+      icon: SettingsIcon
     }
   ]
 
@@ -118,9 +124,8 @@ function Sidebar() {
       </div>
 
       <nav
-        className={`z-30 page-sidebar fixed w-72 bg-primary overflow-auto h-screen hide-scroll ${
-          showMenu ? 'show' : ''
-        } shadow-box lg:shadow-none`}
+        className={`z-30 page-sidebar fixed w-72 bg-primary overflow-auto h-screen hide-scroll ${showMenu ? 'show' : ''
+          } shadow-box lg:shadow-none`}
       >
         <div className="fixed cursor-pointer top-5 right-5 lg:hidden">
           <IoClose
@@ -250,7 +255,7 @@ MenuItem.defaultProps = {
     icon: '',
     children: [{ title: '', link: '' }]
   },
-  toggleMenu: () => {}
+  toggleMenu: () => { }
 };
 
 export default Sidebar;

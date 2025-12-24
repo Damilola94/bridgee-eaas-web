@@ -34,7 +34,7 @@ function DashboardContainer() {
             {!wallet?.hasPin && <WithdrawalPinBanner />}
           </div>
           <div className="w-full mb-3 sm:flex sm:space-x-3 space-y-3 sm:space-y-0">
-            <WalletCard />
+            {!isBuyer && <WalletCard />}
             <EscrowCard />
           </div>
           {!isBuyer && (

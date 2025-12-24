@@ -1,3 +1,6 @@
+import { useCookies } from "react-cookie";
+import { useMemo } from "react";
+
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
@@ -20,6 +23,17 @@ const options = [
 function SettingsContainer() {
   const router = useRouter();
   const { tab } = router?.query || {};
+  const [cookie] = useCookies(['data']);
+
+  const isBuyer = cookie?.data?.activeRole === 'Buyer';
+
+  // Filter options by role
+  const filteredOptions = useMemo(() => {
+    if (isBuyer) {
+      return options.filter(option => option.tab !== 'business-details');
+    }
+    return options;
+  }, [isBuyer]);
 
   useEffect(() => {
     if (!router?.query?.tab) {
@@ -49,15 +63,14 @@ function SettingsContainer() {
 
   return (
     <div className="w-full">
-      <Tabs options={options} pathname="/settings" />
+      <Tabs options={filteredOptions} pathname="/settings" />
       <div
-        className={`${
-          tab !== "security-settings" &&
+        className={`${tab !== "security-settings" &&
           tab !== "account-details" &&
           tab !== "support"
-            ? "bg-white rounded-lg p-10 shadow w-full xl:w-[60%] mt-12"
-            : ""
-        }`}
+          ? "bg-white rounded-lg p-10 shadow w-full xl:w-[60%] mt-12"
+          : ""
+          }`}
       >
         {renderTabContent()}
       </div>
