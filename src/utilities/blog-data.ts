@@ -22,7 +22,7 @@ export const blogPosts: BlogPost[] = [
     date: "26th December 2025",
     image: "/assets/images/blog-post-9.jpg",
     buttonText: "Trade the Global Standard Way",
-    buttonLink: "/",
+    buttonLink: "/?utm_source=blog",
     content: `
 Around the world, people trust systems they understand. When you book a ride on Uber, you do not negotiate payment after the trip. When you book a stay on Airbnb, the host does not receive your money until you check in. When you buy from Amazon, your payment is acknowledged, but the seller is paid only after delivery is confirmed.
 
@@ -65,7 +65,7 @@ Across the world, the platforms people trust most are the ones that reduce uncer
     date: "24th December 2025",
     image: "/assets/images/blog-post-8.jpg",
     buttonText: "Choose Better Delivery Options",
-    buttonLink: "/",
+    buttonLink: "/?utm_source=blog",
     content: `
 For many Nigerians who buy or sell online, the biggest challenge is not payment. It is delivery. Once a buyer and vendor agree on a transaction, the next hurdle is finding a reliable dispatch rider, agreeing on price, confirming pickup time, and hoping the item arrives safely. This stage is where many online transactions start to feel unnecessarily stressful.
 
@@ -122,7 +122,7 @@ By offering multiple dispatch options based on price, pickup time, and delivery 
     date: "22nd December 2025",
     image: "/assets/images/blog-post-7.jpg",
     buttonText: "Manage Orders Better With Bridgee",
-    buttonLink: "/",
+    buttonLink: "/?utm_source=blog",
     content: `
 For most of the year, sales come steadily. Then suddenly, December arrives and everything changes—messages pile up, orders increase, and delivery timelines tighten. Handling this growth without losing customers is a major challenge. Often, losing customers during this peak period isn't due to bad products, but because existing systems break under pressure.
 
@@ -164,7 +164,7 @@ To handle increased orders without losing customers, vendors must simplify commu
     date: "12 December 2025",
     image: "/assets/images/blog-post-6.jpg",
     buttonText: "Make your Business easier with Bridgee",
-    buttonLink: "/",
+    buttonLink: "/?utm_source=blog",
     content: `
 Customer experience has quietly become one of the strongest competitive advantages for online vendors in Nigeria. People are no longer buying only because a product looks nice. They are buying because the entire experience around that product feels easy, human and respectful. In 2025, the vendors who pay attention to how they make customers feel will grow faster than the ones who only focus on sales and prices.
 
@@ -233,7 +233,7 @@ When you do these things well, the difference shows in your sales, your reviews 
     date: "12 December 2025",
     image: "/assets/images/blog-post-5.jpg",
     buttonText: "Start with Bridgee",
-    buttonLink: "/",
+    buttonLink: "/?utm_source=blog",
     content: `
 Online shopping in Nigeria is not just about products and payments. It is about trust. Every time someone sends money to a vendor they have never met, they are making an emotional decision. And every time a vendor ships an item to a buyer they have never seen, they are taking a risk. These hidden emotions shape how Nigerians behave online more than any discount or lovely product photo ever could.
 
@@ -303,7 +303,7 @@ If you want to experience online trading without fear holding you back, Bridgee 
     date: "12 December 2025",
     image: "/assets/images/blog-post-4.jpg",
     buttonText: "Use Escrow on Bridgee now",
-    buttonLink: "/",
+    buttonLink: "/?utm_source=blog",
     content: `
 Escrow is often misunderstood. Many Nigerians hear the word and assume it is complicated or meant only for big businesses. But when you strip away the jargon, escrow is simply a smarter, safer way for everyday people to trade online. More importantly, it protects both sides of the transaction — the buyer who fears losing money, and the vendor who fears being cheated.
 
@@ -355,7 +355,7 @@ If you want a safer, clearer, and more professional way to trade online, escrow 
     date: "12 December 2025",
     image: "/assets/images/blog-post-3.jpg",
     buttonText: "Offer Safe Payment now",
-    buttonLink: "/",
+    buttonLink: "/?utm_source=blog",
     content: `December is the month when customers want everything fast, neat, beautiful, and delivered "today today." But it is also the month when trust is at its lowest. Buyers have seen too many cautionary Instagram posts, heard too many stories from friends, and even witnessed vendors disappear after collecting payment. So even when a customer wants what you're selling, they still hesitate… and vendors feel the tension deeply.
 
 But some vendors still manage to stand out. They attract calm buyers. They close sales without argument. They create loyalty without begging.
@@ -417,7 +417,7 @@ Use Bridgee.`
     date: "9 December 2025",
     image: "/assets/images/blog-post-2.jpg",
     buttonText: "Start a Safe Trade",
-    buttonLink: "/",
+    buttonLink: "/?utm_source=blog",
     content: `December in Nigeria has a special energy. People are shopping, planning trips, buying gifts, restocking their businesses, and catching end-of-year discounts everywhere. But alongside that excitement comes something else we all know too well - the fear of being scammed online.
 
 Every December, scam cases spike. Fake pages start running promos. Fraudulent sellers become more active. Buyers get desperate to meet holiday deadlines. And in all that speed and excitement, people make mistakes that cost them real money.
@@ -506,7 +506,7 @@ Trade with Bridgee.`
     date: "12 December 2025",
     image: "/assets/images/blog-post-1.png",
     buttonText: "Start a Trade",
-    buttonLink: "/",
+    buttonLink: "/?utm_source=blog",
     content: `December shopping has its own vibe in Nigeria. If you agree with us, people are buying gifts, ordering wigs, paying vendors for events, restocking their businesses, and trying to reclaim the joy they lost earlier in the year. But in the middle of all that excitement, something else happens: people rush into transactions they haven't properly checked.
 
 It's not ignorance, it's the December pressure. Everyone is in a hurry. Everyone is emotional. Everyone wants something delivered "today today." And that's how people make decisions they would never make in January.
@@ -588,7 +588,7 @@ If you must trade online this season, trade safely, Trade clearly, Trade with pr
     date: "15 September 2025",
     image: "/assets/images/blog-post.png",
     buttonText: "Start a Trade",
-    buttonLink: "/",
+    buttonLink: "/?utm_source=blog",
     content: `Bridgee is thrilled to announce its selection into Wema Bank's esteemed Startup Accelerator Programme and a strategic partnership with the bank as our financial and payment infrastructure partner.
 
 We extend our heartfelt gratitude to Wema Bank's leadership, particularly Solomon Ayodele, Head of Innovation & IDEAx Labs, and Babatunde Mumuni, Chief Transformation & Innovation Officer, for their unwavering support and commitment to fostering innovation among startups.

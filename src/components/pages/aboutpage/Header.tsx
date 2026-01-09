@@ -19,6 +19,7 @@ type HeaderProps = {
 
 function Header({ onOpenRegisterModal }: HeaderProps) {
   const router = useRouter();
+
   const { homepageData } = useHomepageContext();
   const [showMenu, setShowMenu] = useState(false);
 
