@@ -22,28 +22,28 @@ const stepsConfig = [
   {
     id: "bvnValidation",
     description: "Identity Verification",
-    Component: BvnValidation,
+    Component: BvnValidation
   },
   {
     id: "livenessCheck",
     description: "Identity Verification",
-    Component: LivenessCheck,
+    Component: LivenessCheck
   },
   {
     id: "personalInfo",
     description: "Personal Information Validation",
-    Component: PersonalInfo,
+    Component: PersonalInfo
   },
   {
     id: "emailVerification",
     description: "Email Verification",
-    Component: EmailVerification,
+    Component: EmailVerification
   },
   {
     id: "success",
     description: "",
-    Component: Success,
-  },
+    Component: Success
+  }
 ];
 
 export default function CreateAccountPage() {
@@ -66,9 +66,9 @@ export default function CreateAccountPage() {
       phoneNumber: "",
       businessName: "",
       password: "",
-      partnerCode: "",
+      partnerCode: ""
     },
-    otpValidationTicket: "",
+    otpValidationTicket: ""
   });
 
   useEffect(() => {
@@ -77,12 +77,11 @@ export default function CreateAccountPage() {
         ...prev,
         personalInfo: {
           ...prev.personalInfo,
-          partnerCode: router.query.ref as string,
-        },
+          partnerCode: router.query.ref as string
+        }
       }));
     }
   }, [router.query.ref, currentStepIndex]);
-
 
   const handleNext = () => {
     setCurrentStepIndex((prevIndex) => prevIndex + 1);
@@ -112,44 +111,44 @@ export default function CreateAccountPage() {
 
   const renderStepComponent = () => {
     switch (currentStepData.id) {
-      case "bvnValidation":
-        return (
-          <BvnValidation
-            formData={formData}
-            setFormData={setFormData}
-            onNavigateNext={handleNext}
-          />
-        );
-      case "livenessCheck":
-        return (
-          <LivenessCheck
-            formData={formData}
-            setFormData={setFormData}
-            onNavigateNext={handleNext}
-          />
-        );
-      case "personalInfo":
-        return (
-          <PersonalInfo
-            formData={formData}
-            setFormData={setFormData}
-            onOtpSentSuccess={handleNext}
-            isSeller={isSeller}
-          />
-        );
-      case "emailVerification":
-        return (
-          <EmailVerification
-            formData={formData}
-            setFormData={setFormData}
-            onNavigateNext={handleNext}
-            isSeller={isSeller}
-          />
-        );
-      case "success":
-        return <Success />;
-      default:
-        return null;
+    case "bvnValidation":
+      return (
+        <BvnValidation
+          formData={formData}
+          setFormData={setFormData}
+          onNavigateNext={handleNext}
+        />
+      );
+    case "livenessCheck":
+      return (
+        <LivenessCheck
+          formData={formData}
+          setFormData={setFormData}
+          onNavigateNext={handleNext}
+        />
+      );
+    case "personalInfo":
+      return (
+        <PersonalInfo
+          formData={formData}
+          setFormData={setFormData}
+          onOtpSentSuccess={handleNext}
+          isSeller={isSeller}
+        />
+      );
+    case "emailVerification":
+      return (
+        <EmailVerification
+          formData={formData}
+          setFormData={setFormData}
+          onNavigateNext={handleNext}
+          isSeller={isSeller}
+        />
+      );
+    case "success":
+      return <Success />;
+    default:
+      return null;
     }
   };
 
@@ -191,7 +190,7 @@ export default function CreateAccountPage() {
                       currentStepIndex === 0
                         ? 20
                         : ((currentStepIndex + 1) / totalSteps) * 100
-                    }%`,
+                    }%`
                   }}
                 />
               </div>

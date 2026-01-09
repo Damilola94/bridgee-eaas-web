@@ -35,7 +35,7 @@ function Login() {
         router?.push('/seller/create-account?stage=validateOtp');
       } else {
         setCookie('data', res?.data, { secure: true, sameSite: true });
-        const userRole = res?.data?.role || res?.data?.userType;
+        // const userRole = res?.data?.role || res?.data?.userType;
         router?.push('/dashboard');
       }
     },

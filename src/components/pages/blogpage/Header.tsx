@@ -13,12 +13,19 @@ import Button from "../../inputs/Button";
 import { toggleScroll } from "../../../utilities/general";
 import { useHomepageContext } from "../../../context/Homepage";
 
-function Header() {
+type HeaderProps = {
+  onOpenRegisterModal: () => void;
+};
+
+function Header({ onOpenRegisterModal }: HeaderProps) {
   const router = useRouter();
   const { homepageData } = useHomepageContext();
 
   const [showMenu, setShowMenu] = useState(false);
-
+  const handleCreateAccountClick = () => {
+    onOpenRegisterModal();
+    setShowMenu(false);
+  };
   useEffect(() => {
     toggleScroll();
 
@@ -120,11 +127,11 @@ function Header() {
                     Login
                   </Button>
                   <Button
-                    onClick={() => router.push("/seller/create-account")}
+                    onClick={handleCreateAccountClick}
                     paddingX="px-8"
                     paddingY="py-3"
                   >
-                    Create account
+                                     Create account
                   </Button>
                 </div>
               )}
@@ -238,11 +245,11 @@ function Header() {
                         Login
                       </Button>
                       <Button
-                        onClick={() => router.push("/seller/create-account")}
+                        onClick={handleCreateAccountClick}
                         paddingX="px-8"
                         paddingY="py-3"
                       >
-                        Create account
+                                          Create account
                       </Button>
                     </div>
                   )}

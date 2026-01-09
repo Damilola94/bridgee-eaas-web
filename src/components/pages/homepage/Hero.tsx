@@ -2,9 +2,6 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/router";
-
-// import { FaWhatsapp } from "react-icons/fa";
 
 import { Dialog, DialogContent } from "../../common/UI";
 
@@ -25,7 +22,6 @@ type HeroProps = {
 };
 
 function Hero({ onOpenRegisterModal }: HeroProps) {
-  const router = useRouter();
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   // const handleWaitlistClick = () => {
