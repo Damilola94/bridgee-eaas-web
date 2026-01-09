@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import HomepageContextProvider from "../../../context/Homepage";
@@ -23,6 +23,12 @@ function Container() {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  useEffect(() => {
+    if (router.isReady && router.query?.utm_source === "blog") {
+      setShowRegisterModal(true);
+    }
+  }, [router.isReady, router.query]);
 
   const handleOpenRegisterModal = () => setShowRegisterModal(true);
 

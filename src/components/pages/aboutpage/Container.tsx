@@ -1,16 +1,13 @@
 import React, { useState } from "react";
-
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 
 import HomepageContextProvider from "../../../context/Homepage";
-
 import RegisterSelectionModal from "../homepage/modals/RegisterSelectionModal";
 
 import Header from "./Header";
 import Hero from "./Hero";
 import GetStarted from "./GetStarted";
 import Footer from "./Footer";
-
 import TeamSection from "./TeamSection";
 
 function Container() {
@@ -34,14 +31,16 @@ function Container() {
       <div className="bg-[#FAE9FC]">
         <Header onOpenRegisterModal={handleOpenRegisterModal} />
 
-        <main id="top" className="w-full pt-24  bg-[#FAE9FC]">
+        <main id="top" className="w-full pt-24 bg-[#FAE9FC]">
           <Hero />
           <TeamSection />
           <GetStarted />
         </main>
+
         <div className="px-14 pb-10">
           <Footer />
         </div>
+
         <RegisterSelectionModal
           isOpen={showRegisterModal}
           onClose={() => setShowRegisterModal(false)}
