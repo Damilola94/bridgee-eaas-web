@@ -12,6 +12,7 @@ import WalletHistory from './WalletHistory';
 // import EscrowInviteReminder from './EscrowInviteReminder';
 import EscrowCard from './EscrowCard';
 import WithdrawalPinBanner from './CreateWithdrawalPin';
+import CreateWithdrawalBank from './CreateWithdrawalBank';
 
 function DashboardContainer() {
   const [cookie] = useCookies(['data']);
@@ -30,8 +31,9 @@ function DashboardContainer() {
       </h3>
       <div className="flex w-[calc(100%+36px)] -m-5">
         <div className="w-full xl:w-[calc(100%-400px)] px-3 pt-3 pb-5">
-          <div className="w-full mb-3">
+          <div className="w-full mb-3 space-y-2">
             {!wallet?.hasPin && <WithdrawalPinBanner />}
+            {!wallet?.hasWithdrawalBankAccount && <CreateWithdrawalBank />}
           </div>
           <div className="w-full mb-3 sm:flex sm:space-x-3 space-y-3 sm:space-y-0">
             {!isBuyer && <WalletCard />}
