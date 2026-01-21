@@ -1,16 +1,19 @@
 "use client";
 
 import React from "react";
+
 import Button from "../../inputs/Button";
 
 interface OrderIdFormProps {
   orderId: string;
   setOrderId: (orderId: string) => void;
   onSubmit: () => void;
-  isLoading?: boolean; 
+  isLoading?: boolean;
 }
 
-export default function OrderIdForm({ orderId, setOrderId, onSubmit, isLoading = true }: OrderIdFormProps) {
+export default function OrderIdForm({
+  orderId, setOrderId, onSubmit, isLoading = true
+}: OrderIdFormProps) {
   return (
     <div className="min-h-screen">
       <div className="p-10">

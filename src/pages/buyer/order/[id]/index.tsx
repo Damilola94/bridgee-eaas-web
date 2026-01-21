@@ -1,20 +1,30 @@
+/* eslint-disable no-duplicate-imports */
 "use client";
 
 import React, { useEffect } from "react";
 
 import { useState } from "react";
 import Head from "next/head";
-import Logo from "../../../../assets/svgs/logos/full-pink.svg";
+
 import Link from "next/link";
+
 import Image from "next/image";
+
+import { useRouter } from "next/router";
+
+import { useQuery, useQueryClient } from "react-query";
+
+import Skeleton from "react-loading-skeleton";
+
+import Logo from "../../../../assets/svgs/logos/full-pink.svg";
+
 import Invoice from "../../../../components/pages/buyer/Invoice";
 import MakePayment from "../../../../components/pages/buyer/MakePayment";
-import { useRouter } from "next/router";
-import { useQuery, useQueryClient } from "react-query";
+
 import {
   getOrderStatus,
   getOrderDetails,
-  getOrderActivityLogs,
+  getOrderActivityLogs
 } from "../../../../services/api/escrow";
 import notification from "../../../../utilities/notification";
 import { QUERY_KEYS } from "../../../../configs/constants";
@@ -22,16 +32,15 @@ import Activity from "../../../../components/pages/buyer/Activity";
 import {
   ActivityLogItem,
   ActivityLogsResponse,
-  OrderDetailsResponse,
+  OrderDetailsResponse
 } from "../../../../types/escrow";
 import Loading from "../../../../components/common/Loading";
-import Skeleton from "react-loading-skeleton";
+
 import Button from "../../../../components/inputs/Button";
 
 export default function BuyerOrder() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  // Get order Reference from dynamic URL path using router.query
   const urlOrderReference = router.query.id as string;
 
   const [isInitialLoading, setIsInitialLoading] = useState(
@@ -54,7 +63,7 @@ export default function BuyerOrder() {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
-    phone: "",
+    phone: ""
   });
 
   useEffect(() => {
@@ -83,16 +92,16 @@ export default function BuyerOrder() {
         notification({
           title: "Error",
           message: error?.message || "Failed to check order status",
-          type: "danger",
+          type: "danger"
         });
-      },
+      }
     }
   );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value
     });
   };
 
@@ -109,7 +118,7 @@ export default function BuyerOrder() {
         setFormData({
           fullName: response.data?.recipientName || "",
           email: response.data?.recipientEmail || "",
-          phone: response.data?.recipientPhone || "",
+          phone: response.data?.recipientPhone || ""
         });
 
         const escrowOrderId = response.data?.id;
@@ -126,7 +135,7 @@ export default function BuyerOrder() {
                 title: "Error",
                 message:
                   activityResponse.message || "Failed to fetch activity logs",
-                type: "danger",
+                type: "danger"
               });
             }
           } catch (activityError: any) {
@@ -134,7 +143,7 @@ export default function BuyerOrder() {
               title: "Error",
               message:
                 activityError?.message || "Failed to fetch activity logs",
-              type: "danger",
+              type: "danger"
             });
           } finally {
             setIsLoadingActivities(false);
@@ -145,14 +154,14 @@ export default function BuyerOrder() {
         notification({
           title: "Error",
           message: response.message,
-          type: "danger",
+          type: "danger"
         });
       }
     } catch (error: any) {
       notification({
         title: "Error",
         message: error?.message || "Failed to fetch order details",
-        type: "danger",
+        type: "danger"
       });
     } finally {
       setIsLoadingOrderDetails(false);
@@ -172,16 +181,16 @@ export default function BuyerOrder() {
     setShowPaymentView(true);
   };
 
-  if (
-    isInitialLoading ||
-    isLoadingOrderDetails ||
-    statusLoading ||
-    !orderStatusData
-  ) {
-    return <Loading />;
-  }
+  // if (
+  //   isInitialLoading ||
+  //   isLoadingOrderDetails ||
+  //   statusLoading ||
+  //   !orderStatusData
+  // ) {
+  //   return <Loading />;
+  // }
 
-  const allowPayment = orderStatusData?.data?.allowPayment;
+  const allowPayment = !orderStatusData?.data?.allowPayment;
 
   if (allowPayment === true) {
     if (!showPaymentView) {
@@ -193,52 +202,51 @@ export default function BuyerOrder() {
           <div className="min-h-screen bg-gray-50 flex flex-col justify-center px-4">
             <div className="container mx-auto">
 
-           
-            {/* Mobile Header */}
-            <div className="lg:hidden bg-white border-b border-gray-200 w-full px-4 py-4 mb-4">
-              <div className="flex items-center">
-                <div className="block lg:hidden my-4 ml-2">
-                  <Link href="#" onClick={() => {}}>
-                    <Image
-                      src={Logo}
-                      alt="UseBridgee Inc. logo"
-                      priority
-                      width={120}
-                      height={45}
-                    />
-                  </Link>
+              {/* Mobile Header */}
+              <div className="lg:hidden bg-white border-b border-gray-200 w-full px-4 py-4 mb-4">
+                <div className="flex items-center">
+                  <div className="block lg:hidden my-4 ml-2">
+                    <Link href="#" onClick={() => {}}>
+                      <Image
+                        src={Logo}
+                        alt="UseBridgee Inc. logo"
+                        priority
+                        width={120}
+                        height={45}
+                      />
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Desktop Header */}
-            <div className="hidden lg:flex justify-start lg:pl-20 lg:pt-10">
-              <Link href="#" onClick={() => {}}>
-                <Image
-                  src={Logo}
-                  alt="UseBridge Inc. logo"
-                  priority
-                  width={120}
-                  height={45}
-                  className="mb-2"
-                />
-              </Link>
-            </div>
+              {/* Desktop Header */}
+              <div className="hidden lg:flex justify-start lg:pl-20 lg:pt-10">
+                <Link href="#" onClick={() => {}}>
+                  <Image
+                    src={Logo}
+                    alt="UseBridge Inc. logo"
+                    priority
+                    width={120}
+                    height={45}
+                    className="mb-2"
+                  />
+                </Link>
+              </div>
 
-            {/* Centered Invoice */}
-            <div className="w-full flex flex-col justify-center mx-auto max-w-2xl my-8">
-              <Button
-                onClick={handleShowPayment}
-                className="w-full max-w-2xl bg-success text-white py-3 px-4 rounded-lg font-bold text-lg mb-6"
-              >
+              {/* Centered Invoice */}
+              <div className="w-full flex flex-col justify-center mx-auto max-w-2xl my-8">
+                <Button
+                  onClick={handleShowPayment}
+                  className="w-full max-w-2xl bg-success text-white py-3 px-4 rounded-lg font-bold text-lg mb-6"
+                >
                 Make Payment
-              </Button>
-              <Invoice
-                orderDetails={orderDetails}
-                orderStatus={orderStatusData?.data}
-              />
+                </Button>
+                <Invoice
+                  orderDetails={orderDetails}
+                  orderStatus={orderStatusData?.data}
+                />
+              </div>
             </div>
-             </div>
           </div>
         </>
       );
