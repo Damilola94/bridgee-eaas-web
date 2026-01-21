@@ -12,7 +12,7 @@ import notification from '../../../utilities/notification';
 import Button from '../../inputs/Button';
 
 import SatisfiedModal from './SatisfiedModal';
-import DisputeModal from './disputeModal';
+import DisputeModal from './DisputeModal';
 
 interface OrderItem {
   id?: number;
@@ -137,7 +137,7 @@ export default function Invoice({
     deliveryFee: orderDetails?.deliveryFee || 0,
     escrowFee: orderDetails?.escrowFee || 0,
     total: orderDetails?.total || 0,
-    status: "Delivered" || "...",
+    status: "Delivered",
     // status: orderStatus?.status || "...",
     allowPayment: orderStatus?.allowPayment
   };
