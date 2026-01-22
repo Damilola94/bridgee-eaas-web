@@ -137,8 +137,8 @@ export default function Invoice({
     deliveryFee: orderDetails?.deliveryFee || 0,
     escrowFee: orderDetails?.escrowFee || 0,
     total: orderDetails?.total || 0,
-    status: "Delivered",
-    // status: orderStatus?.status || "...",
+    // status: "Delivered",
+    status: orderStatus?.status || "...",
     allowPayment: orderStatus?.allowPayment
   };
 
