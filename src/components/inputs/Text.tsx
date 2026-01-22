@@ -46,7 +46,7 @@ function TextInput({
   accept,
   leftAddon,
   required,
-  autoComplete,
+  autoComplete
 }: Props) {
   const [inputType, setInputType] = useState(type);
 

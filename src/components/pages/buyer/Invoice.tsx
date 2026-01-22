@@ -1,5 +1,18 @@
+
+'use client';
+
+import { useState } from 'react';
+import { useMutation } from 'react-query';
+
 import { getStatusColor } from "../../../utilities/color";
 import { formatCurrency } from "../../../utilities/general";
+
+import notification from '../../../utilities/notification';
+
+import Button from '../../inputs/Button';
+
+import SatisfiedModal from './SatisfiedModal';
+import DisputeModal from './DisputeModal';
 
 interface OrderItem {
   id?: number;
@@ -39,11 +52,63 @@ interface InvoiceProps {
   allowPayment?: boolean;
 }
 
+const handleFetch = async (params: any) => {
+  const {
+    service, endpoint, method, body
+  } = params;
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}${service}${endpoint}`, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!response.ok) throw new Error(response.statusText);
+  return response.json();
+};
+
 export default function Invoice({
   orderDetails,
   orderStatus,
-  allowPayment,
+  allowPayment
 }: InvoiceProps) {
+  const [isSatisfiedModalOpen, setIsSatisfiedModalOpen] = useState(false);
+  const [isDisputeModalOpen, setIsDisputeModalOpen] = useState(false);
+
+  const satisfiedMutation = useMutation(handleFetch, {
+    onSuccess: (res: any) => {
+      notification({
+        title: "Success",
+        message: "Order marked as satisfied successfully",
+        type: "success"
+      });
+      setIsSatisfiedModalOpen(false);
+    },
+    onError: (err: any) => {
+      notification({
+        title: "Error",
+        message: err?.toString() || "Failed to mark order as satisfied",
+        type: "danger"
+      });
+    }
+  });
+
+  const disputeMutation = useMutation(handleFetch, {
+    onSuccess: (res: any) => {
+      notification({
+        title: "Success",
+        message: "Dispute submitted successfully",
+        type: "success"
+      });
+      setIsDisputeModalOpen(false);
+    },
+    onError: (err: any) => {
+      notification({
+        title: "Error",
+        message: err?.toString() || "Failed to submit dispute",
+        type: "danger"
+      });
+    }
+  });
+
   const orderData = {
     id: orderDetails?.id || "",
     invoiceDate: orderDetails?.createdDate || "",
@@ -66,17 +131,43 @@ export default function Invoice({
         name: item.name,
         price: item.unitPrice,
         quantity: item.quantity,
-        total: item.total,
+        total: item.total
       })) || [],
     subTotal: orderDetails?.subtotal || 0,
     deliveryFee: orderDetails?.deliveryFee || 0,
     escrowFee: orderDetails?.escrowFee || 0,
     total: orderDetails?.total || 0,
+    // status: "Delivered",
     status: orderStatus?.status || "...",
-    allowPayment: orderStatus?.allowPayment,
+    allowPayment: orderStatus?.allowPayment
   };
 
   const statusStyle = getStatusColor(orderData.status);
+
+  const handleSatisfied = () => {
+    satisfiedMutation.mutate({
+      service: "escrows/",
+      endpoint: `orders/${orderData.invoiceNumber}/satisfied`,
+      method: "POST",
+      body: { reference: orderData.invoiceNumber }
+    });
+  };
+
+  const handleDispute = (reason: string | undefined, phone: string, evidence: any) => {
+    disputeMutation.mutate({
+      service: "disputes/",
+      method: "POST",
+      body: {
+        EscrowOrderId: orderData.invoiceNumber,
+        DisputeReasonId: orderData.id,
+        CustomReason: reason,
+        Description: reason,
+        ReporterPhone: phone,
+        PictureProofs: evidence,
+        VideoProofs: []
+      }
+    });
+  };
 
   return (
     <div className="w-full">
@@ -93,7 +184,6 @@ export default function Invoice({
         </div>
       )}
 
-      {/* Invoice Header */}
       <div className="bg-white shadow rounded-lg p-6 mb-6">
         <div className="flex flex-col lg:flex-row justify-between items-start mb-6">
           <div className="order-2 lg:order-none">
@@ -126,7 +216,6 @@ export default function Invoice({
           </div>
         </div>
 
-        {/* Recipient and Order Details */}
         <div className="grid lg:grid-cols-2 gap-6 mb-10 lg:mb-8">
           <div>
             <h4 className="text-base font-bold text-textColor mb-2">
@@ -240,7 +329,42 @@ export default function Invoice({
             </div>
           </div>
         </div>
+
+        {orderData.status === "Delivered" && (
+          <div className="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row gap-4">
+            <Button
+              onClick={() => {
+                setIsSatisfiedModalOpen(true);
+              }}
+              className="bg-transparent border border-success py-2 w-full text-success"
+            >
+              Satisfied
+            </Button>
+            <Button
+              onClick={() => {
+                setIsDisputeModalOpen(true);
+              }}
+              className="bg-success py-2 w-full text-lg font-bold"
+            >
+              Open Dispute
+            </Button>
+          </div>
+        )}
       </div>
+
+      <SatisfiedModal
+        isOpen={isSatisfiedModalOpen}
+        onClose={() => setIsSatisfiedModalOpen(false)}
+        onSatisfied={() => handleSatisfied()}
+        isLoading={satisfiedMutation.isLoading}
+      />
+
+      <DisputeModal
+        isOpen={isDisputeModalOpen}
+        onClose={() => setIsDisputeModalOpen(false)}
+        onDispute={handleDispute}
+        isLoading={disputeMutation.isLoading}
+      />
     </div>
   );
 }

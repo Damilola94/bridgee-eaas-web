@@ -31,7 +31,7 @@ function Sidebar() {
   const wrapperRef = useRef(null);
   const [showMenu, setShowMenu] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const [cookie] = useCookies(["data"])
+  const [cookie] = useCookies(["data"]);
 
   const userRole = cookie?.data?.activeRole || cookie?.data?.roles?.[0];
 
@@ -46,7 +46,7 @@ function Sidebar() {
       link: '/settings',
       icon: SettingsIcon
     }
-  ]
+  ];
 
   const displayMenu = userRole === 'Buyer' ? buyerMenu : menuList;
 
@@ -125,7 +125,7 @@ function Sidebar() {
 
       <nav
         className={`z-30 page-sidebar fixed w-72 bg-primary overflow-auto h-screen hide-scroll ${showMenu ? 'show' : ''
-          } shadow-box lg:shadow-none`}
+        } shadow-box lg:shadow-none`}
       >
         <div className="fixed cursor-pointer top-5 right-5 lg:hidden">
           <IoClose

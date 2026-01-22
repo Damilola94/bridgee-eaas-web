@@ -8,7 +8,7 @@ type SelectProps = {
   name?: string,
   label?: string,
   height?: string,
-  value?: SelectOptionType,
+  value?: SelectOptionType | null,
   options?: SelectOptionType[],
   placeholder?: string,
   multiple?: boolean,

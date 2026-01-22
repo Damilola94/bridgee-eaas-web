@@ -1,7 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import { useEffect, useState } from "react";
-
-import { CopyToClipboard } from "react-copy-to-clipboard";
+import React, { useEffect, useState } from "react";
 
 import Image from "next/image";
 
@@ -12,7 +10,6 @@ import Skeleton from "react-loading-skeleton";
 import { useRouter } from "next/router";
 
 import Button from "../../inputs/Button";
-import TextInput from "../../inputs/Text";
 import CopyIcon from "../../../assets/svgs/copy.svg";
 import CancelIcon from "../../../assets/svgs/cancel.svg";
 
@@ -20,7 +17,7 @@ import notification from "../../../utilities/notification";
 import { QUERY_KEYS } from "../../../configs/constants";
 import {
   getPaymentDetails,
-  getTransactionStatus,
+  getTransactionStatus
 } from "../../../services/api/escrow";
 
 import PaymentSuccessful from "./PaymentSuccessful";
@@ -47,7 +44,7 @@ export default function MakePayment({
   onPaymentSuccess,
   onPaymentPending,
   initialIsPaymentInitiated = false,
-  onCancelPayment,
+  onCancelPayment
 }: MakePaymentProps) {
   const router = useRouter();
 
@@ -69,7 +66,7 @@ export default function MakePayment({
     [QUERY_KEYS.PAYMENT_DETAILS, orderReference, formData.email],
     () => getPaymentDetails(orderReference || "", formData.email || ""),
     {
-      enabled: Boolean(orderReference && formData.email && isPaymentInitiated),
+      enabled: Boolean(orderReference && formData.email && isPaymentInitiated)
     }
   );
 
@@ -98,27 +95,12 @@ export default function MakePayment({
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const isFormValid = () => {
-    const { fullName, email, phone } = formData;
-    return (
-      fullName.trim().length > 0 &&
-      email.trim().length > 0 &&
-      phone.trim().length > 0
-    );
-  };
-
-  const handleMakePayment = () => {
-    if (isFormValid()) {
-      setIsPaymentInitiated(true);
-    }
-  };
-
   const handleSentMoney = async () => {
     if (!transactionId) {
       notification({
         title: "Error",
         message: "Transaction ID not available. Please try again.",
-        type: "error",
+        type: "error"
       });
       return;
     }
@@ -129,7 +111,7 @@ export default function MakePayment({
       notification({
         title: "Error",
         message: "Order reference not available.",
-        type: "error",
+        type: "error"
       });
       return;
     }
@@ -146,7 +128,7 @@ export default function MakePayment({
             statusCode: "400",
             message: "Transaction status is Pending.",
             data: null,
-            metaData: null,
+            metaData: null
           };
         }
         throw error; // Re-throw actual network errors
@@ -159,7 +141,7 @@ export default function MakePayment({
         title: "Payment Successful",
         message:
           response.message || "Your payment has been processed successfully!",
-        type: "success",
+        type: "success"
       });
 
       queryClient.invalidateQueries([QUERY_KEYS.ORDER_STATUS, orderReference]);
@@ -177,7 +159,7 @@ export default function MakePayment({
         message:
           response.message ||
           "Your payment is being processed. We'll notify you once it's complete.",
-        type: "info",
+        type: "info"
       });
 
       onPaymentPending?.();
@@ -185,7 +167,7 @@ export default function MakePayment({
       notification({
         title: "Payment Status",
         message: response.message || "Unable to determine payment status.",
-        type: "warning",
+        type: "warning"
       });
     }
 
