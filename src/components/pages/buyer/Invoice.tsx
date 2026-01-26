@@ -72,6 +72,7 @@ export default function Invoice({
 }: InvoiceProps) {
   const [isSatisfiedModalOpen, setIsSatisfiedModalOpen] = useState(false);
   const [isDisputeModalOpen, setIsDisputeModalOpen] = useState(false);
+  const [step, setStep] = useState<'confirm' | 'success'>('confirm');
 
   const satisfiedMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
@@ -81,8 +82,10 @@ export default function Invoice({
         type: "success"
       });
       setIsSatisfiedModalOpen(false);
+      setStep('success');
     },
     onError: (err: any) => {
+      console.log(err);
       notification({
         title: "Error",
         message: err?.toString() || "Failed to mark order as satisfied",
@@ -146,8 +149,8 @@ export default function Invoice({
 
   const handleSatisfied = () => {
     satisfiedMutation.mutate({
-      service: "escrows/",
-      endpoint: `orders/${orderData.invoiceNumber}/satisfied`,
+      service: "wallet-service/api/v1/",
+      endpoint: `escrows/orders/${orderData.invoiceNumber}/satisfied`,
       method: "POST",
       body: { reference: orderData.invoiceNumber }
     });
@@ -330,7 +333,7 @@ export default function Invoice({
           </div>
         </div>
 
-        {orderData.status === "Delivered" && (
+        {"Draft" === "Draft" && (
           <div className="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row gap-4">
             <Button
               onClick={() => {
@@ -353,6 +356,8 @@ export default function Invoice({
       </div>
 
       <SatisfiedModal
+        step={step}
+        setStep={setStep}
         isOpen={isSatisfiedModalOpen}
         onClose={() => setIsSatisfiedModalOpen(false)}
         onSatisfied={() => handleSatisfied()}
