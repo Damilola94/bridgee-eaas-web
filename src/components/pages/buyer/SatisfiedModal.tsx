@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { CheckCircle } from 'lucide-react';
 
 import Modal from '../../common/Modal';
@@ -9,18 +9,21 @@ import Button from '../../inputs/Button';
 
 interface SatisfiedModalProps {
   isOpen: boolean;
+  step: 'confirm' | 'success';
   onClose: () => void;
   onSatisfied: () => void;
+  setStep: React.Dispatch<React.SetStateAction<'confirm' | 'success'>>;
   isLoading?: boolean;
 }
 
 export default function SatisfiedModal({
   isOpen,
   onClose,
+  step,
+  setStep,
   onSatisfied,
   isLoading = false
 }: SatisfiedModalProps) {
-  const [step, setStep] = useState<'confirm' | 'success'>('confirm');
 
   if (!isOpen) {
     return null;
@@ -28,7 +31,6 @@ export default function SatisfiedModal({
 
   const handleSatisfiedConfirm = () => {
     onSatisfied();
-    setStep('success');
   };
 
   const handleCloseModal = () => {
@@ -73,7 +75,7 @@ export default function SatisfiedModal({
         )}
 
         {step === 'success' && (
-          <div className="space-y-6 text-center">
+          <div className="space-y-4 text-center">
             <div className="flex justify-center">
               <CheckCircle className="w-16 h-16 text-success" />
             </div>
