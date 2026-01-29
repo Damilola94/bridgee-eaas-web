@@ -36,7 +36,7 @@ function InvoiceSummary() {
     extra: "calculate-fee",
     pQuery: { feeType: "Escrow", amount: total },
     queryKey: ["calculate-fee", total],
-    enabled: !!total,
+    enabled: !!total
   });
 
   const uploadMutation = useMutation(handleFetch, {
@@ -44,9 +44,9 @@ function InvoiceSummary() {
       notification({
         title: "Upload Error",
         message: err?.toString() || "Failed to upload document.",
-        type: "danger",
+        type: "danger"
       });
-    },
+    }
   });
 
   const escrowMutation = useMutation(handleFetch, {
@@ -54,16 +54,16 @@ function InvoiceSummary() {
       router.push("/dashboard");
       notification({
         message: res?.message || "You have successfully created an invoice",
-        type: "success",
+        type: "success"
       });
     },
     onError: (err: any) => {
       notification({
         title: "Error",
         message: err?.toString() || "Something went wrong.",
-        type: "danger",
+        type: "danger"
       });
-    },
+    }
   });
 
   const handleSubmit = async () => {
@@ -85,14 +85,14 @@ function InvoiceSummary() {
           method: "POST",
           body: uploadBody,
           auth: true,
-          multipart: true,
+          multipart: true
         });
 
         if (uploadResponse?.data) {
           photoUrls = Array.isArray(uploadResponse.data)
             ? uploadResponse.data
-                .map((item: any) => item?.url || item)
-                .filter(Boolean)
+              .map((item: any) => item?.url || item)
+              .filter(Boolean)
             : [uploadResponse.data?.url || uploadResponse.data].filter(Boolean);
         }
       } catch (error) {
@@ -105,7 +105,7 @@ function InvoiceSummary() {
         name: form?.recipientDetails?.recipientName || "",
         email: form?.recipientDetails?.email || "",
         phoneNumber: form?.recipientDetails?.phoneNumber || "",
-        address: form?.recipientDetails?.address || "",
+        address: form?.recipientDetails?.address || ""
       },
       photoUrls: photoUrls,
       buyerPaysEscrowFee: form?.isDeliveryOnUs || false,
@@ -121,11 +121,9 @@ function InvoiceSummary() {
       shipmentMetaData: {
         requestToken: form?.selectedCourier?.requestToken || "",
         serviceCode: form?.selectedCourier?.serviceCode || "",
-        courierId: form?.selectedCourier?.courierId || "",
-      },
+        courierId: form?.selectedCourier?.courierId || ""
+      }
     };
-
-    console.log("Escrow Payload:", payload);
 
     escrowMutation.mutate({
       service: "wallet-service/api/v1",
