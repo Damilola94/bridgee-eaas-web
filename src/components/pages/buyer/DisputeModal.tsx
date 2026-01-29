@@ -3,44 +3,146 @@
 
 import React, { useState } from 'react';
 import { CheckCircle, Upload } from 'lucide-react';
+import Select, { SingleValue, StylesConfig } from 'react-select';
 
-// import type { SelectOptionType } from "../../inputs/Select";
+import { useMutation, useQuery } from 'react-query';
+
+import { useCookies } from 'react-cookie';
 
 import Modal from '../../common/Modal';
 
 import Button from '../../inputs/Button';
-// import SelectInput from '../../inputs/Select';
 import TextInput from '../../inputs/Text';
+import notification from '../../../utilities/notification';
+import { getBanksList, getAccountName } from '../../../services/api/bank';
+import useGetQuery from '../../../hooks/useGetQuery';
+
+import { DisputePayload } from './disputeTypes';
+
+type Step = 'reason' | 'phone' | 'bank' | 'success';
+
+interface Bank {
+  bankCode: string;
+  bankName: string;
+}
+
+type DisputeReasonOption = {
+  label: string;
+  value: string;
+  isOther: boolean;
+};
+
+type BankOption = {
+  label: string;
+  value: string;
+};
+
+const selectStyles: StylesConfig<BankOption, false> = {
+  control: (base) => ({
+    ...base,
+    height: '3rem',
+    borderRadius: '10px',
+    borderColor: '#D0D5DD',
+    backgroundColor: '#F9FAFB',
+    boxShadow: 'none'
+  })
+};
 
 interface DisputeModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onDispute: (reason: string | undefined, phone: string, evidence: File[]) => void;
-    isLoading?: boolean;
+  isOpen: boolean;
+  onClose: () => void;
+  escrowOrderId: string;
+  onDispute: (payload: DisputePayload) => void;
+  isLoading?: boolean;
 }
 
 export default function DisputeModal({
   isOpen,
   onClose,
+  escrowOrderId,
   onDispute,
   isLoading = false
 }: DisputeModalProps) {
-  const [step, setStep] = useState<'reason' | 'phone' | 'evidence' | 'success'>('reason');
-  //   const [disputeReason, setDisputeReason] =
-  //   useState<SelectOptionType | null>(null);
-  const [disputeReason, setDisputeReason] = useState('');
-  const [disputeDescription, setDisputeDescription] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [cookie] = useCookies(["data"]);
+  const [step, setStep] = useState<Step>('reason');
   const [error, setError] = useState('');
+
+  const [disputeReasonId, setDisputeReasonId] = useState('');
+  const [customReason, setCustomReason] = useState('');
+  const [isOtherReason, setIsOtherReason] = useState(false);
+  const [disputeDescription, setDisputeDescription] = useState('');
+
+  const [phoneNumber, setPhoneNumber] = useState('');
+
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+
+  const [selectedBank, setSelectedBank] = useState<Bank | null>(null);
+  const [accountNumber, setAccountNumber] = useState('');
+  const [accountName, setAccountName] = useState('');
+  const [accountValidated, setAccountValidated] = useState(false);
+
+  const { data, isLoading: reasonsLoading } = useGetQuery({
+    service: "wallet-service/api/v1/",
+    endpoint: "disputes",
+    extra: "reasons",
+    queryKey: ["escrows-reasons"],
+    enabled: !!cookie?.data?.accessToken
+  });
+
+  const disputeReasonOptions: DisputeReasonOption[] =
+    data?.data
+      ?.sort((a: any, b: any) => a.displayOrder - b.displayOrder)
+      .map((reason: any) => ({
+        label: reason.reason,
+        value: reason.id,
+        isOther: reason.reason.toLowerCase() === 'others'
+      })) || [];
+
+  const { data: bankResponse, isLoading: bankLoading } = useQuery(
+    'banks',
+    getBanksList
+  );
+
+  const banks: Bank[] =
+    bankResponse?.data?.map((b: any) => ({
+      bankCode: b.bankCode,
+      bankName: b.bankName
+    })) || [];
+
+  const bankOptions: BankOption[] = banks.map((bank) => ({
+    label: bank.bankName,
+    value: bank.bankCode
+  }));
+
+  const verifyAccount = useMutation(getAccountName, {
+    onSuccess: (res: any) => {
+      if (res?.isSuccess) {
+        setAccountName(res.data);
+        setAccountValidated(true);
+      }
+    },
+    onError: () => {
+      setAccountName('');
+      setAccountValidated(false);
+      notification({
+        title: 'Account verification failed',
+        message: 'Please check your bank details',
+        type: 'danger'
+      });
+    }
+  });
 
   if (!isOpen) {
     return null;
   }
 
   const handleDisputeReasonSubmit = () => {
-    if (!disputeReason) {
+    if (!disputeReasonId) {
       setError('Please select a reason for dispute');
+      return;
+    }
+    if (isOtherReason && !customReason.trim()) {
+      setError('Please enter your custom reason');
       return;
     }
     setError('');
@@ -53,7 +155,60 @@ export default function DisputeModal({
       return;
     }
     setError('');
-    onDispute(disputeReason, phoneNumber, uploadedFiles);
+    setStep('bank');
+  };
+
+  const handleAccountChange = (value: string) => {
+    setAccountNumber(value);
+    setAccountName('');
+    setAccountValidated(false);
+
+    if (value.length === 10 && selectedBank) {
+      verifyAccount.mutate({
+        bankCode: selectedBank.bankCode,
+        accountNumber: value
+      });
+    }
+  };
+
+  const handleSubmitDispute = () => {
+    if (!selectedBank) {
+      setError('Please select a bank');
+      return;
+    }
+    if (!accountNumber || accountNumber.length !== 10) {
+      setError('Please enter a valid 10-digit account number');
+      return;
+    }
+    if (!accountValidated || !accountName) {
+      setError('Please wait for account verification');
+      return;
+    }
+    setError('');
+    const formData = new FormData();
+    formData.append('EscrowOrderId', escrowOrderId);
+    formData.append('DisputeReasonId', disputeReasonId);
+    formData.append('CustomReason', customReason);
+    formData.append('Description', disputeDescription);
+    formData.append('ReporterPhone', phoneNumber);
+    if (selectedBank){
+      formData.append('BankName', selectedBank.bankName);
+    }
+    formData.append('ReporterAccountNumber', accountNumber);
+
+    uploadedFiles
+      .filter((file) => file.type.startsWith('image'))
+      .forEach((file) => {
+        formData.append('PictureProofs', file);
+      });
+
+    uploadedFiles
+      .filter((file) => file.type.startsWith('video'))
+      .forEach((file) => {
+        formData.append('VideoProofs', file);
+      });
+
+    onDispute(formData as unknown as DisputePayload);
     setStep('success');
   };
 
@@ -66,10 +221,16 @@ export default function DisputeModal({
 
   const handleCloseModal = () => {
     setStep('reason');
-    setDisputeReason('');
+    setDisputeReasonId('');
+    setCustomReason('');
+    setIsOtherReason(false);
     setDisputeDescription('');
     setPhoneNumber('');
     setUploadedFiles([]);
+    setSelectedBank(null);
+    setAccountNumber('');
+    setAccountName('');
+    setAccountValidated(false);
     setError('');
     onClose();
   };
@@ -88,43 +249,41 @@ export default function DisputeModal({
               <div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                        Reason for dispute
+                    Reason for dispute
                   </label>
-                  <select
-                    value={disputeReason}
-                    onChange={(e) => setDisputeReason(e.target.value)}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
-                  >
-                    <option value="">Select Reason</option>
-                    <option value="item_not_received">Item Not Received</option>
-                    <option value="item_damaged">Item Damaged</option>
-                    <option value="item_not_as_described">Item Not As Described</option>
-                    <option value="poor_quality">Poor Quality</option>
-                    <option value="other">Other</option>
-                  </select>
+                  <Select
+                    placeholder="Select dispute reason"
+                    options={disputeReasonOptions}
+                    isLoading={reasonsLoading}
+                    styles={selectStyles}
+                    onChange={(val: SingleValue<DisputeReasonOption>) => {
+                      setDisputeReasonId(val?.value || '');
+                      setIsOtherReason(val?.isOther || false);
+                      if (!val?.isOther) {
+                        setCustomReason('');
+                      }
+                    }}
+                  />
                 </div>
-                {/* <SelectInput
-  label="Reason for dispute"
-  value={disputeReason}
-  onChange={(val) => {
-    if (!Array.isArray(val)) {
-      setDisputeReason(val);
-    }
-  }}
-  options={[
-    { label: "Item Not Received", value: "item_not_received" },
-    { label: "Item Damaged", value: "item_damaged" },
-    { label: "Item Not As Described", value: "item_not_as_described" },
-    { label: "Poor Quality", value: "poor_quality" },
-    { label: "Other", value: "other" },
-  ]}
-/> */}
-
               </div>
+
+              {isOtherReason && (
+                <div>
+                  <TextInput
+                    className="w-full"
+                    value={customReason}
+                    onChange={(e) => setCustomReason(e.target.value)}
+                    name="customReason"
+                    type="text"
+                    label="Custom Reason"
+                    placeholder="Enter your reason for dispute"
+                  />
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                    Short description
+                  Short description
                 </label>
                 <textarea
                   value={disputeDescription}
@@ -137,7 +296,7 @@ export default function DisputeModal({
               <div className="space-y-2">
                 <h2 className="text-xl font-bold">Upload Evidence</h2>
                 <p className="text-gray-600 text-sm">
-                                    Please upload evidence to support your dispute (photos, videos, or documents)
+                  Please upload evidence to support your dispute (photos, videos, or documents)
                 </p>
 
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
@@ -149,7 +308,7 @@ export default function DisputeModal({
                       multiple
                       onChange={handleFileUpload}
                       className="hidden"
-                      accept="image/*,video/*,.pdf,.doc,.docx"
+                      accept="image/,video/,.pdf,.doc,.docx"
                     />
                   </label>
                 </div>
@@ -157,7 +316,7 @@ export default function DisputeModal({
                 {uploadedFiles.length > 0 && (
                   <div className="space-y-2">
                     <p className="text-sm font-semibold text-gray-700">
-                                            Uploaded files ({uploadedFiles.length}):
+                      Uploaded files ({uploadedFiles.length}):
                     </p>
                     {uploadedFiles.map((file, idx) => (
                       <div
@@ -171,7 +330,7 @@ export default function DisputeModal({
                           }
                           className="text-red-600 hover:text-red-700 ml-2"
                         >
-                                                    Remove
+                          Remove
                         </button>
                       </div>
                     ))}
@@ -194,14 +353,14 @@ export default function DisputeModal({
                 className="bg-transparent border border-success py-2 w-full text-success"
                 paddingY="p-2"
               >
-                                Cancel
+                Cancel
               </Button>
               <Button
                 onClick={handleDisputeReasonSubmit}
                 className="bg-success py-2 w-full text-lg font-bold"
                 paddingY="p-2"
               >
-                                Proceed
+                Proceed
               </Button>
             </div>
           </div>
@@ -212,7 +371,7 @@ export default function DisputeModal({
             <h2 className="text-xl font-bold">Confirm Phone Number</h2>
             <p>Kindly confirm your phone number to proceed</p>
             <p className="text-gray-600 text-sm">
-                            NOTE: You’ll be contacted through this number
+              NOTE: You’ll be contacted through this number
             </p>
 
             <div>
@@ -241,7 +400,7 @@ export default function DisputeModal({
                 className="bg-transparent border border-success py-2 w-full text-success"
                 paddingY="p-2"
               >
-                                Back
+                Back
               </Button>
               <Button
                 onClick={handleDisputePhoneSubmit}
@@ -255,6 +414,62 @@ export default function DisputeModal({
           </div>
         )}
 
+        {step === 'bank' && (
+          <div className="space-y-6">
+            <h2 className="text-xl font-bold">Bank Details</h2>
+
+            <div>
+              <label className="text-sm font-semibold">Select Bank</label>
+              <Select
+                options={bankOptions}
+                isLoading={bankLoading}
+                styles={selectStyles}
+                placeholder="Select a bank"
+                onChange={(val: SingleValue<BankOption>) => {
+                  const bank = banks?.find(
+                    (b) => b.bankCode === val?.value
+                  );
+                  setSelectedBank(bank || null);
+                }}
+              />
+            </div>
+
+            <TextInput
+              label="Account Number"
+              value={accountNumber}
+              onChange={(e) => handleAccountChange(e.target.value)} placeholder="Enter account number"
+              maxValue={10}
+              type="number"
+            />
+
+            {verifyAccount.isLoading && (
+              <p className="text-sm text-gray-400">Verifying account...</p>
+            )}
+
+            {accountName && (
+              <p className="text-sm text-gray-600">{accountName}</p>
+            )}
+
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+
+            <div className="flex gap-3">
+              <Button
+                onClick={() => setStep('phone')}
+                className="bg-transparent border border-success w-full text-success"
+              >
+                Back
+              </Button>
+              <Button
+                onClick={handleSubmitDispute}
+                className="bg-success w-full text-lg font-bold"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Submitting...' : 'Submit Dispute'}
+              </Button>
+            </div>
+          </div>
+        )}
+
         {step === 'success' && (
           <div className="space-y-6 text-center">
             <div className="flex justify-center">
@@ -262,14 +477,14 @@ export default function DisputeModal({
             </div>
             <h2 className="text-xl font-bold">Evidence Uploaded Successfully</h2>
             <p className="text-gray-600 text-sm">
-                            Your evidence have been uploaded successfully, the bridgee escrow specialist will review and you will be updated on the status of the transaction.
+              Your evidence have been uploaded successfully, the bridgee escrow specialist will review and you will be updated on the status of the transaction.
             </p>
             <Button
               onClick={handleCloseModal}
               className="w-full text-lg font-bold ff-bold !rounded-md mdx2:!rounded-xl"
               paddingY="p-2"
             >
-                            Go back to order screen
+              Go back to order screen
             </Button>
           </div>
         )}

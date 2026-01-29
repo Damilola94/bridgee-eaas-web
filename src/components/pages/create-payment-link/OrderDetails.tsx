@@ -71,7 +71,7 @@ const selectStyles: StylesConfig<any, false> = {
   })
 };
 
-function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
+function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
   const { accounts } = useAccountsContext();
 
   const { form, setForm } = useCreateInvoiceContext();
@@ -103,6 +103,25 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const handleSelectDimension = (dimension: ShipBubbleDimension) => {
     setSelectedDimension(dimension);
   };
+
+  const [showManualPickup, setShowManualPickup] = useState(false);
+  const [showManualDelivery, setShowManualDelivery] = useState(false);
+  const [manualPickupAddress, setManualPickupAddress] = useState({
+    houseNo: '',
+    streetName: '',
+    state: '',
+    lga: '',
+    landmark: ''
+  });
+  const [manualDeliveryAddress, setManualDeliveryAddress] = useState({
+    houseNo: '',
+    streetName: '',
+    state: '',
+    lga: '',
+    landmark: ''
+  });
+  const [isValidatingPickup, setIsValidatingPickup] = useState(false);
+  const [isValidatingDelivery, setIsValidatingDelivery] = useState(false);
 
   // Fetch Categories
   useEffect(() => {
@@ -170,6 +189,87 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     []
   );
 
+  const handleManualAddressValidation = async (
+    fieldName: "pickupAddress" | "deliveryAddress"
+  ) => {
+    const isPickup = fieldName === "pickupAddress";
+    const manualAddress = isPickup ? manualPickupAddress : manualDeliveryAddress;
+    const setValidating = isPickup ? setIsValidatingPickup : setIsValidatingDelivery;
+
+    if (!manualAddress.houseNo.trim() || !manualAddress.streetName.trim() ||
+      !manualAddress.state.trim() ||
+      !manualAddress.lga.trim() ||
+      !manualAddress.landmark.trim()) {
+      notification({
+        title: "Form Error",
+        message: "Please fill in all address fields",
+        type: "danger"
+      });
+      return;
+    }
+
+    const combinedAddress = `${manualAddress.houseNo}, ${manualAddress.streetName}, ${manualAddress.state}, ${manualAddress.lga}, ${manualAddress.landmark}, Nigeria`;
+
+    setValidating(true);
+
+    const validationDetails = isPickup
+      ? {
+        name: `${accounts?.identity?.personalDetail?.firstName || ""} ${accounts?.identity?.personalDetail?.lastName || ""}`.trim() || "",
+        email: accounts?.identity?.personalDetail?.email || "",
+        phone: accounts?.identity?.personalDetail?.phoneNumber || "",
+        address: combinedAddress,
+        latitude: 0,
+        longitude: 0
+      }
+      : {
+        name: form.recipientDetails?.recipientName || "",
+        email: form.recipientDetails?.email || "",
+        phone: form.recipientDetails?.phoneNumber || "",
+        address: combinedAddress,
+        latitude: 0,
+        longitude: 0
+      };
+
+    try {
+      const response = await validateAddress(validationDetails);
+
+      if (response.isSuccess && response.data.isValid) {
+        if (isPickup) {
+          setPickupAddressResponse(response.data);
+        } else {
+          setDeliveryAddressResponse(response.data);
+          setForm((state) => ({
+            ...state,
+            recipientDetails: {
+              ...state.recipientDetails,
+              address: response.data.formattedAddress
+            }
+          }));
+        }
+        notification({
+          title: "Success",
+          message: `${isPickup ? "Pickup" : "Delivery"} address has been successfully validated.`,
+          type: "success"
+        });
+      } else {
+        notification({
+          title: "Address Error",
+          message: response.message || "The address could not be validated.",
+          type: "danger"
+        });
+      }
+    } catch (error) {
+      notification({
+        title: "API Error",
+        message: "An error occurred while validating the address.",
+        type: "danger"
+      });
+      // console.error("Manual address validation error:", error);
+    } finally {
+      setValidating(false);
+    }
+  };
+
   const handleAddressValidation = async (
     selectedOption: SelectAddressOption | null,
     fieldName: "pickupAddress" | "deliveryAddress"
@@ -183,9 +283,8 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     const validationDetails = isPickupAddress
       ? {
         name:
-            `${accounts?.identity?.personalDetail?.firstName || ""} ${
-              accounts?.identity?.personalDetail?.lastName || ""
-            }`.trim() || "",
+          `${accounts?.identity?.personalDetail?.firstName || ""} ${accounts?.identity?.personalDetail?.lastName || ""
+          }`.trim() || "",
         email: accounts?.identity?.personalDetail?.email || "",
         phone: accounts?.identity?.personalDetail?.phoneNumber || "",
         address: selectedOption.label,
@@ -221,8 +320,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         }
         notification({
           title: "Success",
-          message: `${
-            fieldName === "pickupAddress" ? "Pickup" : "Delivery"
+          message: `${fieldName === "pickupAddress" ? "Pickup" : "Delivery"
           } address has been successfully validated.`,
           type: "success"
         });
@@ -345,7 +443,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         message: "Could not fetch shipping rates.",
         type: "danger"
       });
-      console.error("Shipping rates error:", error);
+      // console.error("Shipping rates error:", error);
     } finally {
       setIsLoadingShippingRates(false);
     }
@@ -693,37 +791,209 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
           {/* Pickup Address */}
           <div className="w-full">
             <label className="text-sm font-bold">Pickup Address</label>
-            <AsyncSelect
-              cacheOptions
-              defaultOptions
-              loadOptions={loadSuggestions}
-              onChange={(option: SelectAddressOption) => {
-                handleAddressValidation(option, "pickupAddress");
-              }}
-              placeholder="Enter pickup address"
-              className="mt-2"
-              styles={selectStyles}
-            />
+            {!showManualPickup ? (
+              <>
+                <AsyncSelect
+                  cacheOptions
+                  defaultOptions
+                  loadOptions={loadSuggestions}
+                  onChange={(option: SelectAddressOption) => {
+                    handleAddressValidation(option, "pickupAddress");
+                  }}
+                  placeholder="Enter pickup address"
+                  className="mt-2"
+                  styles={selectStyles}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowManualPickup(true);
+                    setPickupAddressResponse(null);
+                  }}
+                  className="text-sm text-blue-600 hover:text-blue-800 mt-2 underline"
+                >
+                  {"Can't find address? Click here"}
+                </button>
+              </>
+            ) : (
+              <div className="mt-2 space-y-3 p-4 border border-gray-200 rounded-lg bg-gray-50">
+                <p className="text-sm font-semibold text-gray-700 mb-3">Manual Address Entry</p>
+                <div className="grid grid-cols-1 gap-3">
+                  <TextInput
+                    name="pickupHouseNo"
+                    value={manualPickupAddress.houseNo}
+                    onChange={(e) => setManualPickupAddress((prev) => ({ ...prev, houseNo: e.target.value }))}
+                    label="House No."
+                    placeholder="e.g. 12A"
+                  />
+                  <TextInput
+                    name="pickupStreetName"
+                    value={manualPickupAddress.streetName}
+                    onChange={(e) => setManualPickupAddress((prev) => ({ ...prev, streetName: e.target.value }))}
+                    label="Street Name"
+                    placeholder="e.g. Admiralty Way"
+                  />
+                  <TextInput
+                    name="pickupLga"
+                    value={manualPickupAddress.lga}
+                    onChange={(e) => setManualPickupAddress((prev) => ({ ...prev, lga: e.target.value }))}
+                    label="LGA"
+                    placeholder="e.g. Lekki"
+                  />
+                  <TextInput
+                    name="pickupLandmark"
+                    value={manualPickupAddress.landmark}
+                    onChange={(e) => setManualPickupAddress((prev) => ({ ...prev, landmark: e.target.value }))}
+                    label="Landmark"
+                    placeholder="e.g. Near GTBank"
+                  />
+                  <TextInput
+                    name="pickupState"
+                    value={manualPickupAddress.state}
+                    onChange={(e) => setManualPickupAddress((prev) => ({ ...prev, state: e.target.value }))}
+                    label="State"
+                    placeholder="e.g. Lagos"
+                  />
+                </div>
+                <div className="mt-3 flex space-x-2">
+                  <Button
+                    textColor="text-primary"
+                    bgColor="bg-primary/0"
+                    className="bg-transparent border border-success w-full text-success"
+                    onClick={() => {
+                      setShowManualPickup(false);
+                      setManualPickupAddress({
+                        houseNo: '',
+                        streetName: '',
+                        lga: '',
+                        state: '',
+                        landmark: ''
+                      });
+                      setPickupAddressResponse(null);
+                    }}
+                  >
+                    Search
+                  </Button>
+                  <Button
+                    className="bg-success w-full text-lg font-bold"
+                    onClick={() => handleManualAddressValidation("pickupAddress")}
+                    disabled={isValidatingPickup}
+                  >
+                    {isValidatingPickup ? "Validating..." : "Verify"}
+                  </Button>
+
+                </div>
+                {pickupAddressResponse && (
+                  <p className="text-sm text-green-600 mt-2">Address validated successfully</p>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Delivery Address */}
           <div className="w-full">
             <label className="text-sm font-bold">Delivery Address</label>
-            <AsyncSelect
-              cacheOptions
-              defaultOptions
-              loadOptions={loadSuggestions}
-              onChange={(option: SelectAddressOption) => {
-                handleAddressValidation(option, "deliveryAddress");
-              }}
-              placeholder="Enter delivery address"
-              className="mt-2"
-              styles={selectStyles}
-            />
+            {!showManualDelivery ? (
+              <>
+                <AsyncSelect
+                  cacheOptions
+                  defaultOptions
+                  loadOptions={loadSuggestions}
+                  onChange={(option: SelectAddressOption) => {
+                    handleAddressValidation(option, "deliveryAddress");
+                  }}
+                  placeholder="Enter delivery address"
+                  className="mt-2"
+                  styles={selectStyles}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowManualDelivery(true);
+                    setDeliveryAddressResponse(null);
+                  }}
+                  className="text-sm text-blue-600 hover:text-blue-800 mt-2 underline"
+                >
+                  {"Can't find address? Click here"}
+                </button>
+              </>
+            ) : (
+              <div className="mt-2 space-y-3 p-4 border border-gray-200 rounded-lg bg-gray-50">
+                <p className="text-sm font-semibold text-gray-700 mb-3">Manual Address Entry</p>
+                <div className="grid grid-cols-1 gap-3">
+                  <TextInput
+                    name="deliveryHouseNo"
+                    value={manualDeliveryAddress.houseNo}
+                    onChange={(e) => setManualDeliveryAddress((prev) => ({ ...prev, houseNo: e.target.value }))}
+                    label="House No."
+                    placeholder="e.g. 12A"
+                  />
+                  <TextInput
+                    name="deliveryStreetName"
+                    value={manualDeliveryAddress.streetName}
+                    onChange={(e) => setManualDeliveryAddress((prev) => ({ ...prev, streetName: e.target.value }))}
+                    label="Street Name"
+                    placeholder="e.g. Admiralty Way"
+                  />
+                  <TextInput
+                    name="deliveryLga"
+                    value={manualDeliveryAddress.lga}
+                    onChange={(e) => setManualDeliveryAddress((prev) => ({ ...prev, lga: e.target.value }))}
+                    label="LGA"
+                    placeholder="e.g. Lekki"
+                  />
+                  <TextInput
+                    name="deliveryLandmark"
+                    value={manualDeliveryAddress.landmark}
+                    onChange={(e) => setManualDeliveryAddress((prev) => ({ ...prev, landmark: e.target.value }))}
+                    label="Landmark"
+                    placeholder="e.g. Near GTBank"
+                  />
+                  <TextInput
+                    name="deliveryState"
+                    value={manualDeliveryAddress.state}
+                    onChange={(e) => setManualDeliveryAddress((prev) => ({ ...prev, state: e.target.value }))}
+                    label="State"
+                    placeholder="e.g. Lagos"
+                  />
+                </div>
+                <div className="flex gap-2 mt-3">
+                  <Button
+                    textColor="text-primary"
+                    bgColor="bg-primary/0"
+                    className="bg-transparent border border-success w-full text-success"
+                    onClick={() => {
+                      setShowManualDelivery(false);
+                      setManualDeliveryAddress({
+                        houseNo: '',
+                        streetName: '',
+                        lga: '',
+                        state: '',
+                        landmark: ''
+                      });
+                      setDeliveryAddressResponse(null);
+                    }}
+                  >
+                    Search
+                  </Button>
+                  <Button
+                    className="bg-success w-full text-lg font-bold"
+                    onClick={() => handleManualAddressValidation("deliveryAddress")}
+                    disabled={isValidatingDelivery}
+                  >
+                    {isValidatingDelivery ? "Validating..." : "Verify"}
+                  </Button>
+
+                </div>
+                {deliveryAddressResponse && (
+                  <p className="text-sm text-green-600 mt-2">Address validated successfully</p>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
-        <div className="w-full flex justify-end">
+        <div className="w-full flex justify-end mt-5">
           <Button
             disabled={isLoadingShippingRates || !isGetShippingRateReadyToCall}
             onClick={handleGetShippingRate}

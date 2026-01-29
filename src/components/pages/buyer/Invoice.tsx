@@ -13,6 +13,7 @@ import Button from '../../inputs/Button';
 
 import SatisfiedModal from './SatisfiedModal';
 import DisputeModal from './DisputeModal';
+import { DisputePayload } from './disputeTypes';
 
 interface OrderItem {
   id?: number;
@@ -85,7 +86,6 @@ export default function Invoice({
       setStep('success');
     },
     onError: (err: any) => {
-      console.log(err);
       notification({
         title: "Error",
         message: err?.toString() || "Failed to mark order as satisfied",
@@ -156,19 +156,13 @@ export default function Invoice({
     });
   };
 
-  const handleDispute = (reason: string | undefined, phone: string, evidence: any) => {
+  const handleDispute = (payload: DisputePayload) => {
     disputeMutation.mutate({
-      service: "disputes/",
+      service: "wallet-service/api/v1/",
+      endpoint: `disputes`,
+      multipart: true,
       method: "POST",
-      body: {
-        EscrowOrderId: orderData.invoiceNumber,
-        DisputeReasonId: orderData.id,
-        CustomReason: reason,
-        Description: reason,
-        ReporterPhone: phone,
-        PictureProofs: evidence,
-        VideoProofs: []
-      }
+      body: payload
     });
   };
 
@@ -332,8 +326,23 @@ export default function Invoice({
             </div>
           </div>
         </div>
-
-        {"Draft" === "Draft" && (
+        {/* Cancelled */}
+        {orderData.status === "Draft" && (
+          <div className="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row gap-4">
+            <div
+              className=" w-full "
+            />
+            <Button
+              onClick={() => {
+                setIsDisputeModalOpen(true);
+              }}
+              className="bg-success py-2 w-full text-lg font-bold"
+            >
+              Open Dispute
+            </Button>
+          </div>
+        )}
+        {orderData.status === "Delivered" && (
           <div className="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row gap-4">
             <Button
               onClick={() => {
@@ -367,6 +376,7 @@ export default function Invoice({
       <DisputeModal
         isOpen={isDisputeModalOpen}
         onClose={() => setIsDisputeModalOpen(false)}
+        escrowOrderId={orderData.id}
         onDispute={handleDispute}
         isLoading={disputeMutation.isLoading}
       />
