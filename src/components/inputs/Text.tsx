@@ -68,7 +68,7 @@ function TextInput({
         <input
           ref={ref}
           className={`${error ? "error-field" : ""} ${height} ${
-            (disabled || readOnly ) && "cursor-not-allowed"
+            (disabled || readOnly) && "cursor-not-allowed"
           } bg-inputBg px-5 outline-none w-full rounded-[10px] border border-borderColor disabled:bg-gray-200`}
           type={inputType}
           accept={accept}
@@ -127,7 +127,7 @@ TextInput.defaultProps = {
   name: "",
   height: "h-12",
   label: "",
-  placeholder: "",
+  placeholder: ""
 };
 
 export default TextInput;
