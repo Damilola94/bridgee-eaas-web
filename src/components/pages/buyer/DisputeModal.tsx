@@ -7,8 +7,6 @@ import Select, { SingleValue, StylesConfig } from 'react-select';
 
 import { useMutation, useQuery } from 'react-query';
 
-import { useCookies } from 'react-cookie';
-
 import Modal from '../../common/Modal';
 
 import Button from '../../inputs/Button';
@@ -65,7 +63,6 @@ export default function DisputeModal({
   setStep,
   isLoading = false
 }: DisputeModalProps) {
-  const [cookie] = useCookies(["data"]);
   const [error, setError] = useState('');
 
   const [disputeReasonId, setDisputeReasonId] = useState('');
@@ -86,8 +83,7 @@ export default function DisputeModal({
     service: "wallet-service/api/v1/",
     endpoint: "disputes",
     extra: "reasons",
-    queryKey: ["escrows-reasons"],
-    enabled: !!cookie?.data?.accessToken
+    queryKey: ["escrows-reasons"]
   });
 
   const disputeReasonOptions: DisputeReasonOption[] =
