@@ -1,11 +1,12 @@
 import { AddLinkedBankData, BanksApiResponse } from "../../types/bank";
+
 import handleFetch from "./handleFetch";
 
 export const getBanksList = (): Promise<BanksApiResponse> => {
   return handleFetch({
     service: "wallet-service",
     endpoint: "/api/v1/utility/banks",
-    method: "GET",
+    method: "GET"
   });
 };
 
@@ -15,7 +16,7 @@ export const addLinkedBank = (data: AddLinkedBankData) => {
     endpoint: "/api/v1/users/add-linked-bank",
     method: "POST",
     body: data,
-    auth: true,
+    auth: true
   });
 };
 
@@ -27,7 +28,7 @@ export const getAccountName = (data: {
     service: "wallet-service",
     endpoint: "/api/v1/bankintegrations/name-enquiry",
     method: "POST",
-    body: data,
+    body: data
   });
 };
 
@@ -37,7 +38,7 @@ export const setPrimaryLinkedBank = (data: { linkedBankId: string }) => {
     endpoint: "/api/v1/users/set-primary-linked-bank",
     method: "POST",
     body: data,
-    auth: true,
+    auth: true
   });
 };
 
@@ -47,6 +48,6 @@ export const deleteLinkedBank = (data: { linkedBankId: string }) => {
     endpoint: "/api/v1/users/delete-linked-bank",
     method: "DELETE",
     body: data,
-    auth: true,
+    auth: true
   });
 };
