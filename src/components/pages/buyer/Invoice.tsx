@@ -10,6 +10,7 @@ import { formatCurrency } from "../../../utilities/general";
 import notification from '../../../utilities/notification';
 
 import Button from '../../inputs/Button';
+import handleFetch from '../../../services/api/handleFetch';
 
 import SatisfiedModal from './SatisfiedModal';
 import DisputeModal from './DisputeModal';
@@ -53,19 +54,6 @@ interface InvoiceProps {
   allowPayment?: boolean;
 }
 
-const handleFetch = async (params: any) => {
-  const {
-    service, endpoint, method, body
-  } = params;
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}${service}${endpoint}`, {
-    method,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  });
-  if (!response.ok) throw new Error(response.statusText);
-  return response.json();
-};
-
 export default function Invoice({
   orderDetails,
   orderStatus,
@@ -74,6 +62,7 @@ export default function Invoice({
   const [isSatisfiedModalOpen, setIsSatisfiedModalOpen] = useState(false);
   const [isDisputeModalOpen, setIsDisputeModalOpen] = useState(false);
   const [step, setStep] = useState<'confirm' | 'success'>('confirm');
+  const [stepDispute, setStepDispute] = useState<'reason' | 'phone' | 'bank' | 'success'>('reason');
 
   const satisfiedMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
@@ -102,6 +91,7 @@ export default function Invoice({
         type: "success"
       });
       setIsDisputeModalOpen(false);
+      setStepDispute('success');
     },
     onError: (err: any) => {
       notification({
@@ -342,7 +332,7 @@ export default function Invoice({
             </Button>
           </div>
         )}
-        {orderData.status === "Delivered" && (
+        {"Delivered" === "Delivered" && (
           <div className="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row gap-4">
             <Button
               onClick={() => {
@@ -376,6 +366,8 @@ export default function Invoice({
       <DisputeModal
         isOpen={isDisputeModalOpen}
         onClose={() => setIsDisputeModalOpen(false)}
+        step={stepDispute}
+        setStep={setStepDispute}
         escrowOrderId={orderData.id}
         onDispute={handleDispute}
         isLoading={disputeMutation.isLoading}
