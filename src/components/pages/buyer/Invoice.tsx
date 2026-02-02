@@ -332,7 +332,7 @@ export default function Invoice({
             </Button>
           </div>
         )}
-        {"Delivered" === "Delivered" && (
+        {orderData.status === "Delivered" && (
           <div className="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row gap-4">
             <Button
               onClick={() => {
