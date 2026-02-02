@@ -80,7 +80,7 @@ export default function DisputeModal({
   const [selectedBank, setSelectedBank] = useState<Bank | null>(null);
   const [accountNumber, setAccountNumber] = useState('');
   const [accountName, setAccountName] = useState('');
-  const [accountValidated, setAccountValidated] = useState(false);
+  const [, setAccountValidated] = useState(false);
 
   const { data, isLoading: reasonsLoading } = useGetQuery({
     service: "wallet-service/api/v1/",
@@ -173,7 +173,6 @@ export default function DisputeModal({
   };
 
   const handleSubmitDispute = () => {
-   
     setError('');
     const formData = new FormData();
     formData.append('EscrowOrderId', escrowOrderId);
