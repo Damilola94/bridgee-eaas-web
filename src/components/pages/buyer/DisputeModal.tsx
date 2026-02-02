@@ -19,8 +19,6 @@ import useGetQuery from '../../../hooks/useGetQuery';
 
 import { DisputePayload } from './disputeTypes';
 
-type Step = 'reason' | 'phone' | 'bank' | 'success';
-
 interface Bank {
   bankCode: string;
   bankName: string;
@@ -51,6 +49,8 @@ const selectStyles: StylesConfig<BankOption, false> = {
 interface DisputeModalProps {
   isOpen: boolean;
   onClose: () => void;
+  step: 'reason' | 'phone' | 'bank' | 'success';
+  setStep: React.Dispatch<React.SetStateAction<'reason' | 'phone' | 'bank' | 'success'>>;
   escrowOrderId: string;
   onDispute: (payload: DisputePayload) => void;
   isLoading?: boolean;
@@ -61,10 +61,11 @@ export default function DisputeModal({
   onClose,
   escrowOrderId,
   onDispute,
+  step,
+  setStep,
   isLoading = false
 }: DisputeModalProps) {
   const [cookie] = useCookies(["data"]);
-  const [step, setStep] = useState<Step>('reason');
   const [error, setError] = useState('');
 
   const [disputeReasonId, setDisputeReasonId] = useState('');
@@ -172,18 +173,7 @@ export default function DisputeModal({
   };
 
   const handleSubmitDispute = () => {
-    if (!selectedBank) {
-      setError('Please select a bank');
-      return;
-    }
-    if (!accountNumber || accountNumber.length !== 10) {
-      setError('Please enter a valid 10-digit account number');
-      return;
-    }
-    if (!accountValidated || !accountName) {
-      setError('Please wait for account verification');
-      return;
-    }
+   
     setError('');
     const formData = new FormData();
     formData.append('EscrowOrderId', escrowOrderId);
@@ -191,7 +181,7 @@ export default function DisputeModal({
     formData.append('CustomReason', customReason);
     formData.append('Description', disputeDescription);
     formData.append('ReporterPhone', phoneNumber);
-    if (selectedBank){
+    if (selectedBank) {
       formData.append('BankName', selectedBank.bankName);
     }
     formData.append('ReporterAccountNumber', accountNumber);
@@ -207,9 +197,7 @@ export default function DisputeModal({
       .forEach((file) => {
         formData.append('VideoProofs', file);
       });
-
     onDispute(formData as unknown as DisputePayload);
-    setStep('success');
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
