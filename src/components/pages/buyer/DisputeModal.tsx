@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-duplicate-imports */
 'use client';
 
@@ -77,7 +78,7 @@ export default function DisputeModal({
   const [selectedBank, setSelectedBank] = useState<Bank | null>(null);
   const [accountNumber, setAccountNumber] = useState('');
   const [accountName, setAccountName] = useState('');
-  const [, setAccountValidated] = useState(false);
+  const [accountValidated, setAccountValidated] = useState(false);
 
   const { data, isLoading: reasonsLoading } = useGetQuery({
     service: "wallet-service/api/v1/",
@@ -169,6 +170,10 @@ export default function DisputeModal({
   };
 
   const handleSubmitDispute = () => {
+    if (verifyAccount.isLoading || !accountValidated) {
+      setError('Please wait for account validation to complete');
+      return;
+    }
     setError('');
     const formData = new FormData();
     formData.append('EscrowOrderId', escrowOrderId);
@@ -445,9 +450,16 @@ export default function DisputeModal({
               <Button
                 onClick={handleSubmitDispute}
                 className="bg-success w-full text-lg font-bold"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Submitting...' : 'Submit Dispute'}
+                disabled={
+                  isLoading ||
+                  verifyAccount.isLoading ||
+                  !accountValidated
+                } >
+                {verifyAccount.isLoading
+                  ? 'Validating account...'
+                  : isLoading
+                    ? 'Submitting...'
+                    : 'Submit Dispute'}
               </Button>
             </div>
           </div>
