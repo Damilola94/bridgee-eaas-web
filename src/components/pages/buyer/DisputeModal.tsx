@@ -182,7 +182,7 @@ export default function DisputeModal({
     formData.append('Description', disputeDescription);
     formData.append('ReporterPhone', phoneNumber);
     if (selectedBank) {
-      formData.append('BankName', selectedBank.bankName);
+      formData.append('BankCode', selectedBank.bankCode);
     }
     formData.append('ReporterAccountNumber', accountNumber);
 
