@@ -241,10 +241,8 @@ export default function Invoice({
           </div>
         </div>
 
-        {/* Order Items Table */}
         <div className="overflow-x-auto">
           <div className="gap-0 bg-white">
-            {/* Header Row */}
             <section className="grid grid-cols-[100px_1fr_1fr]  lg:grid-cols-[60px_1fr_1fr_1fr_1fr]">
               <div className="bg-[#EEEEEE] py-3 px-3 text-sm font-semibold text-gray-700">
                 #
@@ -263,7 +261,6 @@ export default function Invoice({
               </div>
             </section>
 
-            {/* Data Rows */}
             {orderData.orderItems.map((item, index) => (
               <div
                 key={item.id}
@@ -316,8 +313,7 @@ export default function Invoice({
             </div>
           </div>
         </div>
-        {/* Cancelled */}
-        {orderData.status === "Confirmed" && (
+        {orderData.status === "Disputed" && (
           <div className="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row gap-4">
             <div
               className=" w-full "
