@@ -1,5 +1,6 @@
 export interface ApiDispute {
   id: string;
+  invoiceName?: string;
   orderReference?: string;
   orderTotalAmount?: number;
   disputeReason?: string;
@@ -8,6 +9,7 @@ export interface ApiDispute {
   status?: string;
   createdAt?: string;
   reporterName?: string;
+  sellerPhone?: string;
   reporterEmail?: string;
   reporterPhone?: string;
   sellerId?: string;

@@ -1,29 +1,23 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { useRouter } from "next/router";
 import { HiOutlineArrowLeft } from "react-icons/hi";
-import { useMutation, useQueryClient } from "react-query";
 
 import useGetQuery from "../../../../hooks/useGetQuery"; import { formatDate, formatDateTime } from "../../../../utilities/dateTime";
 import Loading from "../../../common/Loading";
 import Button from "../../../inputs/Button";
-import notification from "../../../../utilities/notification";
-
-import handleFetch from "../../../../services/api/handleFetch";
-
 import TransactionStatus from "../../../common/TransactionStatus";
 
 import DisputeDetails from "./DisputeDet";
-import DisputeResponse from "./SellerResponseOpenDispute";
 import ActivityLog from "./ActivityLog";
 import type { ApiDispute } from "./type";
+
+import FinalDecisionCard from "./FinalDecision";
 
 export default function ManageDisputeContainer() {
   const router = useRouter();
   const slug = String(router?.query?.slug ?? "");
-  const queryClient = useQueryClient();
-  const [showResponseForm, setShowResponseForm] = useState(false);
 
   const { data, status } = useGetQuery({
     service: "wallet-service/api/v1/",
@@ -42,60 +36,12 @@ export default function ManageDisputeContainer() {
     enabled: !!router?.query?.slug
   });
 
-  const acceptMutation = useMutation(handleFetch, {
-    onSuccess: (res: any) => {
-      queryClient.invalidateQueries(["dispute-details", slug]);
-      notification({
-        title: "Successful",
-        message: res?.message || "Dispute claim accepted successfully",
-        type: "success"
-      });
-    },
-    onError: (err: any) => {
-      notification({
-        title: "Error",
-        message: String(err) || "Something went wrong.",
-        type: "danger"
-      });
-    }
-  });
-
   const dispute: ApiDispute | null = useMemo(() => {
     if (status !== "success" || !data?.data) return null;
     return data.data as ApiDispute;
   }, [status, data]);
 
   const handleBack = () => router.back();
-
-  const handleAcceptClaim = () => {
-    if (!slug) {
-      notification({
-        title: "Error",
-        message: "Dispute ID not found",
-        type: "danger"
-      });
-      return;
-    }
-
-    const payload = {
-      SellerResponse: "",
-      EvidenceFiles: [],
-      AcceptClaim: true
-    };
-
-    acceptMutation.mutate({
-      service: "wallet-service/api/v1/",
-      endpoint: "disputes",
-      extra: `${slug}/respond`,
-      method: "POST",
-      body: payload,
-      auth: true
-    });
-  };
-
-  const handleRejectClaim = () => {
-    setShowResponseForm(true);
-  };
 
   return (
     <div className="w-full">
@@ -116,7 +62,7 @@ export default function ManageDisputeContainer() {
 
       {status === "loading" && <Loading />}
 
-      {status === "error" && dispute && (
+      {status === "success" && dispute && (
         <div className="w-full">
           <div className="flex flex-wrap -m-4">
             <div className="w-full xl:w-7/12 p-4">
@@ -173,6 +119,7 @@ export default function ManageDisputeContainer() {
                   </div>
                 </div>
               </div>
+
               <div className="w-full bg-white px-8 py-6 rounded-lg shadow-sm border border-gray-100">
                 <h3 className="text-base font-semibold text-gray-900 mb-4">
                   Parties Involved
@@ -221,19 +168,18 @@ export default function ManageDisputeContainer() {
                 </div>
               </div>
 
-              <DisputeDetails dispute={dispute} onAccept={handleAcceptClaim} onReject={handleRejectClaim} />
+              <DisputeDetails dispute={dispute} />
 
-              {showResponseForm && (
-                <DisputeResponse
-                  openDispute={showResponseForm}
-                  disputeId={slug}
-                  isResponse={true}
-                  onClose={() => setShowResponseForm(false)}
-                />
-              )}
+              <FinalDecisionCard
+                adminName="Administator"
+                decision={dispute?.adminComments ?? "N/A"}
+                status={dispute?.status}
+                decidedAt={dispute?.updatedAt}
+                onInitiateReturn={() => router.push(`/buyer-disputes/return-goods/${dispute?.escrowOrderId}`)}
+              />
             </div>
 
-            <div className="w-full xl:w-5/12 p-4">
+            <div className="w-full xl:w-4/12 p-4">
               <ActivityLog
                 data={activityStatus === 'success' ? activityData?.data : []}
               />

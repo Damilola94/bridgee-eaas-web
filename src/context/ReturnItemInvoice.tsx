@@ -16,21 +16,21 @@ export type valueProps = {
   setForm: React.Dispatch<React.SetStateAction<InvoiceFormProps>>
 };
 
-export const CreateInvoiceContext = createContext<valueProps>({ form: {}, setForm: () => {} });
+export const ReturnInvoiceContext = createContext<valueProps>({ form: {}, setForm: () => {} });
 
-function CreateInvoiceContextProvider({ children }: Props) {
+function ReturnInvoiceContextProvider({ children }: Props) {
   const [form, setForm] = useState<InvoiceFormProps>({ disbursementType: 'onetime', recipientDetails: {} });
   const formMemo = useMemo(() => ({ form, setForm }), [form]);
 
   return (
-    <CreateInvoiceContext.Provider value={formMemo}>
+    <ReturnInvoiceContext.Provider value={formMemo}>
       {children}
-    </CreateInvoiceContext.Provider>
+    </ReturnInvoiceContext.Provider>
   );
 }
 
-export function useCreateInvoiceContext() {
-  return useContext(CreateInvoiceContext);
+export function useReturnInvoiceContext() {
+  return useContext(ReturnInvoiceContext);
 }
 
-export default CreateInvoiceContextProvider;
+export default ReturnInvoiceContextProvider;
