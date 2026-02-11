@@ -313,7 +313,7 @@ export default function Invoice({
             </div>
           </div>
         </div>
-        {orderData.status === "Draft" && (
+        {orderData.status === "Cancelled" && (
           <div className="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row gap-4">
             <div
               className=" w-full "
