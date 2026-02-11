@@ -20,12 +20,13 @@ function DisputeHistory() {
   } = useGetQuery({
     service: "wallet-service/api/v1/",
     endpoint: 'disputes',
-    extra: isBuyer ? 'buyer' : '',
+    extra: isBuyer ? 'buyer' : 'seller',
     queryKey: ['dispute-history', currentTab],
     pQuery: {
       pageSize: 3,
       pageNumber: 1,
       BuyerId: cookie?.data?.userId,
+      SellerId: cookie?.data?.userId,
       status: currentTab === 0 ? 'Pending' : 'Resolved'
     }
   });

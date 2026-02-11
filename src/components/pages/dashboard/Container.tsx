@@ -89,10 +89,10 @@ function DashboardContainer() {
               <TransactionBanner />
             </div>
           )}
-          <div className="w-full">
+          <div className="w-full mb-3">
             {isBuyer ? <PurchasesHistory onOpenDispute={openDisputeModal}/> : <SalesHistory />}
           </div>
-          <div className="w-full mb-3">
+          <div className="w-full ">
             <WalletHistory />
           </div>
         </div>

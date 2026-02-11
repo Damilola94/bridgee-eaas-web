@@ -38,11 +38,14 @@ export const statusColors = {
   'dispute-ReturnReceived': '#5521B5',
   'ReturnRequested': '#5521B5',
   'dispute-AwaitingReplacement': '#5521B5',
+  'DisputeResolved': '#5521B5',
   'dispute-ReplacementSent': '#5521B5',
   'dispute-Cancelled': '#9B1C1C',
+  'Disputed': '#9B1C1C',
   'dispute-NewDisputeOpened': '#5521B5',
   'dispute-AwaitingMediatorReview': '#5521B5',
-  'dispute-AwaitingApproval': '#5521B5'
+  'dispute-AwaitingApproval': '#5521B5',
+  'Completed': '#5521B5'
 };
 
 export const statusTitle = {
@@ -83,9 +86,12 @@ export const statusTitle = {
   'dispute-ReturnReceived': 'Return Received',
   'ReturnRequested': 'Return Requested',
   'dispute-AwaitingReplacement': 'Awaiting Replacement',
+  'DisputeResolved': 'DisputeResolved',
   'dispute-ReplacementSent': 'Replacement Sent',
+  'Disputed': 'Disputed',
   'dispute-Cancelled': 'Cancelled',
   'dispute-NewDisputeOpened': 'New Dispute Opened',
   'dispute-AwaitingMediatorReview': 'Awaiting Mediator Review',
-  'dispute-AwaitingApproval': 'Awaiting Approval'
+  'dispute-AwaitingApproval': 'Awaiting Approval',
+  'Completed': 'Completed'
 };

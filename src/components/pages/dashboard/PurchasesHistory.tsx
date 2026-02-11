@@ -85,7 +85,9 @@ function PurchasesHistory({ onOpenDispute }: { onOpenDispute: (id: string | numb
               <th className="px-3 py-5">Date</th>
               <th className="px-3 py-5">Payment Link</th>
               <th className="px-3 py-5">Status</th>
-              <th className="px-3 py-5">Action</th>
+              {data?.data?.some(
+                (item: SalesItem) => item.status !== "Disputed" && item.status !== "DisputedResolved"
+              ) && <th className="px-3 py-5">Action</th>}
             </tr>
           </thead>
           <tbody>
@@ -142,18 +144,20 @@ function PurchasesHistory({ onOpenDispute }: { onOpenDispute: (id: string | numb
                       <td className="px-3 py-5">
                         <TransactionStatus status={item.status} />
                       </td>
-                      <td className="px-3 py-5">
-                        <Button
-                          className=" "
-                          paddingY="py-2"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onOpenDispute(item.id);
-                          }}
-                        >
-    Open Dispute
-                        </Button>
-                      </td>
+                      {item.status !== "Disputed" && item.status !== "DisputedResolved" && (
+                        <td className="px-3 py-5">
+                          <Button
+                            paddingY="py-1"
+                            paddingX="px-1.5"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onOpenDispute(item.id);
+                            }}
+                          >
+                            Open Dispute
+                          </Button>
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </>

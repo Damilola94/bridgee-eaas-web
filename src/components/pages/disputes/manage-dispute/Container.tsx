@@ -116,7 +116,7 @@ export default function ManageDisputeContainer() {
 
       {status === "loading" && <Loading />}
 
-      {status === "error" && dispute && (
+      {status === "success" && dispute && (
         <div className="w-full">
           <div className="flex flex-wrap -m-4">
             <div className="w-full xl:w-7/12 p-4">
