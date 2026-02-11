@@ -14,6 +14,7 @@ function DisputeHistory() {
   const [currentTab, setCurrentTab] = useState(0);
   const [cookie] = useCookies(['data']);
   const isBuyer = cookie?.data?.activeRole === 'Buyer';
+  const userId = cookie?.data?.userId;
 
   const {
     data, status, error, isRefetching
@@ -25,8 +26,7 @@ function DisputeHistory() {
     pQuery: {
       pageSize: 3,
       pageNumber: 1,
-      BuyerId: cookie?.data?.userId,
-      SellerId: cookie?.data?.userId,
+      ...(isBuyer ? { BuyerId: userId } : { SellerId: userId }),
       status: currentTab === 0 ? 'Pending' : 'Resolved'
     }
   });
