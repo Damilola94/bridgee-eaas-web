@@ -109,7 +109,10 @@ export default function RecipientDetailsPage() {
     escrowMutation.mutate({
       service: "wallet-service/api/v1",
       endpoint: "escrows",
-      extra: "orders",
+      extra: "orders/return",
+      pQuery: {
+        disputeId: router?.query?.slug
+      },
       method: "POST",
       body: payload,
       auth: true,

@@ -3,15 +3,16 @@ import {
   OrderDetailsResponse,
   OrderStatusResponse,
   PaymentDetailsResponse,
-  TransactionStatusResponse,
+  TransactionStatusResponse
 } from "../../types/escrow";
+
 import handleFetch from "./handleFetch";
 
 export const getOrderStatus = (orderReference: string): Promise<OrderStatusResponse> => {
   return handleFetch({
     service: "wallet-service",
     endpoint: `/api/v1/escrows/orders/status/${orderReference}`,
-    method: "GET",
+    method: "GET"
   }) as Promise<OrderStatusResponse>;
 };
 
@@ -19,7 +20,7 @@ export const getOrderDetails = (orderReference: string): Promise<OrderDetailsRes
   return handleFetch({
     service: "wallet-service",
     endpoint: `/api/v1/escrows/orders/reference/${orderReference}`,
-    method: "GET",
+    method: "GET"
   }) as Promise<OrderDetailsResponse>;
 };
 
@@ -30,7 +31,7 @@ export const getPaymentDetails = (
   return handleFetch({
     service: "wallet-service",
     endpoint: `/api/v1/payments/details?OrderReference=${orderReference}&Email=${email}`,
-    method: "GET",
+    method: "GET"
   }) as Promise<PaymentDetailsResponse>;
 };
 
@@ -40,7 +41,7 @@ export const getTransactionStatus = (
   return handleFetch({
     service: "wallet-service",
     endpoint: `/wallet/transactions/${orderReference}/status`,
-    method: "GET",
+    method: "GET"
   }) as Promise<TransactionStatusResponse>;
 };
 
@@ -48,6 +49,6 @@ export const getOrderActivityLogs = async (escrowOrderId: string): Promise<Activ
   return await handleFetch({
     service: "wallet-service",
     method: "GET",
-    endpoint: `/api/v1/activitylogs/order/${escrowOrderId}`,
+    endpoint: `/api/v1/activitylogs/order/${escrowOrderId}`
   }) as Promise<ActivityLogsResponse>;
 };

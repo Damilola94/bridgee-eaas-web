@@ -117,6 +117,7 @@ export default function MakePayment({
 
     const response = await getTransactionStatus(orderReference).catch(
       async (error) => {
+        // Handle the specific "pending" case where API returns 400 with valid data
         if (
           error.message &&
           error.message.includes("Transaction status is Pending.")
@@ -129,7 +130,7 @@ export default function MakePayment({
             metaData: null
           };
         }
-        throw error;
+        throw error; // Re-throw actual network errors
       }
     );
 
@@ -146,7 +147,7 @@ export default function MakePayment({
 
       onPaymentSuccess?.();
 
-      router.push(`/seller/order/${orderReference}`);
+      router.push(`/seller-return-order/order/${orderReference}`);
     } else if (
       response.statusCode === "400" &&
       response.message?.includes("Pending")

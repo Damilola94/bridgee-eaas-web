@@ -1,4 +1,5 @@
 import Image from "next/image";
+
 import CheckIncomplete from "../../../assets/svgs/check-incomplete-circle.svg";
 import Button from "../../inputs/Button";
 
