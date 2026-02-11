@@ -38,7 +38,7 @@ function WalletHistory({ }: Props) {
   const { data, status, error } = useGetQuery({
     service: "wallet-service",
     endpoint: 'wallet',
-    extra: 'transactions',
+    extra: isBuyer ? 'transactions/buyer' : 'transactions',
     pQuery: { pageSize: 10, pageNumber: 1, SearchKey: search },
     queryKey: ['wallet-transactions-dashboard', search, filter?.value || 'all'],
     enabled: !!cookie?.data?.accessToken

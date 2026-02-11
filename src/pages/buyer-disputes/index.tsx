@@ -1,0 +1,30 @@
+import { ReactElement } from 'react';
+import Head from 'next/head';
+
+import type { NextPageWithLayout } from '../_app';
+
+import Layout from '../../components/wrappers/Layout';
+import DisputesContainer from '../../components/pages/buyer-disputes/list/Container';
+
+const Disputes: NextPageWithLayout = () => (
+  <>
+    <Head>
+      <title>UseBridgee Inc. - Disputes</title>
+    </Head>
+
+    <div className="w-full">
+      <h2 className="font-bold ff-bold text-2xl mb-3">Disputes</h2>
+
+      <div className="w-full max-w-7xl">
+        <DisputesContainer />
+      </div>
+    </div>
+
+  </>
+);
+
+Disputes.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
+};
+
+export default Disputes;

@@ -20,7 +20,7 @@ import DisputeFilter from './Filter';
 
 function DisputeList() {
   const router = useRouter();
-  const statusFromUrl = router?.query?.status || 'all'; // default fallback
+  const statusFromUrl = router?.query?.status || 'all';
   const [cookie] = useCookies(['data']);
 
   const [filter, setFilter] = useState<any>(null);
@@ -31,13 +31,13 @@ function DisputeList() {
   const { data, status, error } = useGetQuery({
     service: "wallet-service/api/v1/",
     endpoint: 'disputes',
-    extra: 'seller',
+    extra: 'buyer',
     queryKey: ['dispute-seller-list', statusFromUrl, filter, pageNumber, search],
     pQuery: {
-      SellerId: cookie?.data?.userId,
       pageSize: PAGE_SIZE,
       pageNumber: pageNumber + 1,
       search,
+      BuyerId: cookie?.data?.userId,
       status: statusFromUrl !== 'all' ? statusFromUrl : null
     }
   });
@@ -122,7 +122,7 @@ function DisputeList() {
                               {
                                 title: 'View',
                                 action: () =>
-                                  router.push(`disputes/manage-dispute/${item?.id}`)
+                                  router.push(`buyer-disputes/manage-dispute/${item?.id}`)
                               }
                             ]}
                           />

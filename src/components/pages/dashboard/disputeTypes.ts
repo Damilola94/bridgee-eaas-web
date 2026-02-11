@@ -9,4 +9,4 @@ export interface DisputePayload {
   BankCode: string | undefined;
   ReporterAccountNumber: string;
 }
-export const ITEM_NOT_DELIVERED = 'Item not delivered';
+export const ITEM_NOT_DELIVERED = 'Item not as described';

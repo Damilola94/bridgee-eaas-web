@@ -15,6 +15,7 @@ import Logo from '../../assets/svgs/logos/full-white.svg';
 import LogoutIcon from '../../assets/svgs/logout.svg';
 import DashboardIcon from '../../assets/svgs/dashboard.svg';
 import SettingsIcon from '../../assets/svgs/settings.svg';
+import DisputeIcon from '../../assets/svgs/dispute.svg';
 
 import menuList from '../../configs/sidebarMenu';
 import useClickOutsideBox from '../../hooks/useClickOutsideBox';
@@ -41,6 +42,7 @@ function Sidebar() {
       link: '/dashboard',
       icon: DashboardIcon
     },
+    { title: 'Disputes', link: '/buyer-disputes', icon: DisputeIcon },
     {
       title: 'Settings',
       link: '/settings',

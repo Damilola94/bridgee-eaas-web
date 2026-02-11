@@ -1,20 +1,8 @@
 
 'use client';
 
-import { useState } from 'react';
-import { useMutation } from 'react-query';
-
 import { getStatusColor } from "../../../utilities/color";
 import { formatCurrency } from "../../../utilities/general";
-
-import notification from '../../../utilities/notification';
-
-import Button from '../../inputs/Button';
-import handleFetch from '../../../services/api/handleFetch';
-
-import SatisfiedModal from './SatisfiedModal';
-import DisputeModal from './DisputeModal';
-import { DisputePayload } from './disputeTypes';
 
 interface OrderItem {
   id?: number;
@@ -59,49 +47,6 @@ export default function Invoice({
   orderStatus,
   allowPayment
 }: InvoiceProps) {
-  const [isSatisfiedModalOpen, setIsSatisfiedModalOpen] = useState(false);
-  const [isDisputeModalOpen, setIsDisputeModalOpen] = useState(false);
-  const [step, setStep] = useState<'confirm' | 'success'>('confirm');
-  const [stepDispute, setStepDispute] = useState<'reason' | 'phone' | 'bank' | 'success'>('reason');
-
-  const satisfiedMutation = useMutation(handleFetch, {
-    onSuccess: (res: any) => {
-      notification({
-        title: "Success",
-        message: "Order marked as satisfied successfully",
-        type: "success"
-      });
-      setIsSatisfiedModalOpen(false);
-      setStep('success');
-    },
-    onError: (err: any) => {
-      notification({
-        title: "Error",
-        message: err?.toString() || "Failed to mark order as satisfied",
-        type: "danger"
-      });
-    }
-  });
-
-  const disputeMutation = useMutation(handleFetch, {
-    onSuccess: (res: any) => {
-      notification({
-        title: "Success",
-        message: "Dispute submitted successfully",
-        type: "success"
-      });
-      setIsDisputeModalOpen(false);
-      setStepDispute('success');
-    },
-    onError: (err: any) => {
-      notification({
-        title: "Error",
-        message: err?.toString() || "Failed to submit dispute",
-        type: "danger"
-      });
-    }
-  });
-
   const orderData = {
     id: orderDetails?.id || "",
     invoiceDate: orderDetails?.createdDate || "",
@@ -136,25 +81,6 @@ export default function Invoice({
   };
 
   const statusStyle = getStatusColor(orderData.status);
-
-  const handleSatisfied = () => {
-    satisfiedMutation.mutate({
-      service: "wallet-service/api/v1/",
-      endpoint: `escrows/orders/${orderData.invoiceNumber}/satisfied`,
-      method: "POST",
-      body: { reference: orderData.invoiceNumber }
-    });
-  };
-
-  const handleDispute = (payload: DisputePayload) => {
-    disputeMutation.mutate({
-      service: "wallet-service/api/v1/",
-      endpoint: `disputes`,
-      multipart: true,
-      method: "POST",
-      body: payload
-    });
-  };
 
   return (
     <div className="w-full">
@@ -313,61 +239,7 @@ export default function Invoice({
             </div>
           </div>
         </div>
-        {orderData.status === "Draft" && (
-          <div className="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row gap-4">
-            <div
-              className=" w-full "
-            />
-            <Button
-              onClick={() => {
-                setIsDisputeModalOpen(true);
-              }}
-              className="bg-success py-2 w-full text-lg font-bold"
-            >
-              Open Dispute
-            </Button>
-          </div>
-        )}
-        {orderData.status === "Delivered" && (
-          <div className="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row gap-4">
-            <Button
-              onClick={() => {
-                setIsSatisfiedModalOpen(true);
-              }}
-              className="bg-transparent border border-success py-2 w-full text-success"
-            >
-              Satisfied
-            </Button>
-            <Button
-              onClick={() => {
-                setIsDisputeModalOpen(true);
-              }}
-              className="bg-success py-2 w-full text-lg font-bold"
-            >
-              Open Dispute
-            </Button>
-          </div>
-        )}
       </div>
-
-      <SatisfiedModal
-        step={step}
-        setStep={setStep}
-        isOpen={isSatisfiedModalOpen}
-        onClose={() => setIsSatisfiedModalOpen(false)}
-        onSatisfied={() => handleSatisfied()}
-        isLoading={satisfiedMutation.isLoading}
-      />
-
-      <DisputeModal
-        isOpen={isDisputeModalOpen}
-        onClose={() => setIsDisputeModalOpen(false)}
-        step={stepDispute}
-        setStep={setStepDispute}
-        escrowOrderId={orderData.id}
-        onDispute={handleDispute}
-        isLoading={disputeMutation.isLoading}
-      />
     </div>
   );
 }

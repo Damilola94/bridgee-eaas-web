@@ -7,7 +7,6 @@ import { CheckCircle, Upload } from 'lucide-react';
 import Select, { SingleValue, StylesConfig } from 'react-select';
 
 import { useMutation, useQuery } from 'react-query';
-import { useRouter } from 'next/router';
 
 import Modal from '../../common/Modal';
 
@@ -17,7 +16,7 @@ import notification from '../../../utilities/notification';
 import { getBanksList, getAccountName } from '../../../services/api/bank';
 import useGetQuery from '../../../hooks/useGetQuery';
 
-import { DisputePayload, ITEM_NOT_DELIVERED } from './disputeTypes';
+import { DisputePayload } from './disputeTypes';
 
 interface Bank {
   bankCode: string;
@@ -65,8 +64,6 @@ export default function DisputeModal({
   setStep,
   isLoading = false
 }: DisputeModalProps) {
-  const router = useRouter();
-
   const [error, setError] = useState('');
 
   const [disputeReasonId, setDisputeReasonId] = useState('');
@@ -82,7 +79,6 @@ export default function DisputeModal({
   const [accountNumber, setAccountNumber] = useState('');
   const [accountName, setAccountName] = useState('');
   const [accountValidated, setAccountValidated] = useState(false);
-  const [selectedReasonLabel, setSelectedReasonLabel] = useState('');
 
   const { data, isLoading: reasonsLoading } = useGetQuery({
     service: "wallet-service/api/v1/",
@@ -141,10 +137,6 @@ export default function DisputeModal({
   const handleDisputeReasonSubmit = () => {
     if (!disputeReasonId) {
       setError('Please select a reason for dispute');
-      return;
-    }
-    if (selectedReasonLabel !== ITEM_NOT_DELIVERED) {
-      router.push('/create-account?userType=Buyer');
       return;
     }
     if (isOtherReason && !customReason.trim()) {
@@ -254,7 +246,6 @@ export default function DisputeModal({
                     styles={selectStyles}
                     onChange={(val: SingleValue<DisputeReasonOption>) => {
                       setDisputeReasonId(val?.value || '');
-                      setSelectedReasonLabel(val?.label || '');
                       setIsOtherReason(val?.isOther || false);
                       if (!val?.isOther) {
                         setCustomReason('');
@@ -263,16 +254,6 @@ export default function DisputeModal({
                   />
                 </div>
               </div>
-              {selectedReasonLabel &&
-                selectedReasonLabel !== ITEM_NOT_DELIVERED && (
-                <div className="border border-success bg-pink-50 rounded-lg p-4">
-                  <h4 className="font-semibold text-success">Note</h4>
-                  <p className="text-sm text-si">
-                      You will be required to open a buyer account on Bridge due to
-                      the selected reason for dispute.
-                  </p>
-                </div>
-              )}
               {isOtherReason && (
                 <div>
                   <TextInput
@@ -286,73 +267,72 @@ export default function DisputeModal({
                   />
                 </div>
               )}
-              {selectedReasonLabel == ITEM_NOT_DELIVERED &&
+
+              <div>
                 <div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                       Short description
-                    </label>
-                    <textarea
-                      value={disputeDescription}
-                      onChange={(e) => setDisputeDescription(e.target.value)}
-                      placeholder="Type a short description"
-                      rows={4}
-                      className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
-                    />
-                  </div>
-
-                  <div className="space-y-2 mt-3">
-                    <h2 className="text-sm font-bold">Upload Evidence</h2>
-                    <p className="text-gray-600 text-sm">
-                      Please upload evidence to support your dispute (photos, videos, or documents)
-                    </p>
-
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
-                      <label className="flex flex-col items-center cursor-pointer">
-                        <Upload className="w-10 h-10 text-gray-400 mb-2" />
-                        <span className="text-sm font-semibold text-gray-700">Click to upload</span>
-                        <input
-                          type="file"
-                          multiple
-                          onChange={handleFileUpload}
-                          className="hidden"
-                          accept="image/,video/,.pdf,.doc,.docx"
-                        />
-                      </label>
-                    </div>
-
-                    {uploadedFiles.length > 0 && (
-                      <div className="space-y-2">
-                        <p className="text-sm font-semibold text-gray-700">
-                          Uploaded files ({uploadedFiles.length}):
-                        </p>
-                        {uploadedFiles.map((file, idx) => (
-                          <div
-                            key={idx}
-                            className="flex items-center justify-between bg-gray-50 p-2 rounded text-sm"
-                          >
-                            <span className="truncate">{file.name}</span>
-                            <button
-                              onClick={() =>
-                                setUploadedFiles(uploadedFiles.filter((_, i) => i !== idx))
-                              }
-                              className="text-red-600 hover:text-red-700 ml-2"
-                            >
-                              Remove
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {error && (
-                      <div className="bg-red-50 text-red-600 p-3 rounded text-sm">
-                        {error}
-                      </div>
-                    )}
-                  </div>
+                  </label>
+                  <textarea
+                    value={disputeDescription}
+                    onChange={(e) => setDisputeDescription(e.target.value)}
+                    placeholder="Type a short description"
+                    rows={4}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
+                  />
                 </div>
-              }
+
+                <div className="space-y-2 mt-3">
+                  <h2 className="text-sm font-bold">Upload Evidence</h2>
+                  <p className="text-gray-600 text-sm">
+                      Please upload evidence to support your dispute (photos, videos, or documents)
+                  </p>
+
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                    <label className="flex flex-col items-center cursor-pointer">
+                      <Upload className="w-10 h-10 text-gray-400 mb-2" />
+                      <span className="text-sm font-semibold text-gray-700">Click to upload</span>
+                      <input
+                        type="file"
+                        multiple
+                        onChange={handleFileUpload}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+
+                  {uploadedFiles.length > 0 && (
+                    <div className="space-y-2">
+                      <p className="text-sm font-semibold text-gray-700">
+                          Uploaded files ({uploadedFiles.length}):
+                      </p>
+                      {uploadedFiles.map((file, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center justify-between bg-gray-50 p-2 rounded text-sm"
+                        >
+                          <span className="truncate">{file.name}</span>
+                          <button
+                            onClick={() =>
+                              setUploadedFiles(uploadedFiles.filter((_, i) => i !== idx))
+                            }
+                            className="text-red-600 hover:text-red-700 ml-2"
+                          >
+                              Remove
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {error && (
+                    <div className="bg-red-50 text-red-600 p-3 rounded text-sm">
+                      {error}
+                    </div>
+                  )}
+                </div>
+              </div>
+
             </div>
 
             <div className="space-x-3 flex justify-between">

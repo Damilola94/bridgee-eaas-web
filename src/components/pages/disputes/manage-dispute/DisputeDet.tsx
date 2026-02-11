@@ -38,8 +38,8 @@ export default function DisputeDetails({
   onViewEvidence
 }: Props) {
   const evidence: EvidenceFile[] = [
-    ...(dispute.pictureProofs ?? []).map((url, i) => ({ name: `Picture ${i + 1}`, url })),
-    ...(dispute.videoProofs ?? []).map((url, i) => ({ name: `Video ${i + 1}`, url }))
+    ...(dispute?.pictureProofs ?? []).map((url, i) => ({ name: `Picture ${i + 1}`, url })),
+    ...(dispute?.videoProofs ?? []).map((url, i) => ({ name: `Video ${i + 1}`, url }))
   ];
 
   return (
@@ -49,16 +49,16 @@ export default function DisputeDetails({
       <div className="bg-[#EDE8FF] border-l-[8px] border-primary rounded-xl p-6">
         <div className="inline-flex items-center bg-white px-3 py-1 rounded-full shadow-sm mb-4">
           <Image src={SecurityUser} alt="security-user" width={20} height={20} />
-          <span className="text-sm font- ml-1">{dispute.reporterName ?? "Buyer"}</span>
+          <span className="text-sm font- ml-1">{dispute?.reporterName ?? "Buyer"}</span>
         </div>
 
         <p className="text-sm text-gray-700">
           <span className="font-semibold">Dispute reason: </span>
-          <em>{dispute.description ?? dispute.disputeReason ?? "—"}</em>
+          <em>{dispute?.description ?? dispute?.disputeReason ?? "—"}</em>
         </p>
 
         <div className="mt-4 flex flex-wrap items-center gap-4">
-          {evidence.length > 0 ? (
+          {evidence?.length > 0 ? (
             evidence.map((file, index) => (
               <div key={index} className="flex items-center gap-2">
                 <div className="w-10 h-10 rounded-md overflow-hidden border">

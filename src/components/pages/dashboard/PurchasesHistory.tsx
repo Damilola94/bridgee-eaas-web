@@ -29,7 +29,7 @@ const options = [
   { title: "Picked Up", status: "PickedUp" }
 ];
 
-function PurchasesHistory() {
+function PurchasesHistory({ onOpenDispute }: { onOpenDispute: (id: string | number) => void }) {
   const [cookie] = useCookies(["data"]);
   const router = useRouter();
   const { tab } = router.query || {};
@@ -37,9 +37,13 @@ function PurchasesHistory() {
   const { data, status, error } = useGetQuery({
     service: "wallet-service/api/v1",
     endpoint: "escrows",
-    extra: "orders",
+    extra: "buyer/orders",
     pQuery: {
-      pageSize: 10, pageNumber: 1, SearchKey: "", Status: router?.query?.status === 'all' ? null : router?.query?.status
+      UserId: cookie?.data?.userId,
+      pageSize: 10,
+      pageNumber: 1,
+      SearchKey: "",
+      Status: router?.query?.status === 'all' ? null : router?.query?.status
     },
     queryKey: ["escrows-orders", router?.query?.status],
     enabled: !!router?.query?.status || !!cookie?.data?.accessToken
@@ -81,6 +85,7 @@ function PurchasesHistory() {
               <th className="px-3 py-5">Date</th>
               <th className="px-3 py-5">Payment Link</th>
               <th className="px-3 py-5">Status</th>
+              <th className="px-3 py-5">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -136,6 +141,18 @@ function PurchasesHistory() {
                       </td>
                       <td className="px-3 py-5">
                         <TransactionStatus status={item.status} />
+                      </td>
+                      <td className="px-3 py-5">
+                        <Button
+                          className=" "
+                          paddingY="py-2"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onOpenDispute(item.id);
+                          }}
+                        >
+    Open Dispute
+                        </Button>
                       </td>
                     </tr>
                   ))}
