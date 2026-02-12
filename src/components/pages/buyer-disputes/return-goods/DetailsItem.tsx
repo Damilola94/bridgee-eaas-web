@@ -392,7 +392,9 @@ export default function ReturnDetailsPage() {
                       name: item.name || "",
                       description: item.name || "",
                       unitWeight: item.weightKg?.toString() || "0",
-                      unitAmount: item.unitPrice?.toString() || "0",
+                      unitAmount: item.amount
+                        ? item.amount.replace(/[^\d.]/g, "")
+                        : "0",
                       quantity: item.quantity?.toString() || "0"
                     })) || [],
         serviceType: "pickup",
