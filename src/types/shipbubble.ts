@@ -173,6 +173,3 @@ export interface ShippingRatesResponse {
   method: string;
   status: number;
 }
-
-
-

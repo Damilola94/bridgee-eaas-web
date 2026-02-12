@@ -92,9 +92,11 @@ function DashboardContainer() {
           <div className="w-full mb-3">
             {isBuyer ? <PurchasesHistory onOpenDispute={openDisputeModal}/> : <SalesHistory />}
           </div>
-          <div className="w-full ">
-            <WalletHistory />
-          </div>
+          {!isBuyer && (
+            <div className="w-full ">
+              <WalletHistory />
+            </div>
+          )}
         </div>
 
         <div className="hidden xl:block fixed right-0 top-0 h-screen w-[400px] border-l pt-20">
