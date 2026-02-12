@@ -128,15 +128,17 @@ function PurchasesHistory({ onOpenDispute }: { onOpenDispute: (id: string | numb
                       <td className="px-3 py-5">{item.amount}</td>
                       <td className="px-3 py-5">{item.createdDate}</td>
                       <td className="px-3 py-5">
-                        {item.paymentLink ? (
-                          <Link
-                            href={item.paymentLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                        {item.referenceNumber ? (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              router.push(`/buyer/in-app-order/${item.referenceNumber}`);
+                            }}
                             className="text-blue-600 hover:underline"
                           >
-                            View Link
-                          </Link>
+                            View Order
+                          </button>
                         ) : (
                           "N/A"
                         )}
