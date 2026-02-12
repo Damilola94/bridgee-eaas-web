@@ -511,7 +511,7 @@ export default function ReturnDetailsPage() {
                     <th className="px-3 py-3">Price</th>
                     <th className="px-3 py-3">Weight(KG)</th>
                     <th className="px-3 py-3">Total Amount</th>
-                    <th className="px-3 py-3 rounded-tr-lg">{null}</th>
+                    {/* <th className="px-3 py-3 rounded-tr-lg">{null}</th> */}
                   </tr>
                 </thead>
                 <tbody className="">
@@ -522,7 +522,7 @@ export default function ReturnDetailsPage() {
                       <td className="px-3 py-3">{formatCurrency(item?.unitPrice)}</td>
                       <td className="px-3 py-3">{`${item?.weight || 0}kg`}</td>
                       <td className="px-3 py-3">{formatCurrency(item?.total)}</td>
-                      <td className="px-3 py-3 flex justify-end gap-4">
+                      {/* <td className="px-3 py-3 flex justify-end gap-4">
                         <button
                           onClick={() => handleEdit(item)}
                           disabled={true}
@@ -537,7 +537,7 @@ export default function ReturnDetailsPage() {
                         >
                           <Image src={Delete} alt="Delete" className="w-5 h-5" />
                         </button>
-                      </td>
+                      </td> */}
                     </tr>
                   ))}
                 </tbody>
