@@ -9,7 +9,7 @@ import React, {
 import Select, { StylesConfig } from 'react-select';
 import { debounce } from 'lodash';
 
-import Image from 'next/image';
+// import Image from 'next/image';
 import AsyncSelect from 'react-select/async';
 
 import Button from '../../../inputs/Button';
@@ -22,8 +22,8 @@ import {
 import TextInput from '../../../inputs/Text';
 import { useAccountsContext } from '../../../../context/Accounts';
 
-import Edit from "../../../../assets/svgs/edit-order.svg";
-import Delete from "../../../../assets/svgs/delete.svg";
+// import Edit from "../../../../assets/svgs/edit-order.svg";
+// import Delete from "../../../../assets/svgs/delete.svg";
 import FileInput from '../../../inputs/File';
 import { formatCurrency } from '../../../../utilities/general';
 
@@ -109,16 +109,16 @@ export default function ReturnDetailsPage() {
   const [isValidatingPickup, setIsValidatingPickup] = useState(false);
   const [isValidatingDelivery, setIsValidatingDelivery] = useState(false);
 
-  const handleDeleteItem = (id: string) => {
-    const escrowItems =
-            invoice?.escrowItems?.filter((item: any) => item?.id !== id) || [];
-    setInvoice((state) => ({ ...state, escrowItems }));
-  };
+  // const handleDeleteItem = (id: string) => {
+  //   const escrowItems =
+  //           invoice?.escrowItems?.filter((item: any) => item?.id !== id) || [];
+  //   setInvoice((state) => ({ ...state, escrowItems }));
+  // };
 
-  const handleEdit = (data: any) => {
-    // setItemToEdit(data);
-    // setShow(true);
-  };
+  // const handleEdit = (data: any) => {
+  //   // setItemToEdit(data);
+  //   // setShow(true);
+  // };
 
   // Fetch Categories
   useEffect(() => {
