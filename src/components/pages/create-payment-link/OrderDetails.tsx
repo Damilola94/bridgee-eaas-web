@@ -409,11 +409,7 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
             name: item.name || "",
             description: item.name || "",
             unitWeight: item.weight?.toString() || "0",
-            unitAmount: item.amount
-              ? typeof item.amount === "string"
-                ? item.amount.replace(/[^\d.]/g, "")
-                : item.amount.toString()
-              : "0",
+            unitAmount: item.amount?.toString() || "0",
             quantity: item.quantity?.toString() || "0"
           })) || [],
         serviceType: "pickup",
