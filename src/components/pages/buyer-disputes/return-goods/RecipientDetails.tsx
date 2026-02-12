@@ -17,6 +17,8 @@ export default function RecipientDetailsPage() {
   const { invoice } = useReturnGoodsContext();
   const disputeId = router.query.disputeId as string;
 
+  console.log(disputeId, router.query);
+
   const businessName = invoice?.businessName || "N/A";
   const businessEmail = invoice?.businessEmail || "N/A";
   const businessPhone = invoice?.businessPhone || "N/A";
