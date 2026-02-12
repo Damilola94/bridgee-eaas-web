@@ -86,7 +86,7 @@ function PurchasesHistory({ onOpenDispute }: { onOpenDispute: (id: string | numb
               <th className="px-3 py-5">Payment Link</th>
               <th className="px-3 py-5">Status</th>
               {data?.data?.some(
-                (item: SalesItem) => item.status !== "Disputed" && item.status !== "DisputedResolved"
+                (item: SalesItem) => item.status !== "Disputed" && item.status !== "DisputeResolved"
               ) && <th className="px-3 py-5">Action</th>}
             </tr>
           </thead>
