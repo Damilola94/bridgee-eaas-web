@@ -15,6 +15,7 @@ import { useReturnGoodsContext } from '../../../../context/ReturnGoods';
 export default function RecipientDetailsPage() {
   const router = useRouter();
   const { invoice } = useReturnGoodsContext();
+  const disputeId = router.query.disputeId as string;
 
   const businessName = invoice?.businessName || "N/A";
   const businessEmail = invoice?.businessEmail || "N/A";
@@ -111,7 +112,7 @@ export default function RecipientDetailsPage() {
       endpoint: "escrows",
       extra: "orders/return",
       pQuery: {
-        disputeId: router?.query?.slug
+        disputeId: disputeId
       },
       method: "POST",
       body: payload,

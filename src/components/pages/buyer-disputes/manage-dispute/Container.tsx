@@ -175,7 +175,7 @@ export default function ManageDisputeContainer() {
                 decision={dispute?.adminComments ?? "N/A"}
                 status={dispute?.status}
                 decidedAt={dispute?.updatedAt}
-                onInitiateReturn={() => router.push(`/buyer-disputes/return-goods/${dispute?.escrowOrderId}`)}
+                onInitiateReturn={() => router.push(`/buyer-disputes/return-goods/${dispute?.escrowOrderId}?dispusteId=${dispute?.id}`)}
               />
             </div>
 
