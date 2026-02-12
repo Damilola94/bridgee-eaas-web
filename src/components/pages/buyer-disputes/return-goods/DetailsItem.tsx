@@ -39,8 +39,8 @@ import ShippingRatesModal, { RatesData } from "./ShippingRatesModal";
 import SelectPackageSizeModal from './SelectPackageSizeModal';
 
 interface SelectAddressOption {
-    label: string;
-    value: string;
+  label: string;
+  value: string;
 }
 
 const selectStyles: StylesConfig<any, false> = {
@@ -68,23 +68,23 @@ export default function ReturnDetailsPage() {
 
   const [dimensions, setDimensions] = useState<ShipBubbleDimension[]>([]);
   const [selectedDimension, setSelectedDimension] =
-        useState<ShipBubbleDimension | null>(null);
+    useState<ShipBubbleDimension | null>(null);
 
   const [isPackageSizeModalOpen, setIsPackageSizeModalOpen] = useState(false);
 
   const [isLoadingShippingRates, setIsLoadingShippingRates] = useState(false);
   const [isRatesModalOpen, setIsRatesModalOpen] = useState(false);
   const [shippingRatesData, setShippingRatesData] = useState<
-        RatesData | undefined
-    >(undefined);
+    RatesData | undefined
+  >(undefined);
   const [selectedCourierInfo, setSelectedCourierInfo] = useState<string | null>(
     null
   );
 
   const [pickupAddressResponse, setPickupAddressResponse] =
-        useState<ValidatedAddress | null>(null);
+    useState<ValidatedAddress | null>(null);
   const [deliveryAddressResponse, setDeliveryAddressResponse] =
-        useState<ValidatedAddress | null>(null);
+    useState<ValidatedAddress | null>(null);
 
   const handleSelectDimension = (dimension: ShipBubbleDimension) => {
     setSelectedDimension(dimension);
@@ -191,9 +191,9 @@ export default function ReturnDetailsPage() {
     const setValidating = isPickup ? setIsValidatingPickup : setIsValidatingDelivery;
 
     if (!manualAddress.houseNo.trim() || !manualAddress.streetName.trim() ||
-            !manualAddress.state.trim() ||
-            !manualAddress.lga.trim() ||
-            !manualAddress.landmark.trim()) {
+      !manualAddress.state.trim() ||
+      !manualAddress.lga.trim() ||
+      !manualAddress.landmark.trim()) {
       notification({
         title: "Form Error",
         message: "Please fill in all address fields",
@@ -277,8 +277,8 @@ export default function ReturnDetailsPage() {
     const validationDetails = isPickupAddress
       ? {
         name:
-                    `${accounts?.identity?.personalDetail?.firstName || ""} ${accounts?.identity?.personalDetail?.lastName || ""
-                    }`.trim() || "",
+          `${accounts?.identity?.personalDetail?.firstName || ""} ${accounts?.identity?.personalDetail?.lastName || ""
+            }`.trim() || "",
         email: accounts?.identity?.personalDetail?.email || "",
         phone: accounts?.identity?.personalDetail?.phoneNumber || "",
         address: selectedOption.label,
@@ -315,7 +315,7 @@ export default function ReturnDetailsPage() {
         notification({
           title: "Success",
           message: `${fieldName === "pickupAddress" ? "Pickup" : "Delivery"
-          } address has been successfully validated.`,
+            } address has been successfully validated.`,
           type: "success"
         });
       } else {
@@ -346,12 +346,12 @@ export default function ReturnDetailsPage() {
     }
     if (
       !pickupAddressResponse?.addressCode ||
-            !deliveryAddressResponse?.addressCode
+      !deliveryAddressResponse?.addressCode
     ) {
       notification({
         title: "Form Error",
         message:
-                    "Please select and wait for both pickup and delivery addresses to be validated.",
+          "Please select and wait for both pickup and delivery addresses to be validated.",
         type: "danger"
       });
       return;
@@ -388,15 +388,15 @@ export default function ReturnDetailsPage() {
         pickupDate: new Date().toISOString().split("T")[0],
         categoryId: selectedCategory.categoryId,
         packageItems:
-                    invoice.items?.map((item: any) => ({
-                      name: item.name || "",
-                      description: item.name || "",
-                      unitWeight: item.weightKg?.toString() || "0",
-                      unitAmount: item.amount
-                        ? item.amount.replace(/[^\d.]/g, "")
-                        : "0",
-                      quantity: item.quantity?.toString() || "0"
-                    })) || [],
+          invoice.items?.map((item: any) => ({
+            name: item.name || "",
+            description: item.name || "",
+            unitWeight: item.weightKg?.toString() || "0",
+            unitAmount: item.unitPrice
+              ? item.unitPrice.replace(/[^\d.]/g, "")
+              : "0",
+            quantity: item.quantity?.toString() || "0"
+          })) || [],
         serviceType: "pickup",
         deliveryInstructions: invoice.description || "",
         packageDimension: {
@@ -439,12 +439,12 @@ export default function ReturnDetailsPage() {
     () =>
       !!(
         pickupAddressResponse?.addressCode &&
-                deliveryAddressResponse?.addressCode &&
-                selectedDimension &&
-                categories.find((cat) => cat.categoryId === Number(invoice.categoryId)) &&
-                invoice?.businessName?.trim() &&
-                invoice.businessEmail?.trim() &&
-                invoice.businessPhone?.trim()
+        deliveryAddressResponse?.addressCode &&
+        selectedDimension &&
+        categories.find((cat) => cat.categoryId === Number(invoice.categoryId)) &&
+        invoice?.businessName?.trim() &&
+        invoice.businessEmail?.trim() &&
+        invoice.businessPhone?.trim()
       ),
     [pickupAddressResponse?.addressCode, deliveryAddressResponse?.addressCode, selectedDimension, categories, invoice?.businessName, invoice.businessEmail, invoice.businessPhone, invoice.categoryId]
   );
@@ -458,8 +458,8 @@ export default function ReturnDetailsPage() {
       // Check if this is a recipient field
       if (
         name === "recipientName" ||
-                name === "email" ||
-                name === "phoneNumber"
+        name === "email" ||
+        name === "phoneNumber"
       ) {
         setInvoice((state) => ({
           ...state,
@@ -701,7 +701,7 @@ export default function ReturnDetailsPage() {
                             setPickupAddressResponse(null);
                           }}
                         >
-                                                    Search
+                          Search
                         </Button>
                         <Button
                           className="bg-success w-full text-lg font-bold"
@@ -802,7 +802,7 @@ export default function ReturnDetailsPage() {
                             setDeliveryAddressResponse(null);
                           }}
                         >
-                                                    Search
+                          Search
                         </Button>
                         <Button
                           className="bg-success w-full text-lg font-bold"
@@ -833,7 +833,7 @@ export default function ReturnDetailsPage() {
               {selectedCourierInfo && (
                 <div className="mt-4 text-center md:text-right">
                   <p className="text-sm font-semibold text-gray-700">
-                                        Selected Courier: &nbsp;
+                    Selected Courier: &nbsp;
                     <span className="text-md text-green-600">
                       {selectedCourierInfo}
                     </span>
