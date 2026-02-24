@@ -1,5 +1,6 @@
 import {
   ActivityLogsResponse,
+  DeliveryPinResponse,
   OrderDetailsResponse,
   OrderStatusResponse,
   PaymentDetailsResponse,

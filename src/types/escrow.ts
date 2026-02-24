@@ -9,7 +9,6 @@ export interface OrderStatusResponse {
   metaData: null;
 }
 
-
 export interface TransactionStatusResponse {
   isSuccess: boolean;
   statusCode: string;
@@ -28,17 +27,6 @@ export interface PaymentDetailsResponse {
     accountName: string;
     accountNumber: string;
     amount: string;
-  };
-  metaData: null;
-}
-
-export interface OrderStatusResponse {
-  isSuccess: boolean;
-  statusCode: string;
-  message: string;
-  data: {
-    status: string;
-    allowPayment: boolean;
   };
   metaData: null;
 }
@@ -100,7 +88,5 @@ export interface DeliveryPinResponse {
   isSuccess: boolean;
   statusCode: string;
   message: string;
-  data: {
-    deliveryPin: string;
-  };
+  data : string
 }

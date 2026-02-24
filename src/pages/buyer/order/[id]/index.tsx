@@ -135,7 +135,7 @@ export default function BuyerOrder() {
             setIsLoadingDeliveryPin(true);
             const pinResponse = await getDeliveryPin(response.data.id);
             if (pinResponse.isSuccess) {
-              setDeliveryPin(pinResponse.data);
+              setDeliveryPin(pinResponse?.data);
             }
           } catch (error) {
             console.error("Failed to fetch delivery pin");
