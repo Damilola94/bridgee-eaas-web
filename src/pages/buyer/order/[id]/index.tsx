@@ -24,7 +24,8 @@ import MakePayment from "../../../../components/pages/buyer/MakePayment";
 import {
   getOrderStatus,
   getOrderDetails,
-  getOrderActivityLogs
+  getOrderActivityLogs,
+  getDeliveryPin
 } from "../../../../services/api/escrow";
 import notification from "../../../../utilities/notification";
 import { QUERY_KEYS } from "../../../../configs/constants";
@@ -34,16 +35,18 @@ import {
   ActivityLogsResponse,
   OrderDetailsResponse
 } from "../../../../types/escrow";
-import Loading from "../../../../components/common/Loading";
 
 import Button from "../../../../components/inputs/Button";
+import DeliveryPinCard from "../../../../components/pages/buyer/DeliveryPinCard";
+import ValidateDeliveryPinModal from "../../../../components/pages/buyer/ValidateDeliveryPinModal";
 
 export default function BuyerOrder() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const urlOrderReference = router.query.id as string;
+  const [showValidateModal, setShowValidateModal] = useState(false);
 
-  const [isInitialLoading, setIsInitialLoading] = useState(
+  const [, setIsInitialLoading] = useState(
     Boolean(urlOrderReference)
   );
 
@@ -52,13 +55,16 @@ export default function BuyerOrder() {
   const [orderDetails, setOrderDetails] = useState<
     OrderDetailsResponse["data"] | null
   >(null);
-  const [isLoadingOrderDetails, setIsLoadingOrderDetails] = useState(
+  const [, setIsLoadingOrderDetails] = useState(
     Boolean(urlOrderReference)
   );
 
   const [activityLogs, setActivityLogs] = useState<ActivityLogItem[]>([]);
   const [isLoadingActivities, setIsLoadingActivities] = useState(false);
   const [showPaymentView, setShowPaymentView] = useState(false);
+
+  const [deliveryPin, setDeliveryPin] = useState<string | null>(null);
+  const [, setIsLoadingDeliveryPin] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -71,7 +77,7 @@ export default function BuyerOrder() {
       const orderId = urlOrderReference as string;
       setOrderReference(orderId);
       if (!showOrderDetails) {
-        handleViewStatus(); // Auto-fetch on reload
+        handleViewStatus();
       }
     }
   }, [urlOrderReference]);
@@ -83,7 +89,7 @@ export default function BuyerOrder() {
     }
   }, [urlOrderReference, showOrderDetails]);
 
-  const { data: orderStatusData, isLoading: statusLoading } = useQuery(
+  const { data: orderStatusData } = useQuery(
     [QUERY_KEYS.ORDER_STATUS, urlOrderReference],
     () => getOrderStatus(urlOrderReference!),
     {
@@ -122,6 +128,21 @@ export default function BuyerOrder() {
         });
 
         const escrowOrderId = response.data?.id;
+        if (
+          response.data?.id
+        ) {
+          try {
+            setIsLoadingDeliveryPin(true);
+            const pinResponse = await getDeliveryPin(response.data.id);
+            if (pinResponse.isSuccess) {
+              setDeliveryPin(pinResponse.data);
+            }
+          } catch (error) {
+            console.error("Failed to fetch delivery pin");
+          } finally {
+            setIsLoadingDeliveryPin(false);
+          }
+        }
 
         if (escrowOrderId) {
           setIsLoadingActivities(true);
@@ -205,7 +226,7 @@ export default function BuyerOrder() {
               <div className="lg:hidden bg-white border-b border-gray-200 w-full px-4 py-4 mb-4">
                 <div className="flex items-center">
                   <div className="block lg:hidden my-4 ml-2">
-                    <Link href="#" onClick={() => {}}>
+                    <Link href="#" onClick={() => { }}>
                       <Image
                         src={Logo}
                         alt="UseBridgee Inc. logo"
@@ -220,7 +241,7 @@ export default function BuyerOrder() {
 
               {/* Desktop Header */}
               <div className="hidden lg:flex justify-start lg:pl-20 lg:pt-10">
-                <Link href="#" onClick={() => {}}>
+                <Link href="#" onClick={() => { }}>
                   <Image
                     src={Logo}
                     alt="UseBridge Inc. logo"
@@ -238,7 +259,7 @@ export default function BuyerOrder() {
                   onClick={handleShowPayment}
                   className="w-full max-w-2xl bg-success text-white py-3 px-4 rounded-lg font-bold text-lg mb-6"
                 >
-                Make Payment
+                  Make Payment
                 </Button>
                 <Invoice
                   orderDetails={orderDetails}
@@ -261,7 +282,7 @@ export default function BuyerOrder() {
             <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-4">
               <div className="flex items-center">
                 <div className="block lg:hidden my-4 ml-2">
-                  <Link href="#" onClick={() => {}}>
+                  <Link href="#" onClick={() => { }}>
                     <Image
                       src={Logo}
                       alt="UseBridgee Inc. logo"
@@ -279,7 +300,7 @@ export default function BuyerOrder() {
               <div className="lg:w-[45%] lg:p-10 p-6">
                 {/* Desktop Header */}
                 <div className="hidden lg:block">
-                  <Link href="#" onClick={() => {}}>
+                  <Link href="#" onClick={() => { }}>
                     <Image
                       src={Logo}
                       alt="UseBridgee Inc. logo"
@@ -325,7 +346,7 @@ export default function BuyerOrder() {
           <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-4">
             <div className="flex items-center">
               <div className="block lg:hidden my-4 ml-2">
-                <Link href="#" onClick={() => {}}>
+                <Link href="#" onClick={() => { }}>
                   <Image
                     src={Logo}
                     alt="UseBridgee Inc. logo"
@@ -342,7 +363,7 @@ export default function BuyerOrder() {
             <div className="lg:w-[65%] lg:py-10 p-6">
               {/* Desktop Header */}
               <div className="hidden lg:block">
-                <Link href="#" onClick={() => {}}>
+                <Link href="#" onClick={() => { }}>
                   <Image
                     src={Logo}
                     alt="UseBridgee Inc. logo"
@@ -362,6 +383,14 @@ export default function BuyerOrder() {
 
             {/* Right Side */}
             <div className="lg:w-[35%] lg:py-10 p-6">
+              {orderStatusData?.data?.status === "Confirmed" && <div className="lg:mt-[9.5rem]" />}
+              {orderStatusData?.data?.status === "Confirmed" && deliveryPin && (
+                <DeliveryPinCard
+                  onConfirmClick={() => setShowValidateModal(true)}
+                  pin={deliveryPin} />
+              )}
+              {orderStatusData?.data?.status === "Confirmed" && <div className="lg:mt-[2rem] mt-[1.5rem]" />}
+              {orderStatusData?.data?.status !== "Confirmed" && <div className="lg:mt-[9.5rem]" />}
               {isLoadingActivities ? (
                 <div className="space-y-3">
                   {[...Array(5)].map((_, i) => (
@@ -374,6 +403,16 @@ export default function BuyerOrder() {
             </div>
           </div>
         </div>
+        {showValidateModal && (
+          <ValidateDeliveryPinModal
+            orderReference={orderDetails?.reference}
+            onClose={() => setShowValidateModal(false)}
+            onSuccess={() => {
+              handleViewStatus();
+            }}
+          />
+        )}
+
       </>
     );
   }

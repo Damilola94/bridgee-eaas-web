@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-nested-ternary */
 import React, {
   useCallback, useEffect, useMemo, useState
@@ -6,6 +7,7 @@ import { debounce } from "lodash";
 import AsyncSelect from "react-select/async";
 
 import { BiPlus } from "react-icons/bi";
+import { MapPin } from "lucide-react";
 
 import Image from "next/image";
 
@@ -40,6 +42,10 @@ import {
 } from "../../../services/api/shipbubble";
 
 import {
+  LocationSuggestion, getLocationSuggestionFromCurrentPosition
+} from "../../../services/api/currentLocation";
+
+import {
   ShipBubbleCategory,
   ShipBubbleDimension,
   ShippingRatesPayload,
@@ -48,10 +54,14 @@ import {
 
 import TextInput from "../../inputs/Text";
 
+import ToggleInput from "../../inputs/Toggle";
+
 import AddInvoiceItem from "./AddInvoiceItem";
 
 import SelectPackageSizeModal from "./SelectPackageSizeModal";
 import ShippingRatesModal, { RatesData } from "./ShippingRatesModal";
+
+import { LocationSuggestionModal } from "./CurrentLocationModal";
 
 interface SelectAddressOption {
   label: string;
@@ -95,6 +105,7 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
   const [selectedCourierInfo, setSelectedCourierInfo] = useState<string | null>(
     null
   );
+  const [deliveryAttempted, setDeliveryAttempted] = useState(false);
 
   const [pickupAddressResponse, setPickupAddressResponse] =
     useState<ValidatedAddress | null>(null);
@@ -123,6 +134,13 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
   });
   const [isValidatingPickup, setIsValidatingPickup] = useState(false);
   const [isValidatingDelivery, setIsValidatingDelivery] = useState(false);
+
+  // Location modal state
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+  const [currentLocationSuggestion, setCurrentLocationSuggestion] = useState<LocationSuggestion | null>(null);
+  const [isLoadingCurrentLocation, setIsLoadingCurrentLocation] = useState(false);
+  const [, setLocationError] = useState<string | null>(null);
+  const [pickupSelectValue, setPickupSelectValue] = useState<SelectAddressOption | null>(null);
 
   // Fetch Categories
   useEffect(() => {
@@ -155,6 +173,7 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
   }, []);
 
   useEffect(() => {
+    handleChange(true, 'toggle', 'isDeliveryOnUs');
     window.scrollTo(0, 0);
   }, []);
 
@@ -189,6 +208,83 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
     }, 500),
     []
   );
+
+  // Handle fetching current location
+  const handleUseCurrentLocation = async () => {
+    setIsLoadingCurrentLocation(true);
+    setLocationError(null);
+
+    try {
+      const suggestion = await getLocationSuggestionFromCurrentPosition();
+      setCurrentLocationSuggestion(suggestion);
+      setIsLocationModalOpen(true);
+    } catch (error: any) {
+      console.error("[OrderDetails] Location error:", error);
+      setLocationError(error.message || "Unable to fetch your location. Please try again.");
+      notification({
+        title: "Location Error",
+        message: error.message || "Unable to fetch your location. Please try again.",
+        type: "danger"
+      });
+    } finally {
+      setIsLoadingCurrentLocation(false);
+    }
+  };
+
+  // Validate the address automatically with the location from modal
+  const handleSelectLocationFromModal = async (location: LocationSuggestion) => {
+
+    setPickupSelectValue({
+      label: location.address,
+      value: location.address
+    });
+
+    const validationDetails = {
+      name: `${accounts?.identity?.personalDetail?.firstName || ""} ${accounts?.identity?.personalDetail?.lastName || ""}`.trim() || "",
+      email: accounts?.identity?.personalDetail?.email || "",
+      phone: accounts?.identity?.personalDetail?.phoneNumber || "",
+      address: location.address,
+      latitude: location.coordinates.lat,
+      longitude: location.coordinates.lng
+    };
+
+    try {
+      setIsValidatingPickup(true);
+      const response = await validateAddress(validationDetails);
+
+      if (response.isSuccess && response.data.isValid) {
+        setPickupAddressResponse(response.data);
+        // Clear manual pickup form
+        setShowManualPickup(false);
+        setManualPickupAddress({
+          houseNo: '',
+          streetName: '',
+          state: '',
+          lga: '',
+          landmark: ''
+        });
+        notification({
+          title: "Success",
+          message: "Pickup address has been successfully validated.",
+          type: "success"
+        });
+      } else {
+        notification({
+          title: "Address Error",
+          message: response.message || "The address could not be validated.",
+          type: "danger"
+        });
+      }
+    } catch (error) {
+      notification({
+        title: "API Error",
+        message: "An error occurred while validating the address.",
+        type: "danger"
+      });
+    } finally {
+      setIsValidatingPickup(false);
+    }
+  };
 
   const handleManualAddressValidation = async (
     fieldName: "pickupAddress" | "deliveryAddress"
@@ -284,8 +380,7 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
     const validationDetails = isPickupAddress
       ? {
         name:
-          `${accounts?.identity?.personalDetail?.firstName || ""} ${accounts?.identity?.personalDetail?.lastName || ""
-          }`.trim() || "",
+          `${accounts?.identity?.personalDetail?.firstName || ""} ${accounts?.identity?.personalDetail?.lastName || ""}`.trim() || "",
         email: accounts?.identity?.personalDetail?.email || "",
         phone: accounts?.identity?.personalDetail?.phoneNumber || "",
         address: selectedOption.label,
@@ -321,8 +416,7 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
         }
         notification({
           title: "Success",
-          message: `${fieldName === "pickupAddress" ? "Pickup" : "Delivery"
-          } address has been successfully validated.`,
+          message: `${fieldName === "pickupAddress" ? "Pickup" : "Delivery"} address has been successfully validated.`,
           type: "success"
         });
       } else {
@@ -383,7 +477,6 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
       return;
     }
 
-    // Get selected category
     const selectedCategory = categories.find(
       (cat) => cat.categoryId === Number(form.categoryId)
     );
@@ -492,7 +585,6 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
         return;
       }
 
-      // Handle file inputs
       if (type === "file") {
         setForm((state) => ({
           ...state,
@@ -501,10 +593,8 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
         return;
       }
 
-      // Handle regular inputs
       setForm((state) => ({ ...state, [name]: value }));
     } else {
-      // Handle select changes and other custom cases
       setForm((state) => ({ ...state, [inputName]: val }));
     }
   };
@@ -558,15 +648,42 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
     if (!form?.categoryId) return "Please select a category";
     if (!selectedDimension) return "Please select a package size";
 
-    // Addresses
-    if (!pickupAddressResponse)
-      return "Please select and validate pickup address";
-    if (!deliveryAddressResponse)
-      return "Please select and validate delivery address";
+    if (form?.isDeliveryOnUs) {
+      // Addresses
+      if (!pickupAddressResponse)
+        return "Please select and validate pickup address";
+      if (!deliveryAddressResponse)
+        return "Please select and validate delivery address";
 
-    // Shipping rate
-    if (!form?.selectedCourier) return "Please select a shipping rate";
+      // Shipping rate
+      if (!form?.selectedCourier)
+        return "Please select a shipping rate";
+    }
   };
+
+  const isRecipientDetailsComplete = useMemo(() => {
+    const name = form.recipientDetails?.recipientName?.trim() || "";
+    const email = form.recipientDetails?.email?.trim() || "";
+    const phone = form.recipientDetails?.phoneNumber?.trim() || "";
+
+    return (
+      name &&
+      name.split(/\s+/).length >= 2 &&
+      email &&
+      phone
+    );
+  }, [form.recipientDetails]);
+
+  const recipientNameInvalid =
+    deliveryAttempted &&
+    (!form.recipientDetails?.recipientName?.trim() ||
+      form.recipientDetails.recipientName.split(/\s+/).length < 2);
+
+  const recipientEmailInvalid =
+    deliveryAttempted && !form.recipientDetails?.email?.trim();
+
+  const recipientPhoneInvalid =
+    deliveryAttempted && !form.recipientDetails?.phoneNumber?.trim();
 
   const handleSubmit = () => {
     const error = validateForm();
@@ -668,7 +785,7 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
           </table>
         </div>
         {form?.escrowItems && form?.escrowItems?.length > 0 && (
-          <div className="w-full mb-10">
+          <div className="w-full">
             <div>
               <p className="text-base mb-1">
                 Add Description{" "}
@@ -705,7 +822,13 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
         )}
       </div>
 
-      <div className="border-2 border-lightText/20 rounded-lg p-5 mb-10">
+      <ToggleInput
+        label="Delivery by Bridgee"
+        value={form?.isDeliveryOnUs}
+        onChange={(val) => handleChange(val, 'toggle', 'isDeliveryOnUs')}
+      />
+
+      <div className="border-2 border-lightText/20 rounded-lg p-5 mb-10 mt-5">
         <h3 className="font-bold text-lg ff-bold mb-4">Recipient&#39;s Details</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <TextInput
@@ -714,6 +837,7 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
             onChange={handleChange}
             label="Recipient’s Name"
             placeholder="Enter name"
+            className={`${recipientNameInvalid ? "border border-red-500 bg-red-50" : ""}`}
             onBlur={() => {
               const name = form.recipientDetails?.recipientName?.trim() || "";
               const nameParts = name.split(/\s+/);
@@ -733,10 +857,12 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
             onChange={handleChange}
             label="Recipient’s Email"
             type="email"
+            className={`${recipientEmailInvalid ? "border border-red-500 bg-red-50" : ""}`}
             placeholder="Enter email"
           />
           <TextInput
             name="phoneNumber"
+            className={`${recipientPhoneInvalid ? "border border-red-500 bg-red-50" : ""}`}
             value={form.recipientDetails?.phoneNumber || ""}
             onChange={(e) =>
               /^\d{0,12}$/g.test(e.target.value) && handleChange(e)
@@ -785,9 +911,8 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
         </div>
       </div>
 
-      <div>
+      {form?.isDeliveryOnUs && <div>
         <p className="pb-4 font-bold text-base">Shipping Details</p>
-
         <div className="md:flex gap-5 justify-between space-y-5 md:space-y-0">
           {/* Pickup Address */}
           <div className="w-full">
@@ -797,7 +922,7 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
                 <AsyncSelect
                   cacheOptions
                   defaultOptions
-                  loadOptions={loadSuggestions}
+                  {...(pickupSelectValue && { value: pickupSelectValue })} loadOptions={loadSuggestions}
                   onChange={(option: SelectAddressOption) => {
                     handleAddressValidation(option, "pickupAddress");
                   }}
@@ -805,16 +930,36 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
                   className="mt-2"
                   styles={selectStyles}
                 />
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowManualPickup(true);
-                    setPickupAddressResponse(null);
-                  }}
-                  className="text-sm text-blue-600 hover:text-blue-800 mt-2 underline"
-                >
-                  {"Can't find address? Click here"}
-                </button>
+                <div className="mt-3 flex flex-row justify-between items-center sm:flex-col sm:items-start gap-3">
+                  {/* Use Current Location */}
+                  <div
+                    onClick={handleUseCurrentLocation}
+                    className="flex items-center gap-2 cursor-pointer group"
+                  >
+                    <div className="flex items-center justify-center w-6 h-6 rounded-lg border border-gray-400">
+                      <MapPin className="w-4 h-4 text-gray-400" />
+                    </div>
+
+                    <span className="text-sm text-primary group-hover:underline whitespace-nowrap">
+                      {isLoadingCurrentLocation
+                        ? "Getting location..."
+                        : "Use your current location"}
+                    </span>
+                  </div>
+
+                  {/* Manual Entry */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowManualPickup(true);
+                      setPickupAddressResponse(null);
+                    }}
+                    className="text-sm text-blue-600 hover:text-blue-800 underline whitespace-nowrap"
+                  >
+                    Can't find address? Click here
+                  </button>
+                </div>
+
               </>
             ) : (
               <div className="mt-2 space-y-3 p-4 border border-gray-200 rounded-lg bg-gray-50">
@@ -896,7 +1041,7 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
             <label className="text-sm font-bold">Delivery Address</label>
             {!showManualDelivery ? (
               <>
-                <AsyncSelect
+                {/* <AsyncSelect
                   cacheOptions
                   defaultOptions
                   loadOptions={loadSuggestions}
@@ -904,6 +1049,34 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
                     handleAddressValidation(option, "deliveryAddress");
                   }}
                   placeholder="Enter delivery address"
+                  className="mt-2"
+                  styles={selectStyles}
+                /> */}
+                <AsyncSelect
+                  cacheOptions
+                  defaultOptions
+                  loadOptions={loadSuggestions}
+                  isDisabled={!isRecipientDetailsComplete}
+                  onMenuOpen={() => {
+                    if (!isRecipientDetailsComplete) {
+                      setDeliveryAttempted(true);
+                      notification({
+                        title: "Recipient Details Required",
+                        message:
+                          "Please complete recipient name, email and phone number before selecting delivery address.",
+                        type: "danger"
+                      });
+                    }
+                  }}
+                  onChange={(option: SelectAddressOption) => {
+                    if (!isRecipientDetailsComplete) return;
+                    handleAddressValidation(option, "deliveryAddress");
+                  }}
+                  placeholder={
+                    isRecipientDetailsComplete
+                      ? "Enter delivery address"
+                      : "Fill recipient details first"
+                  }
                   className="mt-2"
                   styles={selectStyles}
                 />
@@ -1013,7 +1186,7 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
             </p>
           </div>
         )}
-      </div>
+      </div>}
 
       <div className="w-full mb-3 mt-8">
         <Button
@@ -1057,6 +1230,13 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
             type: "success"
           });
         }}
+      />
+      <LocationSuggestionModal
+        isOpen={isLocationModalOpen}
+        onClose={() => setIsLocationModalOpen(false)}
+        onSelect={handleSelectLocationFromModal}
+        initialLocation={currentLocationSuggestion}
+        isLoading={isLoadingCurrentLocation}
       />
     </div>
   );

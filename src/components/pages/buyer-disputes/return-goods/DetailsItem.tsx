@@ -278,7 +278,7 @@ export default function ReturnDetailsPage() {
       ? {
         name:
           `${accounts?.identity?.personalDetail?.firstName || ""} ${accounts?.identity?.personalDetail?.lastName || ""
-            }`.trim() || "",
+          }`.trim() || "",
         email: accounts?.identity?.personalDetail?.email || "",
         phone: accounts?.identity?.personalDetail?.phoneNumber || "",
         address: selectedOption.label,
@@ -315,7 +315,7 @@ export default function ReturnDetailsPage() {
         notification({
           title: "Success",
           message: `${fieldName === "pickupAddress" ? "Pickup" : "Delivery"
-            } address has been successfully validated.`,
+          } address has been successfully validated.`,
           type: "success"
         });
       } else {

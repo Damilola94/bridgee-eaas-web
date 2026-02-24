@@ -96,4 +96,11 @@ export interface ActivityLogsResponse {
     hasPrevious: boolean;
   };
 }
-
+export interface DeliveryPinResponse {
+  isSuccess: boolean;
+  statusCode: string;
+  message: string;
+  data: {
+    deliveryPin: string;
+  };
+}
