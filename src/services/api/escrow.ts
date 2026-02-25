@@ -1,5 +1,6 @@
 import {
   ActivityLogsResponse,
+  DeliveryPinResponse,
   OrderDetailsResponse,
   OrderStatusResponse,
   PaymentDetailsResponse,
@@ -51,4 +52,15 @@ export const getOrderActivityLogs = async (escrowOrderId: string): Promise<Activ
     method: "GET",
     endpoint: `/api/v1/activitylogs/order/${escrowOrderId}`
   }) as Promise<ActivityLogsResponse>;
+};
+
+export const getDeliveryPin = (
+  escrowOrderId: string
+): Promise<DeliveryPinResponse> => {
+  return handleFetch({
+    service: "wallet-service",
+    endpoint: `/api/v1/escrows/orders/${escrowOrderId}/deliverypin`,
+    method: "GET",
+    auth: true
+  });
 };

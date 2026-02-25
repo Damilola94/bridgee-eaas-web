@@ -105,7 +105,7 @@ function InvoiceSummary() {
         name: form?.recipientDetails?.recipientName || "",
         email: form?.recipientDetails?.email || "",
         phoneNumber: form?.recipientDetails?.phoneNumber || "",
-        address: form?.recipientDetails?.address || ""
+        address: form?.recipientDetails?.address || "Not by Bridgee"
       },
       photoUrls: photoUrls,
       buyerPaysEscrowFee: form?.isDeliveryOnUs || false,

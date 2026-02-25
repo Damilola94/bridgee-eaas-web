@@ -59,9 +59,9 @@ const BuyerOrder: NextPageWithLayout = () => {
   );
   const isBuyer = cookie?.data?.activeRole === "Buyer";
 
-  const handleBack = () => {
-    router.back();
-  };
+  // const handleBack = () => {
+  //   router.back();
+  // };
 
   const [activityLogs, setActivityLogs] = useState<ActivityLogItem[]>([]);
   const [isLoadingActivities, setIsLoadingActivities] = useState(false);
