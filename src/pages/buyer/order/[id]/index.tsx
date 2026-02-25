@@ -103,6 +103,28 @@ export default function BuyerOrder() {
       }
     }
   );
+  const fetchDeliveryPin = async (orderId: string) => {
+    try {
+      setIsLoadingDeliveryPin(true);
+      const pinResponse = await getDeliveryPin(orderId);
+      if (pinResponse.isSuccess) {
+        setDeliveryPin(pinResponse.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch delivery pin");
+    } finally {
+      setIsLoadingDeliveryPin(false);
+    }
+  };
+  useEffect(() => {
+    if (
+      orderStatusData?.data?.status === "Confirmed" &&
+      orderDetails?.id &&
+      !deliveryPin
+    ) {
+      fetchDeliveryPin(orderDetails.id);
+    }
+  }, [orderStatusData?.data?.status, orderDetails?.id, deliveryPin]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -120,7 +142,6 @@ export default function BuyerOrder() {
       const response = await getOrderDetails(orderRef);
       if (response.isSuccess) {
         setOrderDetails(response.data);
-
         setFormData({
           fullName: response.data?.recipientName || "",
           email: response.data?.recipientEmail || "",
@@ -384,11 +405,6 @@ export default function BuyerOrder() {
             {/* Right Side */}
             <div className="lg:w-[35%] lg:py-10 p-6">
               {orderStatusData?.data?.status === "Confirmed" && <div className="lg:mt-[9.5rem]" />}
-              {orderStatusData?.data?.status === "Confirmed" && (
-                <DeliveryPinCard
-                  onConfirmClick={() => setShowValidateModal(true)}
-                  pin={deliveryPin} />
-              )}
               {orderStatusData?.data?.status === "Confirmed" && (
                 deliveryPin ? (
                   <DeliveryPinCard
