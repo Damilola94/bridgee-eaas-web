@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-console */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-nested-ternary */
 import React, {
@@ -644,11 +646,11 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
     if (!form?.recipientDetails?.phoneNumber?.trim())
       return "Recipient phone number is required";
 
-    // Category and package
-    if (!form?.categoryId) return "Please select a category";
-    if (!selectedDimension) return "Please select a package size";
-
     if (form?.isDeliveryOnUs) {
+      // Category and package
+      if (!form?.categoryId) return "Please select a category";
+      if (!selectedDimension) return "Please select a package size";
+
       // Addresses
       if (!pickupAddressResponse)
         return "Please select and validate pickup address";
@@ -784,8 +786,13 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
             </tbody>
           </table>
         </div>
+        <ToggleInput
+          label="Delivery by Bridgee"
+          value={form?.isDeliveryOnUs}
+          onChange={(val) => handleChange(val, 'toggle', 'isDeliveryOnUs')}
+        />
         {form?.escrowItems && form?.escrowItems?.length > 0 && (
-          <div className="w-full">
+          <div className="w-full mt-5">
             <div>
               <p className="text-base mb-1">
                 Add Description{" "}
@@ -821,12 +828,6 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
           </div>
         )}
       </div>
-
-      <ToggleInput
-        label="Delivery by Bridgee"
-        value={form?.isDeliveryOnUs}
-        onChange={(val) => handleChange(val, 'toggle', 'isDeliveryOnUs')}
-      />
 
       <div className="border-2 border-lightText/20 rounded-lg p-5 mb-10 mt-5">
         <h3 className="font-bold text-lg ff-bold mb-4">Recipient&#39;s Details</h3>
@@ -874,7 +875,7 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
         </div>
       </div>
 
-      <div className="w-full mb-6">
+      {form?.isDeliveryOnUs && <div className="w-full mb-6">
         <label className="text-sm font-bold">Select Category</label>
         <div className="mt-2">
           <Select<{ label: string; value: number }, false>
@@ -891,9 +892,9 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
             styles={selectStyles}
           />
         </div>
-      </div>
+      </div>}
 
-      <div className="w-full mb-6">
+      {form?.isDeliveryOnUs && <div className="w-full mb-6">
         <label className="text-sm font-bold">Select Package Size</label>
         <div
           className="w-full mt-2 p-3 border-2 border-dashed bg-[#F8F8F8] rounded-[10px] text-center cursor-pointer hover:bg-gray-50"
@@ -910,6 +911,7 @@ function OrderDetails({ onNext = () => { } }: { onNext?: () => void }) {
           )}
         </div>
       </div>
+      }
 
       {form?.isDeliveryOnUs && <div>
         <p className="pb-4 font-bold text-base">Shipping Details</p>

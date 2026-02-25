@@ -384,10 +384,22 @@ export default function BuyerOrder() {
             {/* Right Side */}
             <div className="lg:w-[35%] lg:py-10 p-6">
               {orderStatusData?.data?.status === "Confirmed" && <div className="lg:mt-[9.5rem]" />}
-              {orderStatusData?.data?.status === "Confirmed" && deliveryPin && (
+              {orderStatusData?.data?.status === "Confirmed" && (
                 <DeliveryPinCard
                   onConfirmClick={() => setShowValidateModal(true)}
                   pin={deliveryPin} />
+              )}
+              {orderStatusData?.data?.status === "Confirmed" && (
+                deliveryPin ? (
+                  <DeliveryPinCard
+                    onConfirmClick={() => setShowValidateModal(true)}
+                    pin={deliveryPin}
+                  />
+                ) : (
+                  <div className="mt-4 flex justify-center">
+                    <Skeleton width={150} height={24} />
+                  </div>
+                )
               )}
               {orderStatusData?.data?.status === "Confirmed" && <div className="lg:mt-[2rem] mt-[1.5rem]" />}
               {orderStatusData?.data?.status !== "Confirmed" && <div className="lg:mt-[9.5rem]" />}

@@ -5,12 +5,12 @@ import CheckIncomplete from "../../../assets/svgs/check-incomplete-circle.svg";
 import Button from "../../inputs/Button";
 
 interface Props {
-  pin: string;
+  pin: string | null ;
   onConfirmClick: () => void;
 }
 
 const DeliveryPinCard: React.FC<Props> = ({ pin, onConfirmClick }) => {
-  const digits = pin.split("");
+  const digits = pin?.split("");
   return (
     <div className="bg-white text-center  rounded-lg p-6 shadow">
       <div className="flex justify-center mb-6">
@@ -24,8 +24,7 @@ const DeliveryPinCard: React.FC<Props> = ({ pin, onConfirmClick }) => {
       </h2>
 
       <p className="text-gray-600 text-sm mt-3 max-w-md mx-auto">
-        Your payment has been confirmed. Below is the code you would provide
-        to our logistics partner at the point of delivery.
+        Your payment is confirmed. Please use the code below to confirm delivery.
       </p>
 
       <div className="mt-6 border border-success rounded-xl p-6 text-center">
@@ -33,7 +32,7 @@ const DeliveryPinCard: React.FC<Props> = ({ pin, onConfirmClick }) => {
           Delivery Code
         </p>
         <div className="flex justify-center items-center  text-2xl font-bold sm:tracking-[3em] sm:gap-4 sm:ml-20 tracking-[.5em]">
-          {digits.map((digit, index) => (
+          {digits?.map((digit, index) => (
             <span key={index}>{digit}</span>
           ))}
         </div>
