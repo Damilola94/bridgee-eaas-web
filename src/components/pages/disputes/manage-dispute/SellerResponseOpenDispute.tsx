@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { HiOutlineCloudUpload } from "react-icons/hi";
+// import { HiOutlineCloudUpload } from "react-icons/hi";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { useMutation, useQueryClient } from "react-query";
 
@@ -10,7 +10,7 @@ import Button from "../../../inputs/Button";
 import notification from "../../../../utilities/notification";
 import TextareaInput from "../../../inputs/Textarea";
 import handleFetch from "../../../../services/api/handleFetch";
-import { convertImgToBase64 } from "../../../../utilities/general";
+// import { convertImgToBase64 } from "../../../../utilities/general";
 
 interface DisputeResponseProps {
   openDispute?: boolean
@@ -53,64 +53,64 @@ export default function DisputeResponse({
     }
   });
 
-  const handleFilesUpload = () => {
-    const uploadField = document.getElementById("image-upload") as HTMLInputElement;
-    uploadField?.click();
-    uploadField.onchange = async () => {
-      if (!uploadField?.files?.[0]) return;
-      const file = uploadField.files[0];
-      const { type, size } = file;
-      const fileType = type.slice(type.indexOf("/") + 1);
+  // const handleFilesUpload = () => {
+  //   const uploadField = document.getElementById("image-upload") as HTMLInputElement;
+  //   uploadField?.click();
+  //   uploadField.onchange = async () => {
+  //     if (!uploadField?.files?.[0]) return;
+  //     const file = uploadField.files[0];
+  //     const { type, size } = file;
+  //     const fileType = type.slice(type.indexOf("/") + 1);
 
-      const supportedTypes = [
-        "jpeg",
-        "png",
-        "gif",
-        "pdf",
-        "vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "doc",
-        "mp4"
-      ];
-      if (b64FileArray.length >= 5) {
-        notification({
-          title: "File Limit Exceeded",
-          message: "You can only upload a maximum of 5 documents",
-          type: "danger"
-        });
-        return;
-      }
-      if (!supportedTypes.includes(fileType)) {
-        notification({
-          title: "Invalid File Type",
-          message: "Supported files: pdf, docx, doc, jpeg, png, gif, mp4",
-          type: "danger"
-        });
-        return;
-      }
-      if (size / 1024 > 10000) {
-        notification({
-          title: "File Too Large",
-          message: "The file size must not be more than 10MB",
-          type: "danger"
-        });
-        return;
-      }
+  //     const supportedTypes = [
+  //       "jpeg",
+  //       "png",
+  //       "gif",
+  //       "pdf",
+  //       "vnd.openxmlformats-officedocument.wordprocessingml.document",
+  //       "doc",
+  //       "mp4"
+  //     ];
+  //     if (b64FileArray.length >= 5) {
+  //       notification({
+  //         title: "File Limit Exceeded",
+  //         message: "You can only upload a maximum of 5 documents",
+  //         type: "danger"
+  //       });
+  //       return;
+  //     }
+  //     if (!supportedTypes.includes(fileType)) {
+  //       notification({
+  //         title: "Invalid File Type",
+  //         message: "Supported files: pdf, docx, doc, jpeg, png, gif, mp4",
+  //         type: "danger"
+  //       });
+  //       return;
+  //     }
+  //     if (size / 1024 > 10000) {
+  //       notification({
+  //         title: "File Too Large",
+  //         message: "The file size must not be more than 10MB",
+  //         type: "danger"
+  //       });
+  //       return;
+  //     }
 
-      try {
-        const base64 = await convertImgToBase64(file);
-        if (!b64FileArray.includes(base64)) {
-          setFileArray((s) => [...s, file]);
-          setB64FileArray((s) => [...s, base64]);
-        }
-      } catch (err) {
-        notification({
-          title: "Upload Error",
-          message: String(err),
-          type: "danger"
-        });
-      }
-    };
-  };
+  //     try {
+  //       const base64 = await convertImgToBase64(file);
+  //       if (!b64FileArray.includes(base64)) {
+  //         setFileArray((s) => [...s, file]);
+  //         setB64FileArray((s) => [...s, base64]);
+  //       }
+  //     } catch (err) {
+  //       notification({
+  //         title: "Upload Error",
+  //         message: String(err),
+  //         type: "danger"
+  //       });
+  //     }
+  //   };
+  // };
 
   const handleFileDelete = (index: number) => {
     setFileArray((prev) => prev.filter((_, i) => i !== index));
@@ -187,7 +187,7 @@ export default function DisputeResponse({
           />
         </div>
 
-        <div className="w-full mb-5">
+        {/* <div className="w-full mb-5">
           <label className="flex mb-1">Upload picture / video / document</label>
           <button
             onClick={handleFilesUpload}
@@ -198,7 +198,7 @@ export default function DisputeResponse({
           </button>
           <p className="text-lightText">PNG, JPG, PDF, GIF, MP4. Max. 5MB</p>
           <input type="file" hidden id="image-upload" />
-        </div>
+        </div> */}
 
         <div className="mb-10">
           {fileArray.map((file, i) => (

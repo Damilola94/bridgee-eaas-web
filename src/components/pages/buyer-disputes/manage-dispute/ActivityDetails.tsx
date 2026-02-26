@@ -184,7 +184,7 @@ function ActivityDetails({ data, isLast }: any) {
           <p className="text-base mb-2 mr-5">
             <b>
               {isUser ? 'You' : data?.user}
-&nbsp;
+              &nbsp;
             </b>
             {formatActivity(data?.activity)}
           </p>
@@ -214,7 +214,7 @@ function ActivityDetails({ data, isLast }: any) {
             <p className="text-base mb-2">
               <b>
                 {isUser ? 'Your' : data?.user}
-&nbsp;
+                &nbsp;
               </b>
               proposal
             </p>
@@ -226,7 +226,7 @@ function ActivityDetails({ data, isLast }: any) {
             <p className="text-base mb-2">
               <b>
                 {data?.user}
-&nbsp;
+                &nbsp;
               </b>
               decision
             </p>

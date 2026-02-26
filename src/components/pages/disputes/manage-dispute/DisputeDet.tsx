@@ -28,11 +28,13 @@ interface Props {
   dispute: ApiDispute;
   onAccept?: () => void;
   onReject?: () => void;
+  status?: string;
   onViewEvidence?: (url: string) => void;
 }
 
 export default function DisputeDetails({
   dispute,
+  status,
   onAccept,
   onReject,
   onViewEvidence
@@ -84,7 +86,7 @@ export default function DisputeDetails({
         </div>
       </div>
 
-      <div className="mt-6 flex gap-4">
+      {status === "Pending" && <div className="mt-6 flex gap-4">
         <Button
           border
           borderColor="border-red-600"
@@ -110,7 +112,7 @@ export default function DisputeDetails({
         >
           ✓ Accept
         </Button>
-      </div>
+      </div>}
     </div>
   );
 }

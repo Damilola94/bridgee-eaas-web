@@ -221,7 +221,10 @@ export default function ManageDisputeContainer() {
                 </div>
               </div>
 
-              <DisputeDetails dispute={dispute} onAccept={handleAcceptClaim} onReject={handleRejectClaim} />
+              <DisputeDetails
+                dispute={dispute}
+                status={dispute?.status}
+                onAccept={handleAcceptClaim} onReject={handleRejectClaim} />
 
               {showResponseForm && (
                 <DisputeResponse

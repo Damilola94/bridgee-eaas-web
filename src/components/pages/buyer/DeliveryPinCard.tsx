@@ -31,7 +31,7 @@ const DeliveryPinCard: React.FC<Props> = ({ pin, onConfirmClick }) => {
         <p className="text-success font-semibold mb-4">
           Delivery Code
         </p>
-        <div className="flex justify-center items-center  text-2xl font-bold sm:tracking-[3em] sm:gap-4 sm:ml-20 tracking-[.5em]">
+        <div className="flex justify-center items-center  text-2xl font-bold sm:tracking-[2em] sm:gap-4 sm:ml-20 tracking-[.5em]">
           {digits?.map((digit, index) => (
             <span key={index}>{digit}</span>
           ))}
