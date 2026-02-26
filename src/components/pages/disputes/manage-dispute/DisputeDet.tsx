@@ -99,7 +99,6 @@ export default function DisputeDetails({
         >
           ✖ Reject
         </Button>
-
         <Button
           border
           borderColor="border-success"
