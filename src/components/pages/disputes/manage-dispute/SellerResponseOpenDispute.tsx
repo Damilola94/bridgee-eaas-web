@@ -149,7 +149,8 @@ export default function DisputeResponse({
         endpoint: `wallet-service/api/v1/disputes/${disputeId}/respond`,
         method: "POST",
         body: payload,
-        auth: true
+        auth: true,
+        multipart: true
       });
     } else {
       const payload = {
