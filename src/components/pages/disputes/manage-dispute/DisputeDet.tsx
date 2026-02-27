@@ -86,7 +86,7 @@ export default function DisputeDetails({
         </div>
       </div>
 
-      {status === "UnderReview" && <div className="mt-6 flex gap-4">
+      {status === "Pending" && <div className="mt-6 flex gap-4">
         <Button
           border
           borderColor="border-red-600"
