@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 "use client";
 
 import { useEffect } from "react";
@@ -229,7 +230,9 @@ function InvoiceSummary() {
                 {status === "loading" || isFetching ? (
                   <Skeleton className="w-[80px]" />
                 ) : (
-                  formatCurrency(total + (data?.data || 0) + form?.selectedCourier?.total || 0)
+                  !form?.isDeliveryOnUs ?
+                    formatCurrency(total) :
+                    formatCurrency(total + (data?.data || 0) + form?.selectedCourier?.total || 0)
                 )}
               </p>
             </div>
