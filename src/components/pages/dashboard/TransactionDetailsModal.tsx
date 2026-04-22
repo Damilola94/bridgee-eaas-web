@@ -28,7 +28,7 @@ function TransactionDetailsModal({ onClose, transactionId }: Props) {
     endpoint: "wallet",
     extra: `transactions/${transactionId}`,
     queryKey: ["transaction-details", transactionId],
-    enabled: !!cookie?.data?.accessToken && !!transactionId,
+    enabled: !!cookie?.data?.accessToken && !!transactionId
   });
 
   const transactionData = useMemo(() => {
@@ -42,7 +42,7 @@ function TransactionDetailsModal({ onClose, transactionId }: Props) {
         type: tx.transactionType,
         description: tx.description || "—",
         date: tx.date,
-        fee: tx.transactionFee ? `₦${tx.transactionFee}` : "—",
+        fee: tx.transactionFee ? `₦${tx.transactionFee}` : "—"
       };
     }
     return null;
@@ -153,7 +153,7 @@ const Row = ({
   label,
   value,
   wrap,
-  valueClass = "",
+  valueClass = ""
 }: {
   label: string;
   value: string | ReactNode;
