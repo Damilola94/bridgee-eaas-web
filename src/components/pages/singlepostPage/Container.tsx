@@ -48,6 +48,7 @@ export default function Page() {
   return (
     <HomepageContextProvider>
       <div className="p-0">
+
         <Header />
 
         <main id="top" className="w-full pt-24">
