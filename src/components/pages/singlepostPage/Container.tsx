@@ -1,52 +1,59 @@
+"use client";
+
 import React from "react";
+import { useRouter } from 'next/router';
 import { notFound } from "next/navigation";
 
 import HomepageContextProvider from "../../../context/Homepage";
-
-import { blogPosts, getBlogBySlug } from "../../../utilities/blog-data";
+import useGetQuery from "../../../hooks/useGetQuery";
+import Loading from "../../common/Loading";
 
 import Header from "./Header";
 import Hero from "./Hero";
-import Footer from "./Footer";
 import Intro from "./Intro";
+import Footer from "./Footer";
 
-export function generateStaticParams() {
-  return blogPosts.map((post) => ({
-    slug: post.slug
-  }));
-}
+export default function Page() {
+  const router = useRouter();
+  const id = router.query.slug as string;
 
-export function generateMetadata({ params }: { params: { slug: string } }) {
-  const post = getBlogBySlug(params.slug);
+  const { data, isFetching } = useGetQuery({
+    service: "admin-service/api/v1/",
+    endpoint: `blog/published/${id}`,
+    queryKey: ["blog", id]
+  });
 
-  if (!post) {
-    return {
-      title: "Post Not Found",
-      description: "The blog post you're looking for does not exist."
-    };
+  const post = data?.data;
+
+  if (!isFetching && !post) {
+    notFound();
   }
 
-  return {
-    title: `${post.title} | Bridgee Blog`,
-    description: post.description
+  const formattedPost = post && {
+    title: post.title,
+    content: post.content,
+    category: post.categories?.[0]?.name || "Uncategorized",
+    date: post.publishedAt || post.createdAt,
+    image: post.coverImageUrl,
+    buttonText: post.textOnButton || "Get Started",
+    buttonLink: "/"
   };
-}
 
-export default function Page({ params }: { params: { slug: string } }) {
-  const post = getBlogBySlug(params.slug);
-
-  if (!post) {
-    notFound();
+  if (isFetching || !formattedPost) {
+    return (
+      <Loading message="Loading blog posts..." />
+    );
   }
 
   return (
     <HomepageContextProvider>
       <div className="p-0">
+
         <Header />
 
         <main id="top" className="w-full pt-24">
-          <Hero post={post}/>
-          <Intro post={post} />
+          <Hero post={formattedPost} />
+          <Intro post={formattedPost} />
         </main>
 
         <div className="px-14 pb-10">
