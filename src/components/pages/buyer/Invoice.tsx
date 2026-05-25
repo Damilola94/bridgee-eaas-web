@@ -1,20 +1,19 @@
+"use client";
 
-'use client';
-
-import { useState } from 'react';
-import { useMutation } from 'react-query';
+import { useState } from "react";
+import { useMutation } from "react-query";
 
 import { getStatusColor } from "../../../utilities/color";
 import { formatCurrency } from "../../../utilities/general";
 
-import notification from '../../../utilities/notification';
+import notification from "../../../utilities/notification";
 
-import Button from '../../inputs/Button';
-import handleFetch from '../../../services/api/handleFetch';
+import Button from "../../inputs/Button";
+import handleFetch from "../../../services/api/handleFetch";
 
-import SatisfiedModal from './SatisfiedModal';
-import DisputeModal from './DisputeModal';
-import { DisputePayload } from './disputeTypes';
+import SatisfiedModal from "./SatisfiedModal";
+import DisputeModal from "./DisputeModal";
+import { DisputePayload } from "./disputeTypes";
 
 interface OrderItem {
   id?: number;
@@ -50,37 +49,39 @@ interface OrderDetailsData {
 
 interface InvoiceProps {
   orderDetails: OrderDetailsData | null;
-  orderStatus?: { status: string, allowPayment: boolean };
+  orderStatus?: { status: string; allowPayment: boolean };
   allowPayment?: boolean;
 }
 
 export default function Invoice({
   orderDetails,
   orderStatus,
-  allowPayment
+  allowPayment,
 }: InvoiceProps) {
   const [isSatisfiedModalOpen, setIsSatisfiedModalOpen] = useState(false);
   const [isDisputeModalOpen, setIsDisputeModalOpen] = useState(false);
-  const [step, setStep] = useState<'confirm' | 'success'>('confirm');
-  const [stepDispute, setStepDispute] = useState<'reason' | 'phone' | 'bank' | 'success'>('reason');
+  const [step, setStep] = useState<"confirm" | "success">("confirm");
+  const [stepDispute, setStepDispute] = useState<
+    "reason" | "phone" | "bank" | "success"
+  >("reason");
 
   const satisfiedMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
       notification({
         title: "Success",
         message: "Order marked as satisfied successfully",
-        type: "success"
+        type: "success",
       });
       setIsSatisfiedModalOpen(false);
-      setStep('success');
+      setStep("success");
     },
     onError: (err: any) => {
       notification({
         title: "Error",
         message: err?.toString() || "Failed to mark order as satisfied",
-        type: "danger"
+        type: "danger",
       });
-    }
+    },
   });
 
   const disputeMutation = useMutation(handleFetch, {
@@ -88,18 +89,18 @@ export default function Invoice({
       notification({
         title: "Success",
         message: "Dispute submitted successfully",
-        type: "success"
+        type: "success",
       });
       setIsDisputeModalOpen(false);
-      setStepDispute('success');
+      setStepDispute("success");
     },
     onError: (err: any) => {
       notification({
         title: "Error",
         message: err?.toString() || "Failed to submit dispute",
-        type: "danger"
+        type: "danger",
       });
-    }
+    },
   });
 
   const orderData = {
@@ -111,8 +112,7 @@ export default function Invoice({
     recipientPhone: orderDetails?.recipientPhone || "",
     recipientAddress: orderDetails?.recipientAddress || "",
     businessName: orderDetails?.businessName || "Bridgee Marketplace",
-    businessAddress:
-      orderDetails?.businessAddress || "",
+    businessAddress: orderDetails?.businessAddress || "",
     paymentType: orderDetails?.paymentType || "",
     disputeManager: orderDetails?.disputeManager || "",
     inspectionPeriod: orderDetails?.inspectionPeriod || "",
@@ -124,7 +124,7 @@ export default function Invoice({
         name: item.name,
         price: item.unitPrice,
         quantity: item.quantity,
-        total: item.total
+        total: item.total,
       })) || [],
     subTotal: orderDetails?.subtotal || 0,
     deliveryFee: orderDetails?.deliveryFee || 0,
@@ -132,7 +132,7 @@ export default function Invoice({
     total: orderDetails?.total || 0,
     // status: "Delivered",
     status: orderStatus?.status || "...",
-    allowPayment: orderStatus?.allowPayment
+    allowPayment: orderStatus?.allowPayment,
   };
 
   const statusStyle = getStatusColor(orderData.status);
@@ -142,7 +142,7 @@ export default function Invoice({
       service: "wallet-service/api/v1/",
       endpoint: `escrows/orders/${orderData.invoiceNumber}/satisfied`,
       method: "POST",
-      body: { reference: orderData.invoiceNumber }
+      body: { reference: orderData.invoiceNumber },
     });
   };
 
@@ -152,7 +152,7 @@ export default function Invoice({
       endpoint: `disputes`,
       multipart: true,
       method: "POST",
-      body: payload
+      body: payload,
     });
   };
 
@@ -226,7 +226,11 @@ export default function Invoice({
             </p>
             <p className="text-base text-grey2">
               Dispute Manager:&nbsp;
-              <span className="text-textColor">{orderData.disputeManager}</span>
+              <span className="text-textColor">
+                {orderData.disputeManager === "Bridge Escrow"
+                  ? "Bridgee Escrow"
+                  : orderData.disputeManager}
+              </span>
             </p>
             <p className="text-base text-grey2">
               Inspection Period:&nbsp;
@@ -315,9 +319,7 @@ export default function Invoice({
         </div>
         {orderData.status === "Confirmed" && (
           <div className="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row gap-4">
-            <div
-              className=" w-full "
-            />
+            <div className=" w-full " />
             <Button
               onClick={() => {
                 setIsDisputeModalOpen(true);
@@ -371,3 +373,4 @@ export default function Invoice({
     </div>
   );
 }
+

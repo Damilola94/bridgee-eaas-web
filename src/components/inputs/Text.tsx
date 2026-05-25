@@ -46,7 +46,7 @@ function TextInput({
   accept,
   leftAddon,
   required,
-  autoComplete
+  autoComplete,
 }: Props) {
   const [inputType, setInputType] = useState(type);
 
@@ -59,41 +59,52 @@ function TextInput({
       )}
 
       <div className="relative flex">
-        {leftAddon && (
-          <div className="flex items-center">
-            {leftAddon}
-          </div>
-        )}
+        {leftAddon && <div className="flex items-center">{leftAddon}</div>}
 
-        <input
-          ref={ref}
-          className={`${error ? "error-field" : ""} ${height} ${
-            (disabled || readOnly) && "cursor-not-allowed"
-          } bg-inputBg px-5 outline-none w-full rounded-[10px] border border-borderColor disabled:bg-gray-200`}
-          type={inputType}
-          accept={accept}
-          name={name}
-          id={name}
-          value={value}
-          onChange={onChange}
-          readOnly={readOnly}
-          placeholder={placeholder}
-          onBlur={onBlur}
-          disabled={disabled}
-          onKeyPress={onKeyPress}
-          onKeyDown={onKeyDown}
-          min={minValue}
-          max={maxValue}
-          maxLength={maxValue}
-          required={required}
-          autoComplete={autoComplete}
-        />
+        <div className="w-full">
+          <input
+            ref={ref}
+            className={`
+            ${height}
+            ${disabled || readOnly ? "cursor-not-allowed" : ""}
+            ${
+              error
+                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                : "border-borderColor"
+            }
+            bg-inputBg
+            px-5
+            outline-none
+            w-full
+            rounded-[10px]
+            border
+            disabled:bg-gray-200
+          `}
+            type={inputType}
+            accept={accept}
+            name={name}
+            id={name}
+            value={value}
+            onChange={onChange}
+            readOnly={readOnly}
+            placeholder={placeholder}
+            onBlur={onBlur}
+            disabled={disabled}
+            onKeyPress={onKeyPress}
+            onKeyDown={onKeyDown}
+            min={minValue}
+            max={maxValue}
+            maxLength={maxValue}
+            required={required}
+            autoComplete={autoComplete}
+          />
 
-        {error ? (
-          <p className="error-msg" data-testid="error-msg">
-            {error}
-          </p>
-        ) : null}
+          {error ? (
+            <p className="text-red-500 text-xs mt-1" data-testid="error-msg">
+              {error}
+            </p>
+          ) : null}
+        </div>
 
         {type === "password" && (
           <span
@@ -127,7 +138,8 @@ TextInput.defaultProps = {
   name: "",
   height: "h-12",
   label: "",
-  placeholder: ""
+  placeholder: "",
 };
 
 export default TextInput;
+

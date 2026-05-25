@@ -31,8 +31,6 @@ function DisputeHistory() {
     }
   });
 
-  console.log({ error, "errorerror": String(error) });
-
   return (
     <div className="w-full h-full">
       <div className="bg-white border-b">
@@ -101,9 +99,9 @@ function DisputeHistory() {
                 </div>
               </div>
             ))}
-            {data?.data?.disputes?.length < 1 && (
-              <NoData />
-            )}
+           {(!data?.data || data?.data?.length < 1) && (
+  <NoData py="pt-14" />
+)}
           </>
         )}
         {status === 'error' && (

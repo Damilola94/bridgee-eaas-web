@@ -8,7 +8,7 @@ import handleFetch from "../../../../services/api/handleFetch";
 import notification from "../../../../utilities/notification";
 import Button from "../../../inputs/Button";
 import PhoneNumberInput from "../../../inputs/PhoneNumberInput";
-import { removeNigerianCountryCode } from "../../../../utilities/general";
+import { removeNigerianCountryCode, sanitizeAlphaNumeric } from "../../../../utilities/general";
 
 interface Props {
   formData: OnboardingStepData;
@@ -184,15 +184,25 @@ export default function PersonalInfo({
       />
 
       {isSeller && (
-        <TextInput
-          label="Business Name"
-          name="businessName"
-          placeholder="Enter Business Name"
-          value={personalInfo?.businessName || ""}
-          onChange={handleChange}
-          className=""
-          autoComplete="off"
-        />
+      <TextInput
+      label="Business Name"
+      name="businessName"
+      placeholder="Enter Business Name"
+      value={personalInfo?.businessName || ""}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+        const sanitizedValue = sanitizeAlphaNumeric(e.target.value);
+    
+        setFormData({
+          ...formData,
+          personalInfo: {
+            ...formData.personalInfo,
+            businessName: sanitizedValue,
+          },
+        });
+      }}
+      className=""
+      autoComplete="off"
+    />
       )}
       
       <TextInput

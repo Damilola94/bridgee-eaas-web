@@ -143,7 +143,6 @@ export const removeNigerianCountryCode = (phoneNumber: string | undefined): stri
   return phoneNumber.replace(/^\+?234/, "");
 };
 
-// Function to convert base64 to a File object
 export const dataURLtoFile = (dataurl: string, filename: string): File | null => {
   const arr = dataurl.split(",");
   if (arr.length < 2) {
@@ -163,6 +162,9 @@ export const dataURLtoFile = (dataurl: string, filename: string): File | null =>
   return new File([u8arr], filename, { type: mime });
 };
 
+export const sanitizeAlphaNumeric = (value: string): string => {
+  return value.replace(/[^a-zA-Z0-9 ]/g, "");
+};
 // export const base64ToFile = (base64String: string, fileName: string) => {
 //   const base64Parts = base64String?.split(';base64,');
 //   const contentType = base64Parts[0]?.split(':')[1];

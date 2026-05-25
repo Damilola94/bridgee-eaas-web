@@ -1,5 +1,4 @@
-
-'use client';
+"use client";
 
 import { getStatusColor } from "../../../utilities/color";
 import { formatCurrency } from "../../../utilities/general";
@@ -38,14 +37,14 @@ interface OrderDetailsData {
 
 interface InvoiceProps {
   orderDetails: OrderDetailsData | null;
-  orderStatus?: { status: string, allowPayment: boolean };
+  orderStatus?: { status: string; allowPayment: boolean };
   allowPayment?: boolean;
 }
 
 export default function Invoice({
   orderDetails,
   orderStatus,
-  allowPayment
+  allowPayment,
 }: InvoiceProps) {
   const orderData = {
     id: orderDetails?.id || "",
@@ -56,8 +55,7 @@ export default function Invoice({
     recipientPhone: orderDetails?.recipientPhone || "",
     recipientAddress: orderDetails?.recipientAddress || "",
     businessName: orderDetails?.businessName || "Bridgee Marketplace",
-    businessAddress:
-      orderDetails?.businessAddress || "",
+    businessAddress: orderDetails?.businessAddress || "",
     paymentType: orderDetails?.paymentType || "",
     disputeManager: orderDetails?.disputeManager || "",
     inspectionPeriod: orderDetails?.inspectionPeriod || "",
@@ -69,7 +67,7 @@ export default function Invoice({
         name: item.name,
         price: item.unitPrice,
         quantity: item.quantity,
-        total: item.total
+        total: item.total,
       })) || [],
     subTotal: orderDetails?.subtotal || 0,
     deliveryFee: orderDetails?.deliveryFee || 0,
@@ -77,7 +75,7 @@ export default function Invoice({
     total: orderDetails?.total || 0,
     // status: "Delivered",
     status: orderStatus?.status || "...",
-    allowPayment: orderStatus?.allowPayment
+    allowPayment: orderStatus?.allowPayment,
   };
 
   const statusStyle = getStatusColor(orderData.status);
@@ -150,9 +148,14 @@ export default function Invoice({
               Payment Type:&nbsp;
               <span className="text-textColor">{orderData.paymentType}</span>
             </p>
+
             <p className="text-base text-grey2">
               Dispute Manager:&nbsp;
-              <span className="text-textColor">{orderData.disputeManager}</span>
+              <span className="text-textColor">
+                {orderData.disputeManager === "Bridge Escrow"
+                  ? "Bridgee Escrow"
+                  : orderData.disputeManager}
+              </span>
             </p>
             <p className="text-base text-grey2">
               Inspection Period:&nbsp;
@@ -243,3 +246,4 @@ export default function Invoice({
     </div>
   );
 }
+

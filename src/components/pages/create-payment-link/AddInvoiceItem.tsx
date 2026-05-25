@@ -16,6 +16,8 @@ type Props = {
 
 function AddInvoiceItem({ data, onAdd = () => { }, onClose = () => { } }: Props) {
   const [form, setForm] = useState<OrderListItemProps>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   const escrowTotal = form?.amount && form?.quantity ? Number(form?.amount) * Number(form?.quantity) : 0;
 
   useEffect(() => {
@@ -24,25 +26,59 @@ function AddInvoiceItem({ data, onAdd = () => { }, onClose = () => { } }: Props)
 
   const handleChange = (e: any) => {
     const { value, name } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+  
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  
+    setErrors((prev:any) => ({
+      ...prev,
+      [name]: "",
+    }));
   };
+  
 
   const validateForm = () => {
-    if (!form?.name) return 'Item name is required';
-    if (!form?.quantity) return 'Item quantity is required';
-    if (!form?.amount) return 'Item unit price is required';
-    if (!form?.weight || Number(form?.weight) <= 0) return 'Item weight is required and must be greater than 0';
-    // if (Number(form.amount) < 1000) {
-    //   return "Item unit price must not be less than ₦1000";
+    const newErrors: Record<string, string> = {};
+  
+    if (!form?.name?.trim()) {
+      newErrors.name = "Item name is required";
+    }
+  
+    if (!form?.quantity) {
+      newErrors.quantity = "Item quantity is required";
+    }
+  
+    if (!form?.amount) {
+      newErrors.amount = "Item unit price is required";
+    }
+  
+    // Uncomment if needed
+    // if (!form?.weight || Number(form?.weight) <= 0) {
+    //   newErrors.weight =
+    //     "Item weight is required and must be greater than 0";
     // }
-    return null;
+  
+    setErrors(newErrors);
+  
+    return Object.keys(newErrors).length === 0;
   };
+  
 
   const handleAddItem = () => {
-    if (validateForm()) {
-      notification({ title: 'Form Error', message: 'Please fill in all required fields', type: 'danger' });
+    const isValid = validateForm();
+  
+    if (!isValid) {
+      notification({
+        title: "Form Error",
+        message: "Please fill in all required fields",
+        type: "danger",
+      });
+  
       return;
     }
+  
     onAdd({
       ...form,
       id: form?.id || uuidv4(),
@@ -50,9 +86,11 @@ function AddInvoiceItem({ data, onAdd = () => { }, onClose = () => { } }: Props)
       quantity: Number(form?.quantity),
       total: Number(form?.amount) * Number(form?.quantity),
       size: Number(form?.size),
-      weight: Number(form?.weight)
+      weight: Number(form?.weight),
     });
+  
     setForm({});
+    setErrors({});
     onClose();
   };
 
@@ -67,10 +105,11 @@ function AddInvoiceItem({ data, onAdd = () => { }, onClose = () => { } }: Props)
                 name="name"
                 value={form?.name || ''}
                 onChange={handleChange}
-                label="Item Name"
+                label="Item Name*"
                 className="w-full mb-4"
-                placeholder="Item Name"
+                placeholder="Item Name*"
                 required
+                error={errors.name}
                 onBlur={() => {
                   if (!form?.name?.trim()) {
                     notification({
@@ -90,11 +129,12 @@ function AddInvoiceItem({ data, onAdd = () => { }, onClose = () => { } }: Props)
                 value={form?.quantity || ''}
                 onChange={handleChange}
                 className="w-full mb-4"
-                label="Quantity"
+                label="Quantity*"
                 type="number"
                 minValue={0}
-                placeholder="Quantity"
+                placeholder="Quantity*"
                 required
+                error={errors.quantity}
                 onBlur={() => {
                   if (!form?.quantity) {
                     notification({
@@ -117,10 +157,11 @@ function AddInvoiceItem({ data, onAdd = () => { }, onClose = () => { } }: Props)
                 onChange={handleChange}
                 type="number"
                 minValue={0}
-                label="Price per unit (NGN)"
+                label="Price per unit (NGN)*"
                 className="w-full mb-4"
-                placeholder="Price per unit"
+                placeholder="Price per unit*"
                 required
+                error={errors.amount}
                 onBlur={() => {
                   if (!form?.amount) {
                     notification({
@@ -135,7 +176,7 @@ function AddInvoiceItem({ data, onAdd = () => { }, onClose = () => { } }: Props)
 
           </div>
         </div>
-        <div className="w-full">
+        {/* <div className="w-full">
           <div className="flex flex-wrap justify-center">
             <div className="w-full px-2">
               <TextInput
@@ -160,7 +201,7 @@ function AddInvoiceItem({ data, onAdd = () => { }, onClose = () => { } }: Props)
               />
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="w-full">
           <div className="flex flex-wrap justify-center">
             <div className="w-full px-2">
@@ -170,10 +211,10 @@ function AddInvoiceItem({ data, onAdd = () => { }, onClose = () => { } }: Props)
                 onChange={handleChange}
                 disabled
                 className="w-full mb-4"
-                label="Total Amount (NGN)"
+                label="Total Amount (NGN)*"
                 type="number"
                 minValue={0}
-                placeholder="Weight per unit"
+                placeholder="Weight per unit*"
               />
             </div>
           </div>

@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "react-query";
 import Image from "next/image";
 
 import AlatLogo from "../../../assets/images/alat-logo.png";
+import BridgeeLogo from "../../../assets/images/bridge-logo.svg";
 import Button from "../../inputs/Button";
 import TextInput from "../../inputs/Text";
 import PhoneNumberInput from "../../inputs/PhoneNumberInput";
@@ -15,7 +16,7 @@ import notification from "../../../utilities/notification";
 import {
   removeNigerianCountryCode,
   removeNigerianCountryCodeAddLeadingZero,
-} from "../../../utilities/general"; 
+} from "../../../utilities/general";
 import { QUERY_KEYS } from "../../../configs/constants";
 
 function BusinessDetails() {
@@ -130,7 +131,10 @@ function BusinessDetails() {
         <div className="w-full">
           <div className="flex justify-between items-center mb-6">
             <h2 className="font-bold text-xl">Business Details</h2>
-            <Button className="border border-success text-success bg-transparent" disabled>
+            <Button
+              className="border border-success text-success bg-transparent"
+              disabled
+            >
               Upgrade Account
             </Button>
           </div>
@@ -139,17 +143,19 @@ function BusinessDetails() {
             <div className="flex flex-wrap items-end -mx-2">
               <div className="w-full px-2">
                 <div className="mb-10">
-                  <Image
-                    src={
-                      formData.logoFile
-                        ? URL.createObjectURL(formData.logoFile)
-                        : businessDetail?.businessLogoUrl || AlatLogo
-                    }
-                    alt="business logo"
-                    className="w-[100px] h-[100px] bg-gray-300 rounded-full object-cover object-center"
-                    width={100}
-                    height={100}
-                  />
+                  <div className="w-[100px] h-[100px] rounded-full bg-gray-100 flex items-center justify-center overflow-hidden p-2">
+                    <Image
+                      src={
+                        formData.logoFile
+                          ? URL.createObjectURL(formData.logoFile)
+                          : businessDetail?.businessLogoUrl || BridgeeLogo
+                      }
+                      alt="business logo"
+                      className="w-full h-full object-contain"
+                      width={100}
+                      height={100}
+                    />
+                  </div>
                   <input
                     type="file"
                     id="logo-file"
@@ -237,3 +243,4 @@ function BusinessDetails() {
 }
 
 export default BusinessDetails;
+
