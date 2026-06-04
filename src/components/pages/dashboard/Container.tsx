@@ -1,38 +1,41 @@
-import React, { useState } from 'react';
-import { useCookies } from 'react-cookie';
+import React, { useState } from "react";
+import { useCookies } from "react-cookie";
 
-import { useMutation } from 'react-query';
+import { useMutation } from "react-query";
 
-import { useAccountsContext } from '../../../context/Accounts';
+import { useAccountsContext } from "../../../context/Accounts";
 
-import notification from '../../../utilities/notification';
+import notification from "../../../utilities/notification";
 
-import handleFetch from '../../../services/api/handleFetch';
+import handleFetch from "../../../services/api/handleFetch";
 
-import WalletCard from './WalletCard';
-import TransactionBanner from './TransactionBanner';
-import DisputeHistory from './DisputeHistory';
-import SalesHistory from './SalesHistory';
-import PurchasesHistory from './PurchasesHistory';
-import WalletHistory from './WalletHistory';
+import WalletCard from "./WalletCard";
+import TransactionBanner from "./TransactionBanner";
+import DisputeHistory from "./DisputeHistory";
+import SalesHistory from "./SalesHistory";
+import PurchasesHistory from "./PurchasesHistory";
+import WalletHistory from "./WalletHistory";
 // import EscrowInviteReminder from './EscrowInviteReminder';
-import EscrowCard from './EscrowCard';
-import WithdrawalPinBanner from './CreateWithdrawalPin';
-import CreateWithdrawalBank from './CreateWithdrawalBank';
-import DisputeModal from './DisputeModal';
-import { DisputePayload } from './disputeTypes';
+import EscrowCard from "./EscrowCard";
+import WithdrawalPinBanner from "./CreateWithdrawalPin";
+import CreateWithdrawalBank from "./CreateWithdrawalBank";
+import DisputeModal from "./DisputeModal";
+import { DisputePayload } from "./disputeTypes";
+import CompleteProfile from "./CompleteProfile";
 
 function DashboardContainer() {
-  const [cookie] = useCookies(['data']);
+  const [cookie] = useCookies(["data"]);
   const { accounts } = useAccountsContext();
   const { wallet } = accounts || {};
   const { identity } = accounts || {};
   const [isDisputeModalOpen, setIsDisputeModalOpen] = useState(false);
-  const [selectedEscrowId, setSelectedEscrowId] = useState<string>('');
+  const [selectedEscrowId, setSelectedEscrowId] = useState<string>("");
 
-  const [stepDispute, setStepDispute] = useState<'reason' | 'phone' | 'bank' | 'success'>('reason');
+  const [stepDispute, setStepDispute] = useState<
+    "reason" | "phone" | "bank" | "success"
+  >("reason");
 
-  const isBuyer = cookie?.data?.activeRole === 'Buyer';
+  const isBuyer = cookie?.data?.activeRole === "Buyer";
 
   const openDisputeModal = (id: string | number) => {
     setSelectedEscrowId(id.toString());
@@ -45,18 +48,18 @@ function DashboardContainer() {
       notification({
         title: "Success",
         message: "Dispute submitted successfully",
-        type: "success"
+        type: "success",
       });
       setIsDisputeModalOpen(false);
-      setStepDispute('success');
+      setStepDispute("success");
     },
     onError: (err: any) => {
       notification({
         title: "Error",
         message: err?.toString() || "Failed to submit dispute",
-        type: "danger"
+        type: "danger",
       });
-    }
+    },
   });
 
   const handleDispute = (payload: DisputePayload) => {
@@ -65,18 +68,23 @@ function DashboardContainer() {
       endpoint: `disputes`,
       multipart: true,
       method: "POST",
-      body: payload
+      body: payload,
     });
   };
   return (
     <>
       <h3 className="text-lg mb-5">
         Hello&nbsp;
-        <span className="font-bold">{identity?.businessDetail?.businessName || `${identity?.personalDetail?.firstName} ${identity?.personalDetail?.lastName}` || 'Guest User'}</span>
+        <span className="font-bold">
+          {identity?.businessDetail?.businessName ||
+            `${identity?.personalDetail?.firstName} ${identity?.personalDetail?.lastName}` ||
+            "Guest User"}
+        </span>
       </h3>
       <div className="flex w-[calc(100%+36px)] -m-5">
         <div className="w-full xl:w-[calc(100%-400px)] px-3 pt-3 pb-5">
           <div className="w-full mb-3 space-y-2">
+            {!wallet?.hasPin && <CompleteProfile/>}
             {!wallet?.hasPin && <WithdrawalPinBanner />}
             {!wallet?.hasWithdrawalBankAccount && <CreateWithdrawalBank />}
           </div>
@@ -90,7 +98,11 @@ function DashboardContainer() {
             </div>
           )}
           <div className="w-full mb-3">
-            {isBuyer ? <PurchasesHistory onOpenDispute={openDisputeModal}/> : <SalesHistory />}
+            {isBuyer ? (
+              <PurchasesHistory onOpenDispute={openDisputeModal} />
+            ) : (
+              <SalesHistory />
+            )}
           </div>
           {!isBuyer && (
             <div className="w-full ">
@@ -122,3 +134,4 @@ function DashboardContainer() {
 }
 
 export default DashboardContainer;
+

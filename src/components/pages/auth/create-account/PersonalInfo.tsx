@@ -8,7 +8,10 @@ import handleFetch from "../../../../services/api/handleFetch";
 import notification from "../../../../utilities/notification";
 import Button from "../../../inputs/Button";
 import PhoneNumberInput from "../../../inputs/PhoneNumberInput";
-import { removeNigerianCountryCode, sanitizeAlphaNumeric } from "../../../../utilities/general";
+import {
+  removeNigerianCountryCode,
+  sanitizeAlphaNumeric,
+} from "../../../../utilities/general";
 
 interface Props {
   formData: OnboardingStepData;
@@ -23,7 +26,7 @@ export default function PersonalInfo({
   setFormData,
   onTermsChange,
   onOtpSentSuccess,
-  isSeller = true
+  isSeller = true,
 }: Props) {
   const [termsAgreed, setTermsAgreed] = useState(false);
 
@@ -31,8 +34,8 @@ export default function PersonalInfo({
   const [phoneWithoutCode, setPhoneWithoutCode] = useState("");
 
   const personalInfo = formData?.personalInfo || {};
-  const firstName = personalInfo?.firstName || "";
-  const lastName = personalInfo?.lastName || "";
+  // const firstName = personalInfo?.firstName || "";
+  // const lastName = personalInfo?.lastName || "";
 
   useEffect(() => {
     const phoneNumber = personalInfo?.phoneNumber || "";
@@ -45,7 +48,7 @@ export default function PersonalInfo({
     onSuccess: (response) => {
       notification({
         message: "Verification code sent to your email!",
-        type: "success"
+        type: "success",
       });
 
       if (onOtpSentSuccess) {
@@ -56,9 +59,9 @@ export default function PersonalInfo({
       notification({
         title: "Failed to send code",
         message: error?.message || "Please try again",
-        type: "danger"
+        type: "danger",
       });
-    }
+    },
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,8 +71,8 @@ export default function PersonalInfo({
         ...formData,
         personalInfo: {
           ...formData.personalInfo,
-          [name]: value
-        }
+          [name]: value,
+        },
       });
     }
   };
@@ -96,15 +99,15 @@ export default function PersonalInfo({
         ...formData,
         personalInfo: {
           ...formData.personalInfo,
-          phoneNumber: numericValue
-        }
+          phoneNumber: numericValue,
+        },
       });
     }
   };
 
   const handleSendOtp = () => {
     const email = formData.personalInfo.emailAddress;
-    const recipientName = `${formData.personalInfo.firstName} ${formData.personalInfo.lastName}`;
+    // const recipientName = `${formData.personalInfo.firstName} ${formData.personalInfo.lastName}`;
 
     sendOtpMutation.mutate({
       service: "identity-service",
@@ -113,8 +116,8 @@ export default function PersonalInfo({
       body: {
         identifier: email,
         purpose: "EmailConfirmation",
-        recipientName
-      }
+        // recipientName
+      },
     });
   };
 
@@ -131,7 +134,7 @@ export default function PersonalInfo({
       hasUppercase: /[A-Z]/.test(password),
       hasLowercase: /[a-z]/.test(password),
       hasNumber: /[0-9]/.test(password),
-      hasSpecial: /[^a-zA-Z0-9]/.test(password)
+      hasSpecial: /[^a-zA-Z0-9]/.test(password),
     };
   };
 
@@ -141,7 +144,7 @@ export default function PersonalInfo({
   return (
     <div className="space-y-6">
       <div className="grid lg:grid-cols-2 gap-4">
-        <TextInput
+        {/* <TextInput
           label="First Name"
           name="firstName"
           placeholder="First Name"
@@ -158,9 +161,30 @@ export default function PersonalInfo({
           onChange={handleChange}
           disabled
           className=""
-        />
+        /> */}
       </div>
+      {isSeller && (
+        <TextInput
+          label="Business Name"
+          name="businessName"
+          required
+          placeholder="Enter Business Name"
+          value={personalInfo?.businessName || ""}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            const sanitizedValue = sanitizeAlphaNumeric(e.target.value);
 
+            setFormData({
+              ...formData,
+              personalInfo: {
+                ...formData.personalInfo,
+                businessName: sanitizedValue,
+              },
+            });
+          }}
+          className=""
+          autoComplete="off"
+        />
+      )}
       <TextInput
         label="Email Address"
         name="emailAddress"
@@ -182,40 +206,6 @@ export default function PersonalInfo({
         placeholder="Phone Number (10 Digits)"
         autoComplete="off"
       />
-
-      {isSeller && (
-      <TextInput
-      label="Business Name"
-      name="businessName"
-      placeholder="Enter Business Name"
-      value={personalInfo?.businessName || ""}
-      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-        const sanitizedValue = sanitizeAlphaNumeric(e.target.value);
-    
-        setFormData({
-          ...formData,
-          personalInfo: {
-            ...formData.personalInfo,
-            businessName: sanitizedValue,
-          },
-        });
-      }}
-      className=""
-      autoComplete="off"
-    />
-      )}
-      
-      <TextInput
-        className="w-full mb-3"
-        onChange={handleChange}
-        value={personalInfo?.partnerCode || ''}
-        type="text"
-        label="Referral Code"
-        name="partnerCode"
-        placeholder="Enter Referral Code"
-        autoComplete="new-password"
-      />
-
       <TextInput
         label="Password"
         name="password"
@@ -231,33 +221,38 @@ export default function PersonalInfo({
         <p className="text-sm text-gray-600 mb-2">Password must contain:</p>
         <ul className="text-sm space-y-1">
           <li
-            className={`flex items-center ${requirements.minLength ? "text-[#059669]" : "text-red-600"
+            className={`flex items-center ${
+              requirements.minLength ? "text-[#059669]" : "text-red-600"
             }`}
           >
             {requirements.minLength ? "✓" : "✗"} At least 8 characters
           </li>
           <li
-            className={`flex items-center ${requirements.hasUppercase ? "text-[#059669]" : "text-red-600"
+            className={`flex items-center ${
+              requirements.hasUppercase ? "text-[#059669]" : "text-red-600"
             }`}
           >
             {requirements.hasUppercase ? "✓" : "✗"} At least one uppercase
             letter
           </li>
           <li
-            className={`flex items-center ${requirements.hasLowercase ? "text-[#059669]" : "text-red-600"
+            className={`flex items-center ${
+              requirements.hasLowercase ? "text-[#059669]" : "text-red-600"
             }`}
           >
             {requirements.hasLowercase ? "✓" : "✗"} At least one lowercase
             letter
           </li>
           <li
-            className={`flex items-center ${requirements.hasNumber ? "text-[#059669]" : "text-red-600"
+            className={`flex items-center ${
+              requirements.hasNumber ? "text-[#059669]" : "text-red-600"
             }`}
           >
             {requirements.hasNumber ? "✓" : "✗"} At least one number
           </li>
           <li
-            className={`flex items-center ${requirements.hasSpecial ? "text-[#059669]" : "text-red-600"
+            className={`flex items-center ${
+              requirements.hasSpecial ? "text-[#059669]" : "text-red-600"
             }`}
           >
             {requirements.hasSpecial ? "✓" : "✗"} At least one special character
@@ -265,7 +260,18 @@ export default function PersonalInfo({
         </ul>
       </div>
 
-      <div className="flex items-center space-x-2 mt-2">
+   <TextInput
+        className="w-full mb-3"
+        onChange={handleChange}
+        value={personalInfo?.partnerCode || ""}
+        type="text"
+        label="Referral Code"
+        name="partnerCode"
+        placeholder="Enter Referral Code"
+        autoComplete="new-password"
+      />
+
+       <div className="flex items-center space-x-2 mt-2">
         <input
           type="checkbox"
           id="terms"
@@ -283,7 +289,7 @@ export default function PersonalInfo({
           </a>
         </label>
       </div>
-
+      
       <Button
         onClick={handleSendOtp}
         disabled={!isFormValid || sendOtpMutation.isLoading}

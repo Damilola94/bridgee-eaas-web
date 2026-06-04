@@ -54,7 +54,7 @@ function TextInput({
     <div className={`${className} relative`}>
       {label && (
         <label htmlFor={name} className="flex mb-1">
-          {label}
+          {label}{required &&<span className="text-red-600">*</span>}
         </label>
       )}
 

@@ -65,9 +65,9 @@ export default function LivenessCheck({
       const updatedFormData: OnboardingStepData = {
         ...formData,
         personalInfo: {
-          firstName:
-            apiData?.firstName || formData?.personalInfo?.firstName || "",
-          lastName: apiData?.lastName || formData?.personalInfo?.lastName || "",
+          // firstName:
+          //   apiData?.firstName || formData?.personalInfo?.firstName || "",
+          // lastName: apiData?.lastName || formData?.personalInfo?.lastName || "",
           phoneNumber:
             removeNigerianCountryCode(apiData?.phoneNumber) ||
             formData?.personalInfo?.phoneNumber ||

@@ -71,8 +71,8 @@ export interface OnboardingStepData {
   bvn: string;
   livenessSelfie?: File | null;
   personalInfo: {
-    firstName: string;
-    lastName: string;
+    // firstName: string;
+    // lastName: string;
     emailAddress: string;
     phoneNumber: string;
     businessName: string;

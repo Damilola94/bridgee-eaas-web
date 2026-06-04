@@ -17,33 +17,52 @@ import Success from "../../components/pages/auth/create-account/Success";
 import EmailVerification from "../../components/pages/auth/create-account/EmailVerification";
 import { OnboardingStepData, UserType } from "../../types/auth";
 import RegisterSelectionModal from "../../components/pages/homepage/modals/RegisterSelectionModal";
+import LinkBankAccount from "../../components/pages/auth/create-account/LinkBankAccount";
+
+// const stepsConfig = [
+//   {
+//     id: "bvnValidation",
+//     description: "Identity Verification",
+//     Component: BvnValidation
+//   },
+//   {
+//     id: "livenessCheck",
+//     description: "Identity Verification",
+//     Component: LivenessCheck
+//   },
+//   {
+//     id: "personalInfo",
+//     description: "Personal Information Validation",
+//     Component: PersonalInfo
+//   },
+//   {
+//     id: "emailVerification",
+//     description: "Email Verification",
+//     Component: EmailVerification
+//   },
+//   {
+//     id: "success",
+//     description: "",
+//     Component: Success
+//   }
+// ];
 
 const stepsConfig = [
   {
-    id: "bvnValidation",
-    description: "Identity Verification",
-    Component: BvnValidation
-  },
-  {
-    id: "livenessCheck",
-    description: "Identity Verification",
-    Component: LivenessCheck
-  },
-  {
     id: "personalInfo",
-    description: "Personal Information Validation",
-    Component: PersonalInfo
+    description: "Personal Information",
+    Component: PersonalInfo,
   },
   {
     id: "emailVerification",
     description: "Email Verification",
-    Component: EmailVerification
+    Component: EmailVerification,
   },
   {
-    id: "success",
-    description: "",
-    Component: Success
-  }
+    id: "bankAccount",
+    description: "Link Bank Account",
+    Component: LinkBankAccount,
+  },
 ];
 
 export default function CreateAccountPage() {
@@ -60,15 +79,15 @@ export default function CreateAccountPage() {
     bvn: "",
     livenessSelfie: null,
     personalInfo: {
-      firstName: "",
-      lastName: "",
+      // firstName: "",
+      // lastName: "",
       emailAddress: "",
       phoneNumber: "",
       businessName: "",
       password: "",
-      partnerCode: ""
+      partnerCode: "",
     },
-    otpValidationTicket: ""
+    otpValidationTicket: "",
   });
 
   useEffect(() => {
@@ -77,8 +96,8 @@ export default function CreateAccountPage() {
         ...prev,
         personalInfo: {
           ...prev.personalInfo,
-          partnerCode: router.query.ref as string
-        }
+          partnerCode: router.query.ref as string,
+        },
       }));
     }
   }, [router.query.ref, currentStepIndex]);
@@ -89,7 +108,7 @@ export default function CreateAccountPage() {
 
   const handleSelectSeller = () => {
     router.push(
-      `/create-account?userType=Seller&ref=${router.query.ref || ""}`
+      `/create-account?userType=Seller&ref=${router.query.ref || ""}`,
     );
   };
 
@@ -111,44 +130,52 @@ export default function CreateAccountPage() {
 
   const renderStepComponent = () => {
     switch (currentStepData.id) {
-    case "bvnValidation":
-      return (
-        <BvnValidation
-          formData={formData}
-          setFormData={setFormData}
-          onNavigateNext={handleNext}
-        />
-      );
-    case "livenessCheck":
-      return (
-        <LivenessCheck
-          formData={formData}
-          setFormData={setFormData}
-          onNavigateNext={handleNext}
-        />
-      );
-    case "personalInfo":
-      return (
-        <PersonalInfo
-          formData={formData}
-          setFormData={setFormData}
-          onOtpSentSuccess={handleNext}
-          isSeller={isSeller}
-        />
-      );
-    case "emailVerification":
-      return (
-        <EmailVerification
-          formData={formData}
-          setFormData={setFormData}
-          onNavigateNext={handleNext}
-          isSeller={isSeller}
-        />
-      );
-    case "success":
-      return <Success />;
-    default:
-      return null;
+      case "personalInfo":
+        return (
+          <PersonalInfo
+            formData={formData}
+            setFormData={setFormData}
+            onOtpSentSuccess={handleNext}
+            isSeller={isSeller}
+          />
+        );
+      case "emailVerification":
+        return (
+          <EmailVerification
+            formData={formData}
+            setFormData={setFormData}
+            onNavigateNext={handleNext}
+            isSeller={isSeller}
+          />
+        );
+      case "bankAccount":
+        return (
+          <LinkBankAccount
+            formData={formData}
+            setFormData={setFormData}
+            isSeller={isSeller}
+          />
+        );
+      // case "bvnValidation":
+      //   return (
+      //     <BvnValidation
+      //       formData={formData}
+      //       setFormData={setFormData}
+      //       onNavigateNext={handleNext}
+      //     />
+      //   );
+      // case "livenessCheck":
+      //   return (
+      //     <LivenessCheck
+      //       formData={formData}
+      //       setFormData={setFormData}
+      //       onNavigateNext={handleNext}
+      //     />
+      //   );
+      case "success":
+        return <Success />;
+      default:
+        return null;
     }
   };
 
@@ -190,7 +217,7 @@ export default function CreateAccountPage() {
                       currentStepIndex === 0
                         ? 20
                         : ((currentStepIndex + 1) / totalSteps) * 100
-                    }%`
+                    }%`,
                   }}
                 />
               </div>
@@ -200,7 +227,7 @@ export default function CreateAccountPage() {
           <div className="mb-9">{renderStepComponent()}</div>
 
           {["bvnValidation", "personalInfo", "emailVerification"].includes(
-            currentStepData.id
+            currentStepData.id,
           ) && (
             <div className="text-center mt-8">
               <span className="text-black text-sm font-bold">
@@ -231,3 +258,4 @@ export default function CreateAccountPage() {
     </div>
   );
 }
+

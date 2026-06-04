@@ -136,7 +136,7 @@ export default function EmailVerification({
 
   const resendOtp = () => {
     const email = formData.personalInfo.emailAddress;
-    const recipientName = `${formData.personalInfo.firstName} ${formData.personalInfo.lastName}`;
+    // const recipientName = `${formData.personalInfo.firstName} ${formData.personalInfo.lastName}`;
     resendMutation.mutate({
       service: "identity-service",
       endpoint: "/api/v1/otp/send",
@@ -144,7 +144,7 @@ export default function EmailVerification({
       body: {
         identifier: email,
         purpose: "EmailConfirmation",
-        recipientName,
+        // recipientName,
       },
     });
   };
