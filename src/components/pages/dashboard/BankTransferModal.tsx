@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { RiFileCopyLine } from 'react-icons/ri';
 
 import { useAccountsContext } from '../../../context/Accounts';
@@ -9,39 +7,65 @@ import Modal from '../../common/Modal';
 import Button from '../../inputs/Button';
 
 type Props = {
-  onClose: () => void
+  onClose: () => void;
 };
 
 function BankTransferModal({ onClose }: Props) {
   const { accounts } = useAccountsContext();
   const [copiedAccountNo, setCopiedAccountNo] = useState(false);
 
+  const accountNumber =
+    accounts?.defaultWallets?.[0]?.virtualAccount || '';
+
+  const handleCopy = async () => {
+    if (!accountNumber) return;
+
+    try {
+      await navigator.clipboard.writeText(accountNumber);
+      setCopiedAccountNo(true);
+
+      setTimeout(() => {
+        setCopiedAccountNo(false);
+      }, 2000);
+    } catch (error) {
+      console.error('Failed to copy account number:', error);
+    }
+  };
+
   return (
     <Modal isOpen onClose={onClose} maxWidth="max-w-[400px]">
       <div className="w-full py-5">
         <div className="mb-7">
-          <h1 className="w-full text-textColor ff-bold text-xl mb-2">Make Transfer</h1>
+          <h1 className="w-full text-textColor ff-bold text-xl mb-2">
+            Make Transfer
+          </h1>
         </div>
 
         <div className="w-full">
           <div className="w-full text-center bg-secondary rounded-xl px-5 py-5 mb-10">
             <h4 className="font-bold text-lg mb-1">Wema Bank</h4>
+
             <h2 className="flex ff-heavy text-2xl justify-center items-center mb-3">
-              <span className="mr-4">{accounts?.defaultWallets?.[0]?.virtualAccount}</span>
-              {copiedAccountNo
-                ? <span className="text-[#9CA3AF] text-sm">Copied</span>
-                : (
-                  <CopyToClipboard
-                    text={accounts?.defaultWallets?.[0]?.virtualAccount}
-                    onCopy={() => setCopiedAccountNo(true)}
-                  >
-                    <RiFileCopyLine className="text-[#9CA3AF] cursor-pointer" />
-                  </CopyToClipboard>
-                )}
+              <span className="mr-4">{accountNumber}</span>
+
+              {copiedAccountNo ? (
+                <span className="text-[#9CA3AF] text-sm">
+                  Copied
+                </span>
+              ) : (
+                <RiFileCopyLine
+                  className="text-[#9CA3AF] cursor-pointer"
+                  onClick={handleCopy}
+                />
+              )}
             </h2>
 
-            <p className="">To fund your wallet for any transaction, please use this account number.</p>
+            <p>
+              To fund your wallet for any transaction, please use this account
+              number.
+            </p>
           </div>
+
           <Button
             border
             onClick={onClose}
