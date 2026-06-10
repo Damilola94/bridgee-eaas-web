@@ -7,6 +7,8 @@ import ValueIcon from "../../../assets/svgs/value.svg";
 type Props = {
   totalItems?: number;
   lowStock?: number;
+  inStock?: number;
+  outOfStock?: number;
   totalValue?: number;
 };
 

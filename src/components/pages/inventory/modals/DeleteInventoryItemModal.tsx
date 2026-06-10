@@ -16,7 +16,7 @@ export default function DeleteInventoryItemModal({
 }: Props) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCenter maxWidth="max-w-[420px]">
-      <div className="w-full py-8 flex flex-col items-center text-center">
+      <div className="w-full flex flex-col items-center text-center">
         <div className="w-16 h-16 rounded-full border-2 border-red-500 flex items-center justify-center mb-5">
           <span className="text-red-500 text-2xl font-bold">!</span>
         </div>

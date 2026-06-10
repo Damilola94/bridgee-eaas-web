@@ -13,7 +13,7 @@ import { useMutation, useQueryClient } from "react-query";
 import useGetQuery from "../../../../hooks/useGetQuery";
 import { formatApiDate } from "../../../../utilities/dateTime";
 import NoData from "../../../common/NoData";
-import Loading from "../../../common/Loading";
+// import Loading from "../../../common/Loading";
 import SearchInput from "../../../inputs/Search";
 import Pagination from "../../../common/Pagination";
 import Button from "../../../inputs/Button";
@@ -33,8 +33,11 @@ import AddSingleItemModal from "../modals/AddSingleItemModal";
 import BulkUploadModal from "../modals/BulkUploadModal";
 import InventorySuccessModal from "../modals/InventorySuccessModal";
 import DeleteInventoryItemModal from "../modals/DeleteInventoryItemModal";
+import { useCookies } from "react-cookie";
+import TransactionStatus from "../../../common/TransactionStatus";
 
 function AllInventoryList({ isDashboard = false }) {
+  const [cookie] = useCookies(["data"]);
   const [filter, setFilter] = useState<any>(null);
   const [pageNumber, setPageNumber] = useState(0);
   const [searchText, setSearchText] = useState("");
@@ -47,6 +50,7 @@ function AllInventoryList({ isDashboard = false }) {
   const [showAddSuccess, setShowAddSuccess] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<any>(null);
   const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
+  const [editTarget, setEditTarget] = useState<any>(null);
 
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -58,6 +62,7 @@ function AllInventoryList({ isDashboard = false }) {
     pQuery: {
       start: formatApiDate(filter?.startDate),
       end: formatApiDate(filter?.endDate),
+      SellerId: cookie?.data?.userId,
       category: filter?.category,
       pageSize: isDashboard ? 5 : PAGE_SIZE,
       pageNumber: pageNumber + 1,
@@ -66,7 +71,15 @@ function AllInventoryList({ isDashboard = false }) {
     enabled: true,
   });
 
-  const statsData = data?.metadata || {};
+  const { data: statsResponse } = useGetQuery({
+    service: "wallet-service/api/v1",
+    endpoint: "inventory",
+    extra: "stats",
+    queryKey: ["inventory-stats"],
+    enabled: true,
+  });
+
+  const statsData = statsResponse?.data || {};
 
   const debouncedSearch = useMemo(() => debounce(setSearch, 1000), [setSearch]);
 
@@ -100,6 +113,7 @@ function AllInventoryList({ isDashboard = false }) {
       });
       setDeleteTarget(null);
       queryClient.invalidateQueries(["inventory"]);
+      queryClient.invalidateQueries(["inventory-stats"]);
       setShowDeleteSuccess(true);
     },
     onError: (err: any) => {
@@ -113,7 +127,7 @@ function AllInventoryList({ isDashboard = false }) {
 
   const handleEdit = (e: React.MouseEvent, item: any) => {
     e.stopPropagation();
-    router.push(`/inventory/edit/${item.id}`);
+    setEditTarget(item);
   };
 
   return (
@@ -131,13 +145,16 @@ function AllInventoryList({ isDashboard = false }) {
           </Button>
         </div>
       )}
+
       <div className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
         <InventoryStats
-          totalItems={statsData?.totalItems}
-          lowStock={statsData?.lowStock}
-          totalValue={statsData?.totalValue}
+          totalItems={statsData?.totalItems || 0}
+          inStock={statsData?.inStock || 0}
+          lowStock={statsData?.lowStock || 0}
+          outOfStock={statsData?.outOfStock || 0}
         />
       </div>
+
       <div className="w-full bg-white shadow-sm rounded-xl overflow-hidden border border-lightText/10">
         <div className="px-6 pt-6 pb-4">
           <h3 className="font-bold text-xl text-textColor mb-0.5">
@@ -166,7 +183,7 @@ function AllInventoryList({ isDashboard = false }) {
                   onChange={handleSearch}
                   className="w-full max-w-xs"
                   height="h-[38px]"
-                  placeholder="Search by name, phone number, email or status"
+                  placeholder="Search by name, category or status"
                 />
                 <button
                   type="button"
@@ -194,9 +211,10 @@ function AllInventoryList({ isDashboard = false }) {
                 </th>
                 <th className="px-3 py-4">Product</th>
                 <th className="px-3 py-4">Category</th>
-                <th className="px-3 py-4">Unit Price</th>
-                <th className="px-3 py-4">Opening Quantity</th>
-                <th className="px-3 py-4">Current Quantity</th>
+                <th className="px-3 py-4">Amount Per Unit</th>
+                <th className="px-3 py-4">Total Amount</th>
+                <th className="px-3 py-4">Stock</th>
+                <th className="px-3 py-4">Status</th>
                 <th className="px-3 py-4">Date Added</th>
                 <th className="px-3 py-4 text-right pr-6">Action</th>
               </tr>
@@ -204,7 +222,7 @@ function AllInventoryList({ isDashboard = false }) {
             <tbody>
               {status === "loading" && (
                 <tr>
-                  <td colSpan={8} className="pt-4">
+                  <td colSpan={9} className="pt-4">
                     <div className="px-6 space-y-3 pb-4">
                       {[...Array(isDashboard ? 5 : 10)].map((_, i) => (
                         <div
@@ -214,10 +232,11 @@ function AllInventoryList({ isDashboard = false }) {
                           <Skeleton width={16} height={16} />
                           <Skeleton width={32} height={32} borderRadius={8} />
                           <Skeleton width={180} height={14} />
-                          <Skeleton width={80} height={14} />
                           <Skeleton width={100} height={14} />
-                          <Skeleton width={60} height={14} />
-                          <Skeleton width={60} height={14} />
+                          <Skeleton width={100} height={14} />
+                          <Skeleton width={80} height={14} />
+                          <Skeleton width={80} height={14} />
+                          <Skeleton width={70} height={22} borderRadius={99} />
                           <Skeleton width={90} height={14} />
                           <Skeleton width={60} height={14} />
                         </div>
@@ -247,6 +266,7 @@ function AllInventoryList({ isDashboard = false }) {
                             className="w-4 h-4 rounded accent-primary cursor-pointer"
                           />
                         </td>
+
                         <td className="px-3 py-4">
                           <div className="flex items-center gap-3">
                             {item?.imageUrl ? (
@@ -267,23 +287,37 @@ function AllInventoryList({ isDashboard = false }) {
                             </span>
                           </div>
                         </td>
+
                         <td className="px-3 py-4 text-sm text-textColor">
                           {item?.category || "—"}
                         </td>
+
                         <td className="px-3 py-4">
                           <span className="font-bold text-sm text-textColor">
-                            NGN {Number(item?.unitPrice || 0).toLocaleString()}
+                            {item?.amountPerUnit || "—"}
                           </span>
                         </td>
+
                         <td className="px-3 py-4 text-sm text-textColor">
-                          {item?.openingQuantity ?? "—"}
+                          {item?.totalAmount || "—"}
                         </td>
+
                         <td className="px-3 py-4 text-sm text-textColor">
-                          {item?.currentQuantity ?? "—"}
+                          {item?.stock ?? "—"}
                         </td>
+
+                        <td className="px-3 py-4">
+                          {item?.status ? (
+                            <TransactionStatus status={item.status} />
+                          ) : (
+                            <span className="text-lightText text-sm">—</span>
+                          )}
+                        </td>
+
                         <td className="px-3 py-4 text-sm text-lightText">
                           {item?.createdDate || "—"}
                         </td>
+
                         <td
                           className="px-3 py-4 pr-6"
                           onClick={(e) => e.stopPropagation()}
@@ -319,7 +353,7 @@ function AllInventoryList({ isDashboard = false }) {
                     ))}
                     {!isDashboard && (
                       <tr>
-                        <td colSpan={8} className="pt-2 pb-4 px-6">
+                        <td colSpan={9} className="pt-2 pb-4 px-6">
                           <Pagination
                             count={data?.data?.totalPages}
                             currentPage={pageNumber}
@@ -331,7 +365,7 @@ function AllInventoryList({ isDashboard = false }) {
                   </>
                 ) : (
                   <tr>
-                    <td colSpan={8}>
+                    <td colSpan={9}>
                       <NoData py="pt-14" />
                     </td>
                   </tr>
@@ -340,7 +374,7 @@ function AllInventoryList({ isDashboard = false }) {
               {status === "error" && (
                 <tr>
                   <td
-                    colSpan={8}
+                    colSpan={9}
                     className="text-center pt-10 pb-6 text-sm text-lightText"
                   >
                     {String(error)}
@@ -366,6 +400,7 @@ function AllInventoryList({ isDashboard = false }) {
         }}
       />
 
+      {/* Add */}
       <AddSingleItemModal
         isOpen={showSingle}
         onClose={() => setShowSingle(false)}
@@ -373,6 +408,19 @@ function AllInventoryList({ isDashboard = false }) {
           setShowSingle(false);
           setShowAddSuccess(true);
         }}
+        sellerId={cookie?.data?.userId ?? ""}
+      />
+
+      {/* Edit — reuses the same modal, editItem drives PUT mode */}
+      <AddSingleItemModal
+        isOpen={!!editTarget}
+        onClose={() => setEditTarget(null)}
+        onSuccess={() => {
+          setEditTarget(null);
+          setShowAddSuccess(true);
+        }}
+        sellerId={cookie?.data?.userId ?? ""}
+        editItem={editTarget}
       />
 
       <BulkUploadModal
@@ -387,8 +435,8 @@ function AllInventoryList({ isDashboard = false }) {
       <InventorySuccessModal
         isOpen={showAddSuccess}
         onClose={() => setShowAddSuccess(false)}
-        title="Item Uploaded Successfully"
-        message="Your item has been uploaded and you can now go ahead to manage it in the Inventory section"
+        title="Item Saved Successfully"
+        message="Your item has been saved and you can now go ahead to manage it in the Inventory section"
       />
 
       <DeleteInventoryItemModal
@@ -397,8 +445,9 @@ function AllInventoryList({ isDashboard = false }) {
         onConfirm={() => {
           if (!deleteTarget) return;
           deleteMutation.mutate({
-            service: "wallet-service/api/v1",
+            service: "wallet-service/api/v1/",
             endpoint: `inventory/${deleteTarget.id}`,
+            auth: true,
             method: "DELETE",
           });
         }}

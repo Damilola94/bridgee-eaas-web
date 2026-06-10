@@ -10,6 +10,7 @@ export type Props = {
   placeholder?: string;
   height?: string;
   accept?: string;
+  capture?: string;
   readOnly?: boolean;
   disabled?: boolean;
   minValue?: number;
@@ -32,6 +33,7 @@ function TextInput({
   readOnly,
   onBlur,
   disabled,
+  capture,
   onKeyPress,
   onKeyDown,
   minValue,

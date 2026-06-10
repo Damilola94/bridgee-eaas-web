@@ -13,17 +13,19 @@ type SelectProps = {
   placeholder?: string,
   multiple?: boolean,
   disabled?: boolean,
+  required?: boolean,
   isClearable?: boolean,
   onChange?: (val: MultiValue<SelectOptionType> | SingleValue<SelectOptionType>, actionMeta: ActionMeta<SelectOptionType> | null) => void,
 };
 
 function SelectInput({
   className = '', name = '', label, height = 'h-[43.2px]', value, onChange, disabled, options,
+  required,
   multiple, placeholder, isClearable
 }: SelectProps) {
   return (
     <div className={`${className || ''} relative select`}>
-      {label && <label className="flex mb-1">{label}</label>}
+      {label && <label className="flex mb-1">{label}{required &&<span className="text-red-600">*</span>}</label>}
 
       <Select
         classNames={{

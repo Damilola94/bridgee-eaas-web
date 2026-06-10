@@ -216,6 +216,16 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     [],
   );
 
+  const uploadMutation = useMutation(handleFetch, {
+    onError: (err: any) => {
+      notification({
+        title: "Upload Error",
+        message: err?.toString() || "Failed to upload document.",
+        type: "danger",
+      });
+    },
+  });
+
   // Handle fetching current location
   const handleUseCurrentLocation = async () => {
     setIsLoadingCurrentLocation(true);
@@ -560,7 +570,6 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         message: "Could not fetch shipping rates.",
         type: "danger",
       });
-      // console.error("Shipping rates error:", error);
     } finally {
       setIsLoadingShippingRates(false);
     }
@@ -632,7 +641,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
 
   const handleAddItem = (itemPayload: OrderListItemProps) => {
     console.log(itemPayload);
-    
+
     if (form?.escrowItems?.find((item) => item.id === itemPayload.id)) {
       setForm((state) => ({
         ...state,
@@ -751,7 +760,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     );
   };
 
-  const handleSaveForLater = () => {
+  const handleSaveForLater = async () => {
     if (!validateSaveForLater()) {
       notification({
         title: "Nothing to Save",
@@ -760,34 +769,69 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       });
       return;
     }
+    let photoUrls: string[] = [];
+
+    if (form?.contract) {
+      const uploadBody = new FormData();
+      const files = Array.isArray(form.contract)
+        ? form.contract
+        : [form.contract];
+      files.forEach((file) => {
+        uploadBody.append("images", file);
+      });
+
+      try {
+        const uploadResponse: any = await uploadMutation.mutateAsync({
+          service: "wallet-service",
+          endpoint: "upload",
+          method: "POST",
+          body: uploadBody,
+          auth: true,
+          multipart: true,
+        });
+
+        if (uploadResponse?.data) {
+          photoUrls = Array.isArray(uploadResponse.data)
+            ? uploadResponse.data
+                .map((item: any) => item?.url || item)
+                .filter(Boolean)
+            : [uploadResponse.data?.url || uploadResponse.data].filter(Boolean);
+        }
+      } catch (error) {
+        return;
+      }
+    }
+
+    const payload = {
+      recipient: {
+        name: form?.recipientDetails?.recipientName || "",
+        email: form?.recipientDetails?.email || "",
+        phoneNumber: form?.recipientDetails?.phoneNumber || "",
+        address: form?.recipientDetails?.address || "",
+      },
+      photoUrls: photoUrls,
+      buyerPaysEscrowFee: form?.isDeliveryOnUs || false,
+      description: form?.description || "",
+      deliveryFee: form?.selectedCourier?.total || 0,
+      items:
+        form?.escrowItems?.map((item) => ({
+          name: item.name || "",
+          quantity: item.quantity || 0,
+          unitPrice: item.amount || 0,
+          weightKg: item.weight || 0,
+        })) || [],
+      shipmentMetaData: {
+        requestToken: form?.selectedCourier?.requestToken || "",
+        serviceCode: form?.selectedCourier?.serviceCode || "",
+        courierId: form?.selectedCourier?.courierId || "",
+      },
+    };
     saveForLaterMutation.mutate({
       service: "wallet-service/api/v1",
       endpoint: "escrows",
-      extra: "save-for-later",
+      extra: "orders",
       method: "POST",
-      body: {
-        recipient: {
-          name: form?.recipientDetails?.recipientName || "",
-          email: form?.recipientDetails?.email || "",
-          phoneNumber: form?.recipientDetails?.phoneNumber || "",
-          address: form?.recipientDetails?.address || "",
-        },
-        description: form?.description || "",
-        deliveryFee: form?.selectedCourier?.total || 0,
-        buyerPaysEscrowFee: form?.isDeliveryOnUs || false,
-        items:
-          form?.escrowItems?.map((item) => ({
-            name: item.name || "",
-            quantity: item.quantity || 0,
-            unitPrice: item.amount || 0,
-            weightKg: item.weight || 0,
-          })) || [],
-        shipmentMetaData: {
-          requestToken: form?.selectedCourier?.requestToken || "",
-          serviceCode: form?.selectedCourier?.serviceCode || "",
-          courierId: form?.selectedCourier?.courierId || "",
-        },
-      },
+      body: payload,
       auth: true,
       multipart: false,
     });
@@ -909,6 +953,8 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
                 name="contract"
                 value={form?.contract}
                 onChange={handleChange}
+                accept="image/*"
+                capture="environment"
                 label="Upload Product Image"
                 required
               />
@@ -1010,7 +1056,6 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         <div>
           <p className="pb-4 font-bold text-base">Shipping Details</p>
           <div className="md:flex gap-5 justify-between space-y-5 md:space-y-0">
-            {/* Pickup Address */}
             <div className="w-full">
               <label className="text-sm font-bold">Pickup Address</label>
               {!showManualPickup ? (
@@ -1028,7 +1073,6 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
                     styles={selectStyles}
                   />
                   <div className="mt-3 flex flex-row justify-between items-center sm:flex-col sm:items-start gap-3">
-                    {/* Use Current Location */}
                     <div
                       onClick={handleUseCurrentLocation}
                       className="flex items-center gap-2 cursor-pointer group"
@@ -1044,7 +1088,6 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
                       </span>
                     </div>
 
-                    {/* Manual Entry */}
                     <button
                       type="button"
                       onClick={() => {

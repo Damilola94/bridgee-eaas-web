@@ -29,7 +29,6 @@ const Transactions: NextPageWithLayout = () => {
 
       <div className="w-full">
         <h2 className="font-bold ff-bold text-2xl mb-3">Inventory</h2>
-        
         <div className="w-full mt-3">
           <InvoiceContainer />
         </div>

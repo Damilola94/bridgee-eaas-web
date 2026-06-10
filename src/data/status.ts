@@ -1,5 +1,6 @@
 export const statusColors = {
   Confirmed: '#03543F',
+  "In Stock": '#03543F',
   refunded: '#03543F',
   'in-progress': '#42389D',
   'awaiting-confirmation': '#111928',

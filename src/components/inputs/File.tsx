@@ -6,6 +6,8 @@ import TextInput from "./Text";
 type Props = {
   className?: string;
   name?: string;
+  accept?: string;
+  capture?: string;
   label?: string;
   required?: boolean;
   readOnly?: boolean;
@@ -19,9 +21,11 @@ function FileInput({
   value,
   onChange,
   name,
+  capture,
   disabled,
   readOnly,
   label,
+  accept,
   required,
   className = "",
   preview,
@@ -81,7 +85,8 @@ function FileInput({
         <TextInput
           ref={inputRef}
           type="file"
-          accept=""
+          accept={accept}
+          capture={capture}
           name={name}
           onChange={onChange}
           disabled={disabled}
