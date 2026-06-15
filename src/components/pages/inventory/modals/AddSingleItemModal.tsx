@@ -15,11 +15,15 @@ import notification from "../../../../utilities/notification";
 import TrashIcon from "../../../../assets/svgs/trash-gray.svg";
 
 const CATEGORY_OPTIONS = [
-  { label: "Automobiles & Parts", value: "AutomobilesAndParts" },
+  { label: "Fashion", value: "Fashion" },
   { label: "Electronics", value: "Electronics" },
-  { label: "Clothing", value: "Clothing" },
-  { label: "Shoes", value: "Shoes" },
-  { label: "Accessories", value: "Accessories" },
+  { label: "Food And Beverages", value: "FoodAndBeverages" },
+  { label: "Health And Beauty", value: "HealthAndBeauty" },
+  { label: "Home And Living", value: "HomeAndLiving" },
+  { label: "Books And Stationery", value: "BooksAndStationery" },
+  { label: "Sports And Fitness", value: "SportsAndFitness" },
+  { label: "Automobiles & Parts", value: "AutomobilesAndParts" },
+  { label: "Service And Digital", value: "ServiceAndDigital" },
   { label: "Other", value: "Other" },
 ];
 

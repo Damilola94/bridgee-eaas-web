@@ -151,6 +151,7 @@ function AllInventoryList({ isDashboard = false }) {
           totalItems={statsData?.totalItems || 0}
           inStock={statsData?.inStock || 0}
           lowStock={statsData?.lowStock || 0}
+          totalValue={statsData?.totalValue || 0}
           outOfStock={statsData?.outOfStock || 0}
         />
       </div>

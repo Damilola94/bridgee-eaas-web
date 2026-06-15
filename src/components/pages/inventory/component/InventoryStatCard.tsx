@@ -30,7 +30,7 @@ export default function InventoryStatCard({
         <div>
           <p className="text-sm text-lightText mb-1">{label}</p>
           <p className="font-bold text-2xl text-textColor">
-            {Number(value).toLocaleString()}
+            {value} 
           </p>
         </div>
       </div>

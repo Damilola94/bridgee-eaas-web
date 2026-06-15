@@ -187,27 +187,33 @@ function AddInvoiceItem({ data, onAdd = () => {}, onClose = () => {} }: Props) {
   };
 
   const addAnotherDraft = () => {
-    const current = drafts[expandedIndex];
-    if (current) {
-      const errs = validateDraft(current);
-      if (Object.keys(errs).length > 0) {
-        setDrafts((prev) =>
-          prev.map((d, i) =>
-            i === expandedIndex ? { ...d, _errors: errs } : d,
-          ),
-        );
-        notification({
-          title: "Incomplete Item",
-          message:
-            "Please fill in all required fields before adding a new item.",
-          type: "danger",
-        });
-        return;
-      }
+  const current = drafts[expandedIndex];
+
+  if (current) {
+    const errs = validateDraft(current);
+
+    if (Object.keys(errs).length > 0) {
+      setDrafts((prev) =>
+        prev.map((d, i) =>
+          i === expandedIndex ? { ...d, _errors: errs } : d,
+        ),
+      );
+
+      const firstError = Object.values(errs)[0];
+
+      notification({
+        title: "Incomplete Item",
+        message: String(firstError),
+        type: "danger",
+      });
+
+      return;
     }
-    setDrafts((prev) => [...prev, emptyDraft()]);
-    setExpandedIndex(drafts.length); 
-  };
+  }
+
+  setDrafts((prev) => [...prev, emptyDraft()]);
+  setExpandedIndex(drafts.length);
+};
 
   const removeDraft = (index: number) => {
     if (drafts.length === 1) {
@@ -257,7 +263,7 @@ function AddInvoiceItem({ data, onAdd = () => {}, onClose = () => {} }: Props) {
       }) => {
         onAdd({
           ...draft,
-          id: draft.id || uuidv4(), 
+          id: draft.id || uuidv4(),
           inventoryItemId: _inventoryItemId,
           amount: Number(draft.amount),
           quantity: Number(draft.quantity),
@@ -348,7 +354,6 @@ function AddInvoiceItem({ data, onAdd = () => {}, onClose = () => {} }: Props) {
 
                 {isExpanded && (
                   <div className="px-4 pb-4 pt-2 border-t border-lightText/10 space-y-3">
-                    {/* ── Use Inventory Toggle ── */}
                     <div className="flex items-center justify-between py-1">
                       <span className="text-sm font-medium text-textColor">
                         Use Inventory Item
@@ -557,7 +562,6 @@ function AddInvoiceItem({ data, onAdd = () => {}, onClose = () => {} }: Props) {
                         </div>
                       </>
                     )}
-
                     <TextInput
                       name="totalAmount"
                       value={total}
@@ -585,7 +589,6 @@ function AddInvoiceItem({ data, onAdd = () => {}, onClose = () => {} }: Props) {
           </button>
         )}
 
-        {/* Summary — only show when multiple drafts */}
         {drafts.length > 1 && (
           <div className="flex items-center justify-between px-4 py-3 bg-secondary rounded-lg mb-5 text-sm">
             <span className="text-lightText">{drafts.length} items</span>
@@ -602,7 +605,6 @@ function AddInvoiceItem({ data, onAdd = () => {}, onClose = () => {} }: Props) {
           </div>
         )}
 
-        {/* Save button */}
         <div className="w-full flex justify-center">
           <Button
             className="w-full"
@@ -612,7 +614,7 @@ function AddInvoiceItem({ data, onAdd = () => {}, onClose = () => {} }: Props) {
           >
             {data?.id
               ? "Update Item"
-              : `Add ${drafts.length > 1 ? `${drafts.length} Items` : "Item"}`}
+              : `Submit ${drafts.length > 1 ? `${drafts.length} Items` : "Item"}`}
           </Button>
         </div>
       </div>
@@ -621,3 +623,4 @@ function AddInvoiceItem({ data, onAdd = () => {}, onClose = () => {} }: Props) {
 }
 
 export default AddInvoiceItem;
+
