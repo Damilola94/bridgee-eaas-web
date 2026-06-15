@@ -98,7 +98,7 @@ function PersonalDetails() {
 
     bvnMutation.mutate({
       service: "identity-service",
-      endpoint: "/api/v1/users/validate-bvn",
+      endpoint: "/api/v1/users/verify-bvn",
       method: "POST",
       multipart: true,
       body: formDataBody

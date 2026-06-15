@@ -15,13 +15,10 @@ import Select, { StylesConfig } from "react-select";
 
 import { useAccountsContext } from "../../../context/Accounts";
 
-// import { FaCheck } from 'react-icons/fa';
 
 import { OrderListItemProps } from "../../../types/invoice";
 
-// import MenuOptions from '../../common/MenuOptions';
 import NoData from "../../common/NoData";
-// import Editor from '../../inputs/Editor';
 import Button from "../../inputs/Button";
 import { useCreateInvoiceContext } from "../../../context/CreateInvoice";
 import { formatCurrency } from "../../../utilities/general";
@@ -65,7 +62,6 @@ import ShippingRatesModal, { RatesData } from "./ShippingRatesModal";
 import { LocationSuggestionModal } from "./CurrentLocationModal";
 import handleFetch from "../../../services/api/handleFetch";
 import { useMutation } from "react-query";
-import { log } from "console";
 
 interface SelectAddressOption {
   label: string;
@@ -139,7 +135,6 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const [isValidatingPickup, setIsValidatingPickup] = useState(false);
   const [isValidatingDelivery, setIsValidatingDelivery] = useState(false);
 
-  // Location modal state
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [currentLocationSuggestion, setCurrentLocationSuggestion] =
     useState<LocationSuggestion | null>(null);
@@ -149,7 +144,6 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const [pickupSelectValue, setPickupSelectValue] =
     useState<SelectAddressOption | null>(null);
 
-  // Fetch Categories
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
@@ -184,7 +178,6 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     window.scrollTo(0, 0);
   }, []);
 
-  // Load Google Address Suggestions
   const loadSuggestions = (inputValue: string) =>
     new Promise<any[]>((resolve) => {
       if (inputValue.trim().length < 2) {
@@ -226,7 +219,6 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     },
   });
 
-  // Handle fetching current location
   const handleUseCurrentLocation = async () => {
     setIsLoadingCurrentLocation(true);
     setLocationError(null);
@@ -251,7 +243,6 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     }
   };
 
-  // Validate the address automatically with the location from modal
   const handleSelectLocationFromModal = async (
     location: LocationSuggestion,
   ) => {
@@ -277,7 +268,6 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
 
       if (response.isSuccess && response.data.isValid) {
         setPickupAddressResponse(response.data);
-        // Clear manual pickup form
         setShowManualPickup(false);
         setManualPickupAddress({
           houseNo: "",
@@ -599,7 +589,6 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     if (typeof val === "object" && val.target) {
       const { value, name, type, files } = val.target;
 
-      // Check if this is a recipient field
       if (
         name === "recipientName" ||
         name === "email" ||
@@ -668,7 +657,6 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     if (!form?.description?.trim()) return "Description is required";
     if (!form?.contract) return "Please upload a product image";
 
-    // Recipient details
     if (!form?.recipientDetails?.recipientName?.trim())
       return "Recipient name is required";
     if (!form?.recipientDetails?.email?.trim())
@@ -677,17 +665,14 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       return "Recipient phone number is required";
 
     if (form?.isDeliveryOnUs) {
-      // Category and package
       if (!form?.categoryId) return "Please select a category";
       if (!selectedDimension) return "Please select a package size";
 
-      // Addresses
       if (!pickupAddressResponse)
         return "Please select and validate pickup address";
       if (!deliveryAddressResponse)
         return "Please select and validate delivery address";
 
-      // Shipping rate
       if (!form?.selectedCourier) return "Please select a shipping rate";
     }
   };
@@ -816,6 +801,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       items:
         form?.escrowItems?.map((item) => ({
           name: item.name || "",
+          inventoryItemId: item.inventoryItemId,
           quantity: item.quantity || 0,
           unitPrice: item.amount || 0,
           weightKg: item.weight || 0,

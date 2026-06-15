@@ -37,7 +37,7 @@ function InvoiceSummary() {
     extra: "calculate-fee",
     pQuery: { feeType: "Escrow", amount: total },
     queryKey: ["calculate-fee", total],
-    enabled: !!total
+    enabled: !!total,
   });
 
   const uploadMutation = useMutation(handleFetch, {
@@ -45,9 +45,9 @@ function InvoiceSummary() {
       notification({
         title: "Upload Error",
         message: err?.toString() || "Failed to upload document.",
-        type: "danger"
+        type: "danger",
       });
-    }
+    },
   });
 
   const escrowMutation = useMutation(handleFetch, {
@@ -55,16 +55,16 @@ function InvoiceSummary() {
       router.push("/dashboard");
       notification({
         message: res?.message || "You have successfully created an invoice",
-        type: "success"
+        type: "success",
       });
     },
     onError: (err: any) => {
       notification({
         title: "Error",
         message: err?.toString() || "Something went wrong.",
-        type: "danger"
+        type: "danger",
       });
-    }
+    },
   });
 
   const handleSubmit = async () => {
@@ -86,14 +86,14 @@ function InvoiceSummary() {
           method: "POST",
           body: uploadBody,
           auth: true,
-          multipart: true
+          multipart: true,
         });
 
         if (uploadResponse?.data) {
           photoUrls = Array.isArray(uploadResponse.data)
             ? uploadResponse.data
-              .map((item: any) => item?.url || item)
-              .filter(Boolean)
+                .map((item: any) => item?.url || item)
+                .filter(Boolean)
             : [uploadResponse.data?.url || uploadResponse.data].filter(Boolean);
         }
       } catch (error) {
@@ -106,7 +106,7 @@ function InvoiceSummary() {
         name: form?.recipientDetails?.recipientName || "",
         email: form?.recipientDetails?.email || "",
         phoneNumber: form?.recipientDetails?.phoneNumber || "",
-        address: form?.recipientDetails?.address || "Not by Bridgee"
+        address: form?.recipientDetails?.address || "Not by Bridgee",
       },
       photoUrls: photoUrls,
       buyerPaysEscrowFee: form?.isDeliveryOnUs || false,
@@ -115,15 +115,16 @@ function InvoiceSummary() {
       items:
         form?.escrowItems?.map((item) => ({
           name: item.name || "",
+          inventoryItemId: item.inventoryItemId,
           quantity: item.quantity || 0,
           unitPrice: item.amount || 0,
-          weightKg: item.weight || 0
+          weightKg: item.weight || 0,
         })) || [],
       shipmentMetaData: {
         requestToken: form?.selectedCourier?.requestToken || "",
         serviceCode: form?.selectedCourier?.serviceCode || "",
-        courierId: form?.selectedCourier?.courierId || ""
-      }
+        courierId: form?.selectedCourier?.courierId || "",
+      },
     };
 
     escrowMutation.mutate({
@@ -133,7 +134,7 @@ function InvoiceSummary() {
       method: "POST",
       body: payload,
       auth: true,
-      multipart: false
+      multipart: false,
     });
   };
 
@@ -160,9 +161,7 @@ function InvoiceSummary() {
             <div className="w-full text-lightText">
               <p className="mb-1">{identity?.businessDetail?.businessEmail}</p>
               <p className="mb-1">{identity?.businessDetail?.businessPhone}</p>
-              <p className="mb-1">
-                {form?.pickupAddress?.label || "N/A"}
-              </p>
+              <p className="mb-1">{form?.pickupAddress?.label || "N/A"}</p>
               <p className="text-lightText">{new Date().toDateString()}</p>
             </div>
           </div>
@@ -222,17 +221,22 @@ function InvoiceSummary() {
             </div>
             <div className="w-full flex justify-between mb-3">
               <p className="">Delivery Fee</p>
-              <p className="font-bold ff-bold">{formatCurrency(form?.selectedCourier?.total || 0)}</p>
+              <p className="font-bold ff-bold">
+                {formatCurrency(form?.selectedCourier?.total || 0)}
+              </p>
             </div>
             <div className="w-full flex justify-between mb-3 text-lg">
               <p className="">TOTAL</p>
               <p className="font-bold ff-bold">
                 {status === "loading" || isFetching ? (
                   <Skeleton className="w-[80px]" />
+                ) : !form?.isDeliveryOnUs ? (
+                  formatCurrency(total)
                 ) : (
-                  !form?.isDeliveryOnUs ?
-                    formatCurrency(total) :
-                    formatCurrency(total + (data?.data || 0) + form?.selectedCourier?.total || 0)
+                  formatCurrency(
+                    total + (data?.data || 0) + form?.selectedCourier?.total ||
+                      0,
+                  )
                 )}
               </p>
             </div>

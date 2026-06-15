@@ -24,33 +24,77 @@ export default function BulkUploadModal({ isOpen, onClose, onSuccess }: Props) {
   const [isDownloading, setIsDownloading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleDownloadTemplate = async () => {
-    setIsDownloading(true);
-    try {
-      const res = await handleFetch({
-        service: "wallet-service/api/v1/",
-        endpoint: "inventory/bulk-template",
-        method: "GET",
-        auth: true,
-        responseType: "blob",
-      });
+ const handleDownloadTemplate = async () => {
+  setIsDownloading(true);
 
-      const url = window.URL.createObjectURL(res);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "inventory-template.xlsx";
-      link.click();
-      window.URL.revokeObjectURL(url);
-    } catch (err: any) {
-      notification({
-        title: "Download Failed",
-        message: err?.toString() || "Could not download template.",
-        type: "danger",
-      });
-    } finally {
-      setIsDownloading(false);
+  try {
+    const response: any = await handleFetch({
+      service: "wallet-service/api/v1/",
+      endpoint: "inventory/bulk-template",
+      method: "GET",
+      auth: true,
+      responseType: "blob",
+    });
+
+    // Axios returns:
+    // response.data => blob
+    // response.headers => headers
+
+    const blob = new Blob([response.data], {
+      type:
+        response.headers?.["content-type"] ||
+        "application/octet-stream",
+    });
+
+    let filename = "inventory_template.csv";
+
+    const disposition =
+      response.headers?.["content-disposition"];
+
+    if (disposition) {
+      const match = disposition.match(
+        /filename\*?=(?:UTF-8''|")?([^;"\n]+)/i,
+      );
+
+      if (match?.[1]) {
+        filename = decodeURIComponent(
+          match[1].replace(/"/g, ""),
+        );
+      }
     }
-  };
+
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+
+    document.body.appendChild(link);
+    link.click();
+
+    link.remove();
+    window.URL.revokeObjectURL(url);
+
+    notification({
+      title: "Success",
+      message: "Template downloaded successfully.",
+      type: "success",
+    });
+  } catch (err: any) {
+    console.error(err);
+
+    notification({
+      title: "Download Failed",
+      message:
+        err?.response?.data?.message ||
+        err?.message ||
+        "Could not download template.",
+      type: "danger",
+    });
+  } finally {
+    setIsDownloading(false);
+  }
+};
 
   const bulkMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
@@ -163,7 +207,7 @@ export default function BulkUploadModal({ isOpen, onClose, onSuccess }: Props) {
               ref={fileInputRef}
               type="file"
               className="hidden"
-              accept=".xlsx,.xls"
+              accept=".xlsx,.xls,.csv"
               onChange={(e) => setBulkFile(e.target.files?.[0] || null)}
             />
           </label>

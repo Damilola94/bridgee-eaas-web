@@ -85,8 +85,8 @@ function DashboardContainer() {
         <div className="w-full xl:w-[calc(100%-400px)] px-3 pt-3 pb-5">
           <div className="w-full mb-3 space-y-2">
             {!wallet?.hasPin && <CompleteProfile/>}
-            {!wallet?.hasPin && <WithdrawalPinBanner />}
-            {!wallet?.hasWithdrawalBankAccount && <CreateWithdrawalBank />}
+            {/* {!wallet?.hasPin && <WithdrawalPinBanner />} */}
+            {/* {!wallet?.hasWithdrawalBankAccount && <CreateWithdrawalBank />} */}
           </div>
           <div className="w-full mb-3 sm:flex sm:space-x-3 space-y-3 sm:space-y-0">
             {!isBuyer && <WalletCard />}

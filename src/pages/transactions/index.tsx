@@ -29,7 +29,7 @@ const Transactions: NextPageWithLayout = () => {
         <h2 className="font-bold ff-bold text-2xl mb-3">Transactions</h2>
         <TransactionsTabs />
 
-        <div className="w-full max-w-7xl mt-3">
+        <div className="w-full mt-3">
           {tab === 'sales' && <InvoiceContainer />}
           {tab === 'wallet' && <WalletContainer />}
         </div>

@@ -4,7 +4,8 @@ import { Switch } from '@headlessui/react';
 type Props = {
   label?: string;
   value?: boolean;
-  onChange?: React.Dispatch<React.SetStateAction<boolean>>;
+   onChange?: (value: boolean) => void;
+
 };
 
 function ToggleInput({ label = '', value = false, onChange = () => {} }: Props) {

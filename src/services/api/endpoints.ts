@@ -18,6 +18,7 @@ const endpoints: any = {
   wallet: `${prefix}/wallet`,
   invitation: `${prefix}/invitation`,
   inventory: `${prefix}/inventory`,
+  customers: `${prefix}/customers`,
   otp: `${prefix}/otp`
 };
 

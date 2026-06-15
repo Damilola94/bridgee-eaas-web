@@ -23,6 +23,7 @@ export type InvoiceFormProps = {
 
 export type OrderListItemProps = {
   id?: string;
+  inventoryItemId?: string;
   name?: string;
   amount?: string | number;
   quantity?: string | number;

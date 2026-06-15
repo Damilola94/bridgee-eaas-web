@@ -213,7 +213,8 @@ function AllInventoryList({ isDashboard = false }) {
                 <th className="px-3 py-4">Category</th>
                 <th className="px-3 py-4">Amount Per Unit</th>
                 <th className="px-3 py-4">Total Amount</th>
-                <th className="px-3 py-4">Stock</th>
+                <th className="px-3 py-4">Opening Quantity</th>
+                <th className="px-3 py-4">Current Quantity</th>
                 <th className="px-3 py-4">Status</th>
                 <th className="px-3 py-4">Date Added</th>
                 <th className="px-3 py-4 text-right pr-6">Action</th>
@@ -303,7 +304,11 @@ function AllInventoryList({ isDashboard = false }) {
                         </td>
 
                         <td className="px-3 py-4 text-sm text-textColor">
-                          {item?.stock ?? "—"}
+                          {item?.openingQuantity ?? "—"}
+                        </td>
+
+ <td className="px-3 py-4 text-sm text-textColor">
+                          {item?.currentQuantity ?? "—"}
                         </td>
 
                         <td className="px-3 py-4">
@@ -386,7 +391,6 @@ function AllInventoryList({ isDashboard = false }) {
         </div>
       </div>
 
-      {/* ── Modals ── */}
       <AddItemChoiceModal
         isOpen={showChoice}
         onClose={() => setShowChoice(false)}
@@ -400,7 +404,6 @@ function AllInventoryList({ isDashboard = false }) {
         }}
       />
 
-      {/* Add */}
       <AddSingleItemModal
         isOpen={showSingle}
         onClose={() => setShowSingle(false)}
@@ -411,7 +414,6 @@ function AllInventoryList({ isDashboard = false }) {
         sellerId={cookie?.data?.userId ?? ""}
       />
 
-      {/* Edit — reuses the same modal, editItem drives PUT mode */}
       <AddSingleItemModal
         isOpen={!!editTarget}
         onClose={() => setEditTarget(null)}
