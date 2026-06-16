@@ -15,7 +15,6 @@ import Select, { StylesConfig } from "react-select";
 
 import { useAccountsContext } from "../../../context/Accounts";
 
-
 import { OrderListItemProps } from "../../../types/invoice";
 
 import NoData from "../../common/NoData";
@@ -716,7 +715,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     onSuccess: (res: any) => {
       notification({
         title: "Saved",
-        message: res?.message || "Your order has been saved for later.",
+        message: "Your order has been saved for later",
         type: "success",
       });
     },

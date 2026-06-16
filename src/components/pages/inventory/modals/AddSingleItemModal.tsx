@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { MdOutlineUploadFile } from "react-icons/md";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import Modal from "../../../common/Modal";
 import Loading from "../../../common/Loading";
@@ -14,22 +14,17 @@ import notification from "../../../../utilities/notification";
 
 import TrashIcon from "../../../../assets/svgs/trash-gray.svg";
 
-const CATEGORY_OPTIONS = [
-  { label: "Fashion", value: "Fashion" },
-  { label: "Electronics", value: "Electronics" },
-  { label: "Food And Beverages", value: "FoodAndBeverages" },
-  { label: "Health And Beauty", value: "HealthAndBeauty" },
-  { label: "Home And Living", value: "HomeAndLiving" },
-  { label: "Books And Stationery", value: "BooksAndStationery" },
-  { label: "Sports And Fitness", value: "SportsAndFitness" },
-  { label: "Automobiles & Parts", value: "AutomobilesAndParts" },
-  { label: "Service And Digital", value: "ServiceAndDigital" },
-  { label: "Other", value: "Other" },
-];
+type CategoryOption = {
+  label: string;
+  value: string;
+  isSystem: boolean;
+  id: string;
+};
 
 type AddItemForm = {
   name?: string;
-  category?: { label: string; value: string };
+  category?: CategoryOption;
+  customCategoryName?: string;
   amountPerUnit?: string;
   stock?: string;
 };
@@ -39,8 +34,22 @@ type Props = {
   onClose: () => void;
   onSuccess: () => void;
   sellerId: string;
-  editItem?: any; 
+  editItem?: any;
 };
+
+const OTHER_OPTION: CategoryOption = {
+  label: "Other",
+  value: "Other",
+  isSystem: true,
+  id: "other",
+};
+
+function formatCategoryLabel(name: string): string {
+  return name
+    .replace(/([A-Z])/g, " $1")
+    .replace(/^And |And$| And /g, " & ")
+    .trim();
+}
 
 export default function AddSingleItemModal({
   isOpen,
@@ -55,13 +64,67 @@ export default function AddSingleItemModal({
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
+  // ── Fetch categories ──────────────────────────────────────────────────────
+  const { data: categoriesData } = useQuery(
+    ["inventory-categories"],
+    () =>
+      handleFetch({
+        service: "wallet-service/api/v1/",
+        endpoint: "inventory/categories",
+        method: "GET",
+        auth: true,
+      }),
+    {
+      staleTime: 5 * 60 * 1000, // 5 min
+      enabled: isOpen,
+    },
+  );
+
+  const categoryOptions: CategoryOption[] = (() => {
+    const raw: Array<{ id: string; name: string; isSystem: boolean }> =
+      categoriesData?.data ?? [];
+
+    const systemOpts = raw
+      .filter((c) => c.isSystem && c.name !== "Other")
+      .map((c) => ({
+        id: c.id,
+        value: c.name,
+        label: formatCategoryLabel(c.name),
+        isSystem: true,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+    const userOpts = raw
+      .filter((c) => !c.isSystem)
+      .map((c) => ({
+        id: c.id,
+        value: c.name,
+        label: `${c.name} (Custom)`,
+        isSystem: false,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+    // const userOpts = raw
+    //   .filter((c) => !c.isSystem)
+    //   .map((c) => ({
+    //     id: c.id,
+    //     value: c.name,
+    //     label: c.name,
+    //     isSystem: false,
+    //   }))
+    //   .sort((a, b) => a.label.localeCompare(b.label));
+
+    return [...systemOpts, ...userOpts, OTHER_OPTION];
+  })();
+
+  const isOtherSelected = form.category?.value === "Other";
+
+  // ── Populate form in edit mode ────────────────────────────────────────────
   useEffect(() => {
     if (editItem) {
       const rawAmount = editItem.amountPerUnit
         ? editItem.amountPerUnit.replace(/[^0-9.]/g, "")
         : "";
 
-      const matchedCategory = CATEGORY_OPTIONS.find(
+      const matchedCategory = categoryOptions.find(
         (o) => o.value === editItem.category,
       );
 
@@ -76,6 +139,7 @@ export default function AddSingleItemModal({
     }
     setUploadedFile(null);
     setUploadProgress(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editItem, isOpen]);
 
   const handleChange = (val: any, type = "input", name = "") => {
@@ -83,7 +147,12 @@ export default function AddSingleItemModal({
       const { value, name: n } = val.target;
       setForm((p) => ({ ...p, [n]: value }));
     } else {
-      setForm((p) => ({ ...p, [name]: val }));
+      setForm((p) => ({
+        ...p,
+        [name]: val,
+        // clear custom name whenever category changes
+        ...(name === "category" ? { customCategoryName: "" } : {}),
+      }));
     }
   };
 
@@ -107,6 +176,22 @@ export default function AddSingleItemModal({
     onClose();
   };
 
+  // ── Create custom category ────────────────────────────────────────────────
+  const createCategoryMutation = useMutation(handleFetch, {
+    onSuccess: (res: any) => {
+      queryClient.invalidateQueries(["inventory-categories"]);
+      return res?.data; // caller reads the returned category
+    },
+    onError: (err: any) => {
+      notification({
+        title: "Error",
+        message: err?.toString() || "Failed to create category.",
+        type: "danger",
+      });
+    },
+  });
+
+  // ── Save item ─────────────────────────────────────────────────────────────
   const mutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
       notification({
@@ -133,7 +218,7 @@ export default function AddSingleItemModal({
     },
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!form.name?.trim()) {
       notification({
         title: "Form Error",
@@ -146,6 +231,14 @@ export default function AddSingleItemModal({
       notification({
         title: "Form Error",
         message: "Category is required.",
+        type: "danger",
+      });
+      return;
+    }
+    if (isOtherSelected && !form.customCategoryName?.trim()) {
+      notification({
+        title: "Form Error",
+        message: "Please enter a category name.",
         type: "danger",
       });
       return;
@@ -166,13 +259,38 @@ export default function AddSingleItemModal({
       });
       return;
     }
+    let resolvedCategoryId = form.category!.id;
+
+    if (isOtherSelected) {
+      const customName = form.customCategoryName!.trim();
+
+      const existingUserCat = (categoriesData?.data ?? []).find(
+        (c: { name: string; isSystem: boolean; id: string }) =>
+          !c.isSystem && c.name.toLowerCase() === customName.toLowerCase(),
+      );
+
+      if (existingUserCat) {
+        resolvedCategoryId = existingUserCat.id;
+      } else {
+        const res = await createCategoryMutation.mutateAsync({
+          service: "wallet-service/api/v1/",
+          endpoint: "inventory/categories",
+          method: "POST",
+          auth: true,
+          body: { sellerId, name: customName },
+        });
+
+        if (!res?.data?.id) return;
+        resolvedCategoryId = res.data.id;
+      }
+    }
 
     const formData = new FormData();
     formData.append("SellerId", sellerId);
-    formData.append("Name", form.name.trim());
-    formData.append("Category", form.category.value);
-    formData.append("AmountPerUnit", form.amountPerUnit);
-    formData.append("Stock", form.stock);
+    formData.append("Name", form.name!.trim());
+    formData.append("CategoryId", resolvedCategoryId); // <-- was "Category"
+    formData.append("AmountPerUnit", form.amountPerUnit!);
+    formData.append("Stock", form.stock!);
     if (uploadedFile) formData.append("Image", uploadedFile);
 
     mutation.mutate({
@@ -185,6 +303,8 @@ export default function AddSingleItemModal({
     });
   };
 
+  const isBusy = mutation.isLoading || createCategoryMutation.isLoading;
+
   return (
     <Modal
       isOpen={isOpen}
@@ -192,11 +312,19 @@ export default function AddSingleItemModal({
       isCenter
       maxWidth="max-w-[500px]"
     >
-      {mutation.isLoading && (
-        <Loading message={isEditMode ? "Updating Item..." : "Adding Item..."} />
+      {isBusy && (
+        <Loading
+          message={
+            createCategoryMutation.isLoading
+              ? "Saving category..."
+              : isEditMode
+                ? "Updating Item..."
+                : "Adding Item..."
+          }
+        />
       )}
 
-      <div className="w-full py-5">
+      <div className="w-full">
         <h1 className="text-textColor ff-bold text-xl mb-1">
           {isEditMode ? "Edit Item" : "Add New Item"}
         </h1>
@@ -212,26 +340,45 @@ export default function AddSingleItemModal({
             required
             value={form.name || ""}
             onChange={handleChange}
-            label="Product/Service Name*"
+            label="Product/Service Name"
             placeholder="i.e Adidas Samba"
             className="w-full"
           />
 
-          <SelectInput
-            label="Category*"
-            required
-            value={form.category}
-            onChange={(val) => handleChange(val, "select", "category")}
-            options={CATEGORY_OPTIONS}
-            placeholder="Select a category"
-            className="w-full"
-          />
+          <div>
+            <SelectInput
+              label="Category"
+              required
+              value={form.category}
+              onChange={(val) => handleChange(val, "select", "category")}
+              options={categoryOptions}
+              placeholder="Select a category"
+              className="w-full"
+            />
+
+            {/* Custom category name input — shown only when "Other" is selected */}
+            {isOtherSelected && (
+              <div className="mt-3">
+                <TextInput
+                  name="customCategoryName"
+                  required
+                  value={form.customCategoryName || ""}
+                  onChange={handleChange}
+                  label="Category Name"
+                  placeholder="e.g. Furniture, Toys, Pet Supplies…"
+                  className="w-full"
+                />
+                <p className="text-xs text-lightText/70 mt-1">
+                  This will be saved and available for future items.
+                </p>
+              </div>
+            )}
+          </div>
 
           {/* Image Upload */}
           <div>
             <p className="text-sm font-medium text-textColor mb-2">Image</p>
 
-            {/* Show existing image in edit mode when no new file selected */}
             {isEditMode &&
               editItem?.imageUrl &&
               !uploadedFile &&
@@ -375,7 +522,7 @@ export default function AddSingleItemModal({
           className="w-full mt-6 text-lg ff-bold !rounded-md mdx2:!rounded-xl"
           paddingY="p-3.5"
           onClick={handleSubmit}
-          disabled={mutation.isLoading}
+          disabled={isBusy}
         >
           {isEditMode ? "Save Changes" : "Add to Inventory"}
         </Button>
@@ -383,3 +530,4 @@ export default function AddSingleItemModal({
     </Modal>
   );
 }
+

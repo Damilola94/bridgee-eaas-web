@@ -168,7 +168,7 @@ function CustomerDetail() {
           </h3>
         </div>
 
-        <div className="flex flex-wrap items-center gap-28">
+        <div className="flex flex-wrap items-center gap-8">
           <div>
             <p className="text-xs text-lightText mb-1">Phone Number</p>
             <p className="text-sm font-medium text-textColor">

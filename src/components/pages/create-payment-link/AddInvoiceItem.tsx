@@ -187,33 +187,33 @@ function AddInvoiceItem({ data, onAdd = () => {}, onClose = () => {} }: Props) {
   };
 
   const addAnotherDraft = () => {
-  const current = drafts[expandedIndex];
+    const current = drafts[expandedIndex];
 
-  if (current) {
-    const errs = validateDraft(current);
+    if (current) {
+      const errs = validateDraft(current);
 
-    if (Object.keys(errs).length > 0) {
-      setDrafts((prev) =>
-        prev.map((d, i) =>
-          i === expandedIndex ? { ...d, _errors: errs } : d,
-        ),
-      );
+      if (Object.keys(errs).length > 0) {
+        setDrafts((prev) =>
+          prev.map((d, i) =>
+            i === expandedIndex ? { ...d, _errors: errs } : d,
+          ),
+        );
 
-      const firstError = Object.values(errs)[0];
+        const firstError = Object.values(errs)[0];
 
-      notification({
-        title: "Incomplete Item",
-        message: String(firstError),
-        type: "danger",
-      });
+        notification({
+          title: "Incomplete Item",
+          message: String(firstError),
+          type: "danger",
+        });
 
-      return;
+        return;
+      }
     }
-  }
 
-  setDrafts((prev) => [...prev, emptyDraft()]);
-  setExpandedIndex(drafts.length);
-};
+    setDrafts((prev) => [...prev, emptyDraft()]);
+    setExpandedIndex(drafts.length);
+  };
 
   const removeDraft = (index: number) => {
     if (drafts.length === 1) {
@@ -231,23 +231,39 @@ function AddInvoiceItem({ data, onAdd = () => {}, onClose = () => {} }: Props) {
 
   const handleSaveItems = () => {
     let hasErrors = false;
+    let firstErrorMessage = "";
+
     const validated = drafts.map((draft) => {
       const errs = validateDraft(draft);
-      if (Object.keys(errs).length > 0) hasErrors = true;
+
+      if (Object.keys(errs).length > 0) {
+        hasErrors = true;
+
+        if (!firstErrorMessage) {
+          firstErrorMessage = Object.values(errs)[0];
+        }
+      }
+
       return { ...draft, _errors: errs };
     });
 
     if (hasErrors) {
       setDrafts(validated);
+
       const firstErrorIndex = validated.findIndex(
         (d) => Object.keys(d._errors).length > 0,
       );
-      if (firstErrorIndex !== -1) setExpandedIndex(firstErrorIndex);
+
+      if (firstErrorIndex !== -1) {
+        setExpandedIndex(firstErrorIndex);
+      }
+
       notification({
         title: "Form Error",
-        message: "Please fill in all required fields",
+        message: firstErrorMessage,
         type: "danger",
       });
+
       return;
     }
 
