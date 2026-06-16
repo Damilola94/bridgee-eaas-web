@@ -107,7 +107,7 @@ export default function PersonalInfo({
 
   const handleSendOtp = () => {
     const email = formData.personalInfo.emailAddress;
-    // const recipientName = `${formData.personalInfo.firstName} ${formData.personalInfo.lastName}`;
+    const recipientName = ``;
 
     sendOtpMutation.mutate({
       service: "identity-service",
@@ -116,7 +116,7 @@ export default function PersonalInfo({
       body: {
         identifier: email,
         purpose: "EmailConfirmation",
-        // recipientName
+        recipientName
       },
     });
   };

@@ -308,7 +308,7 @@ function AllInventoryList({ isDashboard = false }) {
                           {item?.openingQuantity ?? "—"}
                         </td>
 
- <td className="px-3 py-4 text-sm text-textColor">
+                        <td className="px-3 py-4 text-sm text-textColor">
                           {item?.currentQuantity ?? "—"}
                         </td>
 
@@ -468,3 +468,4 @@ function AllInventoryList({ isDashboard = false }) {
 }
 
 export default AllInventoryList;
+

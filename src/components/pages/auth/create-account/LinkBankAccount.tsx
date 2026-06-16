@@ -1,24 +1,20 @@
-/* eslint-disable no-undef */
 import { useState } from "react";
-
 import { useMutation, useQuery } from "react-query";
-
 import Select, { StylesConfig, SingleValue, ActionMeta } from "react-select";
+import { useCookies } from "react-cookie";
+import { useRouter } from "next/router";
 
 import TextInput from "../../../inputs/Text";
 import { OnboardingStepData, RegisterRequest } from "../../../../types/auth";
 import { Bank } from "../../../../types/bank";
-
 import { getAccountName, getBanksList } from "../../../../services/api/bank";
 import notification from "../../../../utilities/notification";
 import Button from "../../../inputs/Button";
-
 import handleFetch from "../../../../services/api/handleFetch";
 
 interface Props {
   formData: OnboardingStepData;
   setFormData: (data: OnboardingStepData) => void;
-  onNextStep?: () => void;
   isSeller?: boolean;
 }
 
@@ -35,37 +31,72 @@ const selectStyles: StylesConfig<BankOptionType, false> = {
     borderRadius: "10px",
     backgroundColor: "#F8F8F8",
     boxShadow: "none",
-    "&:hover": {
-      borderColor: "#CFCFCF"
-    }
-  })
+    "&:hover": { borderColor: "#CFCFCF" },
+  }),
 };
+
+function buildBasePayload(
+  formData: OnboardingStepData,
+  isSeller: boolean,
+): RegisterRequest {
+  return {
+    bvnValidationTicketId: formData.bvnValidationTicketId || "",
+    email: formData.personalInfo.emailAddress,
+    countryCode: "+234",
+    phoneNumber: formData.personalInfo.phoneNumber,
+    businessName: formData.personalInfo.businessName,
+    password: formData.personalInfo.password,
+    otpValidationTicket: formData.otpValidationTicket || "",
+    partnerCode: formData.personalInfo.partnerCode || "",
+    userType: isSeller ? "Seller" : "Buyer",
+  };
+}
 
 export default function LinkBankAccount({
   formData,
   setFormData,
-  onNextStep,
-  isSeller = true
+  isSeller = true,
 }: Props) {
+  const [, setCookie] = useCookies(["data", "form"]);
   const [selectedBank, setSelectedBank] = useState<Bank | null>(null);
+  const router = useRouter();
   const [accountNumber, setAccountNumber] = useState("");
   const [accountName, setAccountName] = useState("");
   const [accountValidated, setAccountValidated] = useState(false);
 
   const { data: bankResponse, isLoading: banksLoading } = useQuery(
     "banks",
-    getBanksList
+    getBanksList,
   );
 
   const banks: Bank[] | undefined = bankResponse?.data.map((apiBank) => ({
     bankCode: apiBank.bankCode,
-    bankName: apiBank.bankName
+    bankName: apiBank.bankName,
   }));
 
   const bankOptions: BankOptionType[] | undefined = banks?.map((bank) => ({
     value: bank.bankCode,
-    label: bank.bankName
+    label: bank.bankName,
   }));
+
+  const registrationMutation = useMutation(handleFetch, {
+    onSuccess: (res: any) => {
+      notification({
+        message: "Account created successfully!",
+        type: "success",
+      });
+
+      setCookie("data", res?.data, { secure: true, sameSite: true });
+      router.push("/dashboard");
+    },
+    onError: (error: any) => {
+      notification({
+        title: "Registration Failed",
+        message: error?.message || "Please try again",
+        type: "danger",
+      });
+    },
+  });
 
   const accountNameMutation = useMutation(getAccountName, {
     onSuccess: (response, variables) => {
@@ -73,19 +104,16 @@ export default function LinkBankAccount({
         const nameResult = response.data;
         setAccountName(nameResult);
         setAccountValidated(true);
-
-        const updatedFormData = {
+        setFormData({
           ...formData,
           bankAccount: {
             ...formData.bankAccount,
             accountNumber: variables.accountNumber,
             bankCode: selectedBank?.bankCode || "",
             bank: selectedBank?.bankName || "",
-            accountName: nameResult
-          }
-        };
-
-        setFormData(updatedFormData);
+            accountName: nameResult,
+          },
+        });
       }
     },
     onError: (error: any) => {
@@ -94,32 +122,13 @@ export default function LinkBankAccount({
       notification({
         title: "Invalid Account",
         message: error?.message || "Account verification failed",
-        type: "danger"
+        type: "danger",
       });
-    }
-  });
-
-  const registrationMutation = useMutation(handleFetch, {
-    onSuccess: () => {
-      notification({
-        message: "Account created successfully!",
-        type: "success"
-      });
-      if (onNextStep) {
-        onNextStep();
-      }
     },
-    onError: (error: any) => {
-      notification({
-        title: "Registration Failed",
-        message: error?.message || "Please try again",
-        type: "danger"
-      });
-    }
   });
 
   const handleAccountNumberChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const value = e.target.value;
 
@@ -131,37 +140,47 @@ export default function LinkBankAccount({
     if (value.length === 10 && selectedBank) {
       accountNameMutation.mutate({
         accountNumber: value,
-        bankCode: selectedBank.bankCode
+        bankCode: selectedBank.bankCode,
       });
     }
 
     setAccountNumber(value);
   };
 
-  const handleRegistration = () => {
-    if (!isFormValid || registrationMutation.isLoading) return;
+  // User filled in bank details → include bank payload
+  const handleRegisterWithBank = () => {
+    if (!accountValidated || registrationMutation.isLoading) return;
 
-    const registrationData: RegisterRequest = {
-      bvnValidationTicketId: formData.bvnValidationTicketId || "",
-      email: formData.personalInfo.emailAddress,
-      countryCode: "+234",
-      phoneNumber: formData.personalInfo.phoneNumber,
-      businessName: formData.personalInfo.businessName,
-      password: formData.personalInfo.password,
-      otpValidationTicket: formData.otpValidationTicket || "",
-      partnerCode: formData.personalInfo.partnerCode || "",
-      userType: isSeller ? "Seller" : "Buyer"
+    const payload: RegisterRequest = {
+      ...buildBasePayload(formData, isSeller),
+      accountDetail: {
+        bankCode: selectedBank?.bankCode || "",
+        accountNumber: formData.bankAccount?.accountNumber || "",
+        accountName: formData.bankAccount?.accountName || "",
+      },
     };
 
     registrationMutation.mutate({
       service: "identity-service",
       endpoint: "/api/v1/users/register",
       method: "POST",
-      body: registrationData
+      body: payload,
     });
   };
 
-  const isFormValid = selectedBank && accountNumber && accountName;
+  const handleSkipAndRegister = () => {
+    if (registrationMutation.isLoading) return;
+
+    registrationMutation.mutate({
+      service: "identity-service",
+      endpoint: "/api/v1/users/register",
+      method: "POST",
+      body: buildBasePayload(formData, isSeller),
+    });
+  };
+
+  const isBankFormValid =
+    selectedBank && accountNumber && accountName && accountValidated;
 
   return (
     <div className="space-y-8 pb-10">
@@ -172,18 +191,18 @@ export default function LinkBankAccount({
             options={bankOptions}
             isLoading={banksLoading}
             placeholder="Search and select a bank"
-            onChange={(newValue: SingleValue<BankOptionType>, actionMeta: ActionMeta<BankOptionType>) => {
-              const bank = banks?.find(
-                (b) => b.bankCode === newValue?.value
-              );
+            onChange={(
+              newValue: SingleValue<BankOptionType>,
+              actionMeta: ActionMeta<BankOptionType>,
+            ) => {
+              const bank = banks?.find((b) => b.bankCode === newValue?.value);
               setSelectedBank(bank || null);
             }}
             styles={selectStyles}
           />
         </div>
-
         <p className="text-xs text-grey">
-          Kindly ensure that your account name match your BVN name
+          Kindly ensure that your account name matches your BVN name
         </p>
       </div>
 
@@ -208,22 +227,25 @@ export default function LinkBankAccount({
         )}
       </div>
 
-      <div className="mt-4">
-        <Button
-          onClick={handleRegistration}
-          disabled={
-            !accountValidated ||
-            accountNameMutation.isLoading ||
-            registrationMutation.isLoading ||
-            !isFormValid
-          }
-          className="w-full h-12 bg-success text-white rounded-lg mt-10"
-        >
-          {registrationMutation.isLoading
-            ? "Creating Account..."
-            : "Create Account"}
-        </Button>
-      </div>
+      <Button
+        onClick={handleRegisterWithBank}
+        disabled={!isBankFormValid || registrationMutation.isLoading}
+        className="w-full h-12 bg-success text-white rounded-lg mt-4"
+      >
+        {registrationMutation.isLoading
+          ? "Creating Account..."
+          : "Create Account"}
+      </Button>
+
+      <button
+        type="button"
+        onClick={handleSkipAndRegister}
+        disabled={registrationMutation.isLoading}
+        className="w-full text-sm text-grey text-center mt-2 hover:underline disabled:opacity-50"
+      >
+        Skip for now
+      </button>
     </div>
   );
 }
+

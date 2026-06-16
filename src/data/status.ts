@@ -7,6 +7,7 @@ export const statusColors = {
   awaitingpayment: '#5521B5',
   bookedshipmentcompleted: '#FE4EDA',
   declined: '#9B1C1C',
+  'Low Stock': '#9B1C1C',
   dispute: '#99154B',
   draft: '#111928',
 

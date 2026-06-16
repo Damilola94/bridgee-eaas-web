@@ -1,18 +1,14 @@
 import React, { useState } from "react";
 import { useMutation } from "react-query";
-
 import AuthCode from "react-auth-code-input";
-
 import Button from "../../../inputs/Button";
 import {
   OnboardingStepData,
   OtpSendResponse,
   OtpVerifyResponse,
-  RegisterRequest,
 } from "../../../../types/auth";
 import handleFetch from "../../../../services/api/handleFetch";
 import notification from "../../../../utilities/notification";
-import Loading from "../../../common/Loading";
 
 interface Props {
   formData: OnboardingStepData;
@@ -29,28 +25,6 @@ export default function EmailVerification({
 }: Props) {
   const [otp, setOtp] = useState("");
 
-  const registrationMutation = useMutation(handleFetch, {
-    onSuccess: () => {
-      notification({
-        message: "Account created successfully!",
-        type: "success",
-      });
-
-      if (onNavigateNext) {
-        onNavigateNext();
-      }
-    },
-    onError: (error: any) => {
-      notification({
-        title: "Registration Failed",
-        message: error?.message || "Please try again",
-        type: "danger",
-      });
-    },
-  });
-
-  const isRegistering = registrationMutation.isLoading;
-
   const verifyMutation = useMutation(handleFetch, {
     onSuccess: (response: OtpVerifyResponse) => {
       notification({
@@ -63,25 +37,9 @@ export default function EmailVerification({
         otpValidationTicket: response.data,
       });
 
-      //Call Registration api after successful email verification
-      const registrationData: RegisterRequest = {
-        bvnValidationTicketId: formData.bvnValidationTicketId || "",
-        email: formData.personalInfo.emailAddress,
-        countryCode: "+234",
-        phoneNumber: formData.personalInfo.phoneNumber,
-        businessName: formData.personalInfo.businessName,
-        password: formData.personalInfo.password,
-        otpValidationTicket: formData.otpValidationTicket || "",
-        partnerCode: formData.personalInfo.partnerCode || "",
-        userType: isSeller ? "Seller" : "Buyer",
-      };
-
-      registrationMutation.mutate({
-        service: "identity-service",
-        endpoint: "/api/v1/users/register",
-        method: "POST",
-        body: registrationData,
-      });
+      if (onNavigateNext) {
+        onNavigateNext();
+      }
     },
     onError: (error: any) => {
       notification({
@@ -108,11 +66,6 @@ export default function EmailVerification({
     },
   });
 
-  const handleValidateToken = (e: React.FormEvent) => {
-    e.preventDefault();
-    handleVerify();
-  };
-
   const handleVerify = () => {
     const email = formData.personalInfo.emailAddress;
     if (!otp.trim()) {
@@ -136,7 +89,6 @@ export default function EmailVerification({
 
   const resendOtp = () => {
     const email = formData.personalInfo.emailAddress;
-    // const recipientName = `${formData.personalInfo.firstName} ${formData.personalInfo.lastName}`;
     resendMutation.mutate({
       service: "identity-service",
       endpoint: "/api/v1/otp/send",
@@ -144,24 +96,18 @@ export default function EmailVerification({
       body: {
         identifier: email,
         purpose: "EmailConfirmation",
-        // recipientName,
+        recipientName: "",
       },
     });
   };
 
-  const { isLoading: resendingOtp } = resendMutation;
-
   return (
     <div className="space-y-6">
-      {isRegistering ? (
-        <Loading message="Creating Account..." />
-      ): (
-       <>     
       <p className="text-[#808080]">
-        A code has been send to your email, proceed to your email to get code
+        A code has been sent to your email, proceed to your email to get the code.
       </p>
 
-      <form onSubmit={handleValidateToken}>
+      <form onSubmit={(e) => { e.preventDefault(); handleVerify(); }}>
         <div className="mb-6">
           <AuthCode
             isPassword
@@ -173,12 +119,12 @@ export default function EmailVerification({
         </div>
 
         <div className="flex gap-x-2 items-center mb-4">
-          <span className="text-sm text-black">{"Didn’t recieve OTP?"}</span>
+          <span className="text-sm text-black">{"Didn't receive OTP?"}</span>
           <button
             type="button"
             onClick={resendOtp}
             className="text-sm text-success cursor-pointer hover:text-purple-700"
-            disabled={resendingOtp}
+            disabled={resendMutation.isLoading}
           >
             Resend
           </button>
@@ -186,14 +132,12 @@ export default function EmailVerification({
 
         <Button
           onClick={handleVerify}
-          disabled={!otp.trim() || verifyMutation.isLoading}
+          disabled={!/^\d{6}$/.test(otp) || verifyMutation.isLoading}
           className="w-full h-12 bg-success text-white rounded-lg mt-10"
         >
           {verifyMutation.isLoading ? "Verifying..." : "Verify Email"}
         </Button>
       </form>
-       </> 
-      )}
     </div>
   );
 }
