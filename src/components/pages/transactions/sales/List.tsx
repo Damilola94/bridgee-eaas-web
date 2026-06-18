@@ -7,52 +7,49 @@ import Image from "next/image";
 import { RxChevronRight } from "react-icons/rx";
 import { debounce } from "lodash";
 import Skeleton from "react-loading-skeleton";
-import { useMutation, useQueryClient } from "react-query";
 
 import useGetQuery from "../../../../hooks/useGetQuery";
 import { formatApiDate } from "../../../../utilities/dateTime";
 import NoData from "../../../common/NoData";
 import TransactionStatus from "../../../common/TransactionStatus";
-import Modal from "../../../common/Modal";
-import Loading from "../../../common/Loading";
-
 import SearchInput from "../../../inputs/Search";
 import Pagination from "../../../common/Pagination";
-import Button from "../../../inputs/Button";
-
 import { PAGE_SIZE } from "../../../../data/constants";
-
 import TransactionFilter from "./Filter";
-import handleFetch from "../../../../services/api/handleFetch";
-import notification from "../../../../utilities/notification";
-
-import EditIcon from '../../../../assets/svgs/edit-gray.svg';
-import TrashIcon from '../../../../assets/svgs/trash-gray.svg';
+import EditIcon from "../../../../assets/svgs/edit-gray.svg";
+import TrashIcon from "../../../../assets/svgs/trash-gray.svg";
+import SendLinkModal from "../modals/SendLinkModal";
+import DeleteOrderModal from "../modals/DeleteOrderModal";
 
 function SalesList({ isDashboard = false }) {
   const [filter, setFilter] = useState<any>(null);
   const [pageNumber, setPageNumber] = useState(0);
   const [searchText, setSearchText] = useState("");
   const [search, setSearch] = useState("");
-  const [deleteTarget, setDeleteTarget] = useState<any>(null);
-
   const router = useRouter();
-  const queryClient = useQueryClient();
+  const [deleteTarget, setDeleteTarget] = useState<any>(null);
+  const [sendTarget, setSendTarget] = useState<any>(null);
 
   const { data, status, error } = useGetQuery({
     service: "wallet-service/api/v1",
     endpoint: "escrows",
     extra: "orders",
-    queryKey: ["escrows-orders", router?.query?.status, pageNumber, search, filter],
+    queryKey: [
+      "escrows-orders",
+      router?.query?.status,
+      pageNumber,
+      search,
+      filter,
+    ],
     pQuery: {
       Status: router?.query?.status === "all" ? null : router?.query?.status,
       start: formatApiDate(filter?.startDate),
       end: formatApiDate(filter?.endDate),
       pageSize: isDashboard ? 5 : PAGE_SIZE,
       pageNumber: pageNumber + 1,
-      SearchKey: search
+      SearchKey: search,
     },
-    enabled: !!router?.query?.status || isDashboard
+    enabled: !!router?.query?.status || isDashboard,
   });
 
   const debouncedSearch = useMemo(() => debounce(setSearch, 1000), [setSearch]);
@@ -61,33 +58,6 @@ function SalesList({ isDashboard = false }) {
     const { value } = e.target;
     setSearchText(value);
     debouncedSearch(value);
-  };
-
-  const deleteMutation = useMutation(handleFetch, {
-    onSuccess: (res: any) => {
-      notification({
-        message: res?.message || "Order deleted successfully",
-        type: "success"
-      });
-      setDeleteTarget(null);
-      queryClient.invalidateQueries(["escrows-orders"]);
-    },
-    onError: (err: any) => {
-      notification({
-        title: "Error",
-        message: err?.toString() || "Failed to delete order. Please try again.",
-        type: "danger"
-      });
-    }
-  });
-
-  const handleDeleteConfirm = () => {
-    if (!deleteTarget) return;
-    deleteMutation.mutate({
-      service: "wallet-service/api/v1",
-      endpoint: `escrows/orders/${deleteTarget.id}`,
-      method: "DELETE"
-    });
   };
 
   return (
@@ -105,7 +75,12 @@ function SalesList({ isDashboard = false }) {
           ) : (
             <div className="w-full max-w-[380px] flex space-x-2">
               <TransactionFilter filter={filter} onChange={setFilter} />
-              <SearchInput value={searchText} onChange={handleSearch} className="w-full max-w-xs" height="h-[35.6px]" />
+              <SearchInput
+                value={searchText}
+                onChange={handleSearch}
+                className="w-full max-w-xs"
+                height="h-[35.6px]"
+              />
             </div>
           )}
         </div>
@@ -155,12 +130,20 @@ function SalesList({ isDashboard = false }) {
                         <tr
                           className="border-t cursor-pointer hover:bg-primary/5"
                           key={item?.id}
-                          onClick={() => router.push({ pathname: `/transactions/sales-details/${item?.id}` })}
+                          onClick={() =>
+                            router.push({
+                              pathname: `/transactions/sales-details/${item?.id}`,
+                            })
+                          }
                         >
-                          <td className="pl-5 sm:pl-10 pr-3 py-5">{index + 1}</td>
+                          <td className="pl-5 sm:pl-10 pr-3 py-5">
+                            {index + 1}
+                          </td>
                           <td className="px-3 py-5">
                             <div className="flex items-center space-x-3">
-                              <span className="capitalize">{item?.recipientName}</span>
+                              <span className="capitalize">
+                                {item?.recipientName}
+                              </span>
                             </div>
                           </td>
                           <td className="px-3 py-5">{`#${item?.referenceNumber}`}</td>
@@ -172,7 +155,9 @@ function SalesList({ isDashboard = false }) {
                                 type="button"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  router.push(`/buyer/in-app-order/${item.referenceNumber}`);
+                                  router.push(
+                                    `/buyer/in-app-order/${item.referenceNumber}`,
+                                  );
                                 }}
                                 className="text-blue-600 hover:underline"
                               >
@@ -193,19 +178,37 @@ function SalesList({ isDashboard = false }) {
                               >
                                 <button
                                   type="button"
+                                  onClick={() => setSendTarget(item)}
+                                  title="Send Link"
+                                  className="text-xs font-semibold text-white bg-primary hover:bg-primary/90 px-2.5 py-1 rounded-md"
+                                >
+                                  Send
+                                </button>
+                                <button
+                                  type="button"
                                   onClick={() =>
-                                    router.push(`/create-payment-link?id=${item?.id}`)
+                                    router.push(
+                                      `/create-payment-link?id=${item?.id}`,
+                                    )
                                   }
                                   title="Edit"
                                 >
-                                  <Image src={EditIcon} alt="Edit" className="w-6 h-6" />
+                                  <Image
+                                    src={EditIcon}
+                                    alt="Edit"
+                                    className="w-6 h-6"
+                                  />
                                 </button>
                                 <button
                                   type="button"
                                   onClick={() => setDeleteTarget(item)}
                                   title="Delete"
                                 >
-                                  <Image src={TrashIcon} alt="Delete" className="w-6 h-6" />
+                                  <Image
+                                    src={TrashIcon}
+                                    alt="Delete"
+                                    className="w-6 h-6"
+                                  />
                                 </button>
                               </div>
                             ) : (
@@ -246,49 +249,11 @@ function SalesList({ isDashboard = false }) {
           </table>
         </div>
       </div>
-
-      <Modal
-        isOpen={!!deleteTarget}
-        onClose={() => !deleteMutation.isLoading && setDeleteTarget(null)}
-        maxWidth="max-w-[400px]"
-      >
-        {deleteMutation.isLoading && <Loading message="Deleting Order..." />}
-
-        <div className="w-full py-5">
-          <div className="mb-7">
-            <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
-              <Image src={TrashIcon} alt="Delete" className="w-6 h-6" />
-            </div>
-            <h1 className="w-full text-textColor ff-bold text-xl mb-2">Delete Order</h1>
-            <p className="text-sm text-lightText">
-              Are you sure you want to delete order{" "}
-              <span className="font-semibold text-textColor">
-                #{deleteTarget?.referenceNumber}
-              </span>
-              ? This action cannot be undone.
-            </p>
-          </div>
-
-          <div className="flex gap-3">
-            <Button
-              onClick={() => setDeleteTarget(null)}
-              disabled={deleteMutation.isLoading}
-              className="w-full text-lg ff-bold !rounded-md mdx2:!rounded-xl bg-transparent border border-grey !text-greyDark"
-              paddingY="p-3.5"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleDeleteConfirm}
-              disabled={deleteMutation.isLoading}
-              className="w-full text-lg ff-bold !rounded-md mdx2:!rounded-xl bg-red-500 hover:bg-red-600 text-white"
-              paddingY="p-3.5"
-            >
-              {deleteMutation.isLoading ? "Deleting..." : "Delete"}
-            </Button>
-          </div>
-        </div>
-      </Modal>
+      <SendLinkModal target={sendTarget} onClose={() => setSendTarget(null)} />
+      <DeleteOrderModal
+        target={deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+      />
     </>
   );
 }

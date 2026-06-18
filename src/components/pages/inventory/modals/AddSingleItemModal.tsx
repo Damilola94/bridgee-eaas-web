@@ -29,12 +29,14 @@ type AddItemForm = {
   stock?: string;
 };
 
+// 1. Add forceAddMode to Props type
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
   sellerId: string;
   editItem?: any;
+  forceAddMode?: boolean; // ← add this
 };
 
 const OTHER_OPTION: CategoryOption = {
@@ -57,14 +59,15 @@ export default function AddSingleItemModal({
   onSuccess,
   sellerId,
   editItem,
+    forceAddMode = false, 
+
 }: Props) {
-  const isEditMode = !!editItem;
+    const isEditMode = !!editItem && !forceAddMode; 
   const queryClient = useQueryClient();
   const [form, setForm] = useState<AddItemForm>({});
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
-  // ── Fetch categories ──────────────────────────────────────────────────────
   const { data: categoriesData } = useQuery(
     ["inventory-categories"],
     () =>
@@ -102,45 +105,41 @@ export default function AddSingleItemModal({
         isSystem: false,
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
-    // const userOpts = raw
-    //   .filter((c) => !c.isSystem)
-    //   .map((c) => ({
-    //     id: c.id,
-    //     value: c.name,
-    //     label: c.name,
-    //     isSystem: false,
-    //   }))
-    //   .sort((a, b) => a.label.localeCompare(b.label));
-
     return [...systemOpts, ...userOpts, OTHER_OPTION];
   })();
 
   const isOtherSelected = form.category?.value === "Other";
 
-  // ── Populate form in edit mode ────────────────────────────────────────────
-  useEffect(() => {
-    if (editItem) {
-      const rawAmount = editItem.amountPerUnit
-        ? editItem.amountPerUnit.replace(/[^0-9.]/g, "")
-        : "";
+  // 3. Fix the useEffect — when forceAddMode, only seed name + amountPerUnit, skip category/stock
+useEffect(() => {
+  if (editItem) {
+    const rawAmount = editItem.amountPerUnit
+      ? String(editItem.amountPerUnit).replace(/[^0-9.]/g, "")
+      : "";
 
+    if (forceAddMode) {
+      // Prefill only — don't treat as an existing inventory record
+      setForm({
+        name: editItem.name || "",
+        amountPerUnit: rawAmount,
+      });
+    } else {
       const matchedCategory = categoryOptions.find(
         (o) => o.value === editItem.category,
       );
-
       setForm({
         name: editItem.name || "",
         category: matchedCategory,
         amountPerUnit: rawAmount,
         stock: editItem.stock != null ? String(editItem.stock) : "",
       });
-    } else {
-      setForm({});
     }
-    setUploadedFile(null);
-    setUploadProgress(null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editItem, isOpen]);
+  } else {
+    setForm({});
+  }
+  setUploadedFile(null);
+  setUploadProgress(null);
+}, [editItem, isOpen]);
 
   const handleChange = (val: any, type = "input", name = "") => {
     if (type === "input") {
@@ -176,7 +175,6 @@ export default function AddSingleItemModal({
     onClose();
   };
 
-  // ── Create custom category ────────────────────────────────────────────────
   const createCategoryMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
       queryClient.invalidateQueries(["inventory-categories"]);
@@ -191,7 +189,6 @@ export default function AddSingleItemModal({
     },
   });
 
-  // ── Save item ─────────────────────────────────────────────────────────────
   const mutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
       notification({
@@ -288,7 +285,7 @@ export default function AddSingleItemModal({
     const formData = new FormData();
     formData.append("SellerId", sellerId);
     formData.append("Name", form.name!.trim());
-    formData.append("CategoryId", resolvedCategoryId); // <-- was "Category"
+    formData.append("CategoryId", resolvedCategoryId); 
     formData.append("AmountPerUnit", form.amountPerUnit!);
     formData.append("Stock", form.stock!);
     if (uploadedFile) formData.append("Image", uploadedFile);
@@ -325,14 +322,16 @@ export default function AddSingleItemModal({
       )}
 
       <div className="w-full">
-        <h1 className="text-textColor ff-bold text-xl mb-1">
-          {isEditMode ? "Edit Item" : "Add New Item"}
-        </h1>
-        <p className="text-sm text-lightText mb-6">
-          {isEditMode
-            ? "Update the details below"
-            : "Enter your details to add"}
-        </p>
+<h1 className="text-textColor ff-bold text-xl mb-1">
+  {isEditMode ? "Edit Item" : forceAddMode ? "Add to Inventory" : "Add New Item"}
+</h1>
+<p className="text-sm text-lightText mb-6">
+  {isEditMode
+    ? "Update the details below"
+    : forceAddMode
+      ? "Review the pre-filled details and complete the remaining fields"
+      : "Enter your details to add"}
+</p>
 
         <div className="space-y-4">
           <TextInput
@@ -356,7 +355,6 @@ export default function AddSingleItemModal({
               className="w-full"
             />
 
-            {/* Custom category name input — shown only when "Other" is selected */}
             {isOtherSelected && (
               <div className="mt-3">
                 <TextInput
@@ -375,7 +373,6 @@ export default function AddSingleItemModal({
             )}
           </div>
 
-          {/* Image Upload */}
           <div>
             <p className="text-sm font-medium text-textColor mb-2">Image</p>
 

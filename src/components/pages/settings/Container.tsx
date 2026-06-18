@@ -27,7 +27,6 @@ function SettingsContainer() {
 
   const isBuyer = cookie?.data?.activeRole === 'Buyer';
 
-  // Filter options by role
   const filteredOptions = useMemo(() => {
     if (isBuyer) {
       return options.filter(option => option.tab !== 'business-details');

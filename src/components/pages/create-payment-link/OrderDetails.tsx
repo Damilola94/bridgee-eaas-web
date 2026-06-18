@@ -57,10 +57,15 @@ import AddInvoiceItem from "./AddInvoiceItem";
 
 import SelectPackageSizeModal from "./SelectPackageSizeModal";
 import ShippingRatesModal, { RatesData } from "./ShippingRatesModal";
+import { useRouter } from "next/router";
 
 import { LocationSuggestionModal } from "./CurrentLocationModal";
 import handleFetch from "../../../services/api/handleFetch";
 import { useMutation } from "react-query";
+import useGetQuery from "../../../hooks/useGetQuery";
+
+import { useFormDraft } from "../../../hooks/useFormDraft";
+import ResumeDraftModal from "./ResumeDraftModal";
 
 interface SelectAddressOption {
   label: string;
@@ -83,7 +88,8 @@ const selectStyles: StylesConfig<any, false> = {
 
 function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const { accounts } = useAccountsContext();
-
+  const router = useRouter();
+  const editId = router.query.id as string | undefined;
   const { form, setForm } = useCreateInvoiceContext();
   const [show, setShow] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<OrderListItemProps>();
@@ -143,6 +149,9 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
   const [pickupSelectValue, setPickupSelectValue] =
     useState<SelectAddressOption | null>(null);
 
+  const [showResumeDraftModal, setShowResumeDraftModal] = useState(false);
+  const [pendingDraft, setPendingDraft] = useState<any>(null);
+
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
@@ -171,6 +180,96 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
 
     fetchInitialData();
   }, []);
+
+  const { data: draftData } = useGetQuery({
+    service: "wallet-service/api/v1/",
+    endpoint: `escrows/orders/${editId}`,
+    queryKey: ["escrow-order-draft", editId],
+    enabled: !!editId,
+  });
+
+  useEffect(() => {
+    if (!draftData?.data || !editId) return;
+
+    const d = draftData.data;
+
+    setForm((prev) => ({
+      ...prev,
+      description: d.description || "",
+      recipientDetails: {
+        recipientName: d.recipientName || "",
+        email: d.recipientEmail || "",
+        phoneNumber: d.recipientPhone || "",
+        address: d.recipientAddress || "",
+      },
+      isDeliveryOnUs: d.buyerPaysEscrowFee ?? prev.isDeliveryOnUs,
+      escrowItems:
+        d.items?.map((item: any, index: number) => {
+          const parseAmount = (val: string | number) =>
+            typeof val === "string"
+              ? parseFloat(val.replace(/[^0-9.]/g, "")) || 0
+              : Number(val) || 0;
+
+          const quantity = Number(item.quantity) || 0;
+          const unitPrice = parseAmount(item.unitPrice);
+          const total = parseAmount(item.total);
+
+          return {
+            id: String(index + 1),
+            name: item.name || "",
+            quantity,
+            amount: unitPrice,
+            total: total || quantity * unitPrice,
+            weight: item.weightKg || 0,
+          };
+        }) || [],
+    }));
+  }, [draftData?.data, editId]);
+
+  const parseAmount = (val: string | number) =>
+    typeof val === "string"
+      ? parseFloat(val.replace(/[^0-9.]/g, "")) || 0
+      : Number(val) || 0;
+
+  const applyDraft = useCallback(
+    (d: any) => {
+      setForm((prev) => ({
+        ...prev,
+        description: d.description || "",
+        recipientDetails: d.recipientDetails || prev.recipientDetails,
+        isDeliveryOnUs: d.isDeliveryOnUs ?? prev.isDeliveryOnUs,
+        categoryId: d.categoryId || prev.categoryId,
+        selectedCourier: d.selectedCourier || prev.selectedCourier,
+        escrowItems:
+          d.escrowItems?.map((item: any, index: number) => {
+            const quantity = Number(item.quantity) || 0;
+            const unitPrice = parseAmount(item.amount ?? item.unitPrice);
+            const total = parseAmount(item.total);
+            return {
+              id: item.id || String(index + 1),
+              name: item.name || "",
+              quantity,
+              amount: unitPrice,
+              total: total || quantity * unitPrice,
+              weight: item.weight || item.weightKg || 0,
+            };
+          }) || [],
+      }));
+    },
+    [setForm],
+  );
+
+ const { deleteDraft } = useFormDraft(
+  editId ? null : form,
+  (draft: any) => {
+    if (editId) return;
+    setPendingDraft(draft);
+    setShowResumeDraftModal(true);
+  },
+  (hasDraft: any) => {
+    if (!hasDraft) setShowResumeDraftModal(false);
+  },
+);
 
   useEffect(() => {
     handleChange(true, "toggle", "isDeliveryOnUs");
@@ -701,6 +800,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
       notification({ title: "Form Error", message: error, type: "danger" });
       return;
     }
+    deleteDraft();
     onNext();
   };
 
@@ -787,6 +887,7 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
     }
 
     const payload = {
+      isSaveAsDraft: true,
       recipient: {
         name: form?.recipientDetails?.recipientName || "",
         email: form?.recipientDetails?.email || "",
@@ -1373,17 +1474,6 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
         </div>
       )}
 
-      {/* <div className="w-full mb-3 mt-8">
-        <Button
-          paddingY="py-3"
-          className="w-full"
-          disabled={!!validateForm()}
-          onClick={handleSubmit}
-        >
-          Next: Invoice Summary
-        </Button>
-      </div> */}
-
       <div className="w-full mb-3 mt-8 space-y-3">
         <Button
           paddingY="py-3"
@@ -1402,7 +1492,9 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
           disabled={saveForLaterMutation.isLoading || !validateSaveForLater()}
           onClick={handleSaveForLater}
         >
-          {saveForLaterMutation.isLoading ? "Saving..." : "Save for Later"}
+          {uploadMutation.isLoading || saveForLaterMutation.isLoading
+            ? "Saving..."
+            : "Save for Later"}
         </Button>
       </div>
 
@@ -1413,6 +1505,21 @@ function OrderDetails({ onNext = () => {} }: { onNext?: () => void }) {
           onClose={() => setShow(false)}
         />
       )}
+
+      {showResumeDraftModal && pendingDraft && (
+  <ResumeDraftModal
+    onResume={() => {
+      applyDraft(pendingDraft);
+      setPendingDraft(null);
+      setShowResumeDraftModal(false);
+    }}
+    onDiscard={() => {
+      deleteDraft();
+      setPendingDraft(null);
+      setShowResumeDraftModal(false);
+    }}
+  />
+)}
 
       <SelectPackageSizeModal
         isOpen={isPackageSizeModalOpen}

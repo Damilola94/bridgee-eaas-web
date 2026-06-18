@@ -1,13 +1,13 @@
 /* eslint-disable no-nested-ternary */
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useMutation } from "react-query";
 import Skeleton from "react-loading-skeleton";
 
-import DefaultLogo from "../../../assets/images/business-logo.png";
+import DefaultLogo from "../../../assets/images/bridge-logo.svg";
 
 import Button from "../../inputs/Button";
 import Loading from "../../common/Loading";
@@ -18,12 +18,19 @@ import { formatCurrency } from "../../../utilities/general";
 import notification from "../../../utilities/notification";
 import handleFetch from "../../../services/api/handleFetch";
 import useGetQuery from "../../../hooks/useGetQuery";
+// Add import
+import AddToInventoryModal from "./AddToInventoryModal";
+
+// Add state inside the component
 
 function InvoiceSummary() {
   const router = useRouter();
   const { form } = useCreateInvoiceContext();
   const { accounts } = useAccountsContext();
   const { identity } = accounts || {};
+  const [inventoryPromptItems, setInventoryPromptItems] = useState<
+    typeof form.escrowItems
+  >([]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -52,11 +59,20 @@ function InvoiceSummary() {
 
   const escrowMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
-      router.push("/dashboard");
       notification({
         message: res?.message || "You have successfully created an invoice",
         type: "success",
       });
+
+      const nonInventoryItems = (form?.escrowItems || []).filter(
+        (item) => !item.inventoryItemId,
+      );
+
+      if (nonInventoryItems.length > 0) {
+        setInventoryPromptItems(nonInventoryItems);
+      } else {
+        router.push("/dashboard");
+      }
     },
     onError: (err: any) => {
       notification({
@@ -108,6 +124,7 @@ function InvoiceSummary() {
         phoneNumber: form?.recipientDetails?.phoneNumber || "",
         address: form?.recipientDetails?.address || "Not by Bridgee",
       },
+      isSaveAsDraft: false,
       photoUrls: photoUrls,
       buyerPaysEscrowFee: form?.isDeliveryOnUs || false,
       description: form?.description || "",
@@ -254,8 +271,19 @@ function InvoiceSummary() {
           </Button>
         </div>
       </div>
+
+      {inventoryPromptItems && inventoryPromptItems.length > 0 && (
+        <AddToInventoryModal
+          items={inventoryPromptItems}
+          onClose={() => {
+            setInventoryPromptItems([]);
+            router.push("/dashboard");
+          }}
+        />
+      )}
     </>
   );
 }
 
 export default InvoiceSummary;
+

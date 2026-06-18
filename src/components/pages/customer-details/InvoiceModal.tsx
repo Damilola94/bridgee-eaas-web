@@ -4,7 +4,7 @@ import { type FC } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-import DefaultLogo from "../../../assets/images/business-logo.png";
+import DefaultLogo from "../../../assets/images/bridge-logo.svg";
 import { useAccountsContext } from "../../../context/Accounts";
 
 import StatusBadge from "./StatusBadge";
@@ -59,7 +59,7 @@ const InvoiceModal: FC<InvoiceModalProps> = ({
   const hasItems = Array.isArray(order.items) && order.items.length > 0;
 
   const handleReuseInvoice = () => {
-    router.push(`/create-payment-link?reuse=${order.id}`);
+    router.push(`/create-payment-link?id=${order.id}`);
   };
 
   return (
