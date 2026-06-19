@@ -59,10 +59,9 @@ export default function AddSingleItemModal({
   onSuccess,
   sellerId,
   editItem,
-    forceAddMode = false, 
-
+  forceAddMode = false,
 }: Props) {
-    const isEditMode = !!editItem && !forceAddMode; 
+  const isEditMode = !!editItem && !forceAddMode;
   const queryClient = useQueryClient();
   const [form, setForm] = useState<AddItemForm>({});
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
@@ -111,35 +110,35 @@ export default function AddSingleItemModal({
   const isOtherSelected = form.category?.value === "Other";
 
   // 3. Fix the useEffect — when forceAddMode, only seed name + amountPerUnit, skip category/stock
-useEffect(() => {
-  if (editItem) {
-    const rawAmount = editItem.amountPerUnit
-      ? String(editItem.amountPerUnit).replace(/[^0-9.]/g, "")
-      : "";
+  useEffect(() => {
+    if (editItem) {
+      const rawAmount = editItem.amountPerUnit
+        ? String(editItem.amountPerUnit).replace(/[^0-9.]/g, "")
+        : "";
 
-    if (forceAddMode) {
-      // Prefill only — don't treat as an existing inventory record
-      setForm({
-        name: editItem.name || "",
-        amountPerUnit: rawAmount,
-      });
+      if (forceAddMode) {
+        // Prefill only — don't treat as an existing inventory record
+        setForm({
+          name: editItem.name || "",
+          amountPerUnit: rawAmount,
+        });
+      } else {
+        const matchedCategory = categoryOptions.find(
+          (o) => o.value === editItem.category,
+        );
+        setForm({
+          name: editItem.name || "",
+          category: matchedCategory,
+          amountPerUnit: rawAmount,
+          stock: editItem.stock != null ? String(editItem.stock) : "",
+        });
+      }
     } else {
-      const matchedCategory = categoryOptions.find(
-        (o) => o.value === editItem.category,
-      );
-      setForm({
-        name: editItem.name || "",
-        category: matchedCategory,
-        amountPerUnit: rawAmount,
-        stock: editItem.stock != null ? String(editItem.stock) : "",
-      });
+      setForm({});
     }
-  } else {
-    setForm({});
-  }
-  setUploadedFile(null);
-  setUploadProgress(null);
-}, [editItem, isOpen]);
+    setUploadedFile(null);
+    setUploadProgress(null);
+  }, [editItem, isOpen]);
 
   const handleChange = (val: any, type = "input", name = "") => {
     if (type === "input") {
@@ -285,7 +284,7 @@ useEffect(() => {
     const formData = new FormData();
     formData.append("SellerId", sellerId);
     formData.append("Name", form.name!.trim());
-    formData.append("CategoryId", resolvedCategoryId); 
+    formData.append("CategoryId", resolvedCategoryId);
     formData.append("AmountPerUnit", form.amountPerUnit!);
     formData.append("Stock", form.stock!);
     if (uploadedFile) formData.append("Image", uploadedFile);
@@ -322,16 +321,20 @@ useEffect(() => {
       )}
 
       <div className="w-full">
-<h1 className="text-textColor ff-bold text-xl mb-1">
-  {isEditMode ? "Edit Item" : forceAddMode ? "Add to Inventory" : "Add New Item"}
-</h1>
-<p className="text-sm text-lightText mb-6">
-  {isEditMode
-    ? "Update the details below"
-    : forceAddMode
-      ? "Review the pre-filled details and complete the remaining fields"
-      : "Enter your details to add"}
-</p>
+        <h1 className="text-textColor ff-bold text-xl mb-1">
+          {isEditMode
+            ? "Edit Item"
+            : forceAddMode
+              ? "Add to Inventory"
+              : "Add New Item"}
+        </h1>
+        <p className="text-sm text-lightText mb-6">
+          {isEditMode
+            ? "Update the details below"
+            : forceAddMode
+              ? "Review the pre-filled details and complete the remaining fields"
+              : "Enter your details to add"}
+        </p>
 
         <div className="space-y-4">
           <TextInput

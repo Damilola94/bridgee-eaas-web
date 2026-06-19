@@ -44,9 +44,6 @@ function AllInventoryList({ isDashboard = false }) {
   const [search, setSearch] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-
-
-
   const [showChoice, setShowChoice] = useState(false);
   const [showSingle, setShowSingle] = useState(false);
   const [showBulk, setShowBulk] = useState(false);
@@ -58,47 +55,60 @@ function AllInventoryList({ isDashboard = false }) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-
-
   // 1. Replace the existing prefillData + isAddItemOpen block with this:
 
-const { addItem, prefillName, prefillAmount, prefillItems } = router.query;
+  const { addItem, prefillName, prefillAmount, prefillItems } = router.query;
 
-const prefillQueue = useMemo<Array<{ name: string; amountPerUnit: string }>>(() => {
-  if (!addItem) return [];
-  if (prefillItems) {
-    try {
-      return JSON.parse(prefillItems as string);
-    } catch {
-      return [];
+  const prefillQueue = useMemo<
+    Array<{ name: string; amountPerUnit: string }>
+  >(() => {
+    if (!addItem) return [];
+    if (prefillItems) {
+      try {
+        return JSON.parse(prefillItems as string);
+      } catch {
+        return [];
+      }
     }
-  }
-  if (prefillName) {
-    return [{ name: prefillName as string, amountPerUnit: String(prefillAmount || "") }];
-  }
-  return [];
-}, [addItem, prefillName, prefillAmount, prefillItems]);
+    if (prefillName) {
+      return [
+        {
+          name: prefillName as string,
+          amountPerUnit: String(prefillAmount || ""),
+        },
+      ];
+    }
+    return [];
+  }, [addItem, prefillName, prefillAmount, prefillItems]);
 
-const [prefillIndex, setPrefillIndex] = useState(0);
-const [isAddItemOpen, setIsAddItemOpen] = useState(prefillQueue.length > 0);
+  const [prefillIndex, setPrefillIndex] = useState(0);
+  const [isAddItemOpen, setIsAddItemOpen] = useState(prefillQueue.length > 0);
 
-const currentPrefill = prefillQueue[prefillIndex] ?? null;
+  const currentPrefill = prefillQueue[prefillIndex] ?? null;
 
-const handlePrefillSuccess = () => {
-  const next = prefillIndex + 1;
-  if (next < prefillQueue.length) {
-    // More items to add — advance the queue
-    setPrefillIndex(next);
-  } else {
-    // Done — clean up
-    setIsAddItemOpen(false);
-    setPrefillIndex(0);
-    // Strip prefill params from URL without full navigation
-    const { addItem: _, prefillName: __, prefillAmount: ___, prefillItems: ____, ...rest } = router.query;
-    router.replace({ pathname: router.pathname, query: rest }, undefined, { shallow: true });
-    setShowAddSuccess(true);
-  }
-};
+  const handlePrefillSuccess = () => {
+    const next = prefillIndex + 1;
+    if (next < prefillQueue.length) {
+      // More items to add — advance the queue
+      setPrefillIndex(next);
+    } else {
+      // Done — clean up
+      setIsAddItemOpen(false);
+      setPrefillIndex(0);
+      // Strip prefill params from URL without full navigation
+      const {
+        addItem: _,
+        prefillName: __,
+        prefillAmount: ___,
+        prefillItems: ____,
+        ...rest
+      } = router.query;
+      router.replace({ pathname: router.pathname, query: rest }, undefined, {
+        shallow: true,
+      });
+      setShowAddSuccess(true);
+    }
+  };
 
   const { data, status, error } = useGetQuery({
     service: "wallet-service/api/v1",
@@ -460,22 +470,29 @@ const handlePrefillSuccess = () => {
         sellerId={cookie?.data?.userId ?? ""}
       />
 
-      // 2. Add this new AddSingleItemModal instance alongside the existing ones
-// (keep all the existing modals untouched, just add this one)
-
-<AddSingleItemModal
-  isOpen={isAddItemOpen && !!currentPrefill}
-  onClose={() => {
-    setIsAddItemOpen(false);
-    setPrefillIndex(0);
-    const { addItem: _, prefillName: __, prefillAmount: ___, prefillItems: ____, ...rest } = router.query;
-    router.replace({ pathname: router.pathname, query: rest }, undefined, { shallow: true });
-  }}
-  onSuccess={handlePrefillSuccess}
-  sellerId={cookie?.data?.userId ?? ""}
-  editItem={currentPrefill}
-  forceAddMode
-/>
+      <AddSingleItemModal
+        isOpen={isAddItemOpen && !!currentPrefill}
+        onClose={() => {
+          setIsAddItemOpen(false);
+          setPrefillIndex(0);
+          const {
+            addItem: _,
+            prefillName: __,
+            prefillAmount: ___,
+            prefillItems: ____,
+            ...rest
+          } = router.query;
+          router.replace(
+            { pathname: router.pathname, query: rest },
+            undefined,
+            { shallow: true },
+          );
+        }}
+        onSuccess={handlePrefillSuccess}
+        sellerId={cookie?.data?.userId ?? ""}
+        editItem={currentPrefill}
+        forceAddMode
+      />
 
       <BulkUploadModal
         isOpen={showBulk}
