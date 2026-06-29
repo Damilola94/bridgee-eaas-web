@@ -100,6 +100,7 @@ function PersonalDetails() {
       service: "identity-service",
       endpoint: "/api/v1/users/verify-bvn",
       method: "POST",
+      auth: true,
       multipart: true,
       body: formDataBody
     });
@@ -158,7 +159,6 @@ function PersonalDetails() {
         </div>
       </div>
 
-      {/* ── Card 2: BVN Verification ── */}
       <div className="border-2 border-lightText/20 rounded-lg p-5">
         <h3 className="font-bold text-lg mb-1">BVN Verification</h3>
         <p className="text-sm text-textColor/50 mb-5">
