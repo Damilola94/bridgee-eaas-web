@@ -71,6 +71,7 @@ function DashboardContainer() {
       body: payload,
     });
   };
+
   return (
     <>
       <h3 className="text-lg mb-5">
@@ -84,7 +85,7 @@ function DashboardContainer() {
       <div className="flex w-[calc(100%+36px)] -m-5">
         <div className="w-full xl:w-[calc(100%-400px)] px-3 pt-3 pb-5">
           <div className="w-full mb-3 space-y-2">
-            {!wallet?.hasPin && <CompleteProfile/>}
+            {!identity?.personalDetail?.isBvnVerified && <CompleteProfile/>}
             {/* {!wallet?.hasPin && <WithdrawalPinBanner />} */}
             {/* {!wallet?.hasWithdrawalBankAccount && <CreateWithdrawalBank />} */}
           </div>
