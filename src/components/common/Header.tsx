@@ -1,36 +1,60 @@
 import React, { useState } from 'react';
-import { BiPlus } from 'react-icons/bi';
+import { BsBell } from 'react-icons/bs';
 
-import Button from '../inputs/Button';
-
-import Notifications from './Notifications';
-import ProfileDropdown from './ProfileDropdown';
 import SendInvite from './SendInvite';
+import AdminProfile from './AdminProfile';
 
-function Header() {
+type HeaderProps = {
+  pageName: string;
+  adminName: string;
+  greetingName: string;
+  avatarInitial: string;
+  hasUnreadNotifications?: boolean;
+};
+
+function Header({
+  pageName,
+  adminName,
+  greetingName,
+  avatarInitial,
+  hasUnreadNotifications,
+}: HeaderProps) {
   const [showInviteModal, setShowInviteModal] = useState(false);
 
   return (
     <>
-      <header className="fixed z-20 w-full h-20 bg-white border-b lg:pl-72">
-        <div className="px-6 w-full h-full flex items-center justify-end !pl-20 lg:!pl-4">
+      <header className="fixed z-20 w-full h-20 bg-white border-b border-primary-500/30 lg:pl-72">
+        <div className="px-6 w-full h-full flex items-center justify-between !pl-20 lg:!pl-6">
+          <h1 className="text-xl font-semibold text-textColor truncate ff-bold">
+            {pageName}
+          </h1>
+
           <div className="flex items-center space-x-5">
-            {process.env.NEXT_PUBLIC_SEND_INVITE === 'true' && (
-              <Button paddingX="px-2" paddingY="pt-1.5 pb-1" className="hidden xs:flex" onClick={() => setShowInviteModal(true)}>
-                <BiPlus className="mr-1 mb-1" />
-                Invite
-              </Button>
-            )}
-            <div className="flex items-start space-x-5 text-textColor mr-5 min-w-max">
-              <Notifications />
-              <ProfileDropdown />
-            </div>
+            
+
+            <button
+              type="button"
+              className="relative w-10 h-10 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center hover:bg-gray-100 shrink-0"
+            >
+              <BsBell className="h-4 w-4 text-gray-500" />
+              {hasUnreadNotifications && (
+                <span className="absolute top-2 right-2.5 w-1.5 h-1.5 rounded-full bg-orange-500" />
+              )}
+            </button>
+
+            <AdminProfile
+              adminName={adminName}
+              greetingName={greetingName}
+              avatarInitial={avatarInitial}
+            />
 
           </div>
         </div>
       </header>
 
-      {showInviteModal && <SendInvite onClose={() => setShowInviteModal(false)} />}
+      {showInviteModal && (
+        <SendInvite onClose={() => setShowInviteModal(false)} />
+      )}
     </>
   );
 }

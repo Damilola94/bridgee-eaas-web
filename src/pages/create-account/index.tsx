@@ -1,196 +1,150 @@
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
+// pages/signup/index.tsx
+import React, { useState } from "react";
+import { useMutation } from "react-query";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import { BadgeCheck } from "lucide-react";
+
+import Button from "../../components/inputs/Button";
+import TextInput from "../../components/inputs/Text";
+import RadioCard from "../../components/inputs/RadioCard";
+import ClickableLogo from "../../components/pages/auth/ClickableLogo";
 import StaticLayout from "../../components/pages/auth/create-account/StaticLayout";
-import Logo from "../../assets/svgs/logos/full-pink.svg";
-import WemaLogoSmall from "../../assets/svgs/wema-logo-small.svg";
-import PersonalInfo from "../../components/pages/auth/create-account/PersonalInfo";
-import EmailVerification from "../../components/pages/auth/create-account/EmailVerification";
-import { OnboardingStepData, UserType } from "../../types/auth";
-import RegisterSelectionModal from "../../components/pages/homepage/modals/RegisterSelectionModal";
-import LinkBankAccount from "../../components/pages/auth/create-account/LinkBankAccount";
+import notification from "../../utilities/notification";
+import handleFetch from "../../services/api/handleFetch";
 
-const stepsConfig = [
-  {
-    id: "personalInfo",
-    description: "Personal Information",
-    Component: PersonalInfo,
-  },
-  {
-    id: "emailVerification",
-    description: "Email Verification",
-    Component: EmailVerification,
-  },
-  {
-    id: "bankAccount",
-    description: "Link Bank Account",
-    Component: LinkBankAccount,
-  },
-];
-
-export default function CreateAccountPage() {
+export default function CreateAccount() {
   const router = useRouter();
-  const userType = router.query.userType as UserType | undefined;
-  const isSeller = userType === "Seller";
+  const [isRegistered, setIsRegistered] = useState(true);
+  const [regNumber, setRegNumber] = useState("");
+  const [companyName, setCompanyName] = useState("");
 
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
-
-  const totalSteps = stepsConfig.length;
-  const currentStepData = stepsConfig[currentStepIndex];
-
-  const [formData, setFormData] = useState<OnboardingStepData>({
-    bvn: "",
-    livenessSelfie: null,
-    personalInfo: {
-      emailAddress: "",
-      phoneNumber: "",
-      businessName: "",
-      password: "",
-      partnerCode: "",
+  const validateMutation = useMutation(handleFetch, {
+    onSuccess: (res: any) => {
+      setCompanyName(res?.data?.companyName || "");
+      notification({
+        title: "Validated",
+        message: "Company registration number validated successfully.",
+        type: "success",
+      });
     },
-    otpValidationTicket: "",
+    onError: (err: any) => {
+      notification({
+        title: "Validation Failed",
+        message:
+          err?.toString() || "Unable to validate this registration number.",
+        type: "danger",
+      });
+    },
   });
 
-  useEffect(() => {
-    if (router.query.ref) {
-      setFormData((prev) => ({
-        ...prev,
-        personalInfo: {
-          ...prev.personalInfo,
-          partnerCode: router.query.ref as string,
-        },
-      }));
+  const handleValidate = () => {
+    if (!regNumber) {
+      notification({
+        title: "Form Error",
+        message: "Please enter your CAC / business registration number",
+        type: "danger",
+      });
+      return;
     }
-  }, [router.query.ref, currentStepIndex]);
-
-  const handleNext = () => {
-    setCurrentStepIndex((prevIndex) => prevIndex + 1);
+    validateMutation.mutate({
+      service: "identity-service/",
+      endpoint: "api/v1/business/validate-cac",
+      extra: "",
+      method: "POST",
+      body: { registrationNumber: regNumber },
+    });
   };
 
-  const handleSelectSeller = () => {
-    router.push(
-      `/create-account?userType=Seller&ref=${router.query.ref || ""}`,
-    );
-  };
-
-  const handleSelectBuyer = () => {
-    router.push(`/create-account?userType=Buyer&ref=${router.query.ref || ""}`);
-  };
-
-  if (!userType) {
-    return (
-      <RegisterSelectionModal
-        isOpen={true}
-        onClose={() => {}}
-        isShowCloseIcon={false}
-        onSelectSeller={handleSelectSeller}
-        onSelectBuyer={handleSelectBuyer}
-      />
-    );
-  }
-
-  const renderStepComponent = () => {
-    switch (currentStepData.id) {
-      case "personalInfo":
-        return (
-          <PersonalInfo
-            formData={formData}
-            setFormData={setFormData}
-            onOtpSentSuccess={handleNext}
-            isSeller={isSeller}
-          />
-        );
-      case "emailVerification":
-        return (
-          <EmailVerification
-            formData={formData}
-            setFormData={setFormData}
-            onNavigateNext={handleNext}
-            isSeller={isSeller}
-          />
-        );
-      case "bankAccount":
-        return (
-          <LinkBankAccount
-            formData={formData}
-            setFormData={setFormData}
-            isSeller={isSeller}
-          />
-        );
-      default:
-        return null;
+  const handleProceed = () => {
+    if (isRegistered && !companyName) {
+      notification({
+        title: "Form Error",
+        message: "Please validate your CAC registration number first",
+        type: "danger",
+      });
+      return;
     }
+    router.push("/signup/company-information");
   };
 
   return (
-    <div className="min-h-screen bg-white lg:flex">
-      <div className="w-full lg:w-1/2 flex justify-center mt-10 lg:mt-20">
-        <div className="w-full max-w-md px-6 py-8">
-          <Link href="/#top">
-            <Image
-              src={Logo}
-              alt="UseBridgee Inc. logo"
-              priority
-              width={120}
-              height={45}
-              className="mb-12"
-            />
-          </Link>
+    <div className="min-h-screen bg-[#F4F5F9] lg:flex">
+      <div className="w-full lg:w-1/2 flex items-center justify-center min-h-screen px-4 py-10">
+        <div className="w-full max-w-md bg-white rounded-3xl shadow-sm px-10 py-12">
+          <ClickableLogo className="mb-10" />
 
-          <h1 className="text-lg lg:text-2xl font-bold text-textColor mb-9">
-            Create an account
+          <h1 className="text-textColor ff-bold text-2xl mb-8">
+            Create an Account
           </h1>
 
-          <div className="mb-8">
-            <div className="text-sm font-medium text-grey mb-2">
-              Step {currentStepIndex + 1} of {totalSteps}
-            </div>
-            <div className="text-base font-semibold text-black mb-4">
-              {currentStepData.description}
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-1">
-              <div
-                className="bg-success h-1 rounded-full"
-                style={{
-                  width: `${
-                    currentStepIndex === 0
-                      ? 20
-                      : ((currentStepIndex + 1) / totalSteps) * 100
-                  }%`,
-                }}
-              />
-            </div>
+          <label className="block text-sm font-medium text-textColor mb-3">
+            Is your company registered?
+          </label>
+          <div className="grid grid-cols-2 gap-3 mb-8">
+            <RadioCard
+              label="Yes, registered"
+              selected={isRegistered}
+              onClick={() => setIsRegistered(true)}
+            />
+            <RadioCard
+              label="Not yet registered"
+              selected={!isRegistered}
+              onClick={() => setIsRegistered(false)}
+            />
           </div>
 
-          <div className="mb-9">{renderStepComponent()}</div>
-
-          {["personalInfo", "emailVerification"].includes(
-            currentStepData.id,
-          ) && (
-            <div className="text-center mt-8">
-              <span className="text-black text-sm font-bold">
-                Already have an account?{" "}
-              </span>
-              <Link className="text-success font-bold text-sm" href={"/login"}>
-                Login here
-              </Link>
+          {isRegistered && (
+            <div className="mb-8">
+              <label className="block text-sm font-medium text-textColor mb-2">
+                CAC / Business registration number
+              </label>
+              <div className="flex gap-3">
+                <TextInput
+                  className="flex-1"
+                  value={regNumber}
+                  onChange={(e) => setRegNumber(e.target.value)}
+                  name="regNumber"
+                  placeholder="e.g RC-1252535"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleValidate}
+                  loading={validateMutation.isLoading}
+                  className="!border-[#A3195B] !text-[#A3195B] whitespace-nowrap"
+                >
+                  Validate
+                </Button>
+              </div>
+              {companyName && (
+                <div className="flex items-center gap-1.5 mt-2 text-sm text-gray-600">
+                  {companyName}
+                  <BadgeCheck size={16} className="text-green-600" />
+                </div>
+              )}
             </div>
           )}
 
-          <section className="flex justify-center">
-            <div className="mx-auto flex items-center gap-x-2 mt-5">
-              <p>Insured by NDIC and powered by</p>
-              <Image
-                src={WemaLogoSmall}
-                alt="Wema logo"
-                width={26}
-                height={26}
-              />
-            </div>
-          </section>
+          <Button
+            className="w-full text-lg ff-bold !rounded-xl !bg-[#A3195B] hover:!bg-[#8a1550]"
+            paddingY="p-3.5"
+            onClick={handleProceed}
+          >
+            Proceed
+          </Button>
+
+          <p className="mt-6 text-center text-sm">
+            Already have an account?&nbsp;
+            <Link href="/login">
+              <span className="text-[#A3195B] cursor-pointer font-medium">
+                Login
+              </span>
+            </Link>
+          </p>
         </div>
       </div>
+
       <StaticLayout />
     </div>
   );

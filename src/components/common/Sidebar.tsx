@@ -6,16 +6,22 @@ import PropTypes from 'prop-types';
 import { useMutation } from 'react-query';
 import { useCookies } from 'react-cookie';
 
-import { IoIosArrowBack, IoIosArrowDown } from 'react-icons/io';
+import {
+  LayoutGrid,
+  Repeat,
+  Wallet,
+  MessageSquareWarning,
+  ClipboardList,
+  Settings as SettingsIcon,
+  LogOut,
+  ChevronDown,
+  ChevronLeft
+} from 'lucide-react';
 import { IoClose } from 'react-icons/io5';
 import { FiMenu } from 'react-icons/fi';
 import { BsDot } from 'react-icons/bs';
 
 import Logo from '../../assets/svgs/logos/full-white.svg';
-import LogoutIcon from '../../assets/svgs/logout.svg';
-import DashboardIcon from '../../assets/svgs/dashboard.svg';
-import SettingsIcon from '../../assets/svgs/settings.svg';
-import DisputeIcon from '../../assets/svgs/dispute.svg';
 
 import menuList from '../../configs/sidebarMenu';
 import useClickOutsideBox from '../../hooks/useClickOutsideBox';
@@ -37,17 +43,9 @@ function Sidebar() {
   const userRole = cookie?.data?.activeRole || cookie?.data?.roles?.[0];
 
   const buyerMenu = [
-    {
-      title: 'Dashboard',
-      link: '/dashboard',
-      icon: DashboardIcon
-    },
-    { title: 'Disputes', link: '/buyer-disputes', icon: DisputeIcon },
-    {
-      title: 'Settings',
-      link: '/settings',
-      icon: SettingsIcon
-    }
+    { title: 'Dashboard', link: '/dashboard', icon: LayoutGrid },
+    { title: 'Disputes', link: '/buyer-disputes', icon: MessageSquareWarning },
+    { title: 'Settings', link: '/settings', icon: SettingsIcon }
   ];
 
   const displayMenu = userRole === 'Buyer' ? buyerMenu : menuList;
@@ -126,7 +124,7 @@ function Sidebar() {
       </div>
 
       <nav
-        className={`z-30 page-sidebar fixed w-72 bg-primary overflow-auto h-screen hide-scroll ${showMenu ? 'show' : ''
+        className={`z-30 page-sidebar fixed w-72 bg-[#1B1660] overflow-auto h-screen hide-scroll ${showMenu ? 'show' : ''
         } shadow-box lg:shadow-none`}
       >
         <div className="fixed cursor-pointer top-5 right-5 lg:hidden">
@@ -137,24 +135,24 @@ function Sidebar() {
         </div>
 
         <div className="sidebar-menu text-white text-sm flex flex-col justify-between h-side-menu px-5 pb-10">
-          <div className="px-6 py-5 h-20">
-            <Image src={Logo} alt="UseBridgee Inc. logo" priority width={120} height={45} />
+          <div className="px-6 py-8 h-20">
+            <Image src={Logo} alt="UseBridgee Inc. logo" priority width={130} height={45} />
           </div>
 
-          <ul className="menu-items pt-5">
+          <ul className="menu-items pt-6 flex-1 space-y-1">
             {displayMenu?.map((item: any) => (
               <MenuItem props={item} toggleMenu={toggleMenu} key={item.title} />
             ))}
-
-            <li
-              className="cursor-pointer"
-              onClick={() => setShowLogoutConfirm(true)}
-              role="presentation"
-            >
-              <Image src={LogoutIcon} alt="logout" width={18} className="w-auto h-auto" />
-              <span className="title ml-2.5 mt-[5px]">Logout</span>
-            </li>
           </ul>
+
+          <li
+            className="relative flex items-center gap-2.5 px-4 py-3 cursor-pointer text-white/90 hover:text-white"
+            onClick={() => setShowLogoutConfirm(true)}
+            role="presentation"
+          >
+            <LogOut size={18} strokeWidth={1.75} />
+            <span className="title">Logout</span>
+          </li>
         </div>
       </nav>
     </div>
@@ -163,54 +161,65 @@ function Sidebar() {
 
 function MenuItem({
   props: {
-    title, href, link, icon, children
+    title, href, link, icon: Icon, children
   },
   toggleMenu
 }: any) {
   const { pathname } = useRouter();
   const [isShowingSub, setIsShowingSub] = useState(false);
 
+  const isActive = pathname?.includes(link);
+
   useEffect(() => {
-    if (!!children && pathname?.includes(link)) {
+    if (!!children && isActive) {
       setIsShowingSub(true);
     }
   }, [pathname, children, link]);
 
   return (
     <div className="relative">
+      {isActive && (
+        <span className="absolute -left-5 top-1/2 -translate-y-1/2 h-8 w-1.5 rounded-r-full bg-[#A3195B]" />
+      )}
+
       {children ? (
         <li
-          className={`${pathname?.includes(link) ? 'bg-primary/10' : ''} justify-between`}
+          className={`flex items-center justify-between gap-2.5 px-4 py-3 rounded-xl cursor-pointer transition-colors ${
+            isActive ? 'bg-white/10' : ''
+          }`}
           onClick={() => setIsShowingSub(!isShowingSub)}
           role="presentation"
         >
-          <span className="flex">
-            <Image src={icon} alt={title} width={18} className="w-auto h-auto" />
-            <span className={children ? 'has-sub-menu pointer' : ''}>
-              <span className="title ml-2.5 mt-[5px]">{"title"}</span>
-            </span>
+          <span className="flex items-center gap-2.5">
+            {Icon && <Icon size={18} strokeWidth={1.75} />}
+            <span className="title font-medium">{title}</span>
           </span>
           {isShowingSub ? (
-            <IoIosArrowDown className="w-5 h-auto mr-2" />
+            <ChevronDown size={16} />
           ) : (
-            <IoIosArrowBack className="w-5 h-auto mr-2" />
+            <ChevronLeft size={16} className="rotate-180" />
           )}
         </li>
       ) : (
         <>
           {href && (
             <a href={href} target="_blank" rel="noreferrer">
-              <li>
-                <Image src={icon} alt={title} width={18} className="w-auto h-auto" />
-                <span className="title ml-2.5 mt-[5px]">{title}</span>
+              <li className="flex items-center gap-2.5 px-4 py-3 rounded-xl">
+                {Icon && <Icon size={18} strokeWidth={1.75} />}
+                <span className="title">{title}</span>
               </li>
             </a>
           )}
           {link && (
             <Link href={link}>
-              <li className={`${pathname?.includes(link) ? 'active' : ''}`} onClick={toggleMenu}>
-                <Image src={icon} alt={title} width={18} className="w-auto h-auto" />
-                <span className="title ml-2.5 mt-[5px]">{title}</span>
+              <li
+                className={`flex items-center gap-3 px-4 py-5 rounded-xl cursor-pointer transition-colors ${
+                  isActive ? 'bg-white/10 font-semibold' : 'text-white/90 hover:text-white'
+                }`}
+                onClick={toggleMenu}
+              >
+                {Icon && <Icon size={18} strokeWidth={1.75} />}
+                <span className="title">{title}</span>
               </li>
             </Link>
           )}

@@ -1,25 +1,22 @@
-import DashboardIcon from "../assets/svgs/dashboard.svg";
-import TransactionsIcon from "../assets/svgs/transactions.svg";
-import DisputeIcon from "../assets/svgs/dispute.svg";
-import InventoryIcon from "../assets/svgs/inventory.svg";
-import CustomerMgtIcon from "../assets/svgs/customer-mgt.svg";
+import {
+  LayoutGrid,
+  Repeat,
+  Wallet,
+  MessageSquareWarning,
+  ClipboardList,
+  Settings
+} from 'lucide-react';
 
-import SettingsIcon from "../assets/svgs/settings.svg";
-
-const menu = [
-  { title: "Dashboard", link: "/dashboard", icon: DashboardIcon },
-  { title: "Transactions", link: "/transactions", icon: TransactionsIcon },
-  { title: "Disputes", link: "/disputes", icon: DisputeIcon },
-  { title: "Inventory", link: "/inventory", icon: InventoryIcon },
-  {
-    title: "Customer Management",
-    link: "/customer-management",
-    icon: CustomerMgtIcon,
-  },
-  { title: "Settings", link: "/settings", icon: SettingsIcon },
+const menuList = [
+  { title: 'Dashboard', link: '/dashboard', icon: LayoutGrid },
+  { title: 'Escrow Transactions', link: '/escrow-transactions', icon: Repeat },
+  { title: 'Wallet Transaction', link: '/wallet-transactions', icon: Wallet },
+  { title: 'Dispute Management', link: '/disputes-management', icon: MessageSquareWarning },
+  { title: 'Reports and Analytics', link: '/reports', icon: ClipboardList },
+  { title: 'Settings', link: '/settings/company-profile', icon: Settings }
 ];
 
-export default menu;
+export default menuList;
 
 /**
  * Sample properties for a menu item

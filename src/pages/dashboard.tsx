@@ -17,7 +17,7 @@ const Home: NextPageWithLayout = () => (
 );
 
 Home.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <Layout pageName="Dashboard">{page}</Layout>;
 };
 
 export default Home;

@@ -4,9 +4,9 @@ import { useCookies } from "react-cookie";
 import { useRouter } from "next/router";
 
 import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
 
 import TextInput from "../../components/inputs/Text";
-
 import Button from "../../components/inputs/Button";
 import Loading from "../../components/common/Loading";
 
@@ -23,6 +23,7 @@ function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const loginMutation = useMutation(handleFetch, {
     onSuccess: (res: LoginResponse) => {
@@ -74,65 +75,85 @@ function Login() {
   const { isLoading, isSuccess } = loginMutation;
 
   return (
-    <div className="min-h-screen bg-white lg:flex">
+    <div className="min-h-screen bg-[#F4F5F9] lg:flex">
       {/* Left side - Form */}
-      <div className="w-full lg:w-1/2 flex justify-center mt-10 lg:mt-20">
-        <form className="w-full max-w-md px-6 py-8" onSubmit={handleLogin}>
+      <div className="w-full lg:w-1/2 flex items-center justify-center min-h-screen px-4 py-10">
+        <form
+          className="w-full max-w-md bg-white rounded-3xl shadow-sm px-10 py-12"
+          onSubmit={handleLogin}
+        >
           {(isLoading || isSuccess) && <Loading />}
 
           <ClickableLogo className="mb-10" />
 
-          <h1 className="w-full text-textColor ff-bold text-xl mb-5">Log in</h1>
+          <h1 className="w-full text-textColor ff-bold text-2xl mb-8">
+            Login
+          </h1>
 
           <div className="w-full">
+            <label className="block text-sm font-medium text-textColor mb-2">
+              Email Address
+            </label>
             <TextInput
-              className="w-full mb-7"
+              className="w-full mb-6"
               onChange={(e) => setEmail(e.target.value)}
               value={email}
               name="email"
               type="email"
-              label="Email Address"
-              placeholder="Email Address"
+              placeholder="Enter Email Address"
             />
 
-            <TextInput
-              className="w-full mb-3"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-              name="password"
-              type="password"
-              label="Password"
-              placeholder="Password"
-            />
+            <label className="block text-sm font-medium text-textColor mb-2">
+              Password
+            </label>
+            <div className="relative mb-3">
+              <TextInput
+                className="w-full"
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+                name="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter Password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
 
-            <p className="mb-7">
+            <p className="mb-7 text-sm">
               Forgot Password?&nbsp;
               <Link href="/reset-password">
-                <span className="text-success cursor-pointer">Reset here</span>
+                <span className="text-[#A3195B] cursor-pointer font-medium">
+                  Reset here
+                </span>
               </Link>
             </p>
 
             <Button
-              className="w-full text-lg ff-bold !rounded-md mdx2:!rounded-xl"
+              className="w-full text-lg ff-bold !rounded-xl !bg-[#A3195B] hover:!bg-[#8a1550]"
               paddingY="p-3.5"
               type="submit"
             >
-              Log in
+              Login
             </Button>
           </div>
 
-          <p className="mt-5 text-center">
-            Don't have an account?&nbsp;
-            <Link href="/">
-              <span className="text-success cursor-pointer">
-                Create an account
+          <p className="mt-6 text-center text-sm">
+            New User?&nbsp;
+            <Link href="/create-account">
+              <span className="text-[#A3195B] cursor-pointer font-medium">
+                Signup
               </span>
             </Link>
           </p>
         </form>
       </div>
 
-      {/* Right side */}
       <StaticLayout />
     </div>
   );

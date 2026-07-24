@@ -21,7 +21,7 @@ async function refreshTokenFn() {
 
     const { data: apiResponse } = response.data;
     if (!apiResponse?.accessToken) {
-      logout();
+      // logout();
     }
 
     // Update cookie with new tokens and other data from response
@@ -36,7 +36,7 @@ async function refreshTokenFn() {
 
     return apiResponse;
   } catch (error) {
-    logout();
+    // logout();
   }
   return null;
 }
