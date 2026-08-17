@@ -48,7 +48,7 @@ function SessionControl({ path }: Props) {
 
   const setSessionTimeout = () => {
     warningTO = setTimeout(warn, WARNING_TIME);
-    // signoutTO = setTimeout(() => logout(path), SIGNOUT_TIME);
+    signoutTO = setTimeout(() => logout(path), SIGNOUT_TIME);
   };
 
   const resetTimeout = () => {

@@ -1,37 +1,35 @@
-// pages/signup/email-verification.tsx
 import React, { useEffect, useState } from "react";
 import { useMutation } from "react-query";
+import { useCookies } from "react-cookie";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
 import AuthCode from "react-auth-code-input";
 
 import Button from "../../components/inputs/Button";
-import Stepper from "./Stepper";
-import notification from "../../utilities/notification";
-import handleFetch from "../../services/api/handleFetch";
-import ClickableLogo from "../../components/pages/auth/ClickableLogo";
-import { useSignupContext } from "../../context/Signupcontext";
 import Loading from "../../components/common/Loading";
 
-const STEPS = [
-  { label: "Company Information" },
-  { label: "Business Contact Information" },
-  { label: "Email Verification" },
-];
+import notification from "../../utilities/notification";
+import handleFetch from "../../services/api/handleFetch";
+
+import ClickableLogo from "../../components/pages/auth/ClickableLogo";
+import StaticLayout from "../../components/pages/auth/StaticLayout";
 
 const RESEND_COOLDOWN_SECONDS = 60;
 
-export default function EmailVerification() {
+function VerifyResetOtp() {
   const router = useRouter();
-  const [otp, setOtp] = useState<string>("");
+  const [cookies, setCookie] = useCookies(["resetPassword"]);
+  const [otp, setOtp] = useState("");
   const [resendCooldown, setResendCooldown] = useState(0);
-  const { data } = useSignupContext();
 
-  const email = data.contactEmail || "";
+  const email = cookies?.resetPassword?.email || "";
   const maskedEmail = email
     ? email.replace(/^(.{4}).+(@.+)$/, "$1*****$2")
-    : "tolu*****@gmail.com";
+    : "";
+
+  useEffect(() => {
+    if (!email) router.replace("/reset-password");
+  }, [email, router]);
 
   useEffect(() => {
     if (resendCooldown <= 0) return;
@@ -42,11 +40,18 @@ export default function EmailVerification() {
   }, [resendCooldown]);
 
   const verifyMutation = useMutation(handleFetch, {
-    onSuccess: () => router.push("/signup/submitted"),
+    onSuccess: () => {
+      setCookie(
+        "resetPassword",
+        { email, otp },
+        { secure: true, sameSite: true },
+      );
+      router.push("/new-password");
+    },
     onError: (err: any) => {
       notification({
         title: "Verification Failed",
-        message: err?.toString() || "Invalid or expired OTP.",
+        message: err?.toString() || "Invalid or expired code.",
         type: "danger",
       });
     },
@@ -55,8 +60,8 @@ export default function EmailVerification() {
   const resendMutation = useMutation(handleFetch, {
     onSuccess: () => {
       notification({
-        title: "OTP Sent",
-        message: `A new OTP has been sent to ${maskedEmail}`,
+        title: "Code Sent",
+        message: `A new code has been sent to ${maskedEmail}`,
         type: "success",
       });
       setResendCooldown(RESEND_COOLDOWN_SECONDS);
@@ -64,7 +69,7 @@ export default function EmailVerification() {
     onError: (err: any) => {
       notification({
         title: "Resend Failed",
-        message: err?.toString() || "Could not resend OTP. Please try again.",
+        message: err?.toString() || "Could not resend code. Please try again.",
         type: "danger",
       });
     },
@@ -74,7 +79,7 @@ export default function EmailVerification() {
     if (otp.length < 6) {
       notification({
         title: "Form Error",
-        message: "Please enter the full 6-digit OTP",
+        message: "Please enter the full 6-digit code",
         type: "danger",
       });
       return;
@@ -82,10 +87,10 @@ export default function EmailVerification() {
 
     verifyMutation.mutate({
       service: "escrow-service/api/v1/",
-      endpoint: "onboarding",
-      extra: "verify-email",
+      endpoint: "auth",
+      extra: "verify-reset-code",
       method: "POST",
-      body: { email: email, otp },
+      body: { email, otp },
     });
   };
 
@@ -94,36 +99,31 @@ export default function EmailVerification() {
 
     resendMutation.mutate({
       service: "escrow-service/api/v1/",
-      endpoint: "onboarding",
-      extra: "resend-otp",
+      endpoint: "auth",
+      extra: "forgot-password",
       method: "POST",
       body: { email },
     });
   };
 
+  const { isLoading, isSuccess } = verifyMutation;
+
   return (
-    <div className="min-h-screen bg-[#F4F5F9] flex items-center justify-center px-4 py-10">
-        {(verifyMutation.isLoading || resendMutation.isLoading) && <Loading />}
-      <div className="w-full max-w-2xl bg-white rounded-3xl shadow-sm">
-        <div className="flex items-center justify-between px-10 py-6 border-b border-gray-100">
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="flex items-center gap-1 text-sm border border-gray-200 rounded-lg px-3 py-1.5"
-          >
-            <ChevronLeft size={16} /> Back
-          </button>
-          <ClickableLogo className="mb-10" /> <div className="w-16" />
-        </div>
+    <div className="min-h-screen bg-[#F4F5F9] lg:flex">
+      <div className="w-full lg:w-1/2 flex items-center justify-center min-h-screen px-4 py-10">
+        <div className="w-full max-w-md bg-white rounded-3xl shadow-sm px-10 py-12">
+          {(isLoading || isSuccess || resendMutation.isLoading) && <Loading />}
 
-        <Stepper steps={STEPS} currentStep={2} />
+          <ClickableLogo className="mb-10" />
 
-        <div className="px-10 py-16 flex flex-col items-center">
-          <p className="text-center text-textColor mb-10 max-w-sm">
-            An OTP has been sent to {maskedEmail} to verify your email address
+          <h1 className="w-full text-textColor ff-bold text-2xl mb-2">
+            Enter Verification Code
+          </h1>
+          <p className="text-sm text-textColor/70 mb-10">
+            A code has been sent to {maskedEmail} to verify it&apos;s you
           </p>
 
-          <div className="mb-12 w-full max-w-lg">
+          <div className="mb-10 w-full">
             <AuthCode
               isPassword
               allowedCharacters="numeric"
@@ -134,12 +134,11 @@ export default function EmailVerification() {
           </div>
 
           <Button
-            className="w-full max-w-lg text-lg ff-bold !rounded-xl !bg-[#A3195B] hover:!bg-[#8a1550]"
+            className="w-full text-lg ff-bold !rounded-xl !bg-[#A3195B] hover:!bg-[#8a1550]"
             paddingY="p-3.5"
             onClick={handleVerify}
-            loading={verifyMutation.isLoading}
           >
-            Verify & Proceed
+            Verify Code
           </Button>
 
           <p className="mt-6 text-center text-sm text-textColor">
@@ -155,21 +154,24 @@ export default function EmailVerification() {
                 disabled={resendMutation.isLoading}
                 className="text-[#A3195B] font-medium disabled:opacity-50"
               >
-                Resend OTP
+                Resend Code
               </button>
             )}
           </p>
 
           <p className="mt-4 text-center text-sm">
-            Already have an account?&nbsp;
             <Link href="/">
               <span className="text-[#A3195B] cursor-pointer font-medium">
-                Login
+                Back to Login
               </span>
             </Link>
           </p>
         </div>
       </div>
+
+      <StaticLayout />
     </div>
   );
 }
+
+export default VerifyResetOtp;

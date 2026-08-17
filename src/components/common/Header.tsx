@@ -9,6 +9,7 @@ type HeaderProps = {
   adminName: string;
   greetingName: string;
   avatarInitial: string;
+  companyImg?: string;
   hasUnreadNotifications?: boolean;
 };
 
@@ -17,6 +18,7 @@ function Header({
   adminName,
   greetingName,
   avatarInitial,
+  companyImg,
   hasUnreadNotifications,
 }: HeaderProps) {
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -46,6 +48,7 @@ function Header({
               adminName={adminName}
               greetingName={greetingName}
               avatarInitial={avatarInitial}
+              companyImg={companyImg}
             />
 
           </div>

@@ -20,9 +20,13 @@ const handleFetch = async ({
   responseType = null
 }: any = {}) => {
   const headers: any = {
-    "Content-Type": multipart ? "multipart/form-data" : "application/json",
     "X-API-KEY": process.env.NEXT_PUBLIC_API_KEY
   };
+
+  if (!multipart) {
+    headers["Content-Type"] = "application/json";
+  }
+
   let url = `${service}${endpoints[endpoint] || endpoint}`;
 
   if (extra) {

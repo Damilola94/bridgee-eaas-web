@@ -6,22 +6,27 @@ import Link from "next/link";
 import { BadgeCheck } from "lucide-react";
 
 import Button from "../../components/inputs/Button";
+import Loading from "../../components/common/Loading";
 import TextInput from "../../components/inputs/Text";
 import RadioCard from "../../components/inputs/RadioCard";
 import ClickableLogo from "../../components/pages/auth/ClickableLogo";
-import StaticLayout from "../../components/pages/auth/create-account/StaticLayout";
+import StaticLayout from "../../components/pages/auth/StaticLayout";
 import notification from "../../utilities/notification";
 import handleFetch from "../../services/api/handleFetch";
+import { useSignupContext } from "../../context/Signupcontext";
 
 export default function CreateAccount() {
   const router = useRouter();
-  const [isRegistered, setIsRegistered] = useState(true);
-  const [regNumber, setRegNumber] = useState("");
-  const [companyName, setCompanyName] = useState("");
+  const { data, updateSignupData } = useSignupContext();
+
+  const [isRegistered, setIsRegistered] = useState(data.isRegistered ?? true);
+  const [regNumber, setRegNumber] = useState(data.cacNumber || "");
+  const [companyName, setCompanyName] = useState(data.companyName || "");
 
   const validateMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
-      setCompanyName(res?.data?.companyName || "");
+      const validatedName = res?.data?.companyName || "";
+      setCompanyName(validatedName);
       notification({
         title: "Validated",
         message: "Company registration number validated successfully.",
@@ -48,11 +53,11 @@ export default function CreateAccount() {
       return;
     }
     validateMutation.mutate({
-      service: "identity-service/",
-      endpoint: "api/v1/business/validate-cac",
+      service: "escrow-service/",
+      endpoint: "api/v1/onboarding/validate-cac",
       extra: "",
       method: "POST",
-      body: { registrationNumber: regNumber },
+      body: { cacNumber: regNumber },
     });
   };
 
@@ -65,6 +70,13 @@ export default function CreateAccount() {
       });
       return;
     }
+
+    updateSignupData({
+      isRegistered,
+      cacNumber: regNumber,
+      companyName,
+    });
+
     router.push("/signup/company-information");
   };
 
@@ -73,6 +85,7 @@ export default function CreateAccount() {
       <div className="w-full lg:w-1/2 flex items-center justify-center min-h-screen px-4 py-10">
         <div className="w-full max-w-md bg-white rounded-3xl shadow-sm px-10 py-12">
           <ClickableLogo className="mb-10" />
+  {validateMutation.isLoading  && <Loading />}
 
           <h1 className="text-textColor ff-bold text-2xl mb-8">
             Create an Account
@@ -106,6 +119,7 @@ export default function CreateAccount() {
                   onChange={(e) => setRegNumber(e.target.value)}
                   name="regNumber"
                   placeholder="e.g RC-1252535"
+                  maxValue={10}
                 />
                 <Button
                   type="button"

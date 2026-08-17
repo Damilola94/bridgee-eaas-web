@@ -1,5 +1,5 @@
 import Image from "next/image";
-import OnboardingImage from "../../../../assets/images/onboarding-image.png"
+import OnboardingImage from "../../../assets/images/onboarding-image.png"
 
 export default function StaticLayout() {
   return (

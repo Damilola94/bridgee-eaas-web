@@ -1,18 +1,19 @@
 // pages/signup/company-information.tsx
 import React, { useState } from "react";
-import { useMutation } from "react-query";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 
 import TextInput from "../../components/inputs/Text";
+import SelectInput, { SelectOptionType } from "../../components/inputs/Select";
 import Button from "../../components/inputs/Button";
 import FileUpload from "../../components/inputs/FileUpload";
 import PhoneInput from "../../components/inputs/PhoneInput";
 import Stepper from "./Stepper";
 import notification from "../../utilities/notification";
-import handleFetch from "../../services/api/handleFetch";
 import ClickableLogo from "../../components/pages/auth/ClickableLogo";
+import { useSignupContext } from "../../context/Signupcontext";
+import { SingleValue } from "react-select";
 
 const STEPS = [
   { label: "Company Information" },
@@ -20,31 +21,42 @@ const STEPS = [
   { label: "Email Verification" },
 ];
 
+const BUSINESS_TYPES = [
+  { label: "Limited Liability Company", value: "LimitedLiabilityCompany" },
+  { label: "Partnership", value: "Partnership" },
+  { label: "Sole Proprietorship", value: "SolePropertorship" },
+  { label: "Other", value: "Other" },
+];
+
 export default function CompanyInformation() {
   const router = useRouter();
+  const { data, updateSignupData } = useSignupContext();
 
-  const [companyName, setCompanyName] = useState("");
-  const [businessType, setBusinessType] = useState("");
-  const [companyAddress, setCompanyAddress] = useState("");
-  const [companyPhone, setCompanyPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [cacFile, setCacFile] = useState<File | null>(null);
-  const [utilityBill, setUtilityBill] = useState<File | null>(null);
-  const [tin, setTin] = useState("");
-
-  const saveMutation = useMutation(handleFetch, {
-    onSuccess: () => router.push("/signup/business-contact"),
-    onError: (err: any) => {
-      notification({
-        title: "Error",
-        message: err?.toString() || "Something went wrong.",
-        type: "danger",
-      });
-    },
-  });
+  const [companyName, setCompanyName] = useState(data.companyName || "");
+  const [businessType, setBusinessType] = useState(data.businessType || "");
+  const [companyAddress, setCompanyAddress] = useState(
+    data.companyAddress || "",
+  );
+  const [companyPhone, setCompanyPhone] = useState(data.companyPhone || "");
+  const [email, setEmail] = useState(data.companyEmail || "");
+  const [cacFile, setCacFile] = useState<File | null>(data.cacFile || null);
+  const [utilityBill, setUtilityBill] = useState<File | null>(
+    data.utilityBill || null,
+  );
+  const [tin, setTin] = useState(data.tin || "");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!businessType) {
+      notification({
+        title: "Form Error",
+        message: "Please select a business type",
+        type: "danger",
+      });
+      return;
+    }
+
     if (!cacFile || !utilityBill) {
       notification({
         title: "Form Error",
@@ -54,24 +66,28 @@ export default function CompanyInformation() {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("companyName", companyName);
-    formData.append("businessType", businessType);
-    formData.append("companyAddress", companyAddress);
-    formData.append("companyPhone", companyPhone);
-    formData.append("email", email);
-    formData.append("cacFile", cacFile);
-    formData.append("utilityBill", utilityBill);
-    formData.append("tin", tin);
-
-    saveMutation.mutate({
-      service: "identity-service/",
-      endpoint: "api/v1/business/company-information",
-      extra: "",
-      method: "POST",
-      body: formData,
-      isFormData: true,
+    updateSignupData({
+      companyName,
+      businessType,
+      companyAddress,
+      companyPhone,
+      companyEmail: email,
+      cacFile,
+      utilityBill,
+      tin,
     });
+
+    router.push("/signup/business-contact");
+  };
+
+  const handleChange = (
+    value: SingleValue<SelectOptionType>,
+    type: string,
+    field: string,
+  ) => {
+    if (type === "select" && field === "businessType") {
+      setBusinessType(value?.value?.toString() || "");
+    }
   };
 
   return (
@@ -102,18 +118,23 @@ export default function CompanyInformation() {
             name="companyName"
             placeholder="Verified Co Ltd"
           />
-
-          <label className="block text-sm font-medium text-textColor mb-2">
-            Business Type
-          </label>
-          <TextInput
+          <SelectInput
             className="w-full mb-6"
-            value={businessType}
-            onChange={(e) => setBusinessType(e.target.value)}
-            name="businessType"
-            placeholder="Limited Liability Company"
+            onChange={(val) =>
+              handleChange(
+                val as SingleValue<SelectOptionType>,
+                "select",
+                "businessType",
+              )
+            }
+            value={
+              BUSINESS_TYPES.find((option) => option.value === businessType) ||
+              null
+            }
+            label="Business Type"
+            options={BUSINESS_TYPES}
+            placeholder="Select business type"
           />
-
           <label className="block text-sm font-medium text-textColor mb-2">
             Company Address
           </label>
@@ -133,6 +154,7 @@ export default function CompanyInformation() {
               value={companyPhone}
               onChange={setCompanyPhone}
               placeholder="08152536637"
+              
             />
           </div>
 
@@ -170,6 +192,7 @@ export default function CompanyInformation() {
             value={tin}
             onChange={(e) => setTin(e.target.value)}
             name="tin"
+            maxValue={10}
             placeholder="Enter TIN"
           />
 
@@ -177,7 +200,6 @@ export default function CompanyInformation() {
             className="w-full text-lg ff-bold !rounded-xl !bg-[#A3195B] hover:!bg-[#8a1550]"
             paddingY="p-3.5"
             type="submit"
-            loading={saveMutation.isLoading}
           >
             Save & Proceed
           </Button>

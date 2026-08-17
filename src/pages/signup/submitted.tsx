@@ -24,7 +24,7 @@ export default function Submitted() {
 
         <p className="text-center text-sm">
           Already have an account?&nbsp;
-          <Link href="/login">
+          <Link href="/">
             <span className="text-[#A3195B] cursor-pointer font-medium">
               Login
             </span>

@@ -1,38 +1,40 @@
-import {
-  ReactElement, ReactNode, useState, useEffect
-} from 'react';
-import type { AppProps } from 'next/app';
-import type { NextPage } from 'next';
+import { ReactElement, ReactNode, useState, useEffect } from "react";
+import type { AppProps } from "next/app";
+import type { NextPage } from "next";
 
-import { ReactNotifications } from 'react-notifications-component';
-import { QueryClient, QueryClientProvider, Hydrate } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
+import { ReactNotifications } from "react-notifications-component";
+import { QueryClient, QueryClientProvider, Hydrate } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
+import { SignupProvider } from "../context/Signupcontext";
 
-import 'react-loading-skeleton/dist/skeleton.css';
+import "react-loading-skeleton/dist/skeleton.css";
 
-import '../styles/globals.css';
-import '../styles/sidebar.scss';
-import '../styles/calendar.scss';
-import '../styles/inputs.scss';
+import "../styles/globals.css";
+import "../styles/sidebar.scss";
+import "../styles/calendar.scss";
+import "../styles/inputs.scss";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-  getLayout?: (page: ReactElement) => ReactNode
-}
+  getLayout?: (page: ReactElement) => ReactNode;
+};
 
 type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout
-}
+  Component: NextPageWithLayout;
+};
 
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const [pageLoaded, setPageLoaded] = useState(false);
-  const [queryClient] = useState(() => new QueryClient({
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: false,
-        retry: false
-      }
-    }
-  }));
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            refetchOnWindowFocus: false,
+            retry: false,
+          },
+        },
+      }),
+  );
   const getLayout = Component.getLayout ?? ((page) => page);
 
   useEffect(() => {
@@ -45,9 +47,12 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     <QueryClientProvider client={queryClient}>
       <Hydrate state={pageProps.dehydratedState}>
         <ReactNotifications />
-        {getLayout(<Component {...pageProps} />)}
+        <SignupProvider>
+          {getLayout(<Component {...pageProps} />)}
+        </SignupProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </Hydrate>
     </QueryClientProvider>
   );
 }
+

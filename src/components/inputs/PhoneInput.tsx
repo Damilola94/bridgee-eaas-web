@@ -16,6 +16,7 @@ export default function PhoneInput({ value, onChange, placeholder }: PhoneInputP
       <input
         type="tel"
         value={value}
+        maxLength={11}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className="flex-1 px-4 py-3.5 text-sm focus:outline-none placeholder:text-gray-300"

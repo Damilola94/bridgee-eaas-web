@@ -1,28 +1,83 @@
 "use client";
 
-import { useState } from "react";
-import { SettingsTabs } from "./setting-common/settings-tabs"
+import { useEffect, useState } from "react";
+import { useMutation } from "react-query";
+import { SettingsTabs } from "./setting-common/settings-tabs";
 import { SettingsField, SettingsTextarea, SettingsSaveButton } from "./ui/settings-field";
+import useGetQuery from "../../../hooks/useGetQuery";
+import handleFetch from "../../../services/api/handleFetch";
+import notification from "../../../utilities/notification";
+import { SettingsDTO } from "./types/settings";
+import Loading from "../../common/Loading";
 
 export default function CompanyProfilePage() {
+  const { data, status } = useGetQuery({
+    endpoint: "escrow-service/api/v1/settings",
+    queryKey: ["settings"],
+    auth: true,
+  });
+
   const [form, setForm] = useState({
-    companyName: "Verified Co Ltd",
-    companyAddress: "15 Broad Street, Lagos Island, Lagos",
-    companyPhone: "08152536637",
-    email: "contact@verifiedco.ng",
-    tin: "12345453434",
+    companyName: "",
+    companyAddress: "",
+    companyPhone: "",
+    email: "",
+    tin: "",
+  });
+
+  useEffect(() => {
+    if (status === "success" && data?.isSuccess) {
+      const settings: SettingsDTO = data.data;
+      setForm({
+        companyName: settings.companyName,
+        companyAddress: settings.companyAddress,
+        companyPhone: settings.companyPhone,
+        email: settings.companyEmail,
+        tin: settings.tin,
+      });
+    }
+  }, [data, status]);
+
+  const saveMutation = useMutation(handleFetch, {
+    onSuccess: () => {
+      notification({
+        title: "Saved",
+        message: "Company profile updated successfully.",
+        type: "success",
+      });
+    },
+    onError: (err: any) => {
+      notification({
+        title: "Error",
+        message: err?.toString() || "Something went wrong.",
+        type: "danger",
+      });
+    },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(form);
+    saveMutation.mutate({
+      service: "escrow-service/api/v1/",
+      endpoint: "settings",
+      extra: "company-profile",
+      method: "PUT",
+      auth:true,
+      body: {
+        companyName: form.companyName,
+        companyAddress: form.companyAddress,
+        companyPhone: form.companyPhone,
+        companyEmail: form.email,
+        tin: form.tin,
+      },
+    });
   };
 
   return (
     <div className="p-8 flex flex-col sm:flex-row gap-6 font-outfit">
       <SettingsTabs />
-
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 flex-1 space-y-5">
+  {saveMutation.isLoading && <Loading />}
+      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-primary-500/40 shadow-sm p-8 flex-1 space-y-5">
         <h2 className="text-base font-semibold text-gray-900">Company Profile</h2>
 
         <SettingsField
@@ -51,7 +106,7 @@ export default function CompanyProfilePage() {
           onChange={(e) => setForm({ ...form, tin: e.target.value })}
         />
 
-        <SettingsSaveButton />
+        <SettingsSaveButton disabled={saveMutation.isLoading} />
       </form>
     </div>
   );

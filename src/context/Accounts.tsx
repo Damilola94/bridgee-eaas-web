@@ -3,7 +3,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
-  useState
+  useState,
 } from "react";
 import { useCookies } from "react-cookie";
 
@@ -22,7 +22,7 @@ export type valueProps = {
 
 export const AccountsContext = createContext<valueProps>({
   accounts: null,
-  setAccounts: () => {}
+  setAccounts: () => {},
 });
 
 function AccountsContextProvider({ children }: Props) {
@@ -33,45 +33,45 @@ function AccountsContextProvider({ children }: Props) {
 
   const accountsMemo = useMemo(() => ({ accounts, setAccounts }), [accounts]);
 
-  const {
-    data: walletData,
-    status: walletStatus,
-    isFetching: walletFetching
-  } = useGetQuery({
-    service: "wallet-service/api/v1",
-    endpoint: "wallets",
-    extra: "mine",
-    queryKey: [QUERY_KEYS.WALLET_ACCOUNTS, activeRole]
-  });
+  // const {
+  //   data: walletData,
+  //   status: walletStatus,
+  //   isFetching: walletFetching,
+  // } = useGetQuery({
+  //   service: "escrow-service/api/v1/",
+  //   endpoint: "wallets",
+  //   extra: "mine",
+  //   queryKey: [QUERY_KEYS.WALLET_ACCOUNTS, activeRole],
+  // });
 
-  const {
-    data: identityData,
-    status: identityStatus,
-    isFetching: identityFetching
-  } = useGetQuery({
-    service: "identity-service/api/v1",
-    endpoint: "users",
-    extra: "me",
-    queryKey: [QUERY_KEYS.IDENTITY_ACCOUNTS, activeRole]
-  });
+  // const {
+  //   data: identityData,
+  //   status: identityStatus,
+  //   isFetching: identityFetching,
+  // } = useGetQuery({
+  //   service: "escrow-service/api/v1/",
+  //   endpoint: "users",
+  //   extra: "me",
+  //   queryKey: [QUERY_KEYS.IDENTITY_ACCOUNTS, activeRole],
+  // });
 
-  useEffect(() => {
-    if (walletStatus === "success" && identityStatus === "success") {
-      setAccounts({
-        wallet: walletData?.data,
-        identity: identityData?.data
-      });
-    }
-  }, [walletStatus, identityStatus, walletData, identityData]);
+  // useEffect(() => {
+  //   if (walletStatus === "success" && identityStatus === "success") {
+  //     setAccounts({
+  //       wallet: walletData?.data,
+  //       identity: identityData?.data,
+  //     });
+  //   }
+  // }, [walletStatus, identityStatus, walletData, identityData]);
 
-  if (
-    walletStatus === "loading" ||
-    identityStatus === "loading" ||
-    walletFetching ||
-    identityFetching
-  ) {
-    return <Loading message="Setting up account..." />;
-  }
+  // if (
+  //   walletStatus === "loading" ||
+  //   identityStatus === "loading" ||
+  //   walletFetching ||
+  //   identityFetching
+  // ) {
+  //   return <Loading message="Setting up account..." />;
+  // }
 
   return (
     <AccountsContext.Provider value={accountsMemo}>
@@ -85,3 +85,4 @@ export function useAccountsContext() {
 }
 
 export default AccountsContextProvider;
+

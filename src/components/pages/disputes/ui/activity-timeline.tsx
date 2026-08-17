@@ -1,6 +1,6 @@
 import { Check, X as XIcon, Circle } from "lucide-react";
 import moment from "moment";
-import { DsputeTimelineEvent } from "../types/types";
+import { DsputeTimelineEvent } from "../types/interface";
 
 function TimelineIcon({ state }: { state: "success" | "error" | "pending" }) {
   if (state === "success") {

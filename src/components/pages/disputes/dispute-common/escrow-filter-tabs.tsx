@@ -1,4 +1,4 @@
-import { DisputeStatus } from "../types/types";
+import { DisputeStatus } from "../types/interface";
 
 const FILTER_TABS: { value: DisputeStatus | "all"; label: string }[] = [
   { value: "all", label: "All" },

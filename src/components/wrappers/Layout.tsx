@@ -7,7 +7,7 @@ import Loading from "../common/Loading";
 import Sidebar from "../common/Sidebar";
 import Header from "../common/Header";
 import AccountsContextProvider from "../../context/Accounts";
-import ListFilterContextProvider from "../../context/ListFilter";
+import useGetQuery from "../../hooks/useGetQuery";
 
 type Props = {
   children: React.ReactNode;
@@ -18,25 +18,36 @@ function Layout({ children, pageName }: Props) {
   const [cookie] = useCookies();
   const { push, pathname } = useRouter();
 
-  // useEffect(() => {
-  //   if (!cookie?.data?.accessToken) push('/login');
-  // }, [cookie, push]);
+  useEffect(() => {
+    if (!cookie?.data?.accessToken) push('/');
+  }, [cookie, push]);
 
-  // if (!cookie?.data?.accessToken) {
-  //   return <Loading />;
-  // }
+  const { data: meData, status: meStatus } = useGetQuery({
+    endpoint: "escrow-service/api/v1/auth/me",
+    queryKey: ["auth-me"],
+    auth: true,
+    enabled: !!cookie?.data?.accessToken,
+  });
+
+  const currentUser = meStatus === "success" && meData?.isSuccess ? meData.data : null;
+
+  const avatarInitial = currentUser?.fullName?.trim()?.charAt(0)?.toUpperCase() || "?";
+
+  if (!cookie?.data?.accessToken) {
+    return <Loading />;
+  }
 
   return (
-    <div className="bg-secondary w-full h-full min-h-screen relative">
+    <div className=" w-full min-h-screen relative">
       <SessionControl path="/login" />
       <Sidebar />
       <AccountsContextProvider>
-        <ListFilterContextProvider>
           <Header
             pageName={pageName}
-            adminName="CarLogistics Admin"
-            greetingName="Toluwalase"
-            avatarInitial="T"
+            adminName={currentUser?.companyName || "—"}
+            greetingName={currentUser?.fullName || "—"}
+            avatarInitial={avatarInitial}
+            companyImg={currentUser?.companyLogoUrl}
             hasUnreadNotifications
           />
 
@@ -47,11 +58,9 @@ function Layout({ children, pageName }: Props) {
               {children}
             </main>
           </div>
-        </ListFilterContextProvider>
       </AccountsContextProvider>
     </div>
   );
 }
 
 export default Layout;
-

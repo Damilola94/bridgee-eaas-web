@@ -1,10 +1,26 @@
 import React, { useState } from 'react';
-import { Wallet } from 'lucide-react';
-import { SummaryCard, financialSummaryCards, transactionSummaryCards } from '../dashboard-data';
+import { Wallet, Loader2 } from 'lucide-react';
+import useGetQuery from '../../../../hooks/useGetQuery';
+import { formatCurrency } from '../../../../utilities/general';
+
+type Variant = 'filled' | 'neutral' | 'success' | 'danger';
+
+type CardDef = {
+  key: string;
+  label: string;
+  value: React.ReactNode;
+  variant: Variant;
+};
 
 const VARIANT_STYLES: Record<
-  SummaryCard['variant'],
-  { card: string; iconWrap: string; icon: string; value: string; label: string }
+  Variant,
+  {
+    card: string;
+    iconWrap: string;
+    icon: string;
+    value: string;
+    label: string;
+  }
 > = {
   filled: {
     card: 'bg-[#A3195B] border-transparent',
@@ -41,7 +57,73 @@ type Tab = 'transaction' | 'financial';
 export default function SummaryCards() {
   const [activeTab, setActiveTab] = useState<Tab>('transaction');
 
-  const cards = activeTab === 'transaction' ? transactionSummaryCards : financialSummaryCards;
+  const { data, status } = useGetQuery({
+    service: 'escrow-service/api/v1',
+    endpoint: 'dashboard',
+    queryKey: ['escrow-dashboard-summary'],
+    auth: true,
+  });
+
+  const summary = data?.isSuccess ? data.data : null;
+
+  const transactionSummaryCards: CardDef[] = [
+    {
+      key: 'totalTransactions',
+      label: 'Total Transactions',
+      value: summary?.totalTransactions?.toLocaleString() ?? '—',
+      variant: 'filled',
+    },
+    {
+      key: 'activeTransactions',
+      label: 'Active Transactions',
+      value: summary?.activeTransactions?.toLocaleString() ?? '—',
+      variant: 'neutral',
+    },
+    {
+      key: 'completedTransactions',
+      label: 'Completed Transactions',
+      value: summary?.completedTransactions?.toLocaleString() ?? '—',
+      variant: 'success',
+    },
+    {
+      key: 'cancelledTransactions',
+      label: 'Cancelled Transactions',
+      value: summary?.cancelledTransactions?.toLocaleString() ?? '—',
+      variant: 'danger',
+    },
+  ];
+
+  const financialSummaryCards: CardDef[] = [
+    {
+      key: 'totalEscrowAmount',
+      label: 'Total Escrow Amount',
+      value: summary ? formatCurrency(summary.totalEscrowAmount) : '—',
+      variant: 'filled',
+    },
+    {
+      key: 'totalReleasedEscrow',
+      label: 'Total Released Escrow',
+      value: summary ? formatCurrency(summary.totalReleasedEscrow) : '—',
+      variant: 'success',
+    },
+    {
+      key: 'totalFundsRefunded',
+      label: 'Total Funds Refunded',
+      value: summary ? formatCurrency(summary.totalFundsRefunded) : '—',
+      variant: 'neutral',
+    },
+    {
+      key: 'totalPendingEscrowAmount',
+      label: 'Total Pending Escrow',
+      value: summary ? formatCurrency(summary.totalPendingEscrowAmount) : '—',
+      variant: 'danger',
+    },
+  ];
+
+  const cards =
+    activeTab === 'transaction'
+      ? transactionSummaryCards
+      : financialSummaryCards;
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-5">
@@ -49,42 +131,65 @@ export default function SummaryCards() {
         <button
           type="button"
           onClick={() => setActiveTab('transaction')}
-          className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ff-bold ${
-            activeTab === 'transaction' ? 'bg-white text-textColor shadow-sm' : 'text-gray-500'
+          className={`px-4 py-1.5 text-sm ff-bold rounded-md transition-colors ${
+            activeTab === 'transaction'
+              ? 'bg-white text-textColor shadow-sm'
+              : 'text-gray-500'
           }`}
         >
           Transaction Summary
         </button>
+
         <button
           type="button"
           onClick={() => setActiveTab('financial')}
-          className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ff-bold ${
-            activeTab === 'financial' ? 'bg-white text-textColor shadow-sm' : 'text-gray-500'
+          className={`px-4 py-1.5 text-sm ff-bold rounded-md transition-colors ${
+            activeTab === 'financial'
+              ? 'bg-white text-textColor shadow-sm'
+              : 'text-gray-500'
           }`}
         >
           Financial Summary
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {cards.map((card) => {
-          const style = VARIANT_STYLES[card.variant];
-          return (
-            <div
-              key={card.key}
-              className={`relative overflow-hidden rounded-xl border p-4 ${style.card}`}
-            >
+      {status === 'loading' ? (
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="h-5 w-5 animate-spin mr-2" />
+          <span className="text-gray-500">Loading summary...</span>
+        </div>
+      ) : status === 'error' || !summary ? (
+        <div className="py-8 text-center text-sm text-red-500">
+          Failed to load dashboard summary.
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {cards.map((card) => {
+            const style = VARIANT_STYLES[card.variant];
+
+            return (
               <div
-                className={`w-9 h-9 rounded-full flex items-center justify-center mb-3 ${style.iconWrap}`}
+                key={card.key}
+                className={`relative overflow-hidden rounded-xl border p-4 ${style.card}`}
               >
-                <Wallet size={16} className={style.icon} />
+                <div
+                  className={`mb-3 flex h-9 w-9 items-center justify-center rounded-full ${style.iconWrap}`}
+                >
+                  <Wallet size={16} className={style.icon} />
+                </div>
+
+                <p className={`mb-1 text-xs ff-regular ${style.label}`}>
+                  {card.label}
+                </p>
+
+                <p className={`text-lg ff-bold ${style.value}`}>
+                  {card.value}
+                </p>
               </div>
-              <p className={`text-xs ff-regular mb-1 ${style.label}`}>{card.label}</p>
-              <p className={`text-lg font-bold ff-bold ${style.value}`}>{card.value}</p>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

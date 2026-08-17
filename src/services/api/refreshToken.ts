@@ -11,9 +11,8 @@ async function refreshTokenFn() {
   const data = storedData && JSON.parse(storedData);
 
   try {
-    const url = '/api/v1/auth/refresh-token';
+    const url = '/api/v1/auth/refresh';
     const body = {
-      expiredToken: data?.accessToken,
       refreshToken: data?.refreshToken
     };
 
@@ -21,7 +20,7 @@ async function refreshTokenFn() {
 
     const { data: apiResponse } = response.data;
     if (!apiResponse?.accessToken) {
-      // logout();
+      logout();
     }
 
     // Update cookie with new tokens and other data from response
@@ -36,7 +35,7 @@ async function refreshTokenFn() {
 
     return apiResponse;
   } catch (error) {
-    // logout();
+    logout();
   }
   return null;
 }

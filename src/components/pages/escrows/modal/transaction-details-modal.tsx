@@ -5,18 +5,34 @@ import { SellerDetailSection } from "../ui/seller-detail-section";
 import { BuyerDetailSection } from "../ui/buyer-detail-section";
 import { ProductDetailsSection } from "../ui/product-details-section";
 import { ActivityTimeline } from "../ui/activity-timeline";
-import { EscrowTransaction } from "../types/types";
+import useGetQuery from "../../../../hooks/useGetQuery";
+import {
+  EscrowTransactionDetailDTO,
+  mapDetailDtoToTransaction,
+} from "../types/types";
 
 export function TransactionDetailsModal({
   isOpen,
   onClose,
-  transaction,
+  transactionId,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  transaction: EscrowTransaction | null;
+  transactionId: string | null;
 }) {
-  if (!transaction) return null;
+  const { data, status } = useGetQuery({
+    endpoint: `escrow-service/api/v1/escrowtransactions/${transactionId}`,
+    queryKey: ["escrow-transaction-detail", transactionId],
+    auth: true,
+    enabled: isOpen && !!transactionId,
+  });
+
+  const transaction =
+    status === "success" && data?.isSuccess
+      ? mapDetailDtoToTransaction(data.data as EscrowTransactionDetailDTO)
+      : null;
+
+  if (!isOpen || !transaction) return null;
 
   return (
     <Modal

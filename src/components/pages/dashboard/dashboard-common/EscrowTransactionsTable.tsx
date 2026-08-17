@@ -1,9 +1,33 @@
 import React from 'react';
 import Link from 'next/link';
-import { escrowTransactions } from '../dashboard-data';
+import { Loader2 } from 'lucide-react';
+import moment from 'moment';
+import useGetQuery from '../../../../hooks/useGetQuery';
+import { formatCurrency } from '../../../../utilities/general';
 import StatusBadge from './StatusBadge';
+import { TransactionStatus } from '../dashboard-data';
+
+type EscrowTransactionRow = {
+  id: string;
+  buyerName: string;
+  buyerEmail: string;
+  referenceNumber: string;
+  amount: string;
+  createdDate: string;
+  status: TransactionStatus;
+};
 
 export default function EscrowTransactionsTable() {
+  const { data, status } = useGetQuery({
+    service: 'escrow-service/api/v1/',
+    endpoint: 'escrowtransactions',
+    pQuery: { PageNumber: 1, PageSize: 10 },
+    queryKey: ['escrow-transactions-dashboard'],
+    auth: true,
+  });
+
+  const rows: EscrowTransactionRow[] = data?.isSuccess ? data.data : [];
+
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
       <div className="flex items-center justify-between mb-4">
@@ -22,40 +46,52 @@ export default function EscrowTransactionsTable() {
         <table className="w-full text-sm">
           <thead>
             <tr className="text-left text-xs text-gray-400 uppercase tracking-wide border-b border-gray-100">
-              <th className="py-3 pr-4 font-medium">Transaction ID</th>
+              <th className="py-3 pr-4 font-medium">Reference</th>
               <th className="py-3 pr-4 font-medium">Buyer Name</th>
-              <th className="py-3 pr-4 font-medium">Seller Name</th>
-              <th className="py-3 pr-4 font-medium">Item</th>
-              <th className="py-3 pr-4 font-medium">Escrow Amount</th>
-              <th className="py-3 pr-4 font-medium">Start Date</th>
-              <th className="py-3 pr-4 font-medium">End Date</th>
+              <th className="py-3 pr-4 font-medium">Buyer Email</th>
+              <th className="py-3 pr-4 font-medium">Amount</th>
+              <th className="py-3 pr-4 font-medium">Date</th>
               <th className="py-3 pr-4 font-medium">Status</th>
             </tr>
           </thead>
           <tbody>
-            {escrowTransactions.map((row) => (
-              <tr key={row.id} className="border-b border-gray-50 last:border-0">
-                <td className="py-3.5 pr-4 text-gray-500">{row.transactionId}</td>
-                <td className="py-3.5 pr-4 text-textColor">{row.buyerName}</td>
-                <td className="py-3.5 pr-4 text-textColor">{row.sellerName}</td>
-                <td className="py-3.5 pr-4 text-textColor">
-                  <span className="flex items-center gap-2">
-                    {row.item}
-                    {!!row.extraItemsCount && (
-                      <span className="bg-[#FDF0F6] text-[#A3195B] text-xs font-medium px-2 py-0.5 rounded-full">
-                        + {row.extraItemsCount} More
-                      </span>
-                    )}
-                  </span>
-                </td>
-                <td className="py-3.5 pr-4 text-textColor">{row.escrowAmount}</td>
-                <td className="py-3.5 pr-4 text-gray-500">{row.startDate}</td>
-                <td className="py-3.5 pr-4 text-gray-500">{row.endDate}</td>
-                <td className="py-3.5 pr-4">
-                  <StatusBadge status={row.status} />
+            {status === 'loading' ? (
+              <tr>
+                <td colSpan={6} className="py-8 text-center">
+                  <div className="flex items-center justify-center">
+                    <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                    <span className="text-gray-500">Loading transactions...</span>
+                  </div>
                 </td>
               </tr>
-            ))}
+            ) : status === 'error' ? (
+              <tr>
+                <td colSpan={6} className="py-8 text-center text-red-500">
+                  Failed to load transactions.
+                </td>
+              </tr>
+            ) : rows.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="py-8 text-center text-gray-500">
+                  No transactions found.
+                </td>
+              </tr>
+            ) : (
+              rows.map((row) => (
+                <tr key={row.id} className="border-b border-gray-50 last:border-0">
+                  <td className="py-3.5 pr-4 text-gray-500">{row.referenceNumber}</td>
+                  <td className="py-3.5 pr-4 text-textColor">{row.buyerName}</td>
+                  <td className="py-3.5 pr-4 text-gray-500">{row.buyerEmail}</td>
+                  <td className="py-3.5 pr-4 text-textColor">{formatCurrency(row.amount)}</td>
+                  <td className="py-3.5 pr-4 text-gray-500">
+                    {moment(row.createdDate).format('DD MMM YYYY')}
+                  </td>
+                  <td className="py-3.5 pr-4">
+                    <StatusBadge status={row.status} />
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

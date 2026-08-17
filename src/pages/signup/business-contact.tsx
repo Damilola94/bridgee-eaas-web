@@ -2,16 +2,20 @@
 import React, { useState } from "react";
 import { useMutation } from "react-query";
 import { useRouter } from "next/router";
+import { useCookies } from "react-cookie";
 import Link from "next/link";
-import { ChevronLeft, Eye, EyeOff } from "lucide-react";
+import { ChevronLeft, BadgeCheck } from "lucide-react";
 
 import TextInput from "../../components/inputs/Text";
 import Button from "../../components/inputs/Button";
+import Loading from "../../components/common/Loading";
 import PhoneInput from "../../components/inputs/PhoneInput";
 import Stepper from "./Stepper";
 import notification from "../../utilities/notification";
 import handleFetch from "../../services/api/handleFetch";
 import ClickableLogo from "../../components/pages/auth/ClickableLogo";
+import { useSignupContext } from "../../context/Signupcontext";
+import LiveSelfieCapture from "./live-selfie-capture";
 
 const STEPS = [
   { label: "Company Information" },
@@ -21,24 +25,37 @@ const STEPS = [
 
 export default function BusinessContact() {
   const router = useRouter();
+  const [, setCookie] = useCookies(["form"]);
+  const { data, updateSignupData } = useSignupContext();
 
-  const [fullName, setFullName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [designation, setDesignation] = useState("");
+  React.useEffect(() => {
+    if (!data.companyName && !data.cacFile) {
+      router.replace("/signup/company-information");
+    }
+  }, []);
+
+  const [bvn, setBvn] = useState(data.bvn || "");
+  const [selfie, setSelfie] = useState<File | null>(data.selfie || null);
+  const [bvnVerifiedName, setBvnVerifiedName] = useState(
+    data.bvnVerifiedName || "",
+  );
+
+  const [fullName, setFullName] = useState(data.fullName || "");
+  const [contactPhoneNumber, setContactPhoneNumber] = useState(
+    data.contactPhoneNumber || "",
+  );
+  const [contactEmail, setContactEmail] = useState(data.contactEmail || "");
+  const [designation, setDesignation] = useState(data.designation || "");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [bvn, setBvn] = useState("");
-  const [bvnValidated, setBvnValidated] = useState(false);
 
   const validateBvnMutation = useMutation(handleFetch, {
-    onSuccess: () => {
-      setBvnValidated(true);
+    onSuccess: (res: any) => {
+      const verifiedName = res?.data?.verifiedName || "";
+      setBvnVerifiedName(verifiedName);
       notification({
-        title: "Identity Validated",
-        message: "Your BVN was validated successfully.",
+        title: "BVN Verified",
+        message: "Your BVN has been validated successfully.",
         type: "success",
       });
     },
@@ -51,8 +68,11 @@ export default function BusinessContact() {
     },
   });
 
-  const saveMutation = useMutation(handleFetch, {
-    onSuccess: () => router.push("/signup/email-verification"),
+  const registerMutation = useMutation(handleFetch, {
+    onSuccess: () => {
+      setCookie("form", { email: contactEmail });
+      router.push("/signup/email-verification");
+    },
     onError: (err: any) => {
       notification({
         title: "Error",
@@ -62,43 +82,57 @@ export default function BusinessContact() {
     },
   });
 
-  const handleValidateIdentity = () => {
-    if (!bvn) {
+  const handleValidateBvn = () => {
+    if (!bvn || !selfie) {
       notification({
         title: "Form Error",
-        message: "Please enter your BVN",
+        message: "Please enter your BVN and upload a selfie",
         type: "danger",
       });
       return;
     }
+
+    const formData = new FormData();
+    formData.append("Bvn", bvn);
+    formData.append("Selfie", selfie);
+
     validateBvnMutation.mutate({
-      service: "identity-service/",
-      endpoint: "api/v1/business/validate-bvn",
-      extra: "",
+      service: "escrow-service/api/v1/",
+      endpoint: "onboarding",
+      extra: "validate-bvn",
       method: "POST",
-      body: { bvn },
+      body: formData,
+      multipart: true,
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
-    if (
-      !(
-        fullName &&
-        phone &&
-        email &&
-        designation &&
-        password &&
-        confirmPassword
-      )
-    ) {
+
+    if (!bvnVerifiedName) {
       notification({
         title: "Form Error",
-        message: "Please fill in all required fields",
+        message: "Please validate your BVN first",
         type: "danger",
       });
       return;
     }
+
+    if (
+      !fullName ||
+      !contactPhoneNumber ||
+      !contactEmail ||
+      !designation ||
+      !password
+    ) {
+      notification({
+        title: "Form Error",
+        message: "Please fill in all business contact fields",
+        type: "danger",
+      });
+      return;
+    }
+
     if (password !== confirmPassword) {
       notification({
         title: "Form Error",
@@ -108,14 +142,48 @@ export default function BusinessContact() {
       return;
     }
 
-    saveMutation.mutate({
-      service: "identity-service/",
-      endpoint: "api/v1/business/contact-information",
-      extra: "",
+    updateSignupData({
+      bvn,
+      selfie,
+      bvnVerifiedName,
+      fullName,
+      contactPhoneNumber,
+      contactEmail,
+      designation,
+      password,
+    });
+
+    const formData = new FormData();
+    formData.append("isRegistered", String(Boolean(data.isRegistered)));
+    formData.append("cacNumber", data.cacNumber || "");
+    formData.append("bvn", bvn);
+    formData.append("bvnVerifiedName", bvnVerifiedName);
+    formData.append("companyName", data.companyName || "");
+    formData.append("businessType", data.businessType || "");
+    formData.append("companyAddress", data.companyAddress || "");
+    formData.append("companyPhone", data.companyPhone || "");
+    formData.append("companyEmail", data.companyEmail || "");
+    formData.append("tin", data.tin || "");
+    if (data.cacFile) formData.append("cacCertificate", data.cacFile);
+    if (data.utilityBill) formData.append("utilityBill", data.utilityBill);
+    formData.append("fullName", fullName);
+    formData.append("contactPhoneNumber", contactPhoneNumber);
+    formData.append("contactEmail", contactEmail);
+    formData.append("designation", designation);
+    formData.append("password", password);
+
+    registerMutation.mutate({
+      service: "escrow-service/api/v1/",
+      endpoint: "onboarding",
+      extra: "register",
       method: "POST",
-      body: { fullName, phone, email, designation, password, bvn },
+      body: formData,
+      multipart: true,
     });
   };
+
+  const { isLoading: isValidatingBvn } = validateBvnMutation;
+  const { isLoading: isRegistering } = registerMutation;
 
   return (
     <div className="min-h-screen bg-[#F4F5F9] flex items-center justify-center px-4 py-10">
@@ -134,142 +202,123 @@ export default function BusinessContact() {
 
         <Stepper steps={STEPS} currentStep={1} />
 
-        <form className="px-10 py-8" onSubmit={handleSubmit}>
+        <form className="px-10 py-8" onSubmit={handleRegister}>
+          {(isValidatingBvn || isRegistering) && <Loading />}
+
           <label className="block text-sm font-medium text-textColor mb-2">
-            Full name <span className="text-red-500">*</span>
+            BVN
+          </label>
+          <div className="flex gap-3 mb-2">
+            <TextInput
+              className="flex-1"
+              value={bvn}
+              onChange={(e) => setBvn(e.target.value)}
+              name="bvn"
+              maxValue={11}
+              placeholder="Enter your BVN"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleValidateBvn}
+              loading={validateBvnMutation.isLoading}
+              className="!border-[#A3195B] !text-[#A3195B] whitespace-nowrap"
+            >
+              Validate
+            </Button>
+          </div>
+          {bvnVerifiedName && (
+            <div className="flex items-center gap-1.5 mb-6 text-sm text-gray-600">
+              {bvnVerifiedName}
+              <BadgeCheck size={16} className="text-green-600" />
+            </div>
+          )}
+
+          <div className="mb-6">
+            <LiveSelfieCapture
+              label="Take a live selfie"
+              required
+              capturedFile={selfie}
+              onChange={setSelfie}
+            />
+          </div>
+
+          <label className="block text-sm font-medium text-textColor mb-2">
+            Full Name
           </label>
           <TextInput
             className="w-full mb-6"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             name="fullName"
-            placeholder="Enter Full Name"
+            placeholder="Enter your full name"
           />
 
           <label className="block text-sm font-medium text-textColor mb-2">
-            Phone Number <span className="text-red-500">*</span>
+            Contact Phone Number
           </label>
           <div className="mb-6">
             <PhoneInput
-              value={phone}
-              onChange={setPhone}
-              placeholder="Enter Phone Number"
+              value={contactPhoneNumber}
+              onChange={setContactPhoneNumber}
+              placeholder="08152536637"
             />
           </div>
 
           <label className="block text-sm font-medium text-textColor mb-2">
-            Email Address <span className="text-red-500">*</span>
+            Contact Email Address
           </label>
           <TextInput
             className="w-full mb-6"
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            name="email"
-            placeholder="Enter Email Address"
+            value={contactEmail}
+            onChange={(e) => setContactEmail(e.target.value)}
+            name="contactEmail"
+            placeholder="you@company.com"
           />
 
           <label className="block text-sm font-medium text-textColor mb-2">
-            Designation <span className="text-red-500">*</span>
+            Designation
           </label>
           <TextInput
             className="w-full mb-6"
             value={designation}
             onChange={(e) => setDesignation(e.target.value)}
             name="designation"
-            placeholder="Enter Designation"
+            placeholder="e.g Managing Director"
           />
 
           <label className="block text-sm font-medium text-textColor mb-2">
-            Create Password <span className="text-red-500">*</span>
+            Password
           </label>
-          <div className="relative mb-6">
-            <TextInput
-              className="w-full"
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              name="password"
-              placeholder="Enter Password"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((p) => !p)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"
-              tabIndex={-1}
-            >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
-          </div>
+          <TextInput
+            className="w-full mb-6"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            name="password"
+            placeholder="Enter a password"
+          />
 
           <label className="block text-sm font-medium text-textColor mb-2">
-            Confirm Password <span className="text-red-500">*</span>
+            Confirm Password
           </label>
-          <div className="relative mb-6">
-            <TextInput
-              className="w-full"
-              type={showConfirmPassword ? "text" : "password"}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              name="confirmPassword"
-              placeholder="Enter Password"
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword((p) => !p)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"
-              tabIndex={-1}
-            >
-              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
-          </div>
-
-          <label className="block text-sm font-medium text-textColor mb-2">
-            BVN
-          </label>
-          <div className="flex gap-3 mb-3">
-            <TextInput
-              className="flex-1"
-              value={bvn}
-              onChange={(e) => setBvn(e.target.value)}
-              name="bvn"
-              placeholder="e.g 7363525155"
-            />
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleValidateIdentity}
-              loading={validateBvnMutation.isLoading}
-              className="!border-[#A3195B] !text-[#A3195B] whitespace-nowrap"
-            >
-              Validate Identity
-            </Button>
-          </div>
-
-          <div className="mb-8">
-            <p className="text-sm font-medium text-textColor mb-1">
-              Verification requirements:
-            </p>
-            <ul className="text-sm text-gray-500 space-y-0.5">
-              <li>
-                <span className="text-red-500">*</span> Lorem Ispum
-              </li>
-              <li>
-                <span className="text-red-500">*</span> Lorem Ispum
-              </li>
-              <li>
-                <span className="text-red-500">*</span> Lorem Ispum
-              </li>
-            </ul>
-          </div>
+          <TextInput
+            className="w-full mb-8"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            name="confirmPassword"
+            placeholder="Re-enter your password"
+          />
 
           <Button
             className="w-full text-lg ff-bold !rounded-xl !bg-[#A3195B] hover:!bg-[#8a1550]"
             paddingY="p-3.5"
             type="submit"
-            loading={saveMutation.isLoading}
+            loading={registerMutation.isLoading}
           >
-            Save & Proceed
+            Submit & Continue
           </Button>
 
           <p className="mt-6 text-center text-sm">
@@ -285,3 +334,4 @@ export default function BusinessContact() {
     </div>
   );
 }
+

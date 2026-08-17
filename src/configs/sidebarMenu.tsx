@@ -13,7 +13,8 @@ const menuList = [
   { title: 'Wallet Transaction', link: '/wallet-transactions', icon: Wallet },
   { title: 'Dispute Management', link: '/disputes-management', icon: MessageSquareWarning },
   { title: 'Reports and Analytics', link: '/reports', icon: ClipboardList },
-  { title: 'Settings', link: '/settings/company-profile', icon: Settings }
+    { title: 'Settings', link: '/settings/company-profile', icon: Settings, matchPrefix: '/settings' },
+
 ];
 
 export default menuList;

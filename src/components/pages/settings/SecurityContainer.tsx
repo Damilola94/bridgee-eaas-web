@@ -1,9 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useMutation } from "react-query";
 import { Eye, EyeOff } from "lucide-react";
 import { SettingsTabs } from "./setting-common/settings-tabs";
 import { SettingsSaveButton } from "./ui/settings-field";
+import handleFetch from "../../../services/api/handleFetch";
+import notification from "../../../utilities/notification";
+import Loading from "../../common/Loading";
 
 function PasswordField({
   label,
@@ -18,6 +22,7 @@ function PasswordField({
 
   return (
     <div className="space-y-1.5">
+      
       <label className="text-sm font-medium text-gray-900">
         {label} <span className="text-red-500">*</span>
       </label>
@@ -44,19 +49,53 @@ function PasswordField({
 export default function SecurityPage() {
   const [form, setForm] = useState({ oldPassword: "", newPassword: "", confirmPassword: "" });
 
+  const saveMutation = useMutation(handleFetch, {
+    onSuccess: () => {
+      notification({
+        title: "Password updated",
+        message: "Your password has been changed successfully.",
+        type: "success",
+      });
+      setForm({ oldPassword: "", newPassword: "", confirmPassword: "" });
+    },
+    onError: (err: any) => {
+      notification({
+        title: "Error",
+        message: err?.toString() || "Failed to update password.",
+        type: "danger",
+      });
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (form.newPassword !== form.confirmPassword) {
-      // surface a proper validation error in your toast system
-      console.error("Passwords do not match");
+      notification({
+        title: "Form Error",
+        message: "Passwords do not match.",
+        type: "danger",
+      });
       return;
     }
-    console.log(form);
+
+    saveMutation.mutate({
+      service: "escrow-service/api/v1/",
+      endpoint: "settings",
+      extra: "security/password",
+      method: "PUT",
+      auth:true,
+      body: {
+        currentPassword: form.oldPassword,
+        newPassword: form.newPassword,
+        confirmPassword: form.confirmPassword,
+      },
+    });
   };
 
   return (
     <div className="p-8 flex flex-col sm:flex-row gap-6 font-outfit">
       <SettingsTabs />
+  {saveMutation.isLoading && <Loading />}
 
       <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 flex-1 space-y-5 max-w-xl">
         <h2 className="text-base font-semibold text-gray-900">Security</h2>
@@ -65,7 +104,7 @@ export default function SecurityPage() {
         <PasswordField label="Create New Password" value={form.newPassword} onChange={(v) => setForm({ ...form, newPassword: v })} />
         <PasswordField label="Confirm Password" value={form.confirmPassword} onChange={(v) => setForm({ ...form, confirmPassword: v })} />
 
-        <SettingsSaveButton />
+        <SettingsSaveButton disabled={saveMutation.isLoading} />
       </form>
     </div>
   );

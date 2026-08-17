@@ -17,7 +17,7 @@ export function SettingsTabs() {
 const router = useRouter();
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-2 w-full sm:w-56 shrink-0 h-fit">
+    <div className="bg-white rounded-2xl border border-primary-500/40 shadow-sm p-2 w-full sm:w-56 shrink-0 h-fit">
       {TABS.map((tab) => {
        const isActive = router.pathname === tab.href;
 
