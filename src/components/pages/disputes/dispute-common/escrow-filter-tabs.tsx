@@ -2,7 +2,8 @@ import { DisputeStatus } from "../types/interface";
 
 const FILTER_TABS: { value: DisputeStatus | "all"; label: string }[] = [
   { value: "all", label: "All" },
-  { value: "ongoing", label: "Ongoing" },
+  { value: "under_review", label: "Under Review" },
+  { value: "escalated", label: "Escalated" },
   { value: "resolved", label: "Resolved" },
 ];
 
