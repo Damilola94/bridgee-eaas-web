@@ -5,13 +5,17 @@ import { AlertTriangle } from "lucide-react";
 
 const GRACE_HOUR_OPTIONS = [0, 1, 3, 6, 9, 12, 24, 72];
 
+/** Matches the real GET /apikeys response shape. */
 export interface ApiKey {
-  id: string;
+  keyId: string;
+  masked: string;
   label: string;
-  maskedKey: string;
+  environment: string;
+  status: "Active" | "Revoked" | string;
   createdAt: string;
-  lastRotatedAt?: string | null;
-  keyId?: string;
+  lastUsedAt?: string | null;
+  expiresAt?: string | null;
+  revokedAt?: string | null;
 }
 
 interface RotateKeyDialogProps {
