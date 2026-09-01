@@ -77,7 +77,7 @@ export default function PersonalizationPage() {
       <SettingsTabs />
   {saveMutation.isLoading && <Loading />}
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border-2 border-primary-500/40 shadow-sm p-8 flex-1 space-y-6 max-w-xl">
+      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-primary-500/40 shadow-sm p-8 flex-1 space-y-6 max-w-xl">
         <h2 className="text-base font-semibold text-gray-900">Personalization</h2>
 
         <div className="space-y-1.5">

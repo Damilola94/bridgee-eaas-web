@@ -10,6 +10,7 @@ const TABS = [
   { href: "/settings/contact-person", label: "Contact Person" },
   { href: "/settings/security", label: "Security" },
   { href: "/settings/personalization", label: "Personalization" },
+  { href: "/settings/api", label: "API KEY" },
 ];
 
 export function SettingsTabs() {
