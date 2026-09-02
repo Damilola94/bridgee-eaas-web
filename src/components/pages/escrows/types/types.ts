@@ -51,6 +51,28 @@ export type EscrowTransaction = {
   timeline: EscrowTimelineEvent[];
 };
 
+export type EscrowTransactionSummary = {
+  id: string;
+  buyerName: string;
+  sellerName: string;
+  items: EscrowProductItem[];
+  escrowAmount: string;
+  buyerEmail: string;
+  referenceNumber: string;
+  amount: string;
+  createdDate: string;
+  status: EscrowStatus;
+};
+
+export type EscrowTransactionListMeta = {
+  totalCount: number;
+  pageSize: number;
+  currentPage: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+};
+
 export interface EscrowTransactionDetailDTO {
   id: string;
   reference: string;

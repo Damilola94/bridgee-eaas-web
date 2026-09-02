@@ -7,7 +7,7 @@ import { EscrowFilterTabs } from "./escrow-common/escrow-filter-tabs";
 import { DataTable } from "../../common/DataTable";
 import { TransactionDetailsModal } from "./modal/transaction-details-modal";
 import useGetQuery from "../../../hooks/useGetQuery";
-import { EscrowStatus, EscrowTransaction } from "./types/types";
+import { EscrowStatus, EscrowTransactionSummary } from "./types/types";
 
 import { Pagination } from "../../common/TablePagination";
 
@@ -33,7 +33,7 @@ export default function WalletTransactionsPage() {
     auth: true,
   });
 
-  const transactions: EscrowTransaction[] = useMemo(() => {
+  const transactions: EscrowTransactionSummary[] = useMemo(() => {
     if (escrowStatus === "success" && escrowData?.isSuccess) {
       return escrowData.data ?? [];
     }
@@ -47,7 +47,7 @@ export default function WalletTransactionsPage() {
   const rangeStart = totalElements === 0 ? 0 : (pageNumber - 1) * pageSize + 1;
   const rangeEnd = Math.min(pageNumber * pageSize, totalElements);
 
-  const handleRowClick = (transaction: EscrowTransaction) => {
+  const handleRowClick = (transaction: EscrowTransactionSummary) => {
     setSelectedTransactionId(transaction.id);
     setShowDetailsModal(true);
   };

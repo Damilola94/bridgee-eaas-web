@@ -52,21 +52,22 @@ export function DataTable<T extends { id: string | number }>({
 
         {/* Rows */}
         {!isLoading &&
-  data.map((row) => (
-    <div
-      key={row.id}
-      onClick={onRowClick ? () => onRowClick(row) : undefined}
-      className={`grid px-6 h-[72px] items-center border-b border-[#ECECEC] bg-white ${
-        onRowClick ? "hover:bg-gray-50 cursor-pointer" : ""
-      }`}
-      style={{ gridTemplateColumns: template }}
-    >
-      {columns.map((column, i) => (
-        <div key={i}>{column.accessor(row)}</div>
-      ))}
-    </div>
-  ))}
+          data.map((row) => (
+            <div
+              key={row.id}
+              onClick={onRowClick ? () => onRowClick(row) : undefined}
+              className={`grid px-6 h-[72px] items-center border-b border-[#ECECEC] bg-white ${
+                onRowClick ? "hover:bg-gray-50 cursor-pointer" : ""
+              }`}
+              style={{ gridTemplateColumns: template }}
+            >
+              {columns.map((column, i) => (
+                <div key={i}>{column.accessor(row)}</div>
+              ))}
+            </div>
+          ))}
       </div>
     </div>
   );
 }
+

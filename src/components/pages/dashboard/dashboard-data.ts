@@ -3,12 +3,11 @@
 // the API is expected to return so swapping later is low-friction.
 
 export type TransactionStatus =
-  | 'Ongoing'
-  | 'Pending On Buyer'
-  | 'Pending Funding'
-  | 'Funded'
-  | 'Disputed'
-  | 'Refunded'
+  | 'AwaitingPayment'
+  | 'Confirmed'
+  | 'Delivered'
+  | 'Completed'
+  | 'PayoutFailed'
   | 'Cancelled';
 
 export interface EscrowTransactionRow {
@@ -115,7 +114,7 @@ export const escrowTransactions: EscrowTransactionRow[] = [
     escrowAmount: 'NGN 2,500,000',
     startDate: '08 Jun 2026',
     endDate: '---',
-    status: 'Ongoing',
+    status: 'AwaitingPayment',
   },
   {
     id: '2',
@@ -126,7 +125,7 @@ export const escrowTransactions: EscrowTransactionRow[] = [
     escrowAmount: 'NGN 1,500,000',
     startDate: '08 Jun 2026',
     endDate: '---',
-    status: 'Pending On Buyer',
+    status: 'Confirmed',
   },
   {
     id: '3',
@@ -137,7 +136,7 @@ export const escrowTransactions: EscrowTransactionRow[] = [
     escrowAmount: 'NGN 18,500,000',
     startDate: '08 Jun 2026',
     endDate: '---',
-    status: 'Pending Funding',
+    status: 'Delivered',
   },
   {
     id: '4',
@@ -148,7 +147,7 @@ export const escrowTransactions: EscrowTransactionRow[] = [
     escrowAmount: 'NGN 1,500,000',
     startDate: '08 Jun 2026',
     endDate: '10 Jun 2026',
-    status: 'Funded',
+    status: 'Completed',
   },
   {
     id: '5',
@@ -159,7 +158,7 @@ export const escrowTransactions: EscrowTransactionRow[] = [
     escrowAmount: 'NGN 1,500,000',
     startDate: '08 Jun 2026',
     endDate: '---',
-    status: 'Disputed',
+    status: 'PayoutFailed',
   },
   {
     id: '6',
@@ -170,7 +169,7 @@ export const escrowTransactions: EscrowTransactionRow[] = [
     escrowAmount: 'NGN 1,500,000',
     startDate: '08 Jun 2026',
     endDate: '10 Jun 2026',
-    status: 'Refunded',
+    status: 'Completed',
   },
   {
     id: '7',
@@ -192,6 +191,6 @@ export const escrowTransactions: EscrowTransactionRow[] = [
     escrowAmount: 'NGN 1,500,000',
     startDate: '08 Jun 2026',
     endDate: '---',
-    status: 'Ongoing',
+    status: 'AwaitingPayment',
   },
 ];
