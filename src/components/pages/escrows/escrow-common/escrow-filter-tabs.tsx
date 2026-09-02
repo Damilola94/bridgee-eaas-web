@@ -2,13 +2,12 @@ import { EscrowStatus } from "../types/types";
 
 const FILTER_TABS: { value: EscrowStatus | "all"; label: string }[] = [
   { value: "all", label: "All" },
-  { value: "ongoing", label: "Ongoing" },
-  { value: "pending_buyer", label: "Pending on Buyer" },
-  { value: "pending_funding", label: "Pending funding" },
-  { value: "funded", label: "Funded" },
-  { value: "escrow_disputed", label: "Disputed" },
-  { value: "escrow_refunded", label: "Refunded" },
-  { value: "escrow_cancelled", label: "Cancelled" },
+  { value: "AwaitingPayment", label: "Awaiting Payment" },
+  { value: "Confirmed", label: "Confirmed" },
+  { value: "Delivered", label: "Delivered" },
+  { value: "Completed", label: "Completed" },
+  { value: "PayoutFailed", label: "Payout Failed" },
+  { value: "Cancelled", label: "Cancelled" },
 ];
 
 export function EscrowFilterTabs({

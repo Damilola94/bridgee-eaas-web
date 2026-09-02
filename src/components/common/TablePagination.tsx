@@ -22,11 +22,25 @@ export function Pagination({
 
   const pageNumbers = useMemo(() => {
     const pages: (number | "ellipsis")[] = [];
-    for (let i = 1; i <= Math.min(3, totalPages); i++) pages.push(i);
-    if (totalPages > 4) pages.push("ellipsis");
-    if (totalPages > 3) pages.push(totalPages);
+
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+      return pages;
+    }
+
+    pages.push(1);
+
+    const start = Math.max(2, pageNumber - 1);
+    const end = Math.min(totalPages - 1, pageNumber + 1);
+
+    if (start > 2) pages.push("ellipsis");
+    for (let i = start; i <= end; i++) pages.push(i);
+    if (end < totalPages - 1) pages.push("ellipsis");
+
+    pages.push(totalPages);
+
     return pages;
-  }, [totalPages]);
+  }, [totalPages, pageNumber]);
 
   return (
     <div className="flex items-center justify-between pt-2">

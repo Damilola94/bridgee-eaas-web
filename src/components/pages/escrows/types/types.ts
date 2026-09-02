@@ -1,21 +1,36 @@
+// =========================
+// ESCROW STATUS
+// =========================
+
 export type EscrowStatus =
-  | "ongoing"
-  | "pending_buyer"
-  | "pending_funding"
-  | "funded"
-  | "escrow_disputed"
-  | "escrow_refunded"
-  | "escrow_cancelled";
+  | "AwaitingPayment"
+  | "Confirmed"
+  | "Delivered"
+  | "Completed"
+  | "PayoutFailed"
+  | "Cancelled";
 
 export const ESCROW_STATUSES: EscrowStatus[] = [
-  "ongoing",
-  "pending_buyer",
-  "pending_funding",
-  "funded",
-  "escrow_disputed",
-  "escrow_refunded",
-  "escrow_cancelled",
+  "AwaitingPayment",
+  "Confirmed",
+  "Delivered",
+  "Completed",
+  "PayoutFailed",
+  "Cancelled",
 ];
+
+export function mapStatus(raw: string): EscrowStatus {
+  const match = ESCROW_STATUSES.find(
+    (status) => status.toLowerCase() === raw?.toLowerCase(),
+  );
+
+  return match ?? "AwaitingPayment";
+}
+
+
+// =========================
+// LIST ITEM TYPES
+// =========================
 
 export type EscrowProductItem = {
   name: string;
@@ -23,31 +38,31 @@ export type EscrowProductItem = {
   amount: number;
 };
 
-export type EscrowTimelineEvent = {
-  id: string;
-  label: string;
-  date: string;
-  state: "success" | "error" | "pending";
-};
-
 export type EscrowTransaction = {
   id: string;
+
   seller: {
     name: string;
     phone: string;
     email: string;
+    address: string;
   };
+
   buyer: {
     name: string;
     phone: string;
     email: string;
     address: string;
   };
+
   items: EscrowProductItem[];
+
   escrowAmount: number;
   startDate: string;
   endDate: string | null;
+
   status: EscrowStatus;
+
   timeline: EscrowTimelineEvent[];
 };
 
@@ -73,71 +88,148 @@ export type EscrowTransactionListMeta = {
   hasPrevious: boolean;
 };
 
+
+// =========================
+// TIMELINE
+// =========================
+
+export type EscrowTimelineEvent = {
+  id: string;
+  label: string;
+  date: string;
+  state: "success" | "error" | "pending";
+};
+
+
+// =========================
+// API DETAIL DTO
+// =========================
+
+export interface EscrowTransactionItemDTO {
+  name: string;
+  quantity: number;
+  unitPrice: string;
+  weightKg: number | null;
+  total: string;
+}
+
 export interface EscrowTransactionDetailDTO {
   id: string;
   reference: string;
+
   sellerName: string;
   sellerAddress: string;
+
   buyerName: string;
   buyerEmail: string;
   buyerPhone: string;
   buyerAddress: string;
-  items: {
-    name: string;
-    quantity: number;
-    unitPrice: string;
-    weightKg: number;
-    total: string;
-  }[];
+
+  items: EscrowTransactionItemDTO[];
+
   subtotal: string;
   deliveryFee: string;
   escrowFee: string;
   total: string;
+
   status: string;
+
   paymentLink: string;
   description: string;
 }
 
-function mapStatus(raw: string): EscrowStatus {
-  const match = ESCROW_STATUSES.find(
-    (s) => s.toLowerCase() === raw.toLowerCase(),
-  );
-  // Falls back to the raw value cast — surfaces mismatches loudly in the UI
-  // instead of silently swallowing an unrecognized status from the API.
-  return match ?? (raw as EscrowStatus);
+
+// =========================
+// UI TYPES
+// =========================
+
+export interface TransactionSeller {
+  name: string;
+  address: string;
 }
+
+export interface TransactionBuyer {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+}
+
+export interface TransactionItem {
+  name: string;
+  quantity: number;
+  unitPrice: string;
+  weightKg: number | null;
+  total: string;
+}
+
+export interface MappedTransaction {
+  id: string;
+  reference: string;
+
+  seller: TransactionSeller;
+  buyer: TransactionBuyer;
+
+  items: TransactionItem[];
+
+  subtotal: string;
+  deliveryFee: string;
+  escrowFee: string;
+  total: string;
+
+  status: EscrowStatus;
+
+  paymentLink: string;
+  description: string;
+}
+
+
+// =========================
+// MAPPER
+// =========================
 
 export function mapDetailDtoToTransaction(
   dto: EscrowTransactionDetailDTO,
-): EscrowTransaction {
+): MappedTransaction {
   return {
     id: dto.id,
-    status: mapStatus(dto.status),
+
+    reference: dto.reference,
+
     seller: {
       name: dto.sellerName,
-      // Not returned by the API today — confirm with backend whether
-      // these should be added to the response or dropped from the UI.
-      phone: "",
-      email: "",
+      address: dto.sellerAddress || "No address provided",
     },
+
     buyer: {
       name: dto.buyerName,
-      phone: dto.buyerPhone,
       email: dto.buyerEmail,
-      address: dto.buyerAddress,
+      phone: dto.buyerPhone,
+      address: dto.buyerAddress || "No address provided",
     },
+
     items: dto.items.map((item) => ({
       name: item.name,
       quantity: item.quantity,
-      amount: parseFloat(item.total),
+      unitPrice: item.unitPrice,
+      weightKg: item.weightKg,
+      total: item.total,
     })),
-    escrowAmount: parseFloat(dto.total),
-    // The DTO has no date fields at all — nothing to map these from yet.
-    // Confirm with backend whether these come from a different field
-    // (e.g. createdAt/completedAt) that isn't in the sample response.
-    startDate: "",
-    endDate: null,
-    // No timeline in this response yet — needs its own source/endpoint.
-    timeline: [],
+
+    subtotal: dto.subtotal.startsWith("NGN")
+      ? dto.subtotal
+      : `NGN ${dto.subtotal}`,
+
+    deliveryFee: dto.deliveryFee,
+
+    escrowFee: dto.escrowFee,
+
+    total: dto.total,
+
+    status: mapStatus(dto.status),
+
+    paymentLink: dto.paymentLink,
+
+    description: dto.description,
   };
 }

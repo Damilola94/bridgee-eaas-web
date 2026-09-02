@@ -40,10 +40,14 @@ export default function WalletTransactionsPage() {
     return [];
   }, [escrowData, escrowStatus]);
 
-  const totalElements = escrowData?.totalCount ?? 0;
+  // Pagination metadata lives under `metaData`, not at the top level.
+  const totalElements = escrowData?.metaData?.totalCount ?? 0;
+  const totalPages = escrowData?.metaData?.totalPages ?? 1;
+  const hasNext = escrowData?.metaData?.hasNext ?? false;
+  const hasPrevious = escrowData?.metaData?.hasPrevious ?? false;
+
   const isLoading = escrowStatus === "loading";
 
-  const totalPages = Math.max(Math.ceil(totalElements / pageSize), 1);
   const rangeStart = totalElements === 0 ? 0 : (pageNumber - 1) * pageSize + 1;
   const rangeEnd = Math.min(pageNumber * pageSize, totalElements);
 
@@ -108,3 +112,4 @@ export default function WalletTransactionsPage() {
     </div>
   );
 }
+
