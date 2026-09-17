@@ -38,10 +38,6 @@ export default function WalletTransactionPage() {
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize] = useState(10);
 
-  // =========================
-  // WALLET STATS
-  // =========================
-
   const { data: statsData, status: statsStatus } = useGetQuery({
     endpoint: "escrow-service/api/v1/wallet",
     queryKey: ["wallet-stats"],
@@ -53,10 +49,6 @@ export default function WalletTransactionPage() {
       ? statsData.data
       : null;
 
-  // =========================
-  // WALLET TRANSACTIONS
-  // =========================
-
   const { data: txData, status: txStatus } = useGetQuery({
     endpoint: "escrow-service/api/v1/wallet/transactions",
     pQuery: {
@@ -66,10 +58,6 @@ export default function WalletTransactionPage() {
     queryKey: ["wallet-transactions", pageNumber, pageSize],
     auth: true,
   });
-
-  // =========================
-  // MAP TRANSACTIONS
-  // =========================
 
   const transactions: WalletTransaction[] = useMemo(() => {
     if (
@@ -94,8 +82,6 @@ export default function WalletTransactionPage() {
       }) => ({
         id: tx.transactionId,
 
-        // IMPORTANT:
-        // Use transactionId from the API.
         transactionId: tx.transactionId,
 
         customerName: tx.customerName,
@@ -115,10 +101,6 @@ export default function WalletTransactionPage() {
     );
   }, [txData, txStatus]);
 
-  // =========================
-  // PAGINATION
-  // =========================
-
   const totalElements = txData?.metaData?.totalCount ?? 0;
 
   const currency = stats?.currency ?? "NGN";
@@ -127,7 +109,6 @@ export default function WalletTransactionPage() {
 
   return (
     <div className="space-y-4 font-outfit">
-      {/* Wallet Stats */}
       <div className="rounded-[20px] border border-primary-500/40 bg-white p-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-4">
           <StatCard
@@ -171,8 +152,6 @@ export default function WalletTransactionPage() {
           />
         </div>
       </div>
-
-      {/* Transactions */}
       <div className="overflow-hidden rounded-[20px] border border-primary-500/40 bg-white pb-8 shadow-sm">
         <div className="p-8">
           <span className="inline-flex items-center rounded-2xl bg-[#F4F4FC] px-4 py-2 text-base font-medium">

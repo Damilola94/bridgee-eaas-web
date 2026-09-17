@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { SettingsTabs } from "./setting-common/settings-tabs";
 import { SettingsSaveButton } from "./ui/settings-field";
 import useGetQuery from "../../../hooks/useGetQuery";
@@ -13,6 +13,8 @@ import Loading from "../../common/Loading";
 const THEME_COLORS = ["#1B1749", "#A3195B", "#22C55E", "#34D399"];
 
 export default function PersonalizationPage() {
+    const queryClient = useQueryClient();
+
   const { data, status } = useGetQuery({
     endpoint: "escrow-service/api/v1/settings",
     queryKey: ["settings"],
@@ -35,6 +37,7 @@ export default function PersonalizationPage() {
 
   const saveMutation = useMutation(handleFetch, {
     onSuccess: () => {
+      queryClient.invalidateQueries(["settings"]);
       notification({
         title: "Saved",
         message: "Personalization settings updated.",
@@ -67,7 +70,7 @@ export default function PersonalizationPage() {
       extra: "personalization",
       method: "PUT",
       auth: true,
-      multipart: true, 
+      multipart: true,
       body,
     });
   };
@@ -75,26 +78,40 @@ export default function PersonalizationPage() {
   return (
     <div className="p-8 flex flex-col sm:flex-row gap-6 font-outfit">
       <SettingsTabs />
-  {saveMutation.isLoading && <Loading />}
+      {saveMutation.isLoading && <Loading />}
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-primary-500/40 shadow-sm p-8 flex-1 space-y-6 max-w-xl">
-        <h2 className="text-base font-semibold text-gray-900">Personalization</h2>
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white rounded-2xl border border-primary-500/40 shadow-sm p-8 flex-1 space-y-6 max-w-xl"
+      >
+        <h2 className="text-base font-semibold text-gray-900">
+          Personalization
+        </h2>
 
         <div className="space-y-1.5">
-          <label className="text-sm font-medium text-gray-900">Company logo</label>
+          <label className="text-sm font-medium text-gray-900">
+            Company logo
+          </label>
           <div className="flex items-center gap-2">
             <div className="flex-1 px-4 py-3 border border-dashed border-gray-300 rounded-lg text-sm text-gray-400 truncate">
               {logoFile?.name || existingLogoUrl || "---"}
             </div>
             <label className="px-5 py-3 border border-pink-700 text-pink-700 rounded-lg text-sm font-medium cursor-pointer whitespace-nowrap">
               Select File
-              <input type="file" accept="image/*" onChange={handleFileSelect} className="hidden" />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileSelect}
+                className="hidden"
+              />
             </label>
           </div>
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-900">Theme color</label>
+          <label className="text-sm font-medium text-gray-900">
+            Theme color
+          </label>
           <div className="flex items-center gap-3">
             {THEME_COLORS.map((color) => (
               <button
@@ -103,7 +120,9 @@ export default function PersonalizationPage() {
                 onClick={() => setSelectedColor(color)}
                 style={{ backgroundColor: color }}
                 className={`w-9 h-9 rounded-full transition-transform ${
-                  selectedColor === color ? "ring-2 ring-offset-2 ring-gray-400 scale-105" : ""
+                  selectedColor === color
+                    ? "ring-2 ring-offset-2 ring-gray-400 scale-105"
+                    : ""
                 }`}
               />
             ))}
