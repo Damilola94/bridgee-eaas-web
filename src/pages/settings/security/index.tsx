@@ -9,7 +9,7 @@ import type { NextPageWithLayout } from '../../_app';
 const Home: NextPageWithLayout = () => (
   <>
     <Head>
-      <title>UseBridgee Inc. - Settings</title>
+      <title>UseBridgee Inc. - Security</title>
     </Head>
 
     <SecurityContainer />
@@ -17,7 +17,7 @@ const Home: NextPageWithLayout = () => (
 );
 
 Home.getLayout = function getLayout(page: ReactElement) {
-  return <Layout pageName="Settings">{page}</Layout>;
+  return <Layout pageName="Settings - Security">{page}</Layout>;
 };
 
 export default Home;

@@ -17,7 +17,7 @@ const Home: NextPageWithLayout = () => (
 );
 
 Home.getLayout = function getLayout(page: ReactElement) {
-  return <Layout pageName="Personalization">{page}</Layout>;
+  return <Layout pageName="Settings - Personalization">{page}</Layout>;
 };
 
 export default Home;

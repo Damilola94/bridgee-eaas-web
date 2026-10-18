@@ -10,8 +10,6 @@ const STATUS_STYLES: Record<TransactionStatus, { dot: string; text: string; bg: 
   Cancelled: { dot: 'bg-rose-400', text: 'text-rose-600', bg: 'bg-rose-50' },
 };
 
-/** Display text for each status — only AwaitingPayment gets a space
- * inserted; the rest render exactly as the status value itself. */
 const STATUS_LABELS: Record<TransactionStatus, string> = {
   AwaitingPayment: 'Awaiting Payment',
   Confirmed: 'Confirmed',
@@ -21,19 +19,22 @@ const STATUS_LABELS: Record<TransactionStatus, string> = {
   Cancelled: 'Cancelled',
 };
 
+const FALLBACK_STYLE = { dot: 'bg-gray-400', text: 'text-gray-600', bg: 'bg-gray-100' };
+
 interface StatusBadgeProps {
-  status: TransactionStatus;
+  status: TransactionStatus | string;
 }
 
 export default function StatusBadge({ status }: StatusBadgeProps) {
-  const style = STATUS_STYLES[status];
+  const style = STATUS_STYLES[status as TransactionStatus] ?? FALLBACK_STYLE;
+  const label = STATUS_LABELS[status as TransactionStatus] ?? String(status ?? 'Unknown');
 
   return (
     <span
       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium ${style.bg} ${style.text}`}
     >
       <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
-      {STATUS_LABELS[status]}
+      {label}
     </span>
   );
 }

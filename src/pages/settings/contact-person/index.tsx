@@ -17,7 +17,7 @@ const Home: NextPageWithLayout = () => (
 );
 
 Home.getLayout = function getLayout(page: ReactElement) {
-  return <Layout pageName="Contact">{page}</Layout>;
+  return <Layout pageName="Settings - Contact">{page}</Layout>;
 };
 
 export default Home;

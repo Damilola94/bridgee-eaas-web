@@ -1,10 +1,10 @@
-import type { ReactElement } from 'react';
-import Head from 'next/head';
+import type { ReactElement } from "react";
+import Head from "next/head";
 
-import Layout from '../../../components/wrappers/Layout';
-import CompanyContainer from '../../../components/pages/settings/CompanyContainer';
+import Layout from "../../../components/wrappers/Layout";
+import CompanyContainer from "../../../components/pages/settings/CompanyContainer";
 
-import type { NextPageWithLayout } from '../../_app';
+import type { NextPageWithLayout } from "../../_app";
 
 const Home: NextPageWithLayout = () => (
   <>
@@ -17,7 +17,8 @@ const Home: NextPageWithLayout = () => (
 );
 
 Home.getLayout = function getLayout(page: ReactElement) {
-  return <Layout pageName="Company Profile">{page}</Layout>;
+  return <Layout pageName="Settings - Company Profile">{page}</Layout>;
 };
 
 export default Home;
+
