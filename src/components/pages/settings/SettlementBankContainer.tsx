@@ -1,13 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useMutation } from "react-query";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
+
 import { SettingsTabs } from "./setting-common/settings-tabs";
-import { SettingsField, SettingsSaveButton } from "./ui/settings-field";
+import {
+  SettingsField,
+  SettingsSaveButton,
+} from "./ui/settings-field";
+
 import useGetQuery from "../../../hooks/useGetQuery";
 import handleFetch from "../../../services/api/handleFetch";
 import notification from "../../../utilities/notification";
 import Loading from "../../common/Loading";
+
+interface BankDTO {
+  bankCode: string;
+  bankName: string;
+}
 
 interface SettlementAccountDTO {
   bankName: string | null;
@@ -17,117 +27,315 @@ interface SettlementAccountDTO {
   isVerified: boolean;
 }
 
-// TODO: replace with your real bank list (e.g. fetched from a /banks endpoint)
-const BANKS = [
-  { name: "Access Bank", code: "044" },
-  { name: "GTBank", code: "058" },
-  { name: "Zenith Bank", code: "057" },
-];
+interface ApiResponse<T> {
+  isSuccess: boolean;
+  statusCode?: string;
+  message?: string;
+  data: T;
+  metaData?: unknown;
+}
+
+interface SettlementForm {
+  bankName: string;
+  bankCode: string;
+  accountNumber: string;
+  accountName: string;
+}
 
 export default function SettlementBankPage() {
-  const { data, status } = useGetQuery({
+  const queryClient = useQueryClient();
+
+  // Fetch the bank list.
+  const {
+    data: banksResponse,
+    status: banksStatus,
+  } = useGetQuery({
+    endpoint: "escrow-service/api/v1/wallet/banks",
+    queryKey: ["wallet-banks"],
+    auth: true,
+  });
+
+  // Fetch the saved settlement account.
+  const {
+    data: settlementResponse,
+    status: settlementStatus,
+  } = useGetQuery({
     endpoint: "escrow-service/api/v1/wallet/settlement-account",
     queryKey: ["settlement-account"],
     auth: true,
   });
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<SettlementForm>({
     bankName: "",
     bankCode: "",
     accountNumber: "",
     accountName: "",
   });
-  const [isVerified, setIsVerified] = useState(false);
 
+  const [isVerified, setIsVerified] = useState(false);
+  const [hasEditedAccount, setHasEditedAccount] = useState(false);
+
+  // Tracks the last bank+account combo we tried, so a failed attempt
+  // doesn't retry in a loop.
+  const lastAttemptedKey = useRef<string | null>(null);
+
+  // Always holds the latest form, so async responses can detect if they're stale.
+  const formRef = useRef(form);
+  formRef.current = form;
+
+  // Memoised so the array identity is stable between renders.
+  const banks = useMemo<BankDTO[]>(
+    () => (Array.isArray(banksResponse?.data) ? banksResponse.data : []),
+    [banksResponse],
+  );
+
+  // Populate the form using the saved settlement account.
   useEffect(() => {
-    if (status === "success" && data?.isSuccess) {
-      const settlement: SettlementAccountDTO = data.data;
+    if (
+      settlementStatus === "success" &&
+      settlementResponse?.isSuccess &&
+      !hasEditedAccount
+    ) {
+      const settlement =
+        settlementResponse.data as SettlementAccountDTO;
+
+      const bankCode = settlement.bankCode ?? "";
+
+      // Prefer the current bank list for the canonical bank name.
+      const matchingBank = banks.find(
+        (bank) => bank.bankCode === bankCode,
+      );
+
       setForm({
-        bankName: settlement.bankName || "",
-        bankCode: settlement.bankCode || "",
-        accountNumber: settlement.accountNumber || "",
-        accountName: settlement.accountName || "",
+        bankName: matchingBank?.bankName ?? settlement.bankName ?? "",
+        bankCode,
+        accountNumber: settlement.accountNumber ?? "",
+        accountName: settlement.accountName ?? "",
       });
+
       setIsVerified(Boolean(settlement.isVerified));
     }
-  }, [data, status]);
+  }, [settlementResponse, settlementStatus, hasEditedAccount, banks]);
 
+  // Returns true if the form has changed since the request was sent.
+  const isStaleResponse = (variables: any) => {
+    const current = formRef.current;
+
+    return (
+      variables?.body?.accountNumber !== current.accountNumber ||
+      variables?.body?.bankCode !== current.bankCode
+    );
+  };
+
+  // Verify the bank account and resolve the account name.
   const verifyMutation = useMutation(handleFetch, {
-    onSuccess: (res: any) => {
-      if (res?.isSuccess) {
-        setForm((prev) => ({ ...prev, accountName: res.data.accountName }));
-        setIsVerified(true);
+    onSuccess: (res: ApiResponse<any>, variables: any) => {
+      // Ignore responses for inputs the user has since changed.
+      if (isStaleResponse(variables)) return;
+
+      if (!res?.isSuccess) {
+        setIsVerified(false);
+
         notification({
-          title: "Verified",
-          message: "Account name resolved successfully.",
-          type: "success",
+          title: "Verification failed",
+          message: res?.message || "Could not verify account details.",
+          type: "danger",
         });
+
+        return;
       }
+
+      // Adjust these paths if the backend returns a different response shape.
+      const accountName =
+        res.data?.accountName ??
+        res.data?.account?.accountName ??
+        "";
+
+      if (!accountName) {
+        setIsVerified(false);
+
+        notification({
+          title: "Verification failed",
+          message: "The verification response did not contain an account name.",
+          type: "danger",
+        });
+
+        return;
+      }
+
+      setForm((prev) => ({
+        ...prev,
+        accountName,
+      }));
+
+      setIsVerified(true);
+      // No success toast: the inline "Account name verified" line confirms it.
     },
-    onError: (err: any) => {
+
+    onError: (err: any, variables: any) => {
+      if (isStaleResponse(variables)) return;
+
       setIsVerified(false);
+
+      setForm((prev) => ({
+        ...prev,
+        accountName: "",
+      }));
+
       notification({
         title: "Verification failed",
-        message: err?.toString() || "Could not verify account details.",
+        message:
+          err?.toString() || "Could not verify account details.",
         type: "danger",
       });
     },
   });
 
+  // Save the verified settlement account.
   const saveMutation = useMutation(handleFetch, {
-    onSuccess: () => {
+    onSuccess: async (res: ApiResponse<any>) => {
+      if (res?.isSuccess === false) {
+        notification({
+          title: "Error",
+          message: res.message || "Could not save settlement account.",
+          type: "danger",
+        });
+
+        return;
+      }
+
+      await queryClient.invalidateQueries(["settlement-account"]);
+
       notification({
         title: "Saved",
         message: "Settlement bank updated successfully.",
         type: "success",
       });
+
+      setHasEditedAccount(false);
     },
+
     onError: (err: any) => {
       notification({
         title: "Error",
-        message: err?.toString() || "Something went wrong.",
+        message:
+          err?.toString() || "Could not save settlement account.",
         type: "danger",
       });
     },
   });
 
-  const handleBankChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const code = e.target.value;
-    const bank = BANKS.find((b) => b.code === code);
-    setForm({
-      ...form,
-      bankCode: code,
-      bankName: bank?.name || "",
+  const isSaving = saveMutation.isLoading;
+  const isVerifying = verifyMutation.isLoading;
+  const isLoadingBanks = banksStatus === "loading";
+  const isLoadingSettlement = settlementStatus === "loading";
+  const isBusy = isSaving || isVerifying;
+
+  // Shared verification runner used by both auto-verify and the retry button.
+  const runVerification = (accountNumber: string, bankCode: string) => {
+    lastAttemptedKey.current = `${bankCode}:${accountNumber}`;
+
+    setIsVerified(false);
+
+    setForm((prev) => ({
+      ...prev,
       accountName: "",
-    });
-    setIsVerified(false);
-  };
+    }));
 
-  const handleAccountNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, accountNumber: e.target.value, accountName: "" });
-    setIsVerified(false);
-  };
-
-  const handleVerify = () => {
-    if (!form.accountNumber || !form.bankCode) return;
     verifyMutation.mutate({
       service: "escrow-service/api/v1/",
       endpoint: "wallet/settlement-account/verify",
       auth: true,
       method: "POST",
-      body: { accountNumber: form.accountNumber, bankCode: form.bankCode },
+      body: {
+        accountNumber,
+        bankCode,
+      },
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Auto-verify once a bank is selected and a 10-digit account number is entered.
+  useEffect(() => {
+    // Don't auto-verify the account loaded from the server.
+    if (!hasEditedAccount) return;
+    if (form.accountNumber.length !== 10 || !form.bankCode) return;
+    if (isVerified || verifyMutation.isLoading) return;
+
+    const key = `${form.bankCode}:${form.accountNumber}`;
+    if (lastAttemptedKey.current === key) return;
+
+    runVerification(form.accountNumber, form.bankCode);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.accountNumber, form.bankCode, hasEditedAccount, isVerified]);
+
+  const handleBankChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const bankCode = e.target.value;
+    const bank = banks.find((item) => item.bankCode === bankCode);
+
+    setHasEditedAccount(true);
+    lastAttemptedKey.current = null;
+
+    setForm((prev) => ({
+      ...prev,
+      bankCode,
+      bankName: bank?.bankName ?? "",
+      accountName: "",
+    }));
+
+    setIsVerified(false);
+  };
+
+  const handleAccountNumberChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const accountNumber = e.target.value
+      .replace(/\D/g, "")
+      .slice(0, 10);
+
+    setHasEditedAccount(true);
+    lastAttemptedKey.current = null;
+
+    setForm((prev) => ({
+      ...prev,
+      accountNumber,
+      accountName: "",
+    }));
+
+    setIsVerified(false);
+  };
+
+  // Manual retry (only shown after an auto-verify attempt fails).
+  const handleVerify = () => {
+    if (form.accountNumber.length !== 10 || !form.bankCode) {
+      notification({
+        title: "Invalid account details",
+        message: "Select a bank and enter a valid 10-digit account number.",
+        type: "warning",
+      });
+
+      return;
+    }
+
+    runVerification(form.accountNumber, form.bankCode);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!isVerified) {
+    if (
+      !isVerified ||
+      !form.accountName ||
+      !form.bankCode ||
+      form.accountNumber.length !== 10
+    ) {
       notification({
         title: "Verify account first",
         message: "Please verify the account number before saving.",
         type: "warning",
       });
+
       return;
     }
 
@@ -145,69 +353,137 @@ export default function SettlementBankPage() {
     });
   };
 
-  const isSaving = saveMutation.isLoading;
-  const isVerifying = verifyMutation.isLoading;
-  const canVerify =
-    form.accountNumber.length === 10 && Boolean(form.bankCode) && !isVerified;
+  const showRetry =
+    !isVerified &&
+    !isVerifying &&
+    Boolean(form.bankCode) &&
+    form.accountNumber.length === 10;
 
   return (
-    <div className="p-8 flex flex-col sm:flex-row gap-6 font-outfit">
+    <div className="flex flex-col gap-6 p-8 font-outfit sm:flex-row">
       <SettingsTabs />
-      {(isSaving || isVerifying) && <Loading />}
+
+      {/* Full-screen loader only while saving; verification shows inline. */}
+      {isSaving && <Loading />}
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 flex-1 space-y-5 max-w-xl"
+        className="max-w-xl flex-1 space-y-5 rounded-2xl border border-gray-100 bg-white p-8 shadow-sm"
       >
-        <h2 className="text-base font-semibold text-gray-900">
-          Settlement Bank
-        </h2>
+        <div>
+          <h2 className="text-base font-semibold text-gray-900">
+            Settlement Bank
+          </h2>
 
+          <p className="mt-1 text-sm text-gray-500">
+            Set up the bank account where your settlements will be paid.
+          </p>
+        </div>
+
+        {/* Bank dropdown populated from the API */}
         <div className="space-y-1">
-          <label className="text-sm font-medium text-gray-700">Bank</label>
+          <label
+            htmlFor="settlement-bank"
+            className="text-sm font-medium text-gray-700"
+          >
+            Bank
+          </label>
+
           <select
-            className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900"
+            id="settlement-bank"
             value={form.bankCode}
             onChange={handleBankChange}
+            disabled={isBusy || isLoadingBanks}
+            required
+            className="w-full rounded-lg border border-gray-200 bg-white px-3 py-3 text-sm text-gray-900 outline-none focus:border-primary-500 disabled:cursor-not-allowed disabled:bg-gray-50"
           >
-            <option value="">Select bank</option>
-            {BANKS.map((bank) => (
-              <option key={bank.code} value={bank.code}>
-                {bank.name}
+            <option value="">
+              {isLoadingBanks ? "Loading banks..." : "Select bank"}
+            </option>
+
+            {banks.map((bank) => (
+              <option key={bank.bankCode} value={bank.bankCode}>
+                {bank.bankName}
               </option>
             ))}
           </select>
+
+          {banksStatus === "error" && (
+            <p className="text-sm text-red-600">
+              Could not load banks. Please refresh and try again.
+            </p>
+          )}
+
+          {banksStatus === "success" &&
+            banksResponse?.isSuccess === false && (
+              <p className="text-sm text-red-600">
+                {banksResponse.message || "Could not load banks."}
+              </p>
+            )}
+
+          {banksStatus === "success" &&
+            banksResponse?.isSuccess &&
+            banks.length === 0 && (
+              <p className="text-sm text-amber-600">
+                No banks were returned by the API.
+              </p>
+            )}
         </div>
 
-        <SettingsField
-          label="Account Number"
-          maxLength={10}
-          value={form.accountNumber}
-          onChange={handleAccountNumberChange}
+        {/* Account number */}
+        <div>
+          <SettingsField
+            label="Account Number"
+            maxLength={10}
+            value={form.accountNumber}
+            onChange={handleAccountNumberChange}
+            disabled={isBusy || isLoadingSettlement}
+          />
+
+          <p className="mt-1 text-xs text-gray-500">
+            Enter the 10-digit account number registered with your bank.
+            Your account name is verified automatically.
+          </p>
+        </div>
+
+        {/* Resolved account name */}
+        <div>
+          <SettingsField
+            label="Account Name"
+            value={isVerifying ? "Verifying..." : form.accountName}
+            onChange={() => {}}
+            disabled
+          />
+
+          {isVerified && form.accountName && (
+            <p className="mt-2 flex items-center gap-1 text-sm text-green-600">
+              <span aria-hidden="true">✓</span>
+              Account name verified
+            </p>
+          )}
+
+          {/* Retry only appears if auto-verification failed */}
+          {showRetry && (
+            <button
+              type="button"
+              onClick={handleVerify}
+              className="mt-3 rounded-lg border border-primary-500 px-4 py-2 text-sm font-medium text-primary-600 transition hover:bg-primary-50"
+            >
+              Retry verification
+            </button>
+          )}
+        </div>
+
+        <SettingsSaveButton
+          disabled={
+            isBusy ||
+            isLoadingSettlement ||
+            !isVerified ||
+            !form.accountName ||
+            !form.bankCode ||
+            form.accountNumber.length !== 10
+          }
         />
-
-        {canVerify && (
-          <button
-            type="button"
-            onClick={handleVerify}
-            disabled={isVerifying}
-            className="text-sm font-medium text-blue-600 hover:underline disabled:opacity-60"
-          >
-            {isVerifying ? "Verifying..." : "Verify account"}
-          </button>
-        )}
-
-        <SettingsField
-          label="Account Name"
-          value={form.accountName}
-          onChange={() => {}}
-          disabled
-        />
-        {isVerified && form.accountName && (
-          <p className="text-sm text-green-600 -mt-3">Account verified</p>
-        )}
-
-        <SettingsSaveButton disabled={isSaving || !isVerified} />
       </form>
     </div>
   );

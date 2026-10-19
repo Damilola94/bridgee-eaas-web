@@ -11,6 +11,7 @@ const TABS = [
   { href: "/settings/security", label: "Security" },
   { href: "/settings/personalization", label: "Personalization" },
   { href: "/settings/settlement-bank", label: "Settlement Bank" },
+  { href: "/settings/release-authorizer", label: "Release Authorizer" },
   { href: "/settings/api", label: "API KEY" },
 ];
 
