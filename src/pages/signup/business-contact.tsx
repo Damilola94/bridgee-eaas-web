@@ -323,7 +323,7 @@ export default function BusinessContact() {
 
           <p className="mt-6 text-center text-sm">
             Already have an account?&nbsp;
-            <Link href="/login">
+            <Link href="/">
               <span className="text-[#A3195B] cursor-pointer font-medium">
                 Login
               </span>

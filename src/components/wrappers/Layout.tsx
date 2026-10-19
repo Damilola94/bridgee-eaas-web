@@ -39,7 +39,7 @@ function Layout({ children, pageName }: Props) {
 
   return (
     <div className=" w-full min-h-screen relative">
-      <SessionControl path="/login" />
+      <SessionControl path="/" />
       <Sidebar />
       <AccountsContextProvider>
           <Header
