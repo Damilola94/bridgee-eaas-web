@@ -1,15 +1,17 @@
-
-
 import React from "react";
 
 import AnalyticsChart from "./dashboard-common/AnalyticsChart";
 import CustomerMetrics from "./dashboard-common/CustomerMetrics";
 import EscrowTransactionsTable from "./dashboard-common/EscrowTransactionsTable";
+import PayoutButton from "./dashboard-common/Payoutbutton";
 import SummaryCard from "./dashboard-common/SummaryCard";
 
 function DashboardContainer() {
   return (
     <div className="px-3 pt-3 pb-5">
+      <div className="flex items-center justify-end mb-5">
+        <PayoutButton />
+      </div>
 
       <SummaryCard />
 
