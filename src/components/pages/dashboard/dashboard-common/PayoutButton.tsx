@@ -260,7 +260,7 @@ function PayoutModal({ onClose }: { onClose: () => void }) {
 
               {step === "details" && (
                 <p className="mt-0.5 text-xs text-gray-500 ff-regular">
-                  Withdraw funds to your settlement ssssbank account.
+                  Withdraw funds to your settlement bank account.
                 </p>
               )}
 
