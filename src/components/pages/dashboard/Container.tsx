@@ -3,7 +3,7 @@ import React from "react";
 import AnalyticsChart from "./dashboard-common/AnalyticsChart";
 import CustomerMetrics from "./dashboard-common/CustomerMetrics";
 import EscrowTransactionsTable from "./dashboard-common/EscrowTransactionsTable";
-import PayoutButton from "./dashboard-common/Payoutbutton";
+import PayoutButton from "./dashboard-common/PayoutButton";
 import SummaryCard from "./dashboard-common/SummaryCard";
 
 function DashboardContainer() {

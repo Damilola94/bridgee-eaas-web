@@ -75,21 +75,16 @@ export default function SettlementBankPage() {
   const [isVerified, setIsVerified] = useState(false);
   const [hasEditedAccount, setHasEditedAccount] = useState(false);
 
-  // Tracks the last bank+account combo we tried, so a failed attempt
-  // doesn't retry in a loop.
   const lastAttemptedKey = useRef<string | null>(null);
 
-  // Always holds the latest form, so async responses can detect if they're stale.
   const formRef = useRef(form);
   formRef.current = form;
 
-  // Memoised so the array identity is stable between renders.
   const banks = useMemo<BankDTO[]>(
     () => (Array.isArray(banksResponse?.data) ? banksResponse.data : []),
     [banksResponse],
   );
 
-  // Populate the form using the saved settlement account.
   useEffect(() => {
     if (
       settlementStatus === "success" &&
@@ -101,7 +96,6 @@ export default function SettlementBankPage() {
 
       const bankCode = settlement.bankCode ?? "";
 
-      // Prefer the current bank list for the canonical bank name.
       const matchingBank = banks.find(
         (bank) => bank.bankCode === bankCode,
       );
@@ -117,7 +111,6 @@ export default function SettlementBankPage() {
     }
   }, [settlementResponse, settlementStatus, hasEditedAccount, banks]);
 
-  // Returns true if the form has changed since the request was sent.
   const isStaleResponse = (variables: any) => {
     const current = formRef.current;
 
@@ -127,10 +120,8 @@ export default function SettlementBankPage() {
     );
   };
 
-  // Verify the bank account and resolve the account name.
   const verifyMutation = useMutation(handleFetch, {
     onSuccess: (res: ApiResponse<any>, variables: any) => {
-      // Ignore responses for inputs the user has since changed.
       if (isStaleResponse(variables)) return;
 
       if (!res?.isSuccess) {
@@ -145,7 +136,6 @@ export default function SettlementBankPage() {
         return;
       }
 
-      // Adjust these paths if the backend returns a different response shape.
       const accountName =
         res.data?.accountName ??
         res.data?.account?.accountName ??
@@ -169,7 +159,6 @@ export default function SettlementBankPage() {
       }));
 
       setIsVerified(true);
-      // No success toast: the inline "Account name verified" line confirms it.
     },
 
     onError: (err: any, variables: any) => {
@@ -191,7 +180,6 @@ export default function SettlementBankPage() {
     },
   });
 
-  // Save the verified settlement account.
   const saveMutation = useMutation(handleFetch, {
     onSuccess: async (res: ApiResponse<any>) => {
       if (res?.isSuccess === false) {
@@ -231,7 +219,6 @@ export default function SettlementBankPage() {
   const isLoadingSettlement = settlementStatus === "loading";
   const isBusy = isSaving || isVerifying;
 
-  // Shared verification runner used by both auto-verify and the retry button.
   const runVerification = (accountNumber: string, bankCode: string) => {
     lastAttemptedKey.current = `${bankCode}:${accountNumber}`;
 
@@ -254,9 +241,7 @@ export default function SettlementBankPage() {
     });
   };
 
-  // Auto-verify once a bank is selected and a 10-digit account number is entered.
   useEffect(() => {
-    // Don't auto-verify the account loaded from the server.
     if (!hasEditedAccount) return;
     if (form.accountNumber.length !== 10 || !form.bankCode) return;
     if (isVerified || verifyMutation.isLoading) return;
@@ -265,7 +250,6 @@ export default function SettlementBankPage() {
     if (lastAttemptedKey.current === key) return;
 
     runVerification(form.accountNumber, form.bankCode);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.accountNumber, form.bankCode, hasEditedAccount, isVerified]);
 
   const handleBankChange = (
@@ -306,7 +290,6 @@ export default function SettlementBankPage() {
     setIsVerified(false);
   };
 
-  // Manual retry (only shown after an auto-verify attempt fails).
   const handleVerify = () => {
     if (form.accountNumber.length !== 10 || !form.bankCode) {
       notification({
@@ -380,7 +363,6 @@ export default function SettlementBankPage() {
           </p>
         </div>
 
-        {/* Bank dropdown populated from the API */}
         <div className="space-y-1">
           <label
             htmlFor="settlement-bank"
@@ -430,7 +412,6 @@ export default function SettlementBankPage() {
             )}
         </div>
 
-        {/* Account number */}
         <div>
           <SettingsField
             label="Account Number"
@@ -446,7 +427,6 @@ export default function SettlementBankPage() {
           </p>
         </div>
 
-        {/* Resolved account name */}
         <div>
           <SettingsField
             label="Account Name"
@@ -462,7 +442,6 @@ export default function SettlementBankPage() {
             </p>
           )}
 
-          {/* Retry only appears if auto-verification failed */}
           {showRetry && (
             <button
               type="button"

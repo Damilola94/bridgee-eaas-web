@@ -41,7 +41,6 @@ interface FormErrors {
 export default function ReleaseAuthoriserPage() {
   const queryClient = useQueryClient();
 
-  // GET release authoriser details
   const {
     data,
     status,
@@ -60,7 +59,6 @@ export default function ReleaseAuthoriserPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isReviewing, setIsReviewing] = useState(false);
 
-  // Populate the form from the dedicated GET endpoint.
   useEffect(() => {
     if (status === "success" && data?.isSuccess) {
       const response = data as ReleaseAuthoriserResponse;
@@ -72,7 +70,6 @@ export default function ReleaseAuthoriserPage() {
     }
   }, [data, status]);
 
-  // PUT release authoriser details
   const saveMutation = useMutation(handleFetch, {
     onSuccess: async () => {
       await queryClient.invalidateQueries(["release-authoriser"]);

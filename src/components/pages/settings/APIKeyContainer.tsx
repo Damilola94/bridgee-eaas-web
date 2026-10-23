@@ -10,13 +10,10 @@ import notification from "../../../utilities/notification";
 import Loading from "../../common/Loading";
 import APIKey, { type ApiKey } from "./setting-common/rotate-key-dialog";
 
-/** Shape of `data` from POST /apikeys/rotate — the plaintext `apiKey` is
- * only ever returned in this one response, never again afterward. */
 interface RotatedKey {
   keyId: string;
   apiKey: string;
   previousKeyExpiresAt: string | null;
-  /** label of the key that was rotated, stitched in client-side for display */
   label: string;
 }
 
@@ -30,11 +27,6 @@ function formatDate(dateStr: string) {
   });
 }
 
-/**
- * Derives a display status from the raw API status plus expiresAt, since
- * the API only ever returns "Active" or "Revoked" but a key can also be
- * past its expiresAt while technically still marked "Active".
- */
 function getDisplayStatus(apiKey: ApiKey): "Active" | "Expired" | "Revoked" {
   if (apiKey.status === "Revoked") return "Revoked";
   if (apiKey.expiresAt && new Date(apiKey.expiresAt).getTime() < Date.now()) {
@@ -60,11 +52,6 @@ function StatusBadge({ apiKey }: { apiKey: ApiKey }) {
   );
 }
 
-/**
- * Shows the freshly-rotated plaintext key exactly once, with a copy button
- * and a countdown that auto-dismisses the banner — the key isn't retrievable
- * again after this, so it shouldn't linger on screen indefinitely either.
- */
 function NewKeyBanner({
   rotatedKey,
   onDismiss,
@@ -112,7 +99,11 @@ function NewKeyBanner({
               onClick={handleCopy}
               className="flex shrink-0 items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-primary-900/90"
             >
-              {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+              {copied ? (
+                <Check className="h-3.5 w-3.5" />
+              ) : (
+                <Copy className="h-3.5 w-3.5" />
+              )}
               {copied ? "Copied" : "Copy"}
             </button>
           </div>
@@ -156,18 +147,27 @@ function ApiKeyRow({
         </div>
         <div>
           <div className="flex items-center gap-2">
-            <p className="text-sm font-semibold text-gray-900">{apiKey.label}</p>
+            <p className="text-sm font-semibold text-gray-900">
+              {apiKey.label}
+            </p>
             <StatusBadge apiKey={apiKey} />
             <span className="rounded-full bg-gray-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gray-400">
               {apiKey.environment}
             </span>
           </div>
-          <p className="mt-0.5 font-mono text-xs text-gray-400">{apiKey.masked}</p>
+          <p className="mt-0.5 font-mono text-xs text-gray-400">
+            {apiKey.masked}
+          </p>
           <p className="mt-1 text-xs text-gray-400">
             Created {formatDate(apiKey.createdAt)}
-            {apiKey.lastUsedAt && ` · Last used ${formatDate(apiKey.lastUsedAt)}`}
-            {isRevoked && apiKey.revokedAt && ` · Revoked ${formatDate(apiKey.revokedAt)}`}
-            {!isRevoked && apiKey.expiresAt && ` · Expires ${formatDate(apiKey.expiresAt)}`}
+            {apiKey.lastUsedAt &&
+              ` · Last used ${formatDate(apiKey.lastUsedAt)}`}
+            {isRevoked &&
+              apiKey.revokedAt &&
+              ` · Revoked ${formatDate(apiKey.revokedAt)}`}
+            {!isRevoked &&
+              apiKey.expiresAt &&
+              ` · Expires ${formatDate(apiKey.expiresAt)}`}
           </p>
         </div>
       </div>
@@ -246,7 +246,10 @@ export default function ApiKeysPage() {
 
       <div className="flex-1 space-y-5 max-w-xl">
         {rotatedKey && (
-          <NewKeyBanner rotatedKey={rotatedKey} onDismiss={() => setRotatedKey(null)} />
+          <NewKeyBanner
+            rotatedKey={rotatedKey}
+            onDismiss={() => setRotatedKey(null)}
+          />
         )}
 
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
@@ -254,16 +257,23 @@ export default function ApiKeysPage() {
             <h2 className="text-base font-semibold text-gray-900">API Keys</h2>
           </div>
           <p className="mt-1 text-sm text-gray-500">
-            Rotating a key immediately issues a new secret. The old key stays valid for the
-            grace period you set, so in-flight integrations don&apos;t break.
+            Rotating a key immediately issues a new secret. The old key stays
+            valid for the grace period you set, so in-flight integrations
+            don&apos;t break.
           </p>
 
           <div className="mt-5">
             {status === "success" && apiKeys.length === 0 && (
-              <p className="py-6 text-center text-sm text-gray-400">No API keys yet.</p>
+              <p className="py-6 text-center text-sm text-gray-400">
+                No API keys yet.
+              </p>
             )}
             {apiKeys.map((key) => (
-              <ApiKeyRow key={key.keyId} apiKey={key} onRotate={setRotatingKey} />
+              <ApiKeyRow
+                key={key.keyId}
+                apiKey={key}
+                onRotate={setRotatingKey}
+              />
             ))}
           </div>
         </div>
