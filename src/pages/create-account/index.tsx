@@ -91,9 +91,6 @@ export default function CreateAccount() {
 
   const handleBusinessTypeChange = (val: SingleValue<SelectOptionType>) => {
     setBusinessType(val?.value || "");
-
-    // A validated name belongs to the type + number it was validated with,
-    // so switching type invalidates it.
     setCompanyName("");
   };
 
