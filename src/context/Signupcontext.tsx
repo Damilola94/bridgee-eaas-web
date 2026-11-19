@@ -5,7 +5,7 @@ export type SignupData = {
   isRegistered?: boolean;
   cacNumber?: string;
   companyName?: string;
-  businessType?: string | number;
+  businessType?: string;
   companyAddress?: string;
   companyPhone?: string;
   companyEmail?: string;

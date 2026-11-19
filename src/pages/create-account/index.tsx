@@ -89,10 +89,10 @@ export default function CreateAccount() {
     },
   });
 
-  const handleBusinessTypeChange = (val: SingleValue<SelectOptionType>) => {
-    setBusinessType(val?.value || "");
-    setCompanyName("");
-  };
+ const handleBusinessTypeChange = (val: SingleValue<SelectOptionType>) => {
+  setBusinessType(val ? String(val.value) : "");
+  setCompanyName("");
+};
 
   const handleValidate = () => {
     if (!businessType) {
